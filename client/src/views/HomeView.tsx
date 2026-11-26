@@ -21,6 +21,8 @@ import {
 import { AmbientBackdrop } from '../components/AmbientBackdrop';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { PortraitAvatar } from '../components/PortraitAvatar';
+import { GameIcon, OrnateCorners, iconSrc } from '../components/GameIcon';
+import { PlayerEmblem, ResourceCapsules } from '../components/TopBar';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playCoinBurst, playSystemPing, playTap, playWeChatChime } from '../lib/sound';
@@ -143,6 +145,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     applyServerState,
     notifyTop,
     showError,
+    flyReward,
   } = useGameStore();
 
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -227,7 +230,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   const nextEpisode = useMemo(() => {
     if (!stories?.volumes) return null;
     const allEps = stories.volumes.flatMap((v: any) =>
-      (v.episodes || []).map((ep: any) => ({ ...ep, volumeTitle: v.title })),
+      (v.episodes || []).map((ep: any) => ({ ...ep, volumeTitle: v.title, volumeCover: v.cover })),
     );
     if (stories.nextEpisodeId) {
       return allEps.find((ep: any) => ep.episodeId === stories.nextEpisodeId) || null;
@@ -370,10 +373,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     setSigningIn(true);
     try {
       const res = await apiRequest('/system/signin', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '签到完成', res.message || '今日补给已入账');
-      spawnParticle('签到已领', 'gold');
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -389,9 +391,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       const collected = Math.max(livePendingIncome, Number(res?.collected || 0));
       applyServerState(res.state);
       setLiveDriftCash(0);
-      playCoinBurst();
-      spawnParticle(`+${formatMoney(collected)}`, 'gold');
-      notifyTop('bank', '收益已入账', `产业分红与物业租金共计 ${formatMoney(collected)}`);
+      flyReward(collected);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -458,6 +458,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   };
 
   const shortTime = timeLabel.split(' ')[0] || timeLabel;
+  const nextEpisodeCover =
+    nextEpisode?.volumeCover || nextEpisode?.bg || equippedCar?.image || '/assets/story/vol1.webp';
 
   return (
     <div
@@ -470,7 +472,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           setPickerOpen(false);
         }
       }}
-      className="relative h-full w-full overflow-hidden bg-[#08090C] select-none"
+      className="relative h-full w-full overflow-hidden bg-[#0A0F1F] select-none"
     >
       {/* LAYER 0: FULL-BLEED LIVING RESIDENCE STAGE */}
       <AmbientBackdrop
@@ -482,12 +484,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
 
       {/* Soft cinematic edge gradients (no boxed bars!) */}
       <div
-        className={`absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#07080B]/92 via-[#07080B]/58 to-transparent pointer-events-none transition-opacity duration-500 ${
+        className={`absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-[#080C1A]/92 via-[#080C1A]/58 to-transparent pointer-events-none transition-opacity duration-500 ${
           pureArtMode ? 'opacity-15' : 'opacity-100'
         }`}
       />
       <div
-        className={`absolute inset-x-0 bottom-0 h-[250px] bg-gradient-to-t from-[#08090C] via-[#08090C]/78 to-transparent pointer-events-none transition-opacity duration-500 ${
+        className={`absolute inset-x-0 bottom-0 h-[250px] bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/78 to-transparent pointer-events-none transition-opacity duration-500 ${
           pureArtMode ? 'opacity-20' : 'opacity-100'
         }`}
       />
@@ -542,7 +544,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               exit={{ opacity: 0 }}
               transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
               className={`absolute font-bold text-sm tracking-wide text-shadow-stage ${
-                p.kind === 'heart' ? 'text-[#EEA0B8]' : 'text-[#EBD4A2]'
+                p.kind === 'heart' ? 'text-[#EEA0B8]' : 'text-[#F6DDA4]'
               }`}
             >
               {p.label}
@@ -551,187 +553,189 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
         </AnimatePresence>
       </div>
 
-      {/* LAYER 2: MATURE-GAME HOMEPAGE HEADER — LARGE TOP-LEFT PLAYER EMBLEM + CLEAN TOP-RIGHT HUD */}
+      {/* LAYER 2: GAME HUD — player plate (left) + resource capsules (right) */}
       <div
-        className={`absolute top-0 inset-x-0 z-20 px-3.5 pt-3.5 flex items-start justify-between gap-2 pointer-events-none transition-all duration-500 ${
+        className={`absolute top-0 inset-x-0 z-20 px-3 pt-3 flex items-start justify-between gap-2 pointer-events-none transition-all duration-500 ${
           pureArtMode ? 'opacity-0 -translate-y-4' : 'opacity-100 translate-y-0'
         }`}
       >
-        {/* TOP-LEFT: PROMINENT LARGE PLAYER IDENTITY CARD (62x62 portrait + serif name + tier progress bar) */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             playTap();
             openProfile('tasks');
           }}
-          className="pointer-events-auto flex items-center gap-3 text-left group active:scale-[0.985] transition max-w-[60%]"
+          className="pointer-events-auto relative flex items-center gap-2.5 text-left active:scale-[0.98] transition max-w-[56%] pr-4 py-1 pl-1 rounded-full"
+          style={{
+            background: 'linear-gradient(90deg, rgba(8,12,26,0.82) 0%, rgba(8,12,26,0.55) 75%, rgba(8,12,26,0) 100%)',
+          }}
           title="个人档案与天枢"
         >
-          {/* Large 62x62 Framed Protagonist Portrait with Brass Corner Ticks */}
-          <div className="relative w-[62px] h-[62px] shrink-0 bg-[#101116] p-[2px] border border-[#CFB073]/60 shadow-[0_10px_26px_rgba(0,0,0,0.72)]">
-            <PortraitAvatar src={protagonistSrc} alt={user.nickname} className="w-full h-full" rounded="sm" />
-            {/* Architectural brass corner accents */}
-            <span className="absolute -top-[1px] -left-[1px] w-2.5 h-2.5 border-t-2 border-l-2 border-[#EBD4A2] pointer-events-none" />
-            <span className="absolute -bottom-[1px] -right-[1px] w-2.5 h-2.5 border-b-2 border-r-2 border-[#EBD4A2] pointer-events-none" />
-            {/* Level Crest */}
-            <span className="absolute -bottom-1.5 -left-1.5 px-1.5 py-[1px] bg-[#161410] border border-[#CFB073]/75 text-[9.5px] font-bold text-[#EBD4A2] leading-tight tabular-nums shadow">
-              Lv.{player.sysLevel}
-            </span>
-            {hasProfileDot && (
-              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-[#D95B78] ring-2 ring-[#090A0D]" />
-            )}
-          </div>
-
-          {/* Open-Air Player Name, Rank & Net-Worth Progress Hairline */}
-          <div className="min-w-0 py-0.5 space-y-1">
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-editorial text-[18px] font-bold text-[#F6F3EB] tracking-wider leading-none text-shadow-stage truncate">
-                {user.nickname}
-              </span>
+          <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={50} dot={hasProfileDot} />
+          <div className="min-w-0 space-y-[3px]">
+            <div className="font-editorial text-[16px] font-black text-[#FBF1D8] leading-none truncate text-stroke-dark">
+              {user.nickname}
             </div>
-            <div className="flex items-center gap-1.5 text-[11px] text-shadow-stage">
-              <span className="text-[#EBD4A2] font-medium shrink-0">{player.tier.name}</span>
-              <span className="text-[#DCDFE8] tabular-nums truncate">
+            <div className="flex items-center gap-1 text-[10px] leading-none">
+              <GameIcon name="crown" size={13} shadow={false} />
+              <span className="text-[#F6DDA4] font-bold tracking-wider truncate">{player.tier.name}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="bar-track w-[72px] !h-[5px]">
+                <div className="bar-fill" style={{ width: `${tierProgressPct}%` }} />
+              </div>
+              <span className="font-num text-[10px] text-[#C3C9DC] leading-none">
                 <AnimatedNumber value={player.netWorth} />
               </span>
             </div>
-            {/* Sleek Tier Progress Hairline Bar */}
-            <div className="w-[106px] h-[3px] bg-white/15 overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-[#B7914A] to-[#F1DBAA] transition-all duration-500"
-                style={{ width: `${tierProgressPct}%` }}
-              />
-            </div>
           </div>
         </button>
 
-        {/* TOP-RIGHT: CLEAN OPEN-AIR RESOURCES + FRAMELESS UTILITY ROW */}
-        <div className="pointer-events-auto flex flex-col items-end gap-2 shrink-0">
-          {/* Numeric Strip: Cash + Energy */}
-          <div className="hud-strip px-2.5 py-1 flex items-center gap-2.5">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                setActiveTab('assets');
-              }}
-              className="text-[12px] font-bold text-[#EBD4A2] tracking-tight active:opacity-75"
-              title="资金与产业"
-            >
-              <AnimatedNumber value={player.cash} highlightOnIncrease />
-            </button>
-            <span className="w-[1px] h-3 bg-white/15" />
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                openProfile('mall');
-              }}
-              className="flex items-center gap-0.5 text-[11.5px] font-semibold text-[#F0EDE6] tabular-nums active:opacity-75"
-              title="精力补给"
-            >
-              <Zap className="w-3 h-3 text-[#CFB073]" />
-              <span>{player.energy}</span>
-              <Plus className="w-2.5 h-2.5 text-[#9EA2AE]" />
-            </button>
-          </div>
-
-          {/* Frameless Minimal Icon Row (Mail, Rank, Switch Companion, Hide UI) */}
-          <div className="flex items-center gap-2.5 pr-0.5 text-[#DDDAD2]">
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                setShowMail(true);
-              }}
-              className="relative p-1 hover:text-[#EBD4A2] transition active:scale-90 text-shadow-stage"
-              aria-label="信箱"
-              title="信箱"
-            >
-              <Mail className="w-[17px] h-[17px] drop-shadow" strokeWidth={1.75} />
-              {unreadMailCount > 0 && (
-                <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-[#D95B78]" />
-              )}
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                setShowLeaderboard(true);
-              }}
-              className="p-1 hover:text-[#EBD4A2] transition active:scale-90"
-              aria-label="财富榜"
-              title="财富榜"
-            >
-              <Trophy className="w-[17px] h-[17px] drop-shadow" strokeWidth={1.75} />
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                setPickerOpen((v) => !v);
-              }}
-              className={`p-1 transition active:scale-90 ${pickerOpen ? 'text-[#EBD4A2]' : 'hover:text-[#EBD4A2]'}`}
-              aria-label="切换看板"
-              title="切换人物"
-            >
-              <Users className="w-[17px] h-[17px] drop-shadow" strokeWidth={1.75} />
-            </button>
-
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                playTap();
-                onTogglePureArt(true);
-              }}
-              className="p-1 hover:text-[#EBD4A2] transition active:scale-90"
-              aria-label="纯享视野"
-              title="隐藏界面"
-            >
-              <EyeOff className="w-[17px] h-[17px] drop-shadow" strokeWidth={1.75} />
-            </button>
-          </div>
-
-          {/* Compact Accruing Dividend Seal (upper-right edge, clear of companion's face/shoulder) */}
-          {livePendingIncome > 0 && (
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                void handleCollectVault();
-              }}
-              disabled={collecting}
-              className="mt-0.5 panel-brass clip-chamfer-sm px-2.5 py-1.5 flex items-center gap-2 text-left animate-float-slow active:scale-95 transition"
-            >
-              <Coins className="w-3.5 h-3.5 text-[#EBD4A2] shrink-0" />
-              <div className="leading-tight">
-                <div className="text-[9px] text-[#C8B489]">待收分红</div>
-                <div className="text-[11px] font-bold text-[#F5E3B6]">
-                  <AnimatedNumber value={livePendingIncome} duration={360} />
-                </div>
-              </div>
-            </button>
-          )}
+        <div className="pointer-events-auto pt-2.5 pr-0.5">
+          <ResourceCapsules />
         </div>
       </div>
 
-      {/* Slim Left-Edge Sign-In Trigger (ONLY shown when not yet signed in today — disappears after!) */}
-      {!pureArtMode && !player.signedInToday && (
+      {/* LEFT RAIL: painted feature entries */}
+      <div
+        className={`absolute left-2 top-[86px] z-20 flex flex-col gap-2.5 transition-all duration-500 ${
+          pureArtMode ? 'opacity-0 -translate-x-6 pointer-events-none' : 'opacity-100 translate-x-0'
+        }`}
+      >
+        {!player.signedInToday && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleQuickSignIn();
+            }}
+            disabled={signingIn}
+            className="icon-entry"
+          >
+            <img src={iconSrc('signin')} alt="" className="animate-float-slow" />
+            <span className="lbl">签到</span>
+            <span className="red-dot top-0 right-1" />
+          </button>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();
-            void handleQuickSignIn();
+            playTap();
+            openProfile('tasks');
           }}
-          disabled={signingIn}
-          className="absolute left-3.5 top-[96px] z-20 panel-brass clip-chamfer-sm px-2.5 py-1.5 flex items-center gap-1.5 text-[11px] font-semibold text-[#F4DFA8] active:scale-95 transition"
+          className="icon-entry"
         >
-          <CalendarCheck className="w-3.5 h-3.5" />
-          <span>今日签到</span>
-          <span className="w-1.5 h-1.5 rounded-full bg-[#D95B78]" />
+          <img src={iconSrc('task')} alt="" />
+          <span className="lbl">任务</span>
+          {dailyTasks?.some((t: any) => !t.claimed && t.progress >= t.target) && (
+            <span className="red-dot top-0 right-1" />
+          )}
         </button>
-      )}
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            setShowMail(true);
+          }}
+          className="icon-entry"
+        >
+          <img src={iconSrc('mail')} alt="" />
+          <span className="lbl">信箱</span>
+          {unreadMailCount > 0 && <span className="red-dot top-0 right-1" />}
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            openProfile('mall');
+          }}
+          className="icon-entry"
+        >
+          <img src={iconSrc('mall')} alt="" />
+          <span className="lbl">商城</span>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            setShowLeaderboard(true);
+          }}
+          className="icon-entry"
+        >
+          <img src={iconSrc('rank')} alt="" />
+          <span className="lbl">财富榜</span>
+        </button>
+      </div>
 
+      {/* RIGHT RAIL: dividend vault, switch companion, hide UI */}
+      <div
+        className={`absolute right-2 top-[86px] z-20 flex flex-col items-end gap-2.5 transition-all duration-500 ${
+          pureArtMode ? 'opacity-0 translate-x-6 pointer-events-none' : 'opacity-100 translate-x-0'
+        }`}
+      >
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            openProfile('skills');
+          }}
+          className="icon-entry"
+        >
+          <img src={iconSrc('tianshu')} alt="" style={{ filter: 'drop-shadow(0 0 8px rgba(99,230,242,0.55)) drop-shadow(0 3px 5px rgba(0,0,0,0.7))' }} />
+          <span className="lbl">天枢</span>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            setPickerOpen((v) => !v);
+          }}
+          className="icon-entry"
+        >
+          <div className="w-[40px] h-[40px] rounded-full p-[2px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E] shadow-[0_3px_6px_rgba(0,0,0,0.6)]">
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#1A2344]">
+              <img
+                src={activeCompanion.avatar}
+                alt=""
+                className="w-full h-full object-cover object-[50%_8%] scale-[1.9] origin-[50%_6%]"
+              />
+            </div>
+          </div>
+          <span className="lbl">换人</span>
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            playTap();
+            onTogglePureArt(true);
+          }}
+          className="icon-entry"
+          aria-label="隐藏界面"
+        >
+          <div className="w-[34px] h-[34px] my-[3px] rounded-full flex items-center justify-center bg-[#0B1122]/70 border border-[#E2BD72]/45 text-[#F6DDA4] shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
+            <EyeOff className="w-4 h-4" strokeWidth={2} />
+          </div>
+          <span className="lbl">赏图</span>
+        </button>
+
+        {livePendingIncome > 0 && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              void handleCollectVault();
+            }}
+            disabled={collecting}
+            className="icon-entry mt-1"
+          >
+            <img src={iconSrc('income')} alt="" className="animate-float-slow !w-[46px] !h-[46px]" />
+            <span className="lbl !text-[#FFE7B0] font-num !tracking-normal">
+              <AnimatedNumber value={livePendingIncome} duration={360} />
+            </span>
+            <span className="absolute -top-1 -right-1 px-1 rounded-sm bg-[#FF4F72] text-[9px] font-bold text-white leading-[14px] shadow">
+              收
+            </span>
+          </button>
+        )}
+      </div>
       {/* Companion Switcher Popover */}
       <AnimatePresence>
         {!pureArtMode && pickerOpen && (
@@ -741,11 +745,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
-            className="absolute top-[74px] right-3.5 z-40 w-[228px] panel-elevated rounded-[6px] p-2 space-y-1"
+            className="absolute top-[150px] right-[62px] z-40 w-[228px] panel-elevated rounded-[6px] p-2 space-y-1"
           >
             <div className="flex items-center justify-between px-2 py-1.5 border-b border-white/[0.08]">
-              <span className="text-[11px] font-medium tracking-wider text-[#CFB073]">切换驻留人物</span>
-              <button onClick={() => setPickerOpen(false)} className="text-[#848896] hover:text-white">
+              <span className="text-[11px] font-medium tracking-wider text-[#E2BD72]">切换驻留人物</span>
+              <button onClick={() => setPickerOpen(false)} className="text-[#8B93AD] hover:text-white">
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -764,7 +768,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     }}
                     className={`w-full rounded-[4px] px-2 py-1.5 flex items-center gap-2.5 text-left transition ${
                       isSelected
-                        ? 'bg-[#CFB073]/16 border-l-2 border-l-[#CFB073]'
+                        ? 'bg-[#E2BD72]/16 border-l-2 border-l-[#E2BD72]'
                         : c.unlocked
                           ? 'hover:bg-white/[0.05]'
                           : 'opacity-40 cursor-not-allowed'
@@ -774,16 +778,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-semibold text-[#F3F0E8] truncate">{c.name}</span>
-                        {c.isResident && <span className="text-[9px] text-[#CFB073]">同住</span>}
+                        {c.isResident && <span className="text-[9px] text-[#E2BD72]">同住</span>}
                       </div>
                       <div className="text-[10px] text-[#8A8E9B] truncate">
                         {c.unlocked ? c.title : '待结识'}
                       </div>
                     </div>
                     {isSelected ? (
-                      <Check className="w-3.5 h-3.5 text-[#CFB073] shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-[#E2BD72] shrink-0" />
                     ) : !c.unlocked ? (
-                      <Lock className="w-3 h-3 text-[#757986] shrink-0" />
+                      <Lock className="w-3 h-3 text-[#6F7896] shrink-0" />
                     ) : null}
                   </button>
                 );
@@ -803,11 +807,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             exit={{ opacity: 0, y: 6 }}
             transition={{ duration: 0.22 }}
             onClick={(e) => e.stopPropagation()}
-            className="absolute inset-x-4 bottom-[106px] z-30"
+            className="absolute inset-x-4 bottom-[150px] z-30"
           >
-            <div className="bg-[#0B0C10]/86 backdrop-blur-xl border-l-2 border-l-[#CFB073] border-y border-r border-white/[0.08] px-3.5 py-2.5 space-y-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.72)]">
+            <div className="bg-[#0D1326]/86 backdrop-blur-xl border-l-2 border-l-[#E2BD72] border-y border-r border-white/[0.08] px-3.5 py-2.5 space-y-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.72)]">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-semibold text-[#EBD4A2] tracking-wider">{pokeBubble.name}</span>
+                <span className="text-[11px] font-semibold text-[#F6DDA4] tracking-wider">{pokeBubble.name}</span>
                 <div className="flex items-center gap-2.5">
                   {pokeBubble.innerThought && (
                     <button
@@ -827,7 +831,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                       setPokeBubble(null);
                       setThoughtOpen(false);
                     }}
-                    className="text-[#848896] hover:text-white"
+                    className="text-[#8B93AD] hover:text-white"
                     aria-label="关闭"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -854,90 +858,90 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
         )}
       </AnimatePresence>
 
-      {/* LAYER 4: CLEAN SINGLE-TIER EDITORIAL BOTTOM FOOTER (Zero duplicate buttons!) */}
+      {/* LAYER 4: FOOTER — companion nameplate + main story entry */}
       <div
-        className={`absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-6 flex items-end justify-between gap-3 transition-all duration-500 ${
+        className={`absolute inset-x-0 bottom-0 z-20 px-3 pb-3 pt-6 flex items-end justify-between gap-3 transition-all duration-500 ${
           pureArtMode ? 'opacity-0 translate-y-8 pointer-events-none' : 'opacity-100 translate-y-0'
         }`}
       >
-        {/* Bottom-Left: Open-Air Companion Nameplate + Residence Home-Time Entry */}
-        <div className="min-w-0 space-y-1.5">
-          <div>
-            <div className="flex items-baseline gap-2">
-              <h1 className="font-editorial text-[24px] font-bold text-[#F6F3EB] tracking-[0.08em] leading-none text-shadow-stage">
-                {activeCompanion.name}
-              </h1>
-              {activeCompanion.kind === 'heroine' && activeCompanion.stage && (
-                <span className="text-[10.5px] text-[#E6A4B8] font-medium tabular-nums text-shadow-stage">
-                  {activeCompanion.stage.name}
-                </span>
-              )}
-            </div>
-            <div className="text-[11px] text-[#B8BBC6] mt-1.5 text-shadow-stage truncate">
+        {/* Nameplate */}
+        <div className="min-w-0 pl-1">
+          <div className="text-[10px] tracking-[0.3em] text-[#E2BD72]/90 font-bold mb-1 text-stroke-dark">
+            {activeCompanion.kind === 'heroine' ? 'COMPANION' : activeCompanion.kind === 'ally' ? 'BUTLER' : 'MASTER'}
+          </div>
+          <h1 className="font-editorial text-[30px] font-black leading-none gold-gradient-text drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+            {activeCompanion.name}
+          </h1>
+          <div className="flex items-center gap-1.5 mt-1.5">
+            {activeCompanion.kind === 'heroine' && activeCompanion.stage && (
+              <span className="px-1.5 py-[1px] rounded-sm bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-[10px] font-bold text-white shadow">
+                {activeCompanion.stage.name}
+              </span>
+            )}
+            <span className="text-[11px] text-[#D3D8E8] text-stroke-dark truncate">
               {mainResidence?.displayName || '海城居所'} · {shortTime}
-            </div>
+            </span>
           </div>
 
-          {/* Direct Residence Interaction / Keys Trigger right from Home (no teleporting through Map!) */}
-          <div className="flex items-center gap-3 pt-0.5">
+          <div className="flex items-center gap-2 pt-2.5">
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 playTap();
                 setResidenceSheet('interact');
               }}
-              className="text-[11px] text-[#EBD4A2] hover:text-white flex items-center gap-1 border-b border-[#CFB073]/45 pb-0.5 transition active:opacity-75"
+              className="btn-navy h-8 pl-1 pr-3 flex items-center gap-1 text-[11.5px] !rounded-full"
             >
-              <Heart className="w-3 h-3 text-[#D97791]" />
-              <span>居家时光</span>
+              <GameIcon name="heart" size={24} />
+              居家时光
             </button>
-
             <button
               onClick={(e) => {
                 e.stopPropagation();
                 playTap();
                 setResidenceSheet('keys');
               }}
-              className="text-[11px] text-[#B8BBC6] hover:text-white flex items-center gap-1 border-b border-white/20 pb-0.5 transition active:opacity-75"
+              className="btn-navy h-8 pl-1 pr-3 flex items-center gap-1 text-[11.5px] !rounded-full"
             >
-              <KeyRound className="w-3 h-3 text-[#CFB073]" />
-              <span>居所钥匙</span>
+              <GameIcon name="key" size={24} />
+              钥匙
             </button>
           </div>
         </div>
 
-        {/* Bottom-Right: ONE Sculptural Asymmetric Editorial Action Block */}
+        {/* Main-story entry plate */}
         <button
           onClick={(e) => {
             e.stopPropagation();
             handleResumeStory();
           }}
-          className="shrink-0 w-[166px] panel-brass clip-chamfer px-3.5 py-2.5 text-left group active:scale-[0.975] transition"
+          className="relative shrink-0 w-[150px] h-[96px] rounded-[8px] overflow-visible text-left active:scale-[0.97] transition"
         >
-          {nextEpisode ? (
-            <>
-              <div className="flex items-center justify-between text-[10px] text-[#CFB073] tracking-wider">
-                <span>主线 · {nextEpisode.chapterTitle}</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </div>
-              <div className="font-editorial text-[15px] font-bold text-[#F7F3EA] truncate mt-1 tracking-wide">
-                {nextEpisode.title}
-              </div>
-            </>
-          ) : (
-            <div className="flex items-center justify-between gap-2">
-              <div>
-                <div className="text-[10px] text-[#CFB073] tracking-wider">海城出行</div>
-                <div className="font-editorial text-[14px] font-bold text-[#F7F3EA] mt-0.5 truncate">
-                  {equippedCar?.name || '前往海城'}
-                </div>
-              </div>
-              <ChevronRight className="w-4 h-4 text-[#CFB073] shrink-0" />
+          <div className="absolute inset-0 rounded-[8px] overflow-hidden border border-[#E2BD72]/80 shadow-[0_10px_28px_rgba(0,0,0,0.6),0_0_18px_rgba(226,189,114,0.25)]">
+            <img
+              src={nextEpisodeCover}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/55 to-[#0A0F1F]/10" />
+          </div>
+          <OrnateCorners size={18} inset={-4} />
+          <div className="absolute -top-2.5 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow">
+            {nextEpisode ? '主线' : '出行'}
+          </div>
+          <div className="absolute inset-x-2.5 bottom-2">
+            <div className="text-[10px] text-[#F6DDA4] tracking-wider truncate text-stroke-dark">
+              {nextEpisode ? nextEpisode.chapterTitle : '海城出行'}
             </div>
-          )}
+            <div className="flex items-center justify-between gap-1 mt-0.5">
+              <div className="font-editorial text-[15px] font-black text-[#FBF1D8] truncate text-stroke-dark">
+                {nextEpisode ? nextEpisode.title : equippedCar?.name || '前往海城'}
+              </div>
+              <GameIcon name="play" size={26} />
+            </div>
+          </div>
         </button>
       </div>
-
       {/* DIRECT HOME RESIDENCE SHEET (Home Interactions + Key Management right inside Home!) */}
       <AnimatePresence>
         {residenceSheet && mainResidence && (
@@ -954,32 +958,28 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[72%] border-t border-[#CFB073]/30 flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[72%] rounded-t-[16px] border-t border-[#E2BD72]/50 flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
                   <button
+                    data-active={residenceSheet === 'interact'}
                     onClick={() => setResidenceSheet('interact')}
-                    className={`text-sm font-editorial font-bold pb-0.5 border-b-2 transition ${
-                      residenceSheet === 'interact'
-                        ? 'text-[#EBD4A2] border-[#CFB073]'
-                        : 'text-[#848896] border-transparent'
-                    }`}
+                    className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
                   >
+                    <GameIcon name="heart" size={20} shadow={false} />
                     居家时光
                   </button>
                   <button
+                    data-active={residenceSheet === 'keys'}
                     onClick={() => setResidenceSheet('keys')}
-                    className={`text-sm font-editorial font-bold pb-0.5 border-b-2 transition ${
-                      residenceSheet === 'keys'
-                        ? 'text-[#EBD4A2] border-[#CFB073]'
-                        : 'text-[#848896] border-transparent'
-                    }`}
+                    className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
                   >
+                    <GameIcon name="key" size={20} shadow={false} />
                     居所与钥匙
                   </button>
                 </div>
-                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#848896] hover:text-white">
+                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#8B93AD] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -989,7 +989,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                   <>
                     {residentHeroineObjs.length === 0 ? (
                       <div className="py-6 text-center space-y-3">
-                        <p className="text-xs text-[#9EA2AE]">
+                        <p className="text-xs text-[#A3AAC2]">
                           {mainResidence.displayName} 暂未留宿红颜，赠予钥匙后可在此共度居家时光。
                         </p>
                         <button
@@ -1016,9 +1016,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                               >
                                 <div className="min-w-0">
                                   <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
-                                  <div className="text-[11px] text-[#8E92A0] mt-0.5 line-clamp-1">{inter.desc}</div>
+                                  <div className="text-[11px] text-[#929AB4] mt-0.5 line-clamp-1">{inter.desc}</div>
                                 </div>
-                                <span className="text-xs text-[#CFB073] flex items-center gap-0.5 shrink-0 tabular-nums">
+                                <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 tabular-nums">
                                   <Zap className="w-3 h-3" /> {inter.energy}
                                 </span>
                               </button>
@@ -1033,13 +1033,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                 {residenceSheet === 'keys' && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#EBD4A2] font-medium">
+                      <span className="text-[#F6DDA4] font-medium">
                         {mainResidence.displayName}（入住 {residentHeroineObjs.length}/{mainResidence.maxResidents}）
                       </span>
-                      <span className="text-[11px] text-[#848896]">同住每日提升好感</span>
+                      <span className="text-[11px] text-[#8B93AD]">同住每日提升好感</span>
                     </div>
                     {unlockedHeroines.length === 0 ? (
-                      <div className="text-xs text-[#8E92A0] py-4 text-center">
+                      <div className="text-xs text-[#929AB4] py-4 text-center">
                         推进主线结识红颜后，可在此赠予居所钥匙。
                       </div>
                     ) : (
@@ -1053,14 +1053,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                               onClick={() => handleAssignHeroine(h.id)}
                               className={`p-2.5 rounded-[4px] flex items-center gap-2.5 text-left border transition ${
                                 here
-                                  ? 'bg-[#D97791]/12 border-[#D97791]/40'
-                                  : 'bg-white/[0.03] border-white/[0.08] hover:border-[#CFB073]/40'
+                                  ? 'bg-[#F0789A]/12 border-[#F0789A]/40'
+                                  : 'bg-white/[0.03] border-white/[0.08] hover:border-[#E2BD72]/40'
                               }`}
                             >
                               <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
                               <div className="min-w-0">
                                 <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
-                                <div className="text-[10px] text-[#CFB073]">{here ? '已入住' : '赠予钥匙'}</div>
+                                <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
                               </div>
                             </button>
                           );
@@ -1086,7 +1086,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             className="absolute bottom-6 inset-x-0 z-30 flex justify-center pointer-events-none"
           >
             <div className="game-pill px-3.5 py-1.5 rounded-[4px] text-[11px] text-[#E6E3DC] flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-[#CFB073]" />
+              <Eye className="w-3.5 h-3.5 text-[#E2BD72]" />
               <span>轻触屏幕恢复界面</span>
             </div>
           </motion.div>

@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
-import { Check, ChevronRight, Lock, Play, Zap } from 'lucide-react';
+import { Lock, Play } from 'lucide-react';
+import { GameIcon, OrnateCorners } from '../components/GameIcon';
 import {
   VisualNovelTheater,
   type VisualNovelScript,
@@ -214,200 +215,229 @@ export const StoryView: React.FC = () => {
     !featuredEpisode?.requireNetWorth || state.player.netWorth >= featuredEpisode.requireNetWorth;
   const featuredLocked = Boolean(featuredEpisode && (!featuredPrereqMet || !featuredNwMet));
 
+  const featuredVol = volumes.find((v: any) => (v.episodes || []).some((e: any) => e.episodeId === featuredEpisode?.episodeId));
+  const splitVolTitle = (vol: any) => {
+    const [a, b] = String(vol?.title || '').split('·').map((x: string) => x.trim());
+    return { kicker: b ? a : '', name: b || a };
+  };
+
   return (
-    <div className="h-full overflow-y-auto no-scrollbar bg-[#090A0D]">
-      {/* Featured Full-Bleed Current Chapter Poster */}
+    <div className="h-full overflow-y-auto no-scrollbar deco-texture">
+      {/* Featured poster */}
       {featuredEpisode && (
-        <div
-          onClick={() => openEpisode(featuredEpisode)}
-          className="relative h-52 w-full overflow-hidden cursor-pointer border-b border-white/[0.08] group"
-        >
-          <img
-            src={featuredEpisode.bg}
-            alt={featuredEpisode.title}
-            className={`w-full h-full object-cover transition duration-700 group-hover:scale-[1.03] ${
-              featuredLocked ? 'grayscale brightness-45' : 'brightness-[0.76]'
-            }`}
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#090A0D]/95 via-[#090A0D]/62 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090A0D] via-transparent to-black/35" />
-
-          {featuredEpisode.posterLead && (
-            <img
-              src={featuredEpisode.posterLead}
-              alt=""
-              className={`absolute right-1 bottom-0 h-[96%] w-auto object-contain object-bottom sprite-fade-bottom drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] pointer-events-none ${
-                featuredLocked ? 'grayscale opacity-50' : ''
-              }`}
-            />
-          )}
-
-          <div className="absolute inset-0 p-4 flex flex-col justify-between max-w-[68%]">
-            <div className="flex items-center gap-2 text-[11px] text-[#CFB073]">
-              <span className="font-medium tracking-wider">{featuredEpisode.chapterTitle}</span>
-              <span className="text-white/25">/</span>
-              <span className="text-[#9EA2AE] tabular-nums">
-                进度 {doneCount}/{totalCount}
-              </span>
+        <div className="px-3 pt-3">
+          <div
+            onClick={() => openEpisode(featuredEpisode)}
+            className="relative h-[210px] w-full rounded-[10px] cursor-pointer group"
+          >
+            <div className="absolute inset-0 rounded-[10px] overflow-hidden border border-[#E2BD72]/70 shadow-[0_14px_36px_rgba(0,0,0,0.55),0_0_24px_rgba(226,189,114,0.15)]">
+              <img
+                src={featuredVol?.cover || featuredEpisode.bg}
+                alt={featuredEpisode.title}
+                className={`w-full h-full object-cover transition duration-700 group-hover:scale-[1.03] ${
+                  featuredLocked ? 'grayscale brightness-50' : ''
+                }`}
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/95 via-[#0A0F1F]/55 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F]/90 via-transparent to-transparent" />
             </div>
+            <OrnateCorners size={24} inset={-5} />
 
-            <div className="space-y-2">
-              <h2 className="font-editorial text-[22px] font-bold text-[#F6F3EB] tracking-wider leading-tight">
-                {featuredEpisode.title}
-              </h2>
-              <p className="text-[11.5px] text-[#B8BBC6] line-clamp-2 leading-relaxed">
-                {featuredEpisode.summary}
-              </p>
+            {featuredEpisode.posterLead && (
+              <img
+                src={featuredEpisode.posterLead}
+                alt=""
+                className={`absolute right-0 bottom-0 h-[112%] w-auto object-contain object-bottom sprite-fade-bottom drop-shadow-[0_12px_28px_rgba(0,0,0,0.85)] pointer-events-none ${
+                  featuredLocked ? 'grayscale opacity-50' : ''
+                }`}
+              />
+            )}
 
-              <div className="pt-1 flex items-center gap-3">
-                <span
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs ${
-                    featuredLocked
-                      ? 'border border-white/15 text-[#8C8F9A]'
-                      : 'btn-brass clip-chamfer-sm'
-                  }`}
-                >
-                  {featuredLocked ? (
-                    <>
-                      <Lock className="w-3 h-3" /> 待解锁
-                    </>
-                  ) : (
-                    <>
-                      <Play className="w-3 h-3 fill-current" /> {featuredDone ? '重温' : '继续'}
-                    </>
-                  )}
+            <div className="absolute inset-0 p-4 flex flex-col justify-between max-w-[66%]">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">
+                  {featuredDone ? '回顾' : '当前主线'}
                 </span>
+                <span className="text-[11px] text-[#F6DDA4] tracking-wider text-stroke-dark">{featuredEpisode.chapterTitle}</span>
+              </div>
 
-                {featuredLocked && !featuredNwMet ? (
-                  <span className="text-[11px] text-[#E6829A]">
-                    身价需达 {formatMoney(featuredEpisode.requireNetWorth)}
-                  </span>
-                ) : featuredEpisode.costEnergy > 0 && !featuredDone ? (
-                  <span className="text-[11px] text-[#CFB073] flex items-center gap-0.5 tabular-nums">
-                    <Zap className="w-3 h-3" /> {featuredEpisode.costEnergy}
-                  </span>
-                ) : null}
+              <div className="space-y-2">
+                <h2 className="font-editorial text-[26px] font-black leading-tight gold-gradient-text drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+                  {featuredEpisode.title}
+                </h2>
+                <p className="text-[11.5px] text-[#D3D8E8] line-clamp-2 leading-relaxed text-stroke-dark">
+                  {featuredEpisode.summary}
+                </p>
+                <div className="pt-1 flex items-center gap-3">
+                  {featuredLocked ? (
+                    <span className="btn-navy inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs">
+                      <Lock className="w-3 h-3" /> 待解锁
+                    </span>
+                  ) : (
+                    <span className="gold-btn-shimmer inline-flex items-center gap-1.5 px-4 py-1.5 text-[13px] font-editorial">
+                      <Play className="w-3.5 h-3.5 fill-current" /> {featuredDone ? '重温' : '继续'}
+                    </span>
+                  )}
+                  {featuredLocked && !featuredNwMet ? (
+                    <span className="text-[11px] text-[#FF8FA6] text-stroke-dark">
+                      身价需达 {formatMoney(featuredEpisode.requireNetWorth)}
+                    </span>
+                  ) : featuredEpisode.costEnergy > 0 && !featuredDone ? (
+                    <span className="text-[12px] text-[#F6DDA4] flex items-center gap-0.5 font-num text-stroke-dark">
+                      <GameIcon name="energy" size={18} /> {featuredEpisode.costEnergy}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             </div>
+          </div>
+
+          <div className="flex items-center gap-2 mt-3 px-1">
+            <span className="text-[11px] text-[#A3AAC2] tracking-wider">主线进度</span>
+            <div className="bar-track flex-1">
+              <div className="bar-fill" style={{ width: `${Math.max(3, (doneCount / Math.max(1, totalCount)) * 100)}%` }} />
+            </div>
+            <span className="font-num text-[12px] text-[#F6DDA4]">
+              {doneCount}/{totalCount}
+            </span>
           </div>
         </div>
       )}
 
-      {/* Clean Hairline-Underlined Volume Tabs */}
-      <div className="sticky top-0 z-20 bg-[#090A0D]/95 backdrop-blur-md border-b border-white/[0.08] px-4 flex items-center gap-5 overflow-x-auto no-scrollbar">
+      {/* Volume chips */}
+      <div className="sticky top-0 z-20 mt-2 px-3 py-2 flex items-center gap-1.5 overflow-x-auto no-scrollbar bg-[#0A0F1F]/85 backdrop-blur-md border-b border-[#E2BD72]/15">
         <button
+          data-active={selectedVolId === 'all'}
           onClick={() => {
             playTap();
             setSelectedVolId('all');
           }}
-          className={`shrink-0 py-3 text-xs tracking-wider border-b-2 transition ${
-            selectedVolId === 'all'
-              ? 'text-[#EBD4A2] border-[#CFB073] font-semibold'
-              : 'text-[#7D818E] border-transparent hover:text-[#C5C8D3]'
-          }`}
+          className="tab-chip shrink-0 font-editorial"
         >
           全部
         </button>
-
-        {volumes.map((vol: any) => {
-          const active = selectedVolId === vol.volumeId;
-          return (
-            <button
-              key={vol.volumeId}
-              onClick={() => {
-                playTap();
-                setSelectedVolId(vol.volumeId);
-              }}
-              className={`shrink-0 py-3 text-xs tracking-wider border-b-2 transition ${
-                active
-                  ? 'text-[#EBD4A2] border-[#CFB073] font-semibold'
-                  : 'text-[#7D818E] border-transparent hover:text-[#C5C8D3]'
-              }`}
-            >
-              {shortVolumeLabel(vol)}
-            </button>
-          );
-        })}
+        {volumes.map((vol: any) => (
+          <button
+            key={vol.volumeId}
+            data-active={selectedVolId === vol.volumeId}
+            onClick={() => {
+              playTap();
+              setSelectedVolId(vol.volumeId);
+            }}
+            className="tab-chip shrink-0 font-editorial"
+          >
+            {shortVolumeLabel(vol)}
+          </button>
+        ))}
       </div>
 
-      {/* Editorial Horizontal-Split Episode Index */}
-      <div className="px-4 py-5 pb-10 space-y-6">
-        {visibleVolumes.map((vol: any) => (
-          <section key={vol.volumeId} className="space-y-2.5">
-            <div className="flex items-baseline justify-between gap-2 pb-1">
-              <h3 className="font-editorial text-[15px] font-bold text-[#F3F0E8] tracking-wider">{vol.title}</h3>
-              <span className="text-[11px] text-[#7D818E] truncate">{vol.subtitle}</span>
-            </div>
+      {/* Volumes */}
+      <div className="px-3 py-4 pb-10 space-y-6">
+        {visibleVolumes.map((vol: any) => {
+          const { kicker, name } = splitVolTitle(vol);
+          const eps = vol.episodes || [];
+          const volDone = eps.filter((e: any) => completedSet.has(e.episodeId)).length;
+          return (
+            <section key={vol.volumeId} className="space-y-2.5">
+              {/* Volume banner */}
+              <div className="relative h-[92px] rounded-[8px] overflow-hidden border border-[#E2BD72]/35">
+                <img src={vol.cover || eps[0]?.bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/95 via-[#0A0F1F]/60 to-[#0A0F1F]/10" />
+                <div className="relative h-full px-4 flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    {kicker && (
+                      <div className="text-[10.5px] tracking-[0.35em] text-[#E2BD72] font-bold">{kicker}</div>
+                    )}
+                    <div className="font-editorial text-[26px] font-black leading-tight gold-gradient-text tracking-[0.2em]">
+                      {name}
+                    </div>
+                    <div className="text-[10.5px] text-[#C3C9DC] truncate max-w-[220px]">{vol.subtitle}</div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <div className="font-num text-[22px] text-[#FFE7B0] leading-none">
+                      {volDone}
+                      <span className="text-[13px] text-[#8B93AD]">/{eps.length}</span>
+                    </div>
+                    <div className="text-[9.5px] text-[#8B93AD] tracking-widest mt-0.5">已阅</div>
+                  </div>
+                </div>
+              </div>
 
-            <div className="divide-y divide-white/[0.07] border-y border-white/[0.07]">
-              {(vol.episodes || []).map((ep: any) => {
-                const done = completedSet.has(ep.episodeId);
-                const prereqMet = !ep.requireEpisode || completedSet.has(ep.requireEpisode);
-                const nwMet = !ep.requireNetWorth || state.player.netWorth >= ep.requireNetWorth;
-                const locked = !prereqMet || !nwMet;
-
-                return (
-                  <button
-                    key={ep.episodeId}
-                    onClick={() => openEpisode(ep)}
-                    className={`w-full py-3.5 flex items-center gap-3.5 text-left transition hover:bg-white/[0.025] active:bg-white/[0.04] ${
-                      locked ? 'opacity-55' : ''
-                    }`}
-                  >
-                    {/* Crisp 16:10 Thumbnail */}
-                    <div className="relative w-24 h-16 shrink-0 bg-[#121319] overflow-hidden border border-white/[0.08]">
-                      <img
-                        src={ep.bg}
-                        alt={ep.title}
-                        className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : 'brightness-90'}`}
-                      />
-                      {ep.posterLead && (
-                        <img
-                          src={ep.posterLead}
-                          alt=""
-                          className={`absolute right-0 bottom-0 h-[96%] w-auto object-contain object-bottom ${
-                            locked ? 'grayscale opacity-60' : ''
+              {/* Episodes on a timeline */}
+              <div className="relative pl-5">
+                <span className="absolute left-[7px] top-3 bottom-3 w-px bg-gradient-to-b from-[#E2BD72]/60 via-[#E2BD72]/25 to-transparent" />
+                <div className="space-y-2">
+                  {eps.map((ep: any, idx: number) => {
+                    const done = completedSet.has(ep.episodeId);
+                    const prereqMet = !ep.requireEpisode || completedSet.has(ep.requireEpisode);
+                    const nwMet = !ep.requireNetWorth || state.player.netWorth >= ep.requireNetWorth;
+                    const locked = !prereqMet || !nwMet;
+                    const current = !done && !locked;
+                    return (
+                      <button
+                        key={ep.episodeId}
+                        onClick={() => openEpisode(ep)}
+                        className={`relative w-full text-left rounded-[8px] p-2 flex items-center gap-3 transition active:scale-[0.99] ${
+                          current ? 'panel-brass' : 'panel-arch'
+                        } ${locked ? 'opacity-60' : ''}`}
+                      >
+                        <span
+                          className={`absolute -left-[17px] top-1/2 -translate-y-1/2 w-2.5 h-2.5 rotate-45 border ${
+                            done
+                              ? 'bg-[#E2BD72] border-[#FFE7B0]'
+                              : current
+                                ? 'bg-[#FFE7B0] border-white shadow-[0_0_10px_rgba(255,231,176,0.9)]'
+                                : 'bg-[#141C35] border-[#6B7392]'
                           }`}
                         />
-                      )}
-                    </div>
-
-                    {/* Concise Editorial Info */}
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center justify-between gap-2">
-                        <div className="flex items-baseline gap-2 min-w-0">
-                          <span className="text-[10.5px] text-[#CFB073] shrink-0">{ep.chapterTitle}</span>
-                          <span className="font-editorial text-[15px] font-bold text-[#F5F2EA] truncate">
-                            {ep.title}
+                        <div className="relative w-[86px] h-[58px] shrink-0 rounded-[5px] overflow-hidden border border-white/10">
+                          <img
+                            src={ep.bg}
+                            alt={ep.title}
+                            className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : ''}`}
+                          />
+                          {ep.posterLead && (
+                            <img
+                              src={ep.posterLead}
+                              alt=""
+                              className={`absolute right-0 bottom-0 h-[100%] w-auto object-contain object-bottom ${
+                                locked ? 'grayscale opacity-60' : ''
+                              }`}
+                            />
+                          )}
+                          <span className="absolute left-1 top-0.5 font-num text-[15px] font-semibold text-[#FFE7B0] text-stroke-dark">
+                            {String(idx + 1).padStart(2, '0')}
                           </span>
                         </div>
-                        <div className="shrink-0 flex items-center gap-1.5 text-[11px]">
-                          {done ? (
-                            <span className="text-emerald-400/90 flex items-center gap-0.5">
-                              <Check className="w-3.5 h-3.5" />
-                            </span>
-                          ) : locked ? (
-                            <Lock className="w-3.5 h-3.5 text-[#757986]" />
-                          ) : (
-                            <ChevronRight className="w-4 h-4 text-[#CFB073]" />
+
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[10px] text-[#E2BD72] tracking-wider">{ep.chapterTitle}</div>
+                          <div className="font-editorial text-[15px] font-black text-[#FBF1D8] truncate">{ep.title}</div>
+                          <p className="text-[11px] text-[#929AB4] line-clamp-1 leading-snug mt-0.5">{ep.summary}</p>
+                          {ep.requireNetWorth && !done && !nwMet && (
+                            <div className="text-[10.5px] text-[#FF8FA6] mt-0.5">需身价 {formatMoney(ep.requireNetWorth)}</div>
                           )}
                         </div>
-                      </div>
 
-                      <p className="text-[11.5px] text-[#969AA6] line-clamp-2 leading-snug">{ep.summary}</p>
-
-                      {ep.requireNetWorth && !done && !nwMet && (
-                        <div className="text-[10.5px] text-[#E6829A]">
-                          需身价 {formatMoney(ep.requireNetWorth)}
+                        <div className="shrink-0 pr-1">
+                          {done ? (
+                            <span className="inline-flex items-center justify-center w-9 h-9 rounded-full border-2 border-[#E2BD72]/70 text-[10px] font-black text-[#E2BD72] rotate-[-14deg] font-editorial">
+                              已阅
+                            </span>
+                          ) : locked ? (
+                            <GameIcon name="lock" size={26} className="opacity-80" />
+                          ) : (
+                            <GameIcon name="play" size={32} />
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-          </section>
-        ))}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </section>
+          );
+        })}
       </div>
     </div>
   );

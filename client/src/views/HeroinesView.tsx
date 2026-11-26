@@ -21,6 +21,7 @@ import { apiRequest } from '../lib/api';
 import { formatMoney, formatShortTime } from '../lib/format';
 import { playSystemPing, playTap, playWeChatChime } from '../lib/sound';
 import { useGameStore } from '../store/useGameStore';
+import { GameIcon, iconSrc } from '../components/GameIcon';
 
 const HEROINE_CARD_BG: Record<string, string> = {
   su_qingwan: '/assets/bg/bg_bund_penthouse.jpg',
@@ -136,19 +137,24 @@ export const HeroinesView: React.FC = () => {
     };
 
     return (
-      <div className="h-full flex flex-col bg-[#0D0E12]">
-        <div className="shrink-0 bg-[#121318] border-b border-white/[0.08] px-3 py-2.5 flex items-center justify-between gap-2">
+      <div className="relative h-full flex flex-col deco-texture">
+        <img src={heroine.portrait} alt="" className="absolute right-[-30%] bottom-0 h-[70%] w-auto object-contain opacity-[0.12] pointer-events-none select-none" />
+        <div className="relative shrink-0 px-3 py-2 flex items-center justify-between gap-2" style={{ background: 'linear-gradient(180deg, rgba(20,28,56,0.98), rgba(11,16,33,0.98))' }}>
+          <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
           <div className="flex items-center gap-2.5 min-w-0">
             <button onClick={closeHeroineChat} className="p-1 text-[#C6C9D2] hover:text-white">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <PortraitAvatar src={heroine.avatar} alt={heroine.name} className="w-9 h-9" rounded="sm" />
+            <div className="relative w-10 h-10 rounded-full p-[2px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74] shrink-0">
+              <PortraitAvatar src={heroine.avatar} alt={heroine.name} className="w-full h-full !border-0" rounded="full" />
+              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[#3FD69A] border-2 border-[#0B1122]" />
+            </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <span className="text-sm font-semibold text-[#F5F2EA] truncate">{heroine.name}</span>
-                <span className="text-[10px] text-[#E6A4B8]">{heroine.stage.name}</span>
+                <span className="text-[15px] font-editorial font-black text-[#FBF1D8] truncate">{heroine.name}</span>
+                <span className="px-1.5 rounded-sm bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-[9.5px] font-bold text-white">{heroine.stage.name}</span>
               </div>
-              <div className="text-[10px] text-[#848896] truncate">
+              <div className="text-[10px] text-[#8B93AD] truncate">
                 {chatLocationOverride || heroine.location?.label}
               </div>
             </div>
@@ -160,7 +166,7 @@ export const HeroinesView: React.FC = () => {
                 playTap();
                 setShowMemories(!showMemories);
               }}
-              className="p-2 text-[#B6B9C4] hover:text-[#EBD4A2] transition"
+              className="p-2 text-[#B6B9C4] hover:text-[#F6DDA4] transition"
               title="共同记忆"
             >
               <Brain className="w-4 h-4" />
@@ -170,23 +176,23 @@ export const HeroinesView: React.FC = () => {
                 playTap();
                 setShowGifts(!showGifts);
               }}
-              className="px-2.5 py-1.5 rounded-[4px] border border-[#CFB073]/40 bg-[#CFB073]/10 text-[#EBD4A2] text-xs flex items-center gap-1"
+              className="btn-navy !rounded-full pl-1 pr-3 py-0.5 text-[12px] flex items-center gap-0.5"
             >
-              <Gift className="w-3.5 h-3.5" /> 送礼
+              <GameIcon name="mall" size={24} shadow={false} /> 送礼
             </button>
           </div>
         </div>
 
         {showMemories && (
-          <div className="shrink-0 bg-[#13141B] border-b border-white/[0.08] p-3.5 space-y-1.5">
-            <div className="text-xs font-medium text-[#EBD4A2] flex items-center justify-between">
+          <div className="relative shrink-0 m-2.5 rounded-[10px] panel-elevated p-3.5 space-y-1.5">
+            <div className="text-xs font-medium text-[#F6DDA4] flex items-center justify-between">
               <span>她记得的事</span>
-              <button onClick={() => setShowMemories(false)} className="text-[#848896]">
+              <button onClick={() => setShowMemories(false)} className="text-[#8B93AD]">
                 收起
               </button>
             </div>
             {memories.length === 0 ? (
-              <div className="text-[11px] text-[#848896]">聊得久了，她会慢慢记下你们之间的细节。</div>
+              <div className="text-[11px] text-[#8B93AD]">聊得久了，她会慢慢记下你们之间的细节。</div>
             ) : (
               memories.map((m: any) => (
                 <div key={m.id} className="text-[11px] text-[#D7DAE3] leading-relaxed">
@@ -197,7 +203,7 @@ export const HeroinesView: React.FC = () => {
           </div>
         )}
 
-        <div className="flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
+        <div className="relative flex-1 overflow-y-auto no-scrollbar p-4 space-y-4">
           {messages.length === 0 && (
             <div className="text-center py-6 space-y-2.5">
               <div className="h-44 flex items-end justify-center">
@@ -207,7 +213,7 @@ export const HeroinesView: React.FC = () => {
                   className="h-full w-auto object-contain object-bottom sprite-fade-bottom"
                 />
               </div>
-              <div className="text-xs text-[#B6B9C4]">你已添加 {heroine.name}，现在可以开始聊天了。</div>
+              <div className="inline-block px-3 py-1 rounded-full bg-[#0A0F1F]/70 border border-white/10 text-[11.5px] text-[#B6B9C4]">你已添加 {heroine.name}，现在可以开始聊天了</div>
             </div>
           )}
 
@@ -217,11 +223,15 @@ export const HeroinesView: React.FC = () => {
 
             return (
               <div key={m.id} className={`flex items-start gap-2.5 ${isUser ? 'flex-row-reverse' : ''}`}>
-                <PortraitAvatar src={isUser ? protagonistSrc : heroine.avatar} alt="" className="w-9 h-9 mt-0.5" rounded="sm" />
+                <div className={`w-9 h-9 mt-0.5 rounded-full p-[1.5px] shrink-0 ${isUser ? 'bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E]' : 'bg-gradient-to-b from-[#FFB3C6] to-[#C24E74]'}`}>
+                  <PortraitAvatar src={isUser ? protagonistSrc : heroine.avatar} alt="" className="w-full h-full !border-0" rounded="full" />
+                </div>
                 <div className={`max-w-[75%] space-y-1.5 ${isUser ? 'items-end flex flex-col' : ''}`}>
                   <div
-                    className={`rounded-[6px] px-3.5 py-2.5 text-[14px] leading-relaxed ${
-                      isUser ? 'bg-[#2B6B42] text-white' : 'bg-[#191B23] text-[#F3F0E8] border border-white/[0.06]'
+                    className={`px-3.5 py-2.5 text-[14px] leading-relaxed shadow-[0_4px_12px_rgba(0,0,0,0.35)] ${
+                      isUser
+                        ? 'rounded-[14px] rounded-tr-[4px] bg-gradient-to-b from-[#FFE9BB] to-[#DDB067] text-[#2A1C06] border border-[#FFF3D2]'
+                        : 'rounded-[14px] rounded-tl-[4px] bg-[#16203F]/95 text-[#F4EFE4] border border-[#F0789A]/35'
                     }`}
                   >
                     {m.content}
@@ -230,14 +240,14 @@ export const HeroinesView: React.FC = () => {
                     <div className="pl-0.5">
                       <button
                         onClick={() => setRevealedThoughts((prev) => ({ ...prev, [m.id]: !prev[m.id] }))}
-                        className="text-[10px] text-[#CFB073] flex items-center gap-1"
+                        className="text-[10.5px] font-bold text-[#FFB3C6] flex items-center gap-0.5"
                       >
-                        <Sparkles className="w-3 h-3" /> {thoughtOpen ? '收起' : '心声'}
+                        <GameIcon name="heart" size={14} shadow={false} /> {thoughtOpen ? '收起' : '心声'}
                       </button>
                     </div>
                   )}
                   {!isUser && thoughtOpen && m.inner_thought && (
-                    <div className="border-l-2 border-[#CFB073]/60 pl-2.5 py-0.5 text-[11px] text-[#E5D3A8] italic">
+                    <div className="rounded-[10px] px-2.5 py-1.5 bg-[#3A1428]/80 border border-[#F0789A]/40 text-[11.5px] text-[#FBE3EA] italic">
                       「{m.inner_thought}」
                     </div>
                   )}
@@ -245,15 +255,22 @@ export const HeroinesView: React.FC = () => {
               </div>
             );
           })}
-          {sending && <div className="text-xs text-[#848896] pl-11">对方正在输入…</div>}
+          {sending && (
+            <div className="pl-11 flex items-center gap-1 text-[11px] text-[#FFB3C6]">
+              {[0, 1, 2].map((k) => (
+                <motion.span key={k} className="w-1.5 h-1.5 rounded-full bg-[#F0789A]" animate={{ y: [0, -3, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: k * 0.15 }} />
+              ))}
+              <span className="ml-1">对方正在输入</span>
+            </div>
+          )}
           <div ref={chatEndRef} />
         </div>
 
         {showGifts && (
-          <div className="shrink-0 bg-[#121319] border-t border-white/[0.08] p-3.5 max-h-56 overflow-y-auto no-scrollbar space-y-2.5">
+          <div className="relative shrink-0 panel-elevated rounded-t-[14px] p-3.5 max-h-56 overflow-y-auto no-scrollbar space-y-2.5">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-medium text-[#EBD4A2]">挑选礼物</span>
-              <button onClick={() => setShowGifts(false)} className="text-[#848896]">
+              <span className="font-medium text-[#F6DDA4]">挑选礼物</span>
+              <button onClick={() => setShowGifts(false)} className="text-[#8B93AD]">
                 关闭
               </button>
             </div>
@@ -263,24 +280,28 @@ export const HeroinesView: React.FC = () => {
                   key={g.id}
                   disabled={sending}
                   onClick={() => sendGiftTo(heroine.id, g.id)}
-                  className="text-left panel-arch rounded-[4px] p-2.5 hover:border-[#CFB073]/40 transition"
+                  className="text-left panel-arch rounded-[8px] p-2 flex items-center gap-2 hover:border-[#E2BD72]/50 transition active:scale-95"
                 >
-                  <div className="text-xs font-semibold text-[#F3F0E8] truncate">{g.name}</div>
-                  <div className="text-[10.5px] text-[#CFB073] tabular-nums mt-1">{formatMoney(g.price)}</div>
+                  <GameIcon name="mall" size={28} />
+                  <div className="min-w-0">
+                    <div className="text-[12px] font-bold text-[#FBF1D8] truncate">{g.name}</div>
+                    <div className="font-num text-[11px] text-[#FFE7B0]">{formatMoney(g.price)}</div>
+                  </div>
                 </button>
               ))}
             </div>
           </div>
         )}
 
-        <div className="shrink-0 bg-[#121318] border-t border-white/[0.08] p-3 space-y-2">
+        <div className="relative shrink-0 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] space-y-2" style={{ background: 'linear-gradient(180deg, rgba(20,28,56,0.98), rgba(9,13,28,0.99))' }}>
+          <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
           <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
             {heroine.quickPrompts?.map((q: string, idx: number) => (
               <button
                 key={idx}
                 disabled={sending}
                 onClick={() => sendChat(q)}
-                className="shrink-0 text-[11px] px-3 py-1 rounded-[4px] bg-[#1A1C24] border border-white/[0.07] text-[#C8CBD4] hover:border-[#CFB073]/35 transition"
+                className="shrink-0 text-[11.5px] px-3 py-1 rounded-full bg-[#0A0F1F]/80 border border-[#E2BD72]/35 text-[#F6DDA4] hover:border-[#E2BD72] transition active:scale-95"
               >
                 {q}
               </button>
@@ -297,9 +318,9 @@ export const HeroinesView: React.FC = () => {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               placeholder={`发消息给 ${heroine.name}…`}
-              className="flex-1 rounded-[4px] bg-[#0B0C10] border border-white/12 focus:border-[#CFB073]/55 px-3.5 py-2 text-xs text-white outline-none"
+              className="flex-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/30 focus:border-[#E2BD72]/70 px-4 py-2.5 text-[13px] text-white outline-none shadow-[inset_0_2px_6px_rgba(0,0,0,0.5)]"
             />
-            <button type="submit" disabled={sending || !input.trim()} className="btn-brass p-2.5 rounded-[4px] disabled:opacity-40">
+            <button type="submit" disabled={sending || !input.trim()} className="btn-brass !rounded-full w-10 h-10 flex items-center justify-center disabled:opacity-40">
               <Send className="w-4 h-4" />
             </button>
           </form>
@@ -319,49 +340,63 @@ export const HeroinesView: React.FC = () => {
     };
 
     return (
-      <div className="h-full overflow-y-auto no-scrollbar bg-[#090A0D]">
-        <div className="sticky top-0 z-20 bg-[#090A0D]/95 backdrop-blur-md border-b border-white/[0.08] px-4 py-3 flex items-center justify-between">
+      <div className="h-full overflow-y-auto no-scrollbar deco-texture">
+        <div className="sticky top-0 z-20 bg-[#0B1122]/90 backdrop-blur-md border-b border-[#E2BD72]/25 px-4 py-3 flex items-center justify-between">
           <button
             onClick={() => {
               playTap();
               setViewMode('gallery');
             }}
-            className="text-xs text-[#EBD4A2] flex items-center gap-1"
+            className="text-xs text-[#F6DDA4] flex items-center gap-1"
           >
             <ArrowLeft className="w-3.5 h-3.5" /> 返回
           </button>
-          <span className="font-editorial text-sm font-bold text-[#F5F2EA] tracking-wider">朋友圈</span>
+          <span className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">朋友圈</span>
           <span className="w-10" />
         </div>
 
-        <div className="px-4 divide-y divide-white/[0.08]">
+        <div className="relative h-[170px] mb-8">
+          <img src="/assets/bg/bg_bund_penthouse.jpg" alt="" className="absolute inset-0 w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-transparent to-transparent" />
+          <div className="absolute right-4 -bottom-6 flex items-end gap-3">
+            <span className="mb-7 font-editorial text-[17px] font-black text-[#FBF1D8] text-stroke-dark">{state?.user?.nickname}</span>
+            <div className="w-16 h-16 rounded-[10px] p-[2px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E] shadow-[0_6px_14px_rgba(0,0,0,0.6)]">
+              <PortraitAvatar src={protagonistSrc} alt="" className="w-full h-full !border-0 !rounded-[8px]" rounded="sm" />
+            </div>
+          </div>
+        </div>
+
+        <div className="px-3 pb-6 space-y-2.5">
           {moments.map((m: any) => (
-            <div key={m.id} className="py-4 space-y-2.5">
+            <div key={m.id} className="panel-arch rounded-[12px] px-3.5 py-3 space-y-2.5">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
-                  <PortraitAvatar src={m.author_avatar || protagonistSrc} alt="" className="w-9 h-9" rounded="sm" />
+                  <div className="w-10 h-10 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E] shrink-0">
+                    <PortraitAvatar src={m.author_avatar || protagonistSrc} alt="" className="w-full h-full !border-0" rounded="full" />
+                  </div>
                   <div>
-                    <div className="text-xs font-semibold text-[#F5F2EA]">{m.author_name}</div>
-                    <div className="text-[10px] text-[#848896]">
+                    <div className="text-[13.5px] font-editorial font-black text-[#FBF1D8]">{m.author_name}</div>
+                    <div className="text-[10px] text-[#8B93AD]">
                       {m.location} · {formatShortTime(m.created_at)}
                     </div>
                   </div>
                 </div>
                 <button
                   onClick={() => toggleLike(m.id)}
-                  className={`px-2 py-1 text-[11px] flex items-center gap-1 transition ${
-                    m.likedByPlayer ? 'text-[#E6829A]' : 'text-[#848896]'
+                  className={`pl-1 pr-2.5 py-0.5 rounded-full text-[12px] font-num flex items-center gap-0.5 border transition active:scale-90 ${
+                    m.likedByPlayer ? 'text-[#FFB3C6] border-[#F0789A]/60 bg-[#3A1428]/60' : 'text-[#8B93AD] border-white/12'
                   }`}
                 >
-                  <ThumbsUp className="w-3.5 h-3.5" /> {m.likes.length + (m.likedByPlayer ? 1 : 0)}
+                  <GameIcon name="heart" size={20} shadow={false} className={m.likedByPlayer ? '' : 'grayscale opacity-60'} />
+                  {m.likes.length + (m.likedByPlayer ? 1 : 0)}
                 </button>
               </div>
-              <p className="text-[13px] text-[#EAE7E0] leading-relaxed">{m.content}</p>
+              <p className="text-[13.5px] text-[#EAE7E0] leading-relaxed">{m.content}</p>
               {m.comments?.length > 0 && (
-                <div className="bg-[#111218] border-l-2 border-white/12 px-3 py-2 space-y-1.5">
+                <div className="rounded-[8px] bg-[#070B18]/70 border border-white/[0.06] px-3 py-2 space-y-1.5">
                   {m.comments.map((c: any, i: number) => (
                     <div key={i} className="text-xs leading-snug">
-                      <span className="font-semibold text-[#CFB073]">{c.author}：</span>
+                      <span className="font-bold text-[#FFB3C6]">{c.author}：</span>
                       <span className="text-[#C6C9D2]">{c.text}</span>
                     </div>
                   ))}
@@ -380,14 +415,14 @@ export const HeroinesView: React.FC = () => {
   const isPinned = pinnedCompanionId === current.id;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#08090C] flex flex-col justify-between">
+    <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] flex flex-col justify-between">
       <AmbientBackdrop
         src={bgImg}
         alt={current.name}
         timePeriod={timePeriod}
         imageClassName={`transition duration-500 ${current.unlocked ? 'brightness-[0.68]' : 'grayscale brightness-[0.35]'}`}
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/58 via-transparent to-[#08090C] pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/58 via-transparent to-[#0A0F1F] pointer-events-none" />
 
       {/* Top Selector Strip */}
       <div className="relative z-20 px-3.5 pt-3 flex items-center justify-between gap-2">
@@ -401,16 +436,19 @@ export const HeroinesView: React.FC = () => {
                   playTap();
                   setSelectedId(h.id);
                 }}
-                className={`relative p-[1.5px] border transition shrink-0 ${
-                  active ? 'border-[#CFB073] scale-105' : 'border-white/15 opacity-65 hover:opacity-100'
+                className={`relative rounded-full p-[2px] transition shrink-0 ${
+                  active
+                    ? 'bg-gradient-to-b from-[#FFE7B0] to-[#B7843A] scale-110 shadow-[0_0_12px_rgba(255,220,150,0.55)]'
+                    : 'bg-white/20 opacity-70 hover:opacity-100'
                 }`}
               >
-                <PortraitAvatar src={h.avatar} alt={h.name} className="w-9 h-9" rounded="sm" />
-                {!h.unlocked && (
-                  <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 bg-[#0E0F14] border border-white/20 flex items-center justify-center">
-                    <Lock className="w-2 h-2 text-[#8C8F9A]" />
-                  </span>
-                )}
+                <PortraitAvatar
+                  src={h.avatar}
+                  alt={h.name}
+                  className={`w-10 h-10 !border-0 ${!h.unlocked ? 'grayscale brightness-50' : ''}`}
+                  rounded="full"
+                />
+                {!h.unlocked && <GameIcon name="lock" size={18} className="absolute -bottom-1 -right-1" />}
               </button>
             );
           })}
@@ -424,12 +462,10 @@ export const HeroinesView: React.FC = () => {
                 setPinnedCompanionId(current.id);
                 notifyTop('system', '主页人物已切换', `${current.name}已驻留主页`);
               }}
-              className={`flex items-center gap-1 whitespace-nowrap text-shadow-stage transition ${
-                isPinned ? 'text-[#EBD4A2]' : 'text-[#DDDAD2] hover:text-white'
-              }`}
+              className={`icon-entry ${isPinned ? '' : 'opacity-85'}`}
             >
-              <Pin className="w-3.5 h-3.5 text-[#CFB073]" />
-              <span>{isPinned ? '已驻主页' : '设为驻留'}</span>
+              <img src={iconSrc('nav_home')} alt="" className="!w-[34px] !h-[34px]" />
+              <span className="lbl">{isPinned ? '已驻留' : '驻主页'}</span>
             </button>
           )}
           <button
@@ -437,10 +473,10 @@ export const HeroinesView: React.FC = () => {
               playTap();
               setViewMode('moments');
             }}
-            className="flex items-center gap-1 text-[#EAE7E0] hover:text-white whitespace-nowrap text-shadow-stage"
+            className="icon-entry"
           >
-            <Camera className="w-3.5 h-3.5 text-[#CFB073]" />
-            <span>朋友圈</span>
+            <img src={iconSrc('moments')} alt="" className="!w-[34px] !h-[34px]" />
+            <span className="lbl">朋友圈</span>
           </button>
         </div>
       </div>
@@ -464,25 +500,28 @@ export const HeroinesView: React.FC = () => {
       </div>
 
       {/* Editorial Bottom Profile & Actions */}
-      <div className="relative z-20 px-4 pb-5 pt-20 bg-gradient-to-t from-[#08090C] via-[#08090C]/95 to-transparent space-y-3">
+      <div className="relative z-20 px-4 pb-5 pt-20 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/95 to-transparent space-y-3">
         <div className="flex items-end justify-between gap-2">
           <div>
             <div className="flex items-baseline gap-2.5">
-              <h2 className="font-editorial text-[26px] font-bold text-[#F6F3EB] tracking-wider leading-none">
+              <h2 className="font-editorial text-[32px] font-black gold-gradient-text leading-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
                 {current.name}
               </h2>
-              <span className="text-[11px] text-[#CFB073]">{current.archetype}</span>
+              <span className="px-1.5 py-[1px] rounded-sm border border-[#E2BD72]/50 bg-black/40 text-[10.5px] text-[#F6DDA4]">
+                {current.archetype}
+              </span>
             </div>
-            <div className="text-xs text-[#B8BBC6] mt-1.5">
+            <div className="text-xs text-[#B4BBD0] mt-1.5">
               {current.age}岁 · {current.title}
             </div>
           </div>
           {current.unlocked && (
-            <div className="text-right">
-              <div className="text-xs font-medium text-[#EEA0B8] flex items-center justify-end gap-1">
-                <Heart className="w-3.5 h-3.5 fill-[#D97791] text-[#D97791]" /> {current.stage.name}
+            <div className="flex items-center gap-1.5 pl-1 pr-3 py-1 rounded-full bg-[#2A0F1E]/80 border border-[#F0789A]/50">
+              <GameIcon name="heart" size={30} />
+              <div className="leading-tight">
+                <div className="text-[11px] font-bold text-[#FFB3C6]">{current.stage.name}</div>
+                <div className="font-num text-[12px] text-[#FBE3EA]">{current.affection}</div>
               </div>
-              <div className="text-[11px] text-[#8E92A0] tabular-nums mt-0.5">好感 {current.affection}</div>
             </div>
           )}
         </div>
@@ -490,33 +529,33 @@ export const HeroinesView: React.FC = () => {
         <div className="space-y-1 text-xs">
           {current.unlocked ? (
             <div className="text-[#C8CBD5] flex items-center gap-1.5">
-              <MapPin className="w-3.5 h-3.5 text-[#CFB073] shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-[#E2BD72] shrink-0" />
               <span className="truncate">{current.location?.label}</span>
             </div>
           ) : (
-            <div className="text-[#EBD4A2] flex items-center gap-1.5">
+            <div className="text-[#F6DDA4] flex items-center gap-1.5">
               <Lock className="w-3.5 h-3.5 shrink-0" /> {current.unlockHint}
             </div>
           )}
-          <div className="text-[11px] text-[#848896]">{current.synergyDesc}</div>
+          <div className="text-[11px] text-[#8B93AD]">{current.synergyDesc}</div>
         </div>
 
         {current.unlocked && (
           <div className="grid grid-cols-2 gap-2.5 pt-1">
             <button
               onClick={() => openHeroineChat(current.id)}
-              className="btn-brass clip-chamfer-sm py-2.5 text-xs flex items-center justify-center gap-1.5"
+              className="gold-btn-shimmer py-2 text-[14px] font-editorial flex items-center justify-center gap-1.5"
             >
-              <MessageCircle className="w-4 h-4" /> 发微信
+              <GameIcon name="nav_contact" size={26} shadow={false} /> 发微信
             </button>
             <button
               onClick={() => {
                 playTap();
                 setShowGifts(true);
               }}
-              className="game-action-tile py-2.5 rounded-[4px] text-xs font-medium text-[#F3F0E8] flex items-center justify-center gap-1.5"
+              className="btn-navy py-2 text-[14px] font-editorial flex items-center justify-center gap-1.5"
             >
-              <Gift className="w-4 h-4 text-[#CFB073]" /> 送礼物
+              <GameIcon name="mall" size={26} shadow={false} /> 送礼物
             </button>
           </div>
         )}
@@ -538,11 +577,11 @@ export const HeroinesView: React.FC = () => {
               exit={{ y: 20, opacity: 0 }}
               transition={{ duration: 0.2 }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full rounded-[6px] p-4 space-y-3 max-h-[65%] overflow-y-auto no-scrollbar"
+              className="relative panel-elevated w-full rounded-[12px] p-4 space-y-3 max-h-[65%] overflow-y-auto no-scrollbar"
             >
               <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
-                <span className="font-editorial text-sm font-bold text-[#F5F2EA]">送给 {current.name}</span>
-                <button onClick={() => setShowGifts(false)} className="text-[#848896] hover:text-white">
+                <span className="font-editorial text-[16px] font-black gold-gradient-text">送给 {current.name}</span>
+                <button onClick={() => setShowGifts(false)} className="text-[#8B93AD] hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -552,10 +591,13 @@ export const HeroinesView: React.FC = () => {
                     key={g.id}
                     disabled={sending}
                     onClick={() => sendGiftTo(current.id, g.id)}
-                    className="text-left panel-arch rounded-[4px] p-2.5 hover:border-[#CFB073]/40 transition"
+                    className="text-left panel-arch rounded-[8px] p-2.5 flex items-center gap-2 hover:border-[#E2BD72]/50 transition active:scale-95"
                   >
-                    <div className="text-xs font-semibold text-[#F3F0E8] truncate">{g.name}</div>
-                    <div className="text-[10.5px] text-[#CFB073] tabular-nums mt-1">{formatMoney(g.price)}</div>
+                    <GameIcon name="mall" size={30} />
+                    <div className="min-w-0">
+                      <div className="text-[12.5px] font-bold text-[#FBF1D8] truncate">{g.name}</div>
+                      <div className="font-num text-[11.5px] text-[#FFE7B0] mt-0.5">{formatMoney(g.price)}</div>
+                    </div>
                   </button>
                 ))}
               </div>

@@ -26,6 +26,7 @@ import {
 } from '../lib/sound';
 import { useGameStore, type VNChoiceOption, type VNNode } from '../store/useGameStore';
 import { PortraitAvatar } from './PortraitAvatar';
+import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 
 export interface VNSettlementData {
   mode: 'main' | 'date' | 'home' | 'stroll';
@@ -530,14 +531,14 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         : { x: 0, y: 0 };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#08090C] select-none">
+    <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] select-none">
       <motion.div
         animate={cameraAnimate}
         transition={{ duration: 0.42, ease: 'easeOut' }}
         className="relative h-full w-full flex flex-col justify-between overflow-hidden"
       >
         {/* 1. Crossfading Scene Backdrop */}
-        <div className="absolute inset-0 overflow-hidden bg-[#08090C]">
+        <div className="absolute inset-0 overflow-hidden bg-[#0A0F1F]">
           <AnimatePresence mode="sync">
             <motion.img
               key={activeBg}
@@ -552,8 +553,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           </AnimatePresence>
           <div className="absolute inset-0 vignette-stage pointer-events-none" />
           <div className="absolute inset-0 film-grain pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/52 via-transparent to-[#08090C] pointer-events-none" />
-          <div className="absolute inset-x-0 bottom-0 h-[44%] bg-gradient-to-t from-[#08090C] via-[#08090C]/78 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/52 via-transparent to-[#0A0F1F] pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[44%] bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/78 to-transparent pointer-events-none" />
         </div>
 
         {/* 2. Screen Effects */}
@@ -723,7 +724,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               transition={{ duration: 0.32 }}
               className="absolute top-14 inset-x-4 z-30 flex justify-center pointer-events-none"
             >
-              <div className="px-4 py-1 bg-[#0A0B0F]/76 backdrop-blur-md border-y border-[#CFB073]/35 flex items-center gap-2.5 max-w-full">
+              <div className="px-4 py-1 bg-[#0A0B0F]/76 backdrop-blur-md border-y border-[#E2BD72]/35 flex items-center gap-2.5 max-w-full">
                 <span className="text-[11px] font-medium tracking-[0.16em] text-[#EFE2C6] truncate">
                   {activeBanner.text}
                 </span>
@@ -737,7 +738,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           {!hideUi && !settlement && (
             <div className="h-[2px] w-full bg-white/[0.06] overflow-hidden">
               <div
-                className="h-full bg-[#CFB073] transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0] shadow-[0_0_6px_rgba(255,231,176,0.8)] transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -752,13 +753,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-between gap-2 px-3.5 pt-2.5"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35">
                   <button
                     onClick={() => {
                       playTap();
                       onExit();
                     }}
-                    className="h-7 px-2 text-xs text-[#EAE7E0] hover:text-white flex items-center gap-1 text-shadow-stage active:opacity-75"
+                    className="h-7 px-2 text-[12px] font-editorial font-bold text-[#F6DDA4] flex items-center gap-1 active:opacity-75"
                   >
                     <ArrowLeft className="w-4 h-4" /> 返回
                   </button>
@@ -766,13 +767,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     onClick={handleBack}
                     disabled={prevStepIdx < 0}
                     title="上一句"
-                    className="h-7 w-7 flex items-center justify-center text-[#C8CBD6] disabled:opacity-25 hover:text-white"
+                    className="h-7 w-7 flex items-center justify-center text-[#F6DDA4] border-l border-white/10 disabled:opacity-25"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2.5 text-[#D8DAE2]">
+                <div className="flex items-center h-8 px-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35 text-[#D8DAE2] divide-x divide-white/10">
                   <button
                     onClick={() => {
                       playTap();
@@ -780,7 +781,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward(false);
                       setShowLog(true);
                     }}
-                    className="text-[11px] hover:text-white flex items-center gap-1 text-shadow-stage"
+                    className="text-[11px] px-2 hover:text-white flex items-center gap-1"
                   >
                     <History className="w-3.5 h-3.5" /> 回顾
                   </button>
@@ -790,8 +791,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward(false);
                       setAutoPlay((v) => !v);
                     }}
-                    className={`text-[11px] flex items-center gap-1 text-shadow-stage ${
-                      autoPlay ? 'text-[#EBD4A2] font-semibold' : 'hover:text-white'
+                    className={`text-[11px] px-2 flex items-center gap-1 ${
+                      autoPlay ? 'text-[#FFE7B0] font-bold' : 'hover:text-white'
                     }`}
                   >
                     {autoPlay ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />} 自动
@@ -803,7 +804,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward((v) => !v);
                     }}
                     title="快进"
-                    className={`p-1 ${fastForward ? 'text-[#EBD4A2]' : 'hover:text-white'}`}
+                    className={`px-2 py-1 ${fastForward ? 'text-[#FFE7B0]' : 'hover:text-white'}`}
                   >
                     <FastForward className="w-3.5 h-3.5" />
                   </button>
@@ -815,7 +816,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setHideUi(true);
                     }}
                     title="隐藏文字"
-                    className="p-1 hover:text-white"
+                    className="px-2 py-1 hover:text-white"
                   >
                     <EyeOff className="w-3.5 h-3.5" />
                   </button>
@@ -835,7 +836,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               onClick={() => setHideUi(false)}
               className="absolute bottom-5 right-4 z-30 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/12 rounded-[4px] text-[11px] text-[#EAE7E0] flex items-center gap-1.5"
             >
-              <Eye className="w-3.5 h-3.5 text-[#CFB073]" /> 恢复界面
+              <Eye className="w-3.5 h-3.5 text-[#E2BD72]" /> 恢复界面
             </motion.button>
           )}
         </AnimatePresence>
@@ -852,156 +853,191 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               className="relative z-30"
             >
               {isUnansweredChoice && !showOpeningCard ? (
-                /* Clean Architectural Choice Plates — PURE DIALOGUE ONLY, ZERO EFFECT SPOILERS! */
-                <div className="px-5 pb-9 pt-8 bg-gradient-to-t from-[#08090C] via-[#08090C]/86 to-transparent space-y-2.5">
+                /* Choice plates */
+                <div className="px-5 pb-10 pt-10 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/80 to-transparent space-y-3">
                   {currentNode?.title && (
                     <div className="flex justify-center pb-1">
-                      <span className="inline-block px-4 py-1 bg-[#090A0E]/82 backdrop-blur-md border-y border-[#CFB073]/35 text-[11.5px] tracking-[0.16em] text-[#EFE0BC]">
+                      <span className="inline-flex items-center gap-2 px-5 py-1 rounded-full bg-[#070B18]/85 backdrop-blur-md border border-[#63E6F2]/45 text-[12px] tracking-[0.2em] cyan-glow-text font-bold">
+                        <GameIcon name="tianshu" size={18} shadow={false} />
                         {currentNode.title}
                       </span>
                     </div>
                   )}
 
-                  <div className="space-y-2">
+                  <div className="space-y-2.5">
                     {(currentNode?.options || []).map((opt, idx) => {
                       const cashCost = opt.cost?.cash ?? opt.cashCost ?? 0;
                       const unaffordable = script.mode === 'stroll' && cashCost > (state?.player?.cash ?? 0);
                       return (
                         <motion.button
                           key={opt.id}
-                          initial={{ opacity: 0, y: 8 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{ delay: idx * 0.05, duration: 0.2 }}
+                          initial={{ opacity: 0, x: idx % 2 ? 24 : -24 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.07, duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
                           disabled={submitting}
                           onClick={() => handleSelectChoice(opt)}
-                          className={`w-full text-left backdrop-blur-xl border px-4 py-3.5 transition active:scale-[0.985] ${
-                            unaffordable
-                              ? 'bg-[#121319]/75 border-white/10 opacity-55'
-                              : 'bg-[#0E1016]/88 hover:bg-[#161822]/95 border-white/14 hover:border-[#CFB073]/55 border-l-2 border-l-[#CFB073]'
+                          className={`group relative w-full rounded-[8px] px-6 py-3 text-center transition active:scale-[0.985] ${
+                            unaffordable ? 'opacity-55' : ''
                           }`}
+                          style={{
+                            background:
+                              'linear-gradient(180deg, rgba(30,40,78,0.92) 0%, rgba(12,18,38,0.94) 100%)',
+                            border: '1px solid rgba(226,189,114,0.6)',
+                            boxShadow:
+                              'inset 0 0 0 1px rgba(10,15,31,0.9), inset 0 0 0 2px rgba(226,189,114,0.18), 0 8px 20px rgba(0,0,0,0.5)',
+                          }}
                         >
-                          <div className="flex items-start justify-between gap-3">
-                            <div className="text-[13.5px] font-normal text-[#F5F2EA] leading-[1.68]">
-                              {opt.label}
-                            </div>
-                            <ChevronRight className="w-4 h-4 text-[#CFB073]/70 shrink-0 mt-1" />
-                          </div>
-                          {unaffordable && (
-                            <div className="text-[10.5px] text-[#E6829A] mt-1">资金不足</div>
-                          )}
+                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] group-hover:shadow-[0_0_10px_rgba(255,231,176,0.9)]" />
+                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] group-hover:shadow-[0_0_10px_rgba(255,231,176,0.9)]" />
+                          <div className="text-[14px] font-editorial font-bold text-[#FBF1D8] leading-[1.6]">{opt.label}</div>
+                          {unaffordable && <div className="text-[10.5px] text-[#FF8FA6] mt-0.5">资金不足</div>}
                         </motion.button>
                       );
                     })}
                   </div>
                 </div>
               ) : (
-                /* Clean Edge-to-Edge Dialogue Scrim */
+                /* Dialogue box */
                 <div
                   onClick={() => {
                     playTap();
                     stepForward();
                   }}
-                  className="bg-gradient-to-t from-[#08090C] via-[#08090C]/95 to-transparent pt-12 pb-5 px-5 cursor-pointer"
+                  className="bg-gradient-to-t from-[#05070F]/95 via-[#05070F]/60 to-transparent pt-14 pb-4 px-3 cursor-pointer"
                 >
-                  {/* Restrained Heroine Inner Thought Whisper */}
                   <AnimatePresence>
                     {peekOpen && currentNode?.innerThought && (
                       <motion.div
-                        initial={{ opacity: 0, y: 6 }}
-                        animate={{ opacity: 1, y: 0 }}
+                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 4 }}
                         transition={{ duration: 0.18 }}
                         onClick={(e) => e.stopPropagation()}
-                        className="mb-3 bg-[#151116]/90 backdrop-blur-xl border-l-2 border-l-[#D97791] border-y border-r border-white/[0.08] px-3.5 py-2"
+                        className="mb-3 mx-2 rounded-[14px] px-4 py-2.5 border border-[#F0789A]/50"
+                        style={{
+                          background: 'linear-gradient(180deg, rgba(70,24,48,0.88), rgba(30,12,28,0.9))',
+                          boxShadow: '0 0 18px rgba(240,120,154,0.25)',
+                        }}
                       >
-                        <p className="text-[12.5px] italic text-[#F1D4DD] leading-relaxed">
-                          「{currentNode.innerThought}」
-                        </p>
+                        <div className="flex items-center gap-1.5 text-[10.5px] tracking-[0.25em] text-[#FFB3C6] font-bold mb-0.5">
+                          <GameIcon name="heart" size={14} shadow={false} /> 心声
+                        </div>
+                        <p className="text-[13px] italic text-[#FBE3EA] leading-relaxed">「{currentNode.innerThought}」</p>
                       </motion.div>
                     )}
                   </AnimatePresence>
 
                   {currentNode?.type === 'system_alert' ? (
-                    <div className="bg-[#101012]/90 border-l-2 border-l-[#CFB073] border-y border-r border-white/[0.1] px-4 py-3.5 min-h-[104px] flex flex-col justify-between">
-                      <div>
-                        <div className="text-[11px] font-semibold tracking-[0.18em] text-[#CFB073] mb-1.5">
-                          {currentNode.title || '天枢'}
-                        </div>
-                        <p className="text-[13.5px] leading-[1.8] text-[#EFE2C6] whitespace-pre-line">
-                          {fullText.slice(0, typedCount)}
-                        </p>
+                    <div
+                      className="relative rounded-[10px] px-4 pt-6 pb-4 min-h-[118px]"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(14,46,70,0.88) 0%, rgba(6,18,36,0.94) 100%)',
+                        border: '1px solid rgba(99,230,242,0.6)',
+                        boxShadow: 'inset 0 0 24px rgba(99,230,242,0.18), 0 0 24px rgba(99,230,242,0.22)',
+                      }}
+                    >
+                      <div className="absolute inset-0 rounded-[10px] pointer-events-none opacity-30"
+                        style={{ backgroundImage: 'repeating-linear-gradient(0deg, rgba(99,230,242,0.18) 0 1px, transparent 1px 4px)' }} />
+                      <div className="absolute -top-3.5 left-3 flex items-center gap-1.5 pl-1 pr-3 py-0.5 rounded-full bg-[#06121F] border border-[#63E6F2]/70">
+                        <GameIcon name="tianshu" size={22} shadow={false} />
+                        <span className="text-[11.5px] font-black tracking-[0.25em] cyan-glow-text">{currentNode.title || '天枢系统'}</span>
                       </div>
+                      <p className="relative text-[14px] leading-[1.8] text-[#DDFBFF] whitespace-pre-line">
+                        {fullText.slice(0, typedCount)}
+                      </p>
                     </div>
                   ) : (
-                    <div className="min-h-[114px] flex flex-col justify-between">
-                      <div>
-                        {currentNode?.type === 'dialogue' && (
-                          <div className="mb-2.5 flex items-center justify-between gap-2">
-                            <div>
-                              <div className="flex items-baseline gap-2">
-                                <span className="font-editorial text-[17px] font-bold tracking-wider text-[#F6F3EB]">
-                                  {currentNode.name}
-                                </span>
-                                {currentNode.role && (
-                                  <span className="text-[11px] text-[#8E92A0]">{currentNode.role}</span>
-                                )}
-                              </div>
-                              <div className="w-7 h-[1.5px] bg-[#CFB073] mt-1.5" />
-                            </div>
+                    <div
+                      className="relative rounded-[10px] px-4 pt-5 pb-3 min-h-[128px]"
+                      style={{
+                        background:
+                          'linear-gradient(180deg, rgba(20,28,58,0.9) 0%, rgba(8,12,26,0.94) 100%)',
+                        border: '1px solid rgba(226,189,114,0.5)',
+                        boxShadow:
+                          'inset 0 0 0 1px rgba(10,15,31,0.9), inset 0 0 0 2px rgba(226,189,114,0.14), 0 12px 30px rgba(0,0,0,0.6)',
+                        backdropFilter: 'blur(10px)',
+                      }}
+                    >
+                      <OrnateCorners size={18} inset={-4} />
 
-                            {currentNode.innerThought && (
-                              <button
-                                onClick={handleTogglePeek}
-                                className={`shrink-0 text-[11px] flex items-center gap-1 pb-0.5 border-b transition ${
-                                  peekOpen
-                                    ? 'text-[#F1A3B9] border-[#D97791]/70'
-                                    : 'text-[#D8B979] border-[#CFB073]/40 hover:text-[#F4DFA8]'
-                                }`}
-                              >
-                                <Sparkles className="w-3 h-3" />
-                                <span>{peekOpen ? '收起' : '心声'}</span>
-                              </button>
-                            )}
-                          </div>
-                        )}
-
-                        <p
-                          className={
-                            currentNode?.type === 'thought'
-                              ? 'text-[14.5px] leading-[1.86] italic text-[#E9DFC9] border-l-2 border-[#CFB073]/55 pl-3.5 tracking-[0.015em]'
-                              : currentNode?.type === 'narration' || currentNode?.type === 'barrage'
-                                ? 'text-[14.5px] leading-[1.88] text-[#D7DAE3] tracking-[0.02em]'
-                                : 'text-[15px] leading-[1.84] text-[#F6F3EB] tracking-[0.015em]'
-                          }
-                        >
-                          {fullText.slice(0, typedCount)}
-                          {isTyping && (
-                            <span className="inline-block w-[2px] h-[14px] bg-[#CFB073]/80 ml-0.5 align-middle animate-pulse" />
+                      {currentNode?.type === 'dialogue' && (
+                        <div className="absolute -top-4 left-3 flex items-end gap-2">
+                          <span
+                            className="font-editorial text-[16px] font-black tracking-[0.12em] text-[#2A1C06] pl-3 pr-5 py-[3px]"
+                            style={{
+                              background: 'linear-gradient(180deg,#FFF0C8 0%,#E8C27A 55%,#B7843A 100%)',
+                              clipPath: 'polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%)',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
+                            }}
+                          >
+                            {currentNode.name}
+                          </span>
+                          {currentNode.role && (
+                            <span className="text-[10.5px] text-[#C3C9DC] mb-0.5 text-stroke-dark">{currentNode.role}</span>
                           )}
-                        </p>
+                        </div>
+                      )}
+                      {currentNode?.type === 'thought' && (
+                        <div className="absolute -top-3 left-3 px-2.5 py-[1px] rounded-full bg-[#0A0F1F] border border-[#E2BD72]/50 text-[10.5px] tracking-[0.3em] text-[#F6DDA4]">
+                          内心
+                        </div>
+                      )}
+
+                      {currentNode?.type === 'dialogue' && currentNode.innerThought && (
+                        <button
+                          onClick={handleTogglePeek}
+                          className={`absolute -top-3.5 right-3 flex items-center gap-1 pl-1 pr-2.5 py-0.5 rounded-full text-[11px] font-bold border transition ${
+                            peekOpen
+                              ? 'bg-[#4A1830] border-[#F0789A] text-[#FFC4D3]'
+                              : 'bg-[#0A0F1F] border-[#F0789A]/60 text-[#FFB3C6] animate-pulse'
+                          }`}
+                        >
+                          <GameIcon name="heart" size={18} shadow={false} />
+                          {peekOpen ? '收起' : '心声'}
+                        </button>
+                      )}
+
+                      <p
+                        className={
+                          currentNode?.type === 'thought'
+                            ? 'text-[14.5px] leading-[1.86] italic text-[#E9DFC9] tracking-[0.015em]'
+                            : currentNode?.type === 'narration' || currentNode?.type === 'barrage'
+                              ? 'text-[14.5px] leading-[1.88] text-[#D7DAE3] tracking-[0.02em]'
+                              : 'text-[15px] leading-[1.84] text-[#FBF6EA] tracking-[0.015em]'
+                        }
+                      >
+                        {fullText.slice(0, typedCount)}
+                        {isTyping && (
+                          <span className="inline-block w-[2px] h-[14px] bg-[#E2BD72]/80 ml-0.5 align-middle animate-pulse" />
+                        )}
+                      </p>
+
+                      <div className="flex items-center justify-between pt-2 text-[10.5px] text-[#6B7392]">
+                        <span className="font-num tracking-wider truncate max-w-[60%]">
+                          {script.chapterTitle} · {nodeIdx + 1}/{queue.length}
+                        </span>
+                        <span className="text-[#E2BD72] flex items-center gap-1 shrink-0">
+                          {submitting ? (
+                            '请稍候…'
+                          ) : isTyping ? (
+                            ''
+                          ) : isLast ? (
+                            <>
+                              <span className="font-editorial font-bold">{script.alreadyCompleted ? '结束' : '继续'}</span>
+                              <ChevronRight className="w-3.5 h-3.5" />
+                            </>
+                          ) : (
+                            <motion.span
+                              animate={{ y: [0, 3, 0] }}
+                              transition={{ repeat: Infinity, duration: 1.1 }}
+                              className="inline-block w-0 h-0 border-l-[5px] border-r-[5px] border-t-[7px] border-l-transparent border-r-transparent border-t-[#FFE7B0] drop-shadow-[0_0_4px_rgba(255,231,176,0.8)]"
+                            />
+                          )}
+                        </span>
                       </div>
                     </div>
                   )}
-
-                  <div className="flex items-center justify-between pt-3 text-[11px] text-[#7D818E]">
-                    <span className="tabular-nums truncate max-w-[60%]">
-                      {script.chapterTitle} · {nodeIdx + 1}/{queue.length}
-                    </span>
-                    <span className="text-[#CFB073] flex items-center gap-1 shrink-0">
-                      {submitting ? (
-                        '请稍候…'
-                      ) : isTyping ? (
-                        ''
-                      ) : isLast ? (
-                        <>
-                          <span>{script.alreadyCompleted ? '结束' : '继续'}</span>
-                          <ChevronRight className="w-3.5 h-3.5" />
-                        </>
-                      ) : (
-                        <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#CFB073] animate-pulse" />
-                      )}
-                    </span>
-                  </div>
                 </div>
               )}
             </motion.div>
@@ -1017,15 +1053,19 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.42 }}
             onClick={() => setShowOpeningCard(false)}
-            className="absolute inset-0 z-40 bg-[#08090C]/94 backdrop-blur-md flex flex-col items-center justify-center px-8 text-center cursor-pointer"
+            className="absolute inset-0 z-40 bg-[#0A0F1F]/94 backdrop-blur-md flex flex-col items-center justify-center px-8 text-center cursor-pointer"
           >
-            <div className="text-[11px] tracking-[0.26em] text-[#CFB073]">
+            <div className="text-[11px] tracking-[0.4em] text-[#E2BD72] font-bold">
               {script.sceneLabel || `${MODE_LABELS[script.mode]} · ${script.chapterTitle}`}
             </div>
-            <div className="w-10 hairline-gold my-3.5" />
-            <h2 className="font-editorial text-2xl font-bold tracking-[0.16em] text-[#F6F3EB]">{script.title}</h2>
+            <div className="flex items-center gap-2 my-4">
+              <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
+              <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
+              <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
+            </div>
+            <h2 className="font-editorial text-[32px] font-black tracking-[0.2em] gold-gradient-text">{script.title}</h2>
             {script.subtitle && (
-              <p className="text-xs text-[#9EA2AE] mt-3 leading-relaxed max-w-[270px]">{script.subtitle}</p>
+              <p className="text-xs text-[#A3AAC2] mt-3 leading-relaxed max-w-[270px]">{script.subtitle}</p>
             )}
           </motion.div>
         )}
@@ -1038,16 +1078,16 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-[#08090C]/96 backdrop-blur-xl flex flex-col"
+            className="absolute inset-0 z-50 bg-[#0A0F1F]/96 backdrop-blur-xl flex flex-col"
           >
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
               <div>
-                <div className="font-editorial text-sm font-bold text-[#F5F2EA] tracking-wider">对话记录</div>
-                <div className="text-[10px] text-[#848896] mt-0.5">
+                <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">对话记录</div>
+                <div className="text-[10px] text-[#8B93AD] mt-0.5">
                   {script.chapterTitle} · {script.title}
                 </div>
               </div>
-              <button onClick={() => setShowLog(false)} className="p-1.5 text-[#8E92A0] hover:text-white">
+              <button onClick={() => setShowLog(false)} className="p-1.5 text-[#929AB4] hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
@@ -1057,8 +1097,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   const chosen = resolvedChoices[idx];
                   if (!chosen) return null;
                   return (
-                    <div key={`log-choice-${idx}`} className="border-l-2 border-[#CFB073] pl-3 py-1">
-                      <div className="text-[10px] text-[#CFB073]">你的选择</div>
+                    <div key={`log-choice-${idx}`} className="border-l-2 border-[#E2BD72] pl-3 py-1">
+                      <div className="text-[10px] text-[#E2BD72]">你的选择</div>
                       <div className="text-xs text-[#F3EAD5] mt-0.5 leading-relaxed">{chosen.label}</div>
                     </div>
                   );
@@ -1067,12 +1107,12 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 return (
                   <div key={`log-${idx}`} className="space-y-1">
                     {n.sceneBanner && (
-                      <div className="text-[10px] tracking-[0.16em] text-[#CFB073]/80 pb-1">— {n.sceneBanner} —</div>
+                      <div className="text-[10px] tracking-[0.16em] text-[#E2BD72]/80 pb-1">— {n.sceneBanner} —</div>
                     )}
                     {n.type === 'dialogue' && n.name && (
-                      <div className="text-xs font-semibold text-[#EBD4A2]">
+                      <div className="text-xs font-semibold text-[#F6DDA4]">
                         {n.name}
-                        {n.role && <span className="text-[10px] text-[#7D818E] font-normal ml-1.5">{n.role}</span>}
+                        {n.role && <span className="text-[10px] text-[#7F88A6] font-normal ml-1.5">{n.role}</span>}
                       </div>
                     )}
                     <p
@@ -1083,7 +1123,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       {n.text}
                     </p>
                     {n.innerThought && revealedThoughts[idx] && (
-                      <p className="text-[11.5px] italic text-[#EBA3B7] pl-2.5 border-l border-[#D97791]/50">
+                      <p className="text-[11.5px] italic text-[#EBA3B7] pl-2.5 border-l border-[#F0789A]/50">
                         「{n.innerThought}」
                       </p>
                     )}
@@ -1095,7 +1135,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 9. Balanced Editorial Epilogue Curtain */}
+      {/* 9. Settlement */}
       <AnimatePresence>
         {settlement && (
           <motion.div
@@ -1103,173 +1143,239 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 z-50 bg-[#08090C]/92 backdrop-blur-xl flex flex-col justify-center px-6 py-8 overflow-y-auto no-scrollbar"
+            className="absolute inset-0 z-50 overflow-hidden"
           >
+            {/* backdrop: blurred scene + glow + rotating rays */}
+            <img src={script.bg} alt="" className="absolute inset-0 w-full h-full object-cover scale-110 blur-[14px] brightness-[0.45]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1F]/70 via-[#0A0F1F]/80 to-[#05070F]/95" />
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.06, duration: 0.3 }}
-              className="w-full space-y-6"
-            >
-              {/* Title Block */}
-              <div className="text-center space-y-2">
-                <div className="text-[11px] tracking-[0.24em] text-[#CFB073]">
-                  {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
-                </div>
-                <h2 className="font-editorial text-[26px] font-bold tracking-[0.12em] text-[#F6F3EB]">
-                  {settlement.title}
-                </h2>
-                <div className="w-12 hairline-gold mx-auto pt-1" />
-              </div>
+              aria-hidden
+              className="absolute left-1/2 top-[18%] w-[760px] h-[760px] -ml-[380px] -mt-[380px] pointer-events-none opacity-40"
+              style={{
+                background:
+                  'repeating-conic-gradient(from 0deg, rgba(255,226,160,0.22) 0deg 6deg, transparent 6deg 22deg)',
+                maskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+                WebkitMaskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
+            />
+            <div className="absolute left-1/2 top-[18%] w-[300px] h-[300px] -ml-[150px] -mt-[150px] rounded-full bg-[radial-gradient(circle,rgba(255,220,150,0.28),transparent_70%)] pointer-events-none" />
 
-              {/* Natural Closing Note */}
-              {(settlement.reactionText || settlement.resultText) && (
-                <div className="border-y border-white/[0.09] py-4 space-y-2.5">
-                  {settlement.heroineName && (
-                    <div className="flex items-center gap-2.5">
-                      {settlement.heroineAvatar && (
-                        <PortraitAvatar
-                          src={settlement.heroineAvatar}
-                          alt={settlement.heroineName}
-                          className="w-8 h-8"
-                          rounded="sm"
-                        />
-                      )}
-                      <div>
-                        <div className="text-xs font-semibold text-[#F5F2EA]">{settlement.heroineName}</div>
-                        {settlement.locationLabel && (
-                          <div className="text-[10px] text-[#848896]">{settlement.locationLabel}</div>
+            {settlement.mode !== 'main' && settlement.heroinePortrait && (
+              <motion.img
+                src={settlement.heroinePortrait}
+                alt=""
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 0.9, x: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+                className="absolute right-[-18%] bottom-0 h-[78%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
+              />
+            )}
+
+            <div className="relative h-full overflow-y-auto no-scrollbar flex flex-col justify-center px-5 py-8">
+              <div className="w-full space-y-5">
+                {/* Title */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-center"
+                >
+                  <div className="inline-flex items-center gap-2 px-4 py-[3px] rounded-full text-[10.5px] font-black tracking-[0.35em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow-[0_4px_14px_rgba(226,189,114,0.4)]">
+                    {settlement.alreadyCompleted
+                      ? '回顾结束'
+                      : settlement.mode === 'main'
+                        ? '本幕完成'
+                        : settlement.mode === 'date'
+                          ? '约会结束'
+                          : settlement.mode === 'home'
+                            ? '居家时光'
+                            : '漫步结束'}
+                  </div>
+                  <div className="mt-3 text-[11px] tracking-[0.3em] text-[#E2BD72] font-bold">
+                    {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
+                  </div>
+                  <h2 className="mt-1 font-editorial text-[32px] font-black tracking-[0.14em] gold-gradient-text leading-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
+                    {settlement.title}
+                  </h2>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
+                    <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
+                    <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
+                  </div>
+                </motion.div>
+
+                {/* Closing note */}
+                {(settlement.reactionText || settlement.resultText) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.35 }}
+                    className={`relative rounded-[10px] px-4 py-3.5 space-y-2 ${settlement.mode !== 'main' ? 'max-w-[78%]' : ''}`}
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(20,28,58,0.85), rgba(8,12,26,0.9))',
+                      border: '1px solid rgba(226,189,114,0.35)',
+                    }}
+                  >
+                    {settlement.heroineName && (
+                      <div className="flex items-center gap-2">
+                        {settlement.heroineAvatar && (
+                          <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74]">
+                            <PortraitAvatar src={settlement.heroineAvatar} alt="" className="w-full h-full !border-0" rounded="full" />
+                          </div>
                         )}
+                        <div>
+                          <div className="text-[12.5px] font-editorial font-black text-[#FBF1D8]">{settlement.heroineName}</div>
+                          {settlement.locationLabel && (
+                            <div className="text-[10px] text-[#8B93AD]">{settlement.locationLabel}</div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <p className="text-[13px] leading-[1.82] text-[#E4E1DA]">
-                    {settlement.reactionText || settlement.resultText}
-                  </p>
-                </div>
-              )}
+                    )}
+                    <p className="text-[13px] leading-[1.82] text-[#E9E6DE]">{settlement.reactionText || settlement.resultText}</p>
+                  </motion.div>
+                )}
 
-              {/* Compact Hairline Rewards Strip */}
-              {settlement.rewards && !settlement.alreadyCompleted && (
-                (() => {
-                  const r = settlement.rewards;
-                  const items: { label: string; value: string; color: string }[] = [];
-                  if (r.critCashback && r.critCashback > 0) {
-                    items.push({
-                      label: `返现 ×${r.critMultiplier || 10}`,
-                      value: `+${formatMoney(r.critCashback)}`,
-                      color: 'text-[#EBD4A2]',
-                    });
-                    if (r.cash && r.cash > r.critCashback) {
+                {/* Rewards */}
+                {settlement.rewards &&
+                  !settlement.alreadyCompleted &&
+                  (() => {
+                    const r = settlement.rewards;
+                    const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string }[] = [];
+                    if (r.critCashback && r.critCashback > 0) {
                       items.push({
-                        label: '资金',
-                        value: `+${formatMoney(r.cash - r.critCashback)}`,
-                        color: 'text-[#EBD4A2]',
+                        icon: 'income',
+                        label: '暴击返现',
+                        value: `+${formatMoney(r.critCashback)}`,
+                        tone: 'text-[#FFE7B0]',
+                        ribbon: `×${r.critMultiplier || 10}`,
+                      });
+                      if (r.cash && r.cash > r.critCashback) {
+                        items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash - r.critCashback)}`, tone: 'text-[#FFE7B0]' });
+                      }
+                    } else if (r.cash && r.cash > 0) {
+                      items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash)}`, tone: 'text-[#FFE7B0]' });
+                    }
+                    if (r.affectionGain && r.affectionGain > 0) {
+                      items.push({
+                        icon: 'heart',
+                        label: r.affectionHeroineName ? `${r.affectionHeroineName}` : '好感',
+                        value: `+${r.affectionGain}`,
+                        tone: 'text-[#FFB3C6]',
                       });
                     }
-                  } else if (r.cash && r.cash > 0) {
-                    items.push({ label: '资金', value: `+${formatMoney(r.cash)}`, color: 'text-[#EBD4A2]' });
-                  }
-                  if (r.affectionGain && r.affectionGain > 0) {
-                    items.push({
-                      label: r.affectionHeroineName ? `${r.affectionHeroineName}好感` : '好感',
-                      value: `+${r.affectionGain}`,
-                      color: 'text-[#EEA0B8]',
-                    });
-                  }
-                  if (r.sysPoints && r.sysPoints > 0) {
-                    items.push({ label: '积分', value: `+${r.sysPoints}`, color: 'text-emerald-300' });
-                  }
-                  if (r.unlockedHeroineName) {
-                    items.push({ label: '新联系人', value: r.unlockedHeroineName, color: 'text-[#EEA0B8]' });
-                  }
-                  if (r.unlockedAssetName) {
-                    items.push({ label: '入库', value: r.unlockedAssetName, color: 'text-[#EBD4A2]' });
-                  }
-                  if (items.length === 0) return null;
-                  return (
-                    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 py-1">
-                      {items.map((it, i) => (
-                        <div key={i} className="text-center">
-                          <div className="text-[10px] text-[#848896]">{it.label}</div>
-                          <div className={`text-sm font-bold tabular-nums mt-0.5 ${it.color}`}>{it.value}</div>
+                    if (r.sysPoints && r.sysPoints > 0) {
+                      items.push({ icon: 'syspoint', label: '天枢积分', value: `+${r.sysPoints}`, tone: 'text-[#B9F6FB]' });
+                    }
+                    if (r.unlockedHeroineName) {
+                      items.push({ icon: 'nav_contact', label: '新联系人', value: r.unlockedHeroineName, tone: 'text-[#FFB3C6]' });
+                    }
+                    if (r.unlockedAssetName) {
+                      items.push({ icon: 'key', label: '入库', value: r.unlockedAssetName, tone: 'text-[#FFE7B0]' });
+                    }
+                    if (items.length === 0) return null;
+                    return (
+                      <div>
+                        <div className="text-center text-[10.5px] tracking-[0.4em] text-[#A3AAC2] mb-2">— 获得奖励 —</div>
+                        <div className="flex flex-wrap justify-center gap-2">
+                          {items.map((it, i) => (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              transition={{ delay: 0.35 + i * 0.12, type: 'spring', stiffness: 380, damping: 18 }}
+                              className="relative w-[84px] rounded-[10px] pt-2 pb-2 px-1 flex flex-col items-center"
+                              style={{
+                                background:
+                                  'radial-gradient(70% 55% at 50% 35%, rgba(255,220,150,0.22), transparent 75%), linear-gradient(180deg, rgba(30,40,78,0.92), rgba(10,15,31,0.95))',
+                                border: '1px solid rgba(226,189,114,0.55)',
+                                boxShadow: 'inset 0 1px 0 rgba(255,231,176,0.2), 0 8px 18px rgba(0,0,0,0.45)',
+                              }}
+                            >
+                              {it.ribbon && (
+                                <span className="absolute -top-2 -right-1.5 px-1.5 rounded-sm bg-[#FF4F72] text-white font-num text-[11px] shadow">
+                                  {it.ribbon}
+                                </span>
+                              )}
+                              <GameIcon name={it.icon} size={42} />
+                              <div className={`font-num text-[13px] font-semibold mt-1 max-w-full truncate ${it.tone}`}>{it.value}</div>
+                              <div className="text-[9.5px] text-[#A3AAC2] max-w-full truncate">{it.label}</div>
+                            </motion.div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+                    );
+                  })()}
+
+                {/* Next teaser */}
+                {settlement.cliffhanger && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.35 }}
+                    className="relative rounded-[10px] px-4 pt-4 pb-3"
+                    style={{ background: 'rgba(5,7,15,0.7)', border: '1px solid rgba(226,189,114,0.28)' }}
+                  >
+                    <OrnateCorners size={16} inset={-4} />
+                    <div className="absolute -top-2.5 left-3 px-2 bg-[#0A0F1F] text-[10.5px] font-black tracking-[0.3em] text-[#E2BD72]">
+                      下幕预告
                     </div>
-                  );
-                })()
-              )}
+                    <p className="text-[12px] text-[#C6CBDB] leading-[1.8]">{settlement.cliffhanger}</p>
+                  </motion.div>
+                )}
 
-              {settlement.alreadyCompleted && (
-                <div className="text-center text-xs text-[#848896]">本幕回顾结束</div>
-              )}
-
-              {/* Next Chapter Teaser */}
-              {settlement.cliffhanger && (
-                <div className="border-l-2 border-[#CFB073]/70 pl-3.5 py-0.5 space-y-1">
-                  <div className="text-[10px] tracking-[0.2em] text-[#CFB073]">下幕预告</div>
-                  <p className="text-xs text-[#C6C9D4] leading-[1.8]">{settlement.cliffhanger}</p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="pt-2 space-y-2.5">
-                {settlement.mode === 'main' &&
-                  settlement.nextEpisodeId &&
-                  settlement.nextEpisodeUnlocked &&
-                  onNextEpisode && (
+                {/* Actions */}
+                <div className="pt-1 space-y-2.5">
+                  {settlement.mode === 'main' && settlement.nextEpisodeId && settlement.nextEpisodeUnlocked && onNextEpisode && (
                     <button
                       onClick={() => {
                         playSystemPing();
                         onNextEpisode(settlement.nextEpisodeId!);
                       }}
-                      className="w-full btn-brass clip-chamfer-sm py-3 px-4 text-sm flex items-center justify-center gap-1.5"
+                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-1.5"
                     >
-                      <span>
-                        下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}
-                      </span>
-                      <ChevronRight className="w-4 h-4" />
+                      <span className="truncate">下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}</span>
+                      <ChevronRight className="w-4 h-4 shrink-0" />
                     </button>
                   )}
 
-                {settlement.mode === 'main' &&
-                  settlement.nextEpisodeId &&
-                  !settlement.nextEpisodeUnlocked &&
-                  settlement.nextEpisodeLockReason && (
-                    <div className="text-center text-[11px] text-[#E6829A]">
-                      下一幕需{settlement.nextEpisodeLockReason}
+                  {settlement.mode === 'main' && settlement.nextEpisodeId && !settlement.nextEpisodeUnlocked && settlement.nextEpisodeLockReason && (
+                    <div className="flex items-center justify-center gap-1.5 text-[12px] text-[#FF8FA6]">
+                      <GameIcon name="lock" size={18} /> 下一幕需{settlement.nextEpisodeLockReason}
                     </div>
                   )}
 
-                {settlement.mode !== 'main' && settlement.heroineId && onOpenChat && (
+                  {settlement.mode !== 'main' && settlement.heroineId && onOpenChat && (
+                    <button
+                      onClick={() => {
+                        playTap();
+                        onOpenChat(settlement.heroineId!, settlement.locationLabel || null);
+                      }}
+                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-2"
+                    >
+                      <GameIcon name="nav_contact" size={24} shadow={false} />
+                      <span>发微信给{settlement.heroineName || '她'}</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       playTap();
-                      onOpenChat(settlement.heroineId!, settlement.locationLabel || null);
+                      onExit();
                     }}
-                    className="w-full btn-brass clip-chamfer-sm py-3 px-4 text-sm flex items-center justify-center gap-2"
+                    className={`w-full py-2.5 text-[14px] font-editorial ${
+                      (settlement.mode === 'main' && settlement.nextEpisodeUnlocked) ||
+                      (settlement.mode !== 'main' && settlement.heroineId)
+                        ? 'btn-navy'
+                        : 'gold-btn-shimmer'
+                    }`}
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>发微信给{settlement.heroineName || '她'}</span>
+                    {settlement.mode === 'main' ? '返回目录' : '返回'}
                   </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    playTap();
-                    onExit();
-                  }}
-                  className={`w-full py-2.5 rounded-[4px] text-xs font-medium transition active:scale-[0.99] ${
-                    (settlement.mode === 'main' && settlement.nextEpisodeUnlocked) ||
-                    (settlement.mode !== 'main' && settlement.heroineId)
-                      ? 'border border-white/12 text-[#C8CBD6] hover:bg-white/[0.04]'
-                      : 'btn-brass text-sm py-3'
-                  }`}
-                >
-                  {settlement.mode === 'main' ? '返回目录' : '返回'}
-                </button>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1429,7 +1535,7 @@ export const MiniStoryOverlay: React.FC = () => {
   };
 
   return (
-    <div className="absolute inset-0 z-[38] bg-[#08090C]">
+    <div className="absolute inset-0 z-[38] bg-[#0A0F1F]">
       <VisualNovelTheater
         script={script}
         onExit={closeMiniStory}

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Check, Coins, Crown, UserCheck } from 'lucide-react';
+import { Check, UserCheck } from 'lucide-react';
+import { DecoHeading, GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { PortraitAvatar } from '../components/PortraitAvatar';
@@ -17,6 +18,8 @@ export const AssetsView: React.FC = () => {
     setActiveTab,
     setSelectedDistrictId,
     setActivePropertyId,
+    openDeal,
+    flyReward,
   } = useGameStore();
 
   const [subTab, setSubTab] = useState<'garage' | 'biz' | 'props'>('garage');
@@ -36,9 +39,9 @@ export const AssetsView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/income/collect', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '收益已入账', res.message);
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -107,112 +110,126 @@ export const AssetsView: React.FC = () => {
     }
   };
 
+  const SUBTABS: Array<{ id: 'garage' | 'biz' | 'props'; label: string; icon: GameIconName }> = [
+    { id: 'garage', label: '座驾藏品', icon: 'key' },
+    { id: 'biz', label: '名下产业', icon: 'briefcase' },
+    { id: 'props', label: '全城物业', icon: 'nav_home' },
+  ];
+
   return (
-    <div className="h-full overflow-y-auto no-scrollbar bg-[#090A0D]">
-      {/* Clean Hairline-Divided Cashflow Header */}
-      <div className="px-4 py-3.5 border-b border-white/[0.08] flex items-center justify-between gap-3 bg-[#0C0D12]">
-        <div className="min-w-0">
-          <div className="text-[10.5px] text-[#848896]">产业分红与物业租金</div>
-          <div className="flex items-baseline gap-3 mt-0.5 flex-wrap">
-            <span className="font-editorial text-[19px] font-bold text-[#EBD4A2] tabular-nums">
-              +<AnimatedNumber value={player.incomePerHour} />/时
-            </span>
-            <span className="text-xs text-emerald-400/90 tabular-nums">
+    <div className="h-full overflow-y-auto no-scrollbar deco-texture">
+      {/* Vault header */}
+      <div className="px-3 pt-3">
+        <div className="relative panel-brass rounded-[10px] px-3 py-3 flex items-center gap-3">
+          <OrnateCorners size={18} inset={-4} />
+          <GameIcon name="income" size={52} />
+          <div className="min-w-0 flex-1">
+            <div className="text-[10.5px] text-[#C3C9DC] tracking-[0.2em]">产业分红 · 物业租金</div>
+            <div className="flex items-baseline gap-1 mt-0.5">
+              <span className="font-num text-[24px] font-semibold text-[#FFE7B0] leading-none">
+                +<AnimatedNumber value={player.incomePerHour} />
+              </span>
+              <span className="text-[11px] text-[#A3AAC2]">/ 时</span>
+            </div>
+            <div className="text-[11px] text-[#7BE0A8] mt-1 font-num tracking-wide">
               待收 <AnimatedNumber value={player.pendingIncome} highlightOnIncrease />
-            </span>
+            </div>
           </div>
+          <button
+            disabled={busy || player.pendingIncome <= 0}
+            onClick={collectOffline}
+            className={`shrink-0 px-4 py-2 text-[13px] font-editorial flex items-center gap-1 ${
+              player.pendingIncome > 0 ? 'gold-btn-shimmer' : 'btn-navy opacity-60'
+            }`}
+          >
+            {player.pendingIncome > 0 ? '一键收取' : '暂无收益'}
+          </button>
         </div>
-        <button
-          disabled={busy || player.pendingIncome <= 0}
-          onClick={collectOffline}
-          className={`px-4 py-2 rounded-[4px] text-xs flex items-center gap-1.5 shrink-0 transition ${
-            player.pendingIncome > 0
-              ? 'btn-brass clip-chamfer-sm'
-              : 'border border-white/10 text-[#6F7380] cursor-not-allowed'
-          }`}
-        >
-          <Coins className="w-3.5 h-3.5" /> {player.pendingIncome > 0 ? '收取' : '暂无'}
-        </button>
       </div>
 
-      {/* Hairline-Underlined Sub Navigation */}
-      <div className="sticky top-0 z-20 bg-[#090A0D]/95 backdrop-blur-md border-b border-white/[0.08] px-4 flex items-center gap-6">
-        {[
-          { id: 'garage', label: '座驾与藏品' },
-          { id: 'biz', label: '名下产业' },
-          { id: 'props', label: '全城物业' },
-        ].map(({ id, label }) => {
-          const active = subTab === id;
-          return (
+      {/* Segmented tabs */}
+      <div className="sticky top-0 z-20 px-3 pt-3 pb-2 bg-gradient-to-b from-[#0A0F1F] via-[#0A0F1F]/95 to-[#0A0F1F]/0">
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
+          {SUBTABS.map(({ id, label, icon }) => (
             <button
               key={id}
+              data-active={subTab === id}
               onClick={() => {
                 playTap();
-                setSubTab(id as 'garage' | 'biz' | 'props');
+                setSubTab(id);
               }}
-              className={`py-3 text-xs tracking-wider border-b-2 transition ${
-                active
-                  ? 'text-[#EBD4A2] border-[#CFB073] font-semibold'
-                  : 'text-[#7D818E] border-transparent hover:text-[#C5C8D3]'
-              }`}
+              className="tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
             >
+              <GameIcon name={icon} size={20} shadow={false} />
               {label}
             </button>
-          );
-        })}
+          ))}
+        </div>
       </div>
 
-      {/* TAB 1: STUDIO SHOWROOM + HORIZONTAL FILMSTRIP SELECTOR */}
+      {/* TAB 1: SHOWROOM */}
       {subTab === 'garage' && featuredAsset && (
         <div className="pb-8">
-          {/* Full-Bleed Dark Studio Pedestal */}
-          <div className="relative h-56 w-full bg-[radial-gradient(ellipse_at_50%_78%,rgba(207,176,115,0.16),#090A0D_70%)] flex items-center justify-center px-6 pt-4 pb-6 overflow-hidden border-b border-white/[0.07]">
-            <div className="absolute inset-0 film-grain pointer-events-none" />
-            <div className="absolute inset-x-10 bottom-5 hairline-gold opacity-65" />
+          <div className="relative h-[230px] mx-3 rounded-[12px] overflow-hidden border border-[#E2BD72]/30"
+            style={{
+              background:
+                'radial-gradient(70% 55% at 50% 30%, rgba(120,140,220,0.25) 0%, transparent 70%), radial-gradient(60% 30% at 50% 88%, rgba(226,189,114,0.35) 0%, transparent 70%), linear-gradient(180deg,#141C38 0%,#0A0F1F 100%)',
+            }}
+          >
+            {/* spotlight beams */}
+            <div className="absolute -top-10 left-1/2 -translate-x-1/2 w-[70%] h-[120%] opacity-40 pointer-events-none"
+              style={{ background: 'conic-gradient(from 160deg at 50% 0%, transparent 0deg, rgba(255,240,210,0.35) 20deg, transparent 40deg)' }} />
+            {/* podium */}
+            <div className="absolute left-1/2 -translate-x-1/2 bottom-6 w-[78%] h-[38px] rounded-[50%] pointer-events-none"
+              style={{
+                background: 'radial-gradient(50% 50% at 50% 50%, rgba(30,40,80,0.95) 0%, rgba(14,20,42,0.95) 70%)',
+                boxShadow: '0 0 0 2px rgba(226,189,114,0.55), 0 0 28px rgba(226,189,114,0.35), inset 0 4px 10px rgba(0,0,0,0.6)',
+              }} />
+            <div className="absolute inset-x-0 bottom-9 z-10 flex justify-center pointer-events-none">
             <AnimatePresence mode="wait">
               <motion.img
                 key={featuredAsset.id}
                 src={featuredAsset.image}
                 alt={featuredAsset.name}
-                initial={{ opacity: 0, scale: 0.95, y: 6 }}
-                animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.97 }}
-                transition={{ duration: 0.22 }}
-                className="relative z-10 max-h-44 max-w-full object-contain drop-shadow-[0_20px_24px_rgba(0,0,0,0.88)]"
+                initial={{ opacity: 0, scale: 0.94, x: 30 }}
+                animate={{ opacity: 1, scale: 1, x: 0 }}
+                exit={{ opacity: 0, scale: 0.96, x: -30 }}
+                transition={{ duration: 0.28 }}
+                className="max-h-[170px] max-w-[86%] object-contain drop-shadow-[0_18px_18px_rgba(0,0,0,0.85)]"
               />
             </AnimatePresence>
+            </div>
 
-            {featuredAsset.equipped && (
-              <span className="absolute top-3.5 left-4 text-[10px] tracking-[0.16em] text-[#EBD4A2] border-l-2 border-[#CFB073] pl-2">
-                当前座驾
-              </span>
-            )}
-            {featuredAsset.owned && !featuredAsset.equipped && (
-              <span className="absolute top-3.5 left-4 text-[10px] tracking-[0.14em] text-emerald-400">
-                已收藏
-              </span>
-            )}
+            <div className="absolute top-3 left-3 z-20">
+              {featuredAsset.equipped ? (
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">当前座驾</span>
+              ) : featuredAsset.owned ? (
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-white bg-emerald-600/90">已收藏</span>
+              ) : (
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-[#C3C9DC] bg-black/50 border border-white/15">未拥有</span>
+              )}
+            </div>
           </div>
 
-          {/* Editorial Spec Strip */}
-          <div className="px-4 py-4 border-b border-white/[0.08] space-y-2.5">
+          <div className="relative mx-3 -mt-4 z-10 panel-elevated rounded-[10px] px-4 py-3.5 space-y-2.5">
             <div className="flex items-start justify-between gap-3">
-              <div>
-                <h3 className="font-editorial text-[19px] font-bold text-[#F5F2EA] tracking-wide">
-                  {featuredAsset.name}
-                </h3>
-                <div className="text-xs text-[#CFB073] tabular-nums mt-0.5">
-                  估值 {formatMoney(featuredAsset.valuation)}
-                  {featuredAsset.racePower > 0 ? ` · 竞速马力 ${featuredAsset.racePower}` : ''}
+              <div className="min-w-0">
+                <h3 className="font-editorial text-[20px] font-black text-[#FBF1D8] truncate">{featuredAsset.name}</h3>
+                <div className="flex items-center gap-3 mt-1">
+                  <span className="flex items-center gap-1 font-num text-[13px] text-[#FFE7B0]">
+                    <GameIcon name="cash" size={18} /> {formatMoney(featuredAsset.valuation)}
+                  </span>
+                  {featuredAsset.racePower > 0 && (
+                    <span className="flex items-center gap-1 font-num text-[13px] text-[#B9F6FB]">
+                      <GameIcon name="race" size={18} /> {featuredAsset.racePower}
+                    </span>
+                  )}
                 </div>
               </div>
 
               {featuredAsset.owned ? (
                 featuredAsset.type === 'car' && !featuredAsset.equipped ? (
-                  <button
-                    onClick={() => equipCar(featuredAsset.id)}
-                    className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs shrink-0"
-                  >
+                  <button onClick={() => equipCar(featuredAsset.id)} className="btn-brass px-4 py-2 text-[13px] font-editorial shrink-0">
                     设为座驾
                   </button>
                 ) : (
@@ -221,24 +238,23 @@ export const AssetsView: React.FC = () => {
                   </span>
                 )
               ) : featuredAsset.dropOnly ? (
-                <span className="text-[11px] text-[#8E92A0] pt-1 shrink-0">赌石 / 活动获取</span>
+                <span className="text-[11px] text-[#929AB4] pt-1 shrink-0">赌石 / 活动获取</span>
               ) : (
                 <button
                   disabled={busy}
                   onClick={() => buyAsset(featuredAsset.id)}
-                  className="btn-brass clip-chamfer-sm px-3.5 py-1.5 text-xs shrink-0"
+                  className="gold-btn-shimmer px-3.5 py-2 text-[12.5px] shrink-0 font-num"
                 >
-                  全款 {formatMoney(featuredAsset.price)}
+                  购入 {formatMoney(featuredAsset.price)}
                 </button>
               )}
             </div>
-            <p className="text-xs text-[#9EA2AE] leading-relaxed">{featuredAsset.description}</p>
+            <p className="text-[12px] text-[#A3AAC2] leading-relaxed">{featuredAsset.description}</p>
           </div>
 
-          {/* Clean Horizontal Filmstrip Selector */}
-          <div className="px-4 py-4 space-y-2.5">
-            <div className="text-[11px] text-[#848896] tracking-wider">全部藏品 ({assets.length})</div>
-            <div className="flex gap-2.5 overflow-x-auto no-scrollbar pb-1">
+          <div className="px-3 pt-5 space-y-2.5">
+            <DecoHeading title="珍藏陈列" aside={`${assets.filter((a: any) => a.owned).length} / ${assets.length}`} />
+            <div className="grid grid-cols-3 gap-2">
               {assets.map((a: any) => {
                 const selected = a.id === featuredAsset.id;
                 return (
@@ -248,44 +264,53 @@ export const AssetsView: React.FC = () => {
                       playTap();
                       setSelectedAssetId(a.id);
                     }}
-                    className={`shrink-0 w-32 p-2.5 text-left border transition ${
-                      selected
-                        ? 'bg-[#171510] border-[#CFB073]/65'
-                        : 'bg-[#0F1015] border-white/[0.08] hover:border-white/20'
+                    className={`relative rounded-[8px] p-1.5 pb-2 text-left transition active:scale-95 ${
+                      selected ? 'panel-brass' : 'panel-arch'
                     }`}
                   >
-                    <div className="h-14 flex items-center justify-center relative">
+                    <div
+                      className="h-[58px] rounded-[5px] flex items-center justify-center"
+                      style={{ background: 'radial-gradient(60% 60% at 50% 60%, rgba(120,140,220,0.22), transparent 75%)' }}
+                    >
                       <img
                         src={a.image}
                         alt={a.name}
-                        className={`max-h-12 max-w-full object-contain ${!a.owned ? 'opacity-70' : ''}`}
+                        className={`max-h-[52px] max-w-full object-contain drop-shadow-[0_6px_6px_rgba(0,0,0,0.7)] ${
+                          !a.owned ? 'brightness-[0.45] saturate-50' : ''
+                        }`}
                       />
                     </div>
-                    <div className="mt-2">
-                      <div className="text-[11.5px] font-semibold text-[#F3F0E8] truncate">{a.name}</div>
-                      <div className="text-[10px] text-[#8E92A0] tabular-nums mt-0.5 truncate">
+                    <div className="mt-1 px-0.5">
+                      <div className="text-[11px] font-bold text-[#F4EFE4] truncate">{a.name}</div>
+                      <div className={`text-[10px] font-num truncate ${a.owned ? 'text-[#7BE0A8]' : 'text-[#929AB4]'}`}>
                         {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
                       </div>
                     </div>
+                    {!a.owned && <GameIcon name="lock" size={16} className="absolute top-1.5 right-1.5 opacity-80" />}
                   </button>
                 );
               })}
             </div>
           </div>
 
-          {/* Hairline Set Bonuses */}
-          <div className="px-4 divide-y divide-white/[0.07] border-t border-white/[0.07]">
+          <div className="px-3 pt-5 space-y-2">
+            <DecoHeading title="套装羁绊" />
             {assetSets.map((s: any) => (
-              <div key={s.id} className="py-3 flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-xs font-semibold text-[#F3F0E8] flex items-center gap-1.5">
-                    <Crown className="w-3.5 h-3.5 text-[#CFB073]" />
-                    <span>{s.name}</span>
-                  </div>
-                  <div className="text-[11px] text-[#8E92A0] mt-0.5">{s.bonusDesc}</div>
+              <div
+                key={s.id}
+                className={`rounded-[8px] px-3 py-2.5 flex items-center gap-3 ${s.completed ? 'panel-brass' : 'panel-arch'}`}
+              >
+                <GameIcon name="crown" size={30} className={s.completed ? '' : 'grayscale opacity-60'} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[13px] font-editorial font-black text-[#FBF1D8]">{s.name}</div>
+                  <div className="text-[11px] text-[#929AB4] mt-0.5">{s.bonusDesc}</div>
                 </div>
-                <span className={`text-[10.5px] shrink-0 ${s.completed ? 'text-[#EBD4A2]' : 'text-[#6F7380]'}`}>
-                  {s.completed ? '已达成' : '收集中'}
+                <span
+                  className={`text-[10.5px] shrink-0 px-2 py-[2px] rounded-full border ${
+                    s.completed ? 'text-[#1E1506] bg-[#E2BD72] border-[#FFE7B0]' : 'text-[#8B93AD] border-white/15'
+                  }`}
+                >
+                  {s.completed ? '已激活' : '收集中'}
                 </span>
               </div>
             ))}
@@ -293,79 +318,95 @@ export const AssetsView: React.FC = () => {
         </div>
       )}
 
-      {/* TAB 2: BUSINESSES — CLEAN ARCHITECTURAL ROWS */}
+      {/* TAB 2: BUSINESSES */}
       {subTab === 'biz' && (
-        <div className="px-4 py-4 pb-8 divide-y divide-white/[0.08]">
+        <div className="px-3 pt-1 pb-8 space-y-3">
           {businesses.map((b: any) => {
             const assignedObj = unlockedHeroines.find((h: any) => h.id === b.assignedHeroineId);
             const locked = !b.owned && player.tier.tier < b.unlockTier;
             return (
-              <div key={b.id} className="py-4 first:pt-0 space-y-3">
-                <div className="relative aspect-[16/9] w-full bg-black overflow-hidden border border-white/[0.08]">
+              <div key={b.id} className={`relative rounded-[10px] overflow-hidden ${b.owned ? 'panel-brass' : 'panel-arch'}`}>
+                <div className="relative h-[128px] w-full overflow-hidden">
                   <img
                     src={b.image}
                     alt={b.name}
-                    className={`w-full h-full object-cover ${locked ? 'grayscale opacity-50' : ''}`}
+                    className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : ''}`}
                   />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/30 to-transparent" />
                   {b.owned && (
-                    <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black/75 border-l-2 border-[#CFB073] text-[10px] text-[#EBD4A2] tabular-nums">
-                      Lv.{b.level}
+                    <span className="absolute top-2 left-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/60 border border-[#E2BD72]/60">
+                      <GameIcon name="medal" size={18} shadow={false} />
+                      <span className="font-num text-[12px] text-[#FFE7B0]">Lv.{b.level}</span>
                     </span>
                   )}
-                </div>
-
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h3 className="font-editorial text-[16px] font-bold text-[#F5F2EA]">{b.name}</h3>
-                    <div className="text-xs text-[#CFB073] tabular-nums mt-0.5">
-                      收益 {formatMoney(b.currentIncomePerHour)} / 时
-                    </div>
-                  </div>
-                  {b.owned ? (
-                    <button
-                      disabled={busy}
-                      onClick={() => upgradeBiz(b.id)}
-                      className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs shrink-0"
-                    >
-                      升级 {formatMoney(b.upgradeCost)}
-                    </button>
-                  ) : (
-                    <button
-                      disabled={busy || locked}
-                      onClick={() => buyBiz(b.id)}
-                      className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs shrink-0 disabled:opacity-40"
-                    >
-                      {locked ? `阶层 Lv.${b.unlockTier}` : `收购 ${formatMoney(b.buyCost)}`}
-                    </button>
-                  )}
-                </div>
-
-                <p className="text-xs text-[#9EA2AE] leading-relaxed">{b.description}</p>
-
-                {b.owned && (
-                  <div className="flex items-center justify-between gap-2 pt-1">
-                    <span className="text-xs text-[#B6B9C4] flex items-center gap-2">
-                      {assignedObj ? (
-                        <PortraitAvatar src={assignedObj.avatar} alt="" className="w-6 h-6" rounded="sm" />
-                      ) : (
-                        <UserCheck className="w-3.5 h-3.5 text-[#848896]" />
-                      )}
-                      顾问
+                  {locked && (
+                    <span className="absolute inset-0 flex items-center justify-center">
+                      <GameIcon name="lock" size={40} />
                     </span>
-                    <select
-                      value={b.assignedHeroineId || ''}
-                      onChange={(e) => assignHeroine(b.id, e.target.value)}
-                      className="bg-[#0E0F14] border border-white/12 rounded-[4px] px-2.5 py-1 text-xs text-[#EBD4A2] outline-none"
-                    >
-                      <option value="">暂未委派</option>
-                      {unlockedHeroines.map((h: any) => (
-                        <option key={h.id} value={h.id}>
-                          {h.name} {b.preferredHeroine === h.id ? '(契合 +35%)' : '(+15%)'}
-                        </option>
-                      ))}
-                    </select>
+                  )}
+                  <div className="absolute left-3 right-3 bottom-2 flex items-end justify-between gap-2">
+                    <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{b.name}</h3>
+                    <span className="font-num text-[13px] text-[#FFE7B0] text-stroke-dark shrink-0 flex items-center gap-1">
+                      <GameIcon name="cash" size={16} /> {formatMoney(b.currentIncomePerHour)}/时
+                    </span>
                   </div>
-                )}
+                </div>
+
+                <div className="px-3 py-2.5 space-y-2.5">
+                  <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{b.description}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    {b.owned ? (
+                      <div className="flex items-center gap-2 min-w-0">
+                        {assignedObj ? (
+                          <PortraitAvatar src={assignedObj.avatar} alt="" className="w-7 h-7" rounded="full" />
+                        ) : (
+                          <UserCheck className="w-4 h-4 text-[#8B93AD]" />
+                        )}
+                        <select
+                          value={b.assignedHeroineId || ''}
+                          onChange={(e) => assignHeroine(b.id, e.target.value)}
+                          className="min-w-0 max-w-[150px] bg-[#070B18] border border-[#E2BD72]/30 rounded-full px-2.5 py-1 text-[11px] text-[#F6DDA4] outline-none"
+                        >
+                          <option value="">委派顾问</option>
+                          {unlockedHeroines.map((h: any) => (
+                            <option key={h.id} value={h.id}>
+                              {h.name} {b.preferredHeroine === h.id ? '(契合 +35%)' : '(+15%)'}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    ) : (
+                      <span className="text-[11px] text-[#8B93AD]">{locked ? `需晋升至阶层 Lv.${b.unlockTier}` : '可收购'}</span>
+                    )}
+                    {b.owned ? (
+                      <button disabled={busy} onClick={() => upgradeBiz(b.id)} className="btn-brass px-3 py-1.5 text-[12px] shrink-0 font-num">
+                        升级 {formatMoney(b.upgradeCost)}
+                      </button>
+                    ) : (
+                      <div className="flex gap-1.5 shrink-0">
+                        {!locked && (
+                          <button
+                            disabled={busy}
+                            onClick={() => {
+                              playTap();
+                              openDeal({ kind: 'business', id: b.id });
+                            }}
+                            className="btn-navy px-3 py-1.5 text-[12px] font-editorial"
+                          >
+                            谈判
+                          </button>
+                        )}
+                        <button
+                          disabled={busy || locked}
+                          onClick={() => buyBiz(b.id)}
+                          className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-num"
+                        >
+                          {locked ? '未解锁' : `全款 ${formatMoney(b.buyCost)}`}
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
               </div>
             );
           })}
@@ -374,45 +415,57 @@ export const AssetsView: React.FC = () => {
 
       {/* TAB 3: PROPERTIES */}
       {subTab === 'props' && (
-        <div className="px-4 py-4 pb-8 divide-y divide-white/[0.08]">
+        <div className="px-3 pt-1 pb-8 space-y-3">
           {properties.map((p: any) => (
-            <div key={p.id} className="py-4 first:pt-0 space-y-3">
-              <div className="relative aspect-[16/9] w-full bg-black overflow-hidden border border-white/[0.08]">
-                <img src={p.image || p.bg} alt={p.displayName} className="w-full h-full object-cover" />
+            <div key={p.id} className={`relative rounded-[10px] overflow-hidden ${p.isMain ? 'panel-brass' : 'panel-arch'}`}>
+              <div className="relative h-[128px] w-full overflow-hidden">
+                <img src={p.image || p.bg} alt={p.displayName} className={`w-full h-full object-cover ${!p.owned ? 'brightness-75' : ''}`} />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/25 to-transparent" />
                 {p.isMain && (
-                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-[#CFB073] text-[#100E0B] text-[10px] font-bold">
+                  <span className="absolute top-2 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">
                     主居所
                   </span>
                 )}
                 {p.owned && !p.isMain && (
-                  <span className="absolute top-2.5 left-2.5 px-2 py-0.5 bg-black/75 border-l-2 border-emerald-400 text-emerald-300 text-[10px]">
+                  <span className="absolute top-2 left-2 px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-white bg-emerald-600/90">
                     已持有
                   </span>
                 )}
-              </div>
-
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <h3 className="font-editorial text-[16px] font-bold text-[#F5F2EA] truncate">{p.displayName}</h3>
-                  <div className="text-xs text-[#CFB073] tabular-nums mt-0.5">
-                    估值 {formatMoney(p.currentValuation)}
-                    {p.currentRentPerHour > 0 ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : ''}
-                    {p.energyBonus > 0 ? ` · 精力 +${p.energyBonus}` : ''}
-                  </div>
+                <div className="absolute left-3 right-3 bottom-2">
+                  <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{p.displayName}</h3>
                 </div>
-                <button
-                  onClick={() => {
-                    playTap();
-                    setActiveTab('map');
-                    setSelectedDistrictId(p.districtId);
-                    if (p.owned) setActivePropertyId(p.id);
-                  }}
-                  className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs shrink-0"
-                >
-                  {p.owned ? '前往' : '去置业'}
-                </button>
               </div>
-              <p className="text-xs text-[#9EA2AE] leading-relaxed">{p.description}</p>
+              <div className="px-3 py-2.5 space-y-2">
+                <div className="flex items-center gap-3 flex-wrap font-num text-[12px]">
+                  <span className="flex items-center gap-1 text-[#FFE7B0]">
+                    <GameIcon name="cash" size={16} /> 估值 {formatMoney(p.currentValuation)}
+                  </span>
+                  {p.currentRentPerHour > 0 && (
+                    <span className="flex items-center gap-1 text-[#7BE0A8]">
+                      <GameIcon name="income" size={16} /> {formatMoney(p.currentRentPerHour)}/时
+                    </span>
+                  )}
+                  {p.energyBonus > 0 && (
+                    <span className="flex items-center gap-1 text-[#B9F6FB]">
+                      <GameIcon name="energy" size={16} /> +{p.energyBonus}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-end justify-between gap-3">
+                  <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{p.description}</p>
+                  <button
+                    onClick={() => {
+                      playTap();
+                      setActiveTab('map');
+                      setSelectedDistrictId(p.districtId);
+                      if (p.owned) setActivePropertyId(p.id);
+                    }}
+                    className={`${p.owned ? 'btn-navy' : 'btn-brass'} px-4 py-1.5 text-[12px] shrink-0 font-editorial`}
+                  >
+                    {p.owned ? '前往' : '去置业'}
+                  </button>
+                </div>
+              </div>
             </div>
           ))}
         </div>

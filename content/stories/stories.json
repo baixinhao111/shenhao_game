@@ -2,6 +2,7 @@
   "volumes": [
     {
       "volumeId": "vol0",
+      "cover": "/assets/story/vol0.webp",
       "title": "序章 · 雨夜",
       "subtitle": "跌入谷底的那一夜，命运悄然转向",
       "episodes": [
@@ -279,6 +280,7 @@
     },
     {
       "volumeId": "vol1",
+      "cover": "/assets/story/vol1.webp",
       "title": "第一卷 · 潜龙",
       "subtitle": "外滩提车、离职反转，与两位重要人物的初遇",
       "episodes": [
@@ -1691,6 +1693,7 @@
     },
     {
       "volumeId": "vol2",
+      "cover": "/assets/story/vol2.webp",
       "title": "第二卷 · 暗涌",
       "subtitle": "星耀盛典逆转、鬼市传世奇珍、资本暗战与红颜修罗场",
       "episodes": [
@@ -3404,6 +3407,7 @@
     },
     {
       "volumeId": "vol3",
+      "cover": "/assets/story/vol3.webp",
       "title": "第三卷 · 苍穹",
       "subtitle": "半山豪门对决与天枢核心的最初秘密",
       "episodes": [

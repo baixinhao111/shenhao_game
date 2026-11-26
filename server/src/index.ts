@@ -6,6 +6,7 @@ import express from 'express';
 import { config } from './config.js';
 import { loadContent } from './contentLoader.js';
 import { initDatabase } from './db.js';
+import { refundOrphanedStakes } from './minigames.js';
 import { createApiRouter } from './routes.js';
 
 function getLanIp(): string {
@@ -21,6 +22,8 @@ function getLanIp(): string {
 async function main() {
   loadContent();
   await initDatabase();
+  const refunded = refundOrphanedStakes();
+  if (refunded) console.log(`  已退还 ${refunded} 笔重启前未结算的小游戏本金`);
 
   const app = express();
   app.use(cors());

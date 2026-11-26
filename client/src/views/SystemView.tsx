@@ -13,6 +13,8 @@ import {
 } from 'lucide-react';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { PortraitAvatar } from '../components/PortraitAvatar';
+import { GameIcon, OrnateCorners } from '../components/GameIcon';
+import { PlayerEmblem } from '../components/TopBar';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { isSoundMuted, playCoinBurst, playSystemPing, playTap, toggleSoundMute } from '../lib/sound';
@@ -28,6 +30,7 @@ export const SystemView: React.FC = () => {
     applyServerState,
     notifyTop,
     showError,
+    flyReward,
   } = useGameStore();
 
   const [subTab, setSubTab] = useState<ProfileSubTab>(profileTab || 'tasks');
@@ -49,9 +52,9 @@ export const SystemView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/system/signin', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '签到完成', res.message);
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -63,8 +66,9 @@ export const SystemView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/system/task/claim', { body: { taskId } });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -104,9 +108,10 @@ export const SystemView: React.FC = () => {
   const tierRatio = player.nextTier ? Math.min(100, (player.netWorth / player.nextTier.minNetWorth) * 100) : 100;
 
   return (
-    <div className="h-full flex flex-col bg-[#090A0D]">
+    <div className="h-full flex flex-col bg-[#0B1122]">
       {/* Reversible Navigation Header */}
-      <header className="shrink-0 h-[54px] px-4 border-b border-white/[0.08] flex items-center justify-between gap-2 bg-[#0B0C10]">
+      <header className="relative shrink-0 h-[56px] px-4 flex items-center justify-between gap-2" style={{ background: "linear-gradient(180deg, rgba(20,28,56,0.98), rgba(11,16,33,0.98))" }}>
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
         <button
           onClick={() => {
             playTap();
@@ -114,19 +119,19 @@ export const SystemView: React.FC = () => {
           }}
           className="flex items-center gap-1.5 text-xs text-[#E6E3DC] hover:text-white active:opacity-75"
         >
-          <ArrowLeft className="w-4 h-4 text-[#CFB073]" />
+          <ArrowLeft className="w-4 h-4 text-[#E2BD72]" />
           <span>返回</span>
         </button>
 
-        <span className="font-editorial text-[15px] font-bold tracking-[0.14em] text-[#F3F0E8]">个人档案</span>
+        <span className="font-editorial text-[17px] font-black tracking-[0.3em] gold-gradient-text">个人档案</span>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => setMuted(toggleSoundMute())}
-            className="p-1.5 text-[#9EA2AE] hover:text-[#EBD4A2]"
+            className="p-1.5 text-[#A3AAC2] hover:text-[#F6DDA4]"
             title={muted ? '开启音效' : '静音'}
           >
-            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#CFB073]" />}
+            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#E2BD72]" />}
           </button>
           {Boolean(user.is_admin) && (
             <button
@@ -134,7 +139,7 @@ export const SystemView: React.FC = () => {
                 playTap();
                 setShowAdmin(true);
               }}
-              className="p-1.5 text-[#CFB073] hover:text-[#EBD4A2]"
+              className="p-1.5 text-[#E2BD72] hover:text-[#F6DDA4]"
               title="服主控制台"
             >
               <Shield className="w-4 h-4" />
@@ -142,7 +147,7 @@ export const SystemView: React.FC = () => {
           )}
           <button
             onClick={logout}
-            className="p-1.5 text-[#848896] hover:text-[#E88CA1]"
+            className="p-1.5 text-[#8B93AD] hover:text-[#E88CA1]"
             title="退出账号"
           >
             <LogOut className="w-4 h-4" />
@@ -150,138 +155,137 @@ export const SystemView: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-5">
-        {/* Editorial Player Dossier Header */}
-        <section className="space-y-4 pb-4 border-b border-white/[0.08]">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="relative w-16 h-16 shrink-0 border border-[#CFB073]/55 bg-[#111218] p-[2px]">
-                <PortraitAvatar src={protagonistSrc} alt={user.nickname} className="w-full h-full" rounded="sm" />
-                <span className="absolute -bottom-1 -right-1 px-1.5 bg-[#141310] border border-[#CFB073]/70 text-[9px] font-bold text-[#EBD4A2] tabular-nums">
-                  Lv.{player.sysLevel}
-                </span>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-baseline gap-2">
-                  <h2 className="font-editorial text-xl font-bold text-[#F5F2EA] tracking-wider truncate">
-                    {user.nickname}
-                  </h2>
-                  <span className="text-xs text-[#CFB073] shrink-0">{player.tier.name}</span>
-                </div>
-                <div className="text-xs text-[#9EA2AE] mt-1 tabular-nums">
-                  总身价 <AnimatedNumber value={player.netWorth} className="text-[#F3F0E8] font-semibold" />
-                </div>
-                <div className="text-[11px] text-[#7D818E] mt-0.5 tabular-nums">
-                  积分 <span className="text-[#EBD4A2] font-semibold">{player.sysPoints}</span> · 精力 {player.energy}/
-                  {player.maxEnergy}
-                </div>
+      <div className="flex-1 overflow-y-auto no-scrollbar px-3 py-4 space-y-4 deco-texture">
+        {/* Dossier card */}
+        <section className="relative panel-brass rounded-[12px] px-4 pt-4 pb-3.5 space-y-3.5">
+          <OrnateCorners size={22} inset={-5} />
+          <div className="flex items-center gap-3.5">
+            <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={64} />
+            <div className="min-w-0 flex-1">
+              <h2 className="font-editorial text-[22px] font-black gold-gradient-text truncate leading-tight">{user.nickname}</h2>
+              <div className="flex items-center gap-1 mt-0.5">
+                <GameIcon name="crown" size={16} shadow={false} />
+                <span className="text-[12px] text-[#F6DDA4] font-bold tracking-wider">{player.tier.name}</span>
               </div>
             </div>
-
             <button
               disabled={busy || player.signedInToday}
               onClick={signIn}
-              className={`px-3 py-2 rounded-[4px] text-xs flex items-center gap-1.5 shrink-0 transition ${
-                player.signedInToday
-                  ? 'border border-white/10 text-[#7D818E]'
-                  : 'btn-brass'
-              }`}
+              className={`shrink-0 flex flex-col items-center ${player.signedInToday ? 'opacity-50 grayscale' : ''}`}
             >
-              <CalendarCheck className="w-3.5 h-3.5" />
-              <span>{player.signedInToday ? '已签' : '签到'}</span>
+              <GameIcon name="signin" size={40} className={player.signedInToday ? '' : 'animate-float-slow'} />
+              <span className="text-[10.5px] font-bold text-[#FBF1D8] -mt-0.5">{player.signedInToday ? '已签到' : '签到'}</span>
             </button>
           </div>
 
-          {/* Two Clean Hairline Meters */}
-          <div className="grid grid-cols-2 gap-4 pt-1">
-            <div className="space-y-1.5">
-              <div className="flex items-center justify-between text-[11px]">
-                <span className="text-[#9EA2AE]">返现蓄能</span>
-                <span className="text-[#EBD4A2] tabular-nums">
-                  {critPct}%{critPct >= 100 ? ' · 已满' : ''}
-                </span>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { icon: 'cash' as const, label: '总身价', value: <AnimatedNumber value={player.netWorth} /> },
+              { icon: 'syspoint' as const, label: '天枢积分', value: player.sysPoints },
+              { icon: 'energy' as const, label: '精力', value: `${player.energy}/${player.maxEnergy}` },
+            ].map((x) => (
+              <div key={x.label} className="rounded-[8px] bg-[#070B18]/70 border border-[#E2BD72]/20 px-2 py-1.5 flex items-center gap-1.5">
+                <GameIcon name={x.icon} size={26} />
+                <div className="min-w-0">
+                  <div className="text-[9.5px] text-[#8B93AD]">{x.label}</div>
+                  <div className="font-num text-[13px] text-[#FFE7B0] truncate">{x.value}</div>
+                </div>
               </div>
-              <div className="h-[3px] bg-white/[0.08] overflow-hidden">
-                <div className="h-full bg-[#CFB073] transition-all duration-500" style={{ width: `${critPct}%` }} />
+            ))}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-[11px]">
+                <span className="text-[#B9F6FB]">返现蓄能</span>
+                <span className="font-num text-[#B9F6FB]">{critPct}%</span>
+              </div>
+              <div className="bar-track">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#1F8FA6] to-[#9BF5FF] shadow-[0_0_8px_rgba(99,230,242,0.7)]"
+                  style={{ width: `${critPct}%` }}
+                />
               </div>
             </div>
-
             {player.nextTier && (
-              <div className="space-y-1.5">
+              <div className="space-y-1">
                 <div className="flex items-center justify-between text-[11px] gap-1">
-                  <span className="text-[#9EA2AE] truncate">下一阶层 · {player.nextTier.name}</span>
-                  <span className="text-[#F3F0E8] tabular-nums shrink-0">{Math.round(tierRatio)}%</span>
+                  <span className="text-[#A3AAC2] truncate">晋升 · {player.nextTier.name}</span>
+                  <span className="font-num text-[#FFE7B0] shrink-0">{Math.round(tierRatio)}%</span>
                 </div>
-                <div className="h-[3px] bg-white/[0.08] overflow-hidden">
-                  <div className="h-full bg-[#EBD4A2] transition-all duration-500" style={{ width: `${tierRatio}%` }} />
+                <div className="bar-track">
+                  <div className="bar-fill" style={{ width: `${tierRatio}%` }} />
                 </div>
               </div>
             )}
           </div>
         </section>
 
-        {/* Clean Hairline-Underlined Sub Navigation */}
-        <div className="flex items-center gap-6 border-b border-white/[0.08]">
+        {/* Segmented tabs */}
+        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
           {[
-            { id: 'tasks', label: '今日日程' },
-            { id: 'skills', label: '能力进修' },
-            { id: 'mall', label: '积分补给' },
-          ].map(({ id, label }) => {
-            const active = subTab === id;
-            return (
-              <button
-                key={id}
-                onClick={() => {
-                  playTap();
-                  setSubTab(id as ProfileSubTab);
-                }}
-                className={`pb-2.5 text-xs tracking-wider border-b-2 transition ${
-                  active
-                    ? 'text-[#EBD4A2] border-[#CFB073] font-semibold'
-                    : 'text-[#7D818E] border-transparent hover:text-[#C5C8D3]'
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
+            { id: 'tasks', label: '今日日程', icon: 'task' as const },
+            { id: 'skills', label: '能力进修', icon: 'skill' as const },
+            { id: 'mall', label: '积分补给', icon: 'mall' as const },
+          ].map(({ id, label, icon }) => (
+            <button
+              key={id}
+              data-active={subTab === id}
+              onClick={() => {
+                playTap();
+                setSubTab(id as ProfileSubTab);
+              }}
+              className="tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
+            >
+              <GameIcon name={icon} size={20} shadow={false} />
+              {label}
+            </button>
+          ))}
         </div>
 
-        {/* Hairline List: Daily Tasks */}
         {subTab === 'tasks' && (
-          <div className="divide-y divide-white/[0.07]">
+          <div className="space-y-2">
             {dailyTasks.map((t: any) => {
               const ready = t.progress >= t.target && !t.claimed;
               const ratio = Math.min(100, (t.progress / t.target) * 100);
               return (
-                <div key={t.id} className="py-3.5 flex items-center justify-between gap-3">
-                  <div className="min-w-0 flex-1 space-y-2">
+                <div
+                  key={t.id}
+                  className={`rounded-[10px] px-3 py-3 flex items-center gap-3 ${ready ? 'panel-brass' : 'panel-arch'} ${
+                    t.claimed ? 'opacity-55' : ''
+                  }`}
+                >
+                  <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="flex items-baseline justify-between gap-2">
-                      <span className="text-[13px] font-medium text-[#F3F0E8]">{t.title}</span>
-                      <span className="text-[11px] text-[#848896] tabular-nums shrink-0">
+                      <span className="text-[13.5px] font-editorial font-bold text-[#FBF1D8]">{t.title}</span>
+                      <span className="font-num text-[12px] text-[#A3AAC2] shrink-0">
                         {Math.min(t.progress, t.target)}/{t.target}
                       </span>
                     </div>
-                    <div className="h-[2px] bg-white/[0.07] overflow-hidden">
-                      <div className="h-full bg-[#CFB073]" style={{ width: `${ratio}%` }} />
+                    <div className="bar-track !h-[5px]">
+                      <div className="bar-fill" style={{ width: `${ratio}%` }} />
                     </div>
-                    <div className="text-[11px] text-[#8E92A0] flex items-center gap-3 tabular-nums">
-                      <span className="text-[#EBD4A2]">+{formatMoney(t.rewardCash)}</span>
-                      <span>积分 +{t.rewardPoints}</span>
-                      <span>精力 +{t.rewardEnergy}</span>
+                    <div className="flex items-center gap-3 font-num text-[11.5px]">
+                      <span className="flex items-center gap-0.5 text-[#FFE7B0]">
+                        <GameIcon name="cash" size={16} shadow={false} />+{formatMoney(t.rewardCash)}
+                      </span>
+                      <span className="flex items-center gap-0.5 text-[#B9F6FB]">
+                        <GameIcon name="syspoint" size={16} shadow={false} />+{t.rewardPoints}
+                      </span>
+                      <span className="flex items-center gap-0.5 text-[#F4EFE4]">
+                        <GameIcon name="energy" size={16} shadow={false} />+{t.rewardEnergy}
+                      </span>
                     </div>
                   </div>
                   {t.claimed ? (
-                    <span className="text-xs text-emerald-400 flex items-center gap-1 shrink-0">
-                      <Check className="w-3.5 h-3.5" /> 已领
+                    <span className="inline-flex items-center justify-center w-11 h-11 rounded-full border-2 border-emerald-400/70 text-[11px] font-black text-emerald-300 rotate-[-14deg] font-editorial shrink-0">
+                      已领
                     </span>
                   ) : (
                     <button
                       disabled={busy || !ready}
                       onClick={() => claimTask(t.id)}
-                      className={`px-3.5 py-1.5 rounded-[4px] text-xs shrink-0 transition ${
-                        ready ? 'btn-brass' : 'border border-white/10 text-[#6F7380]'
-                      }`}
+                      className={`px-3.5 py-1.5 text-[12.5px] font-editorial shrink-0 ${ready ? 'gold-btn-shimmer' : 'btn-navy opacity-60'}`}
                     >
                       {ready ? '领取' : '进行中'}
                     </button>
@@ -292,28 +296,32 @@ export const SystemView: React.FC = () => {
           </div>
         )}
 
-        {/* Hairline List: Skills */}
         {subTab === 'skills' && (
-          <div className="divide-y divide-white/[0.07]">
+          <div className="space-y-2">
             {skills.map((sk: any) => {
               const maxed = sk.level >= sk.maxLevel;
               const cost = sk.costPerLevel * (sk.level + 1);
               const canAfford = !maxed && player.sysPoints >= cost;
               return (
-                <div key={sk.id} className="py-3.5 flex items-start justify-between gap-3">
+                <div key={sk.id} className="panel-arch rounded-[10px] px-3 py-3 flex items-center gap-3">
+                  <div className="relative shrink-0">
+                    <GameIcon name="skill" size={44} />
+                    <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 font-num text-[11px] text-[#FFE7B0] text-stroke-dark whitespace-nowrap">
+                      Lv.{sk.level}
+                    </span>
+                  </div>
                   <div className="min-w-0 flex-1">
-                    <div className="flex items-baseline gap-2">
-                      <span className="text-[13px] font-semibold text-[#F3F0E8]">{sk.name}</span>
-                      <span className="text-[10px] text-[#848896]">
-                        Lv.{sk.level}/{sk.maxLevel}
-                      </span>
-                    </div>
-                    <p className="text-xs text-[#9EA2AE] mt-1 leading-relaxed">{sk.desc}</p>
-                    <div className="flex gap-1 mt-2.5 max-w-[180px]">
+                    <div className="text-[13.5px] font-editorial font-bold text-[#FBF1D8]">{sk.name}</div>
+                    <p className="text-[11.5px] text-[#A3AAC2] mt-0.5 leading-relaxed">{sk.desc}</p>
+                    <div className="flex gap-1 mt-2 max-w-[180px]">
                       {Array.from({ length: sk.maxLevel }).map((_, i) => (
                         <span
                           key={i}
-                          className={`h-[3px] flex-1 ${i < sk.level ? 'bg-[#CFB073]' : 'bg-white/[0.09]'}`}
+                          className={`h-[6px] flex-1 -skew-x-12 ${
+                            i < sk.level
+                              ? 'bg-gradient-to-r from-[#63E6F2] to-[#B9F6FB] shadow-[0_0_6px_rgba(99,230,242,0.7)]'
+                              : 'bg-white/[0.08]'
+                          }`}
                         />
                       ))}
                     </div>
@@ -321,13 +329,17 @@ export const SystemView: React.FC = () => {
                   <button
                     disabled={busy || !canAfford}
                     onClick={() => upgradeSkill(sk.id)}
-                    className={`px-3 py-1.5 rounded-[4px] text-xs shrink-0 transition ${
-                      canAfford
-                        ? 'btn-brass'
-                        : 'border border-white/10 text-[#7D818E] disabled:opacity-45'
+                    className={`px-2.5 py-1.5 text-[12px] shrink-0 flex items-center gap-0.5 font-num ${
+                      canAfford ? 'btn-system' : 'btn-navy opacity-50'
                     }`}
                   >
-                    {maxed ? '已满级' : `${cost} 积分`}
+                    {maxed ? (
+                      '已满级'
+                    ) : (
+                      <>
+                        <GameIcon name="syspoint" size={16} shadow={false} /> {cost}
+                      </>
+                    )}
                   </button>
                 </div>
               );
@@ -335,29 +347,27 @@ export const SystemView: React.FC = () => {
           </div>
         )}
 
-        {/* Hairline List: Supply Mall */}
         {subTab === 'mall' && (
-          <div className="divide-y divide-white/[0.07]">
+          <div className="grid grid-cols-2 gap-2">
             {mallItems.map((item: any) => {
-              const IconComp =
-                item.id === 'item_energy_drink' ? Zap : item.id === 'item_crit_charge' ? Sparkles : Briefcase;
+              const icon =
+                item.id === 'item_energy_drink' ? 'energy' : item.id === 'item_crit_charge' ? 'skill' : 'briefcase';
               return (
-                <div key={item.id} className="py-3.5 flex items-center justify-between gap-3">
-                  <div className="flex items-start gap-3 min-w-0">
-                    <div className="w-9 h-9 rounded-[4px] border border-[#CFB073]/30 bg-[#181611] flex items-center justify-center text-[#EBD4A2] shrink-0 mt-0.5">
-                      <IconComp className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-[13px] font-semibold text-[#F3F0E8]">{item.name}</div>
-                      <div className="text-xs text-[#9EA2AE] mt-0.5 leading-relaxed">{item.desc}</div>
-                    </div>
+                <div key={item.id} className="panel-arch rounded-[10px] p-3 flex flex-col items-center text-center gap-1.5">
+                  <div
+                    className="w-full h-[70px] rounded-[8px] flex items-center justify-center"
+                    style={{ background: 'radial-gradient(60% 60% at 50% 55%, rgba(120,140,220,0.25), transparent 75%)' }}
+                  >
+                    <GameIcon name={icon} size={56} />
                   </div>
+                  <div className="text-[13px] font-editorial font-bold text-[#FBF1D8]">{item.name}</div>
+                  <div className="text-[11px] text-[#A3AAC2] leading-snug min-h-[30px]">{item.desc}</div>
                   <button
                     disabled={busy || player.sysPoints < item.costPoints}
                     onClick={() => buyMall(item.id)}
-                    className="btn-brass px-3 py-1.5 rounded-[4px] text-xs shrink-0 disabled:opacity-40"
+                    className="btn-system w-full py-1.5 text-[12.5px] flex items-center justify-center gap-1 font-num disabled:opacity-40"
                   >
-                    {item.costPoints} 积分
+                    <GameIcon name="syspoint" size={16} shadow={false} /> {item.costPoints}
                   </button>
                 </div>
               );
