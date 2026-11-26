@@ -52,13 +52,13 @@ export function App() {
   const isHome = activeTab === 'home';
 
   return (
-    <div className="min-h-[100dvh] w-full bg-[#040508] flex items-center justify-center sm:py-4">
+    <div className="min-h-[100dvh] w-full bg-[#05070F] flex items-center justify-center sm:py-4">
       {/* 9:16 Mobile-First Viewport Shell */}
-      <div className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#CFB073]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#090A0D] overflow-hidden flex flex-col">
+      <div className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#E2BD72]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#0B1122] overflow-hidden flex flex-col">
         {loading ? (
-          <div className="flex-1 flex flex-col items-center justify-center gap-3.5 bg-[#090A0D]">
-            <div className="w-8 h-8 rounded-full border border-[#CFB073] border-t-transparent animate-spin" />
-            <div className="font-editorial text-xs text-[#EBD4A2] tracking-[0.26em]">海城载入中…</div>
+          <div className="flex-1 flex flex-col items-center justify-center gap-3.5 bg-[#0B1122]">
+            <div className="w-8 h-8 rounded-full border border-[#E2BD72] border-t-transparent animate-spin" />
+            <div className="font-editorial text-xs text-[#F6DDA4] tracking-[0.26em]">海城载入中…</div>
           </div>
         ) : !token || !state ? (
           <AuthScreen />
@@ -82,7 +82,7 @@ export function App() {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 z-30 bg-[#090A0D]"
+                    className="absolute inset-0 z-30 bg-[#0B1122]"
                   >
                     <SystemView />
                   </motion.div>

@@ -22,6 +22,18 @@ import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playCoinBurst, playStoneCrack, playSystemPing, playTap } from '../lib/sound';
 import { useGameStore, type VNNode } from '../store/useGameStore';
+import { DecoHeading, GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
+
+const DISTRICT_ICON: Record<string, GameIconName> = {
+  jade_gambling: 'jade',
+  angel_invest: 'briefcase',
+  street_race: 'race',
+  stock_market: 'stocks',
+  livestream_pk: 'livestream',
+  cruise_event: 'cruise',
+  future_expansion: 'hourglass',
+};
+
 
 const DISTRICT_AMBIENT: Record<string, string> = {
   old_street: '青石巷口灯笼微晃，老茶馆与古玩摊掩在晚风里。',
@@ -197,14 +209,14 @@ export const CityMapView: React.FC = () => {
     };
 
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#08090C] flex flex-col justify-between">
+      <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] flex flex-col justify-between">
         <img
           src={prop.image || prop.bg}
           alt={prop.displayName}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 vignette-stage pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#08090C]/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#0A0F1F]/95 pointer-events-none" />
 
         {featuredResident && (
           <div className="absolute inset-x-0 top-12 bottom-6 z-10 flex items-end justify-center pointer-events-none px-4">
@@ -225,23 +237,23 @@ export const CityMapView: React.FC = () => {
             }}
             className="text-xs text-[#F3F0E8] flex items-center gap-1 text-shadow-stage active:opacity-75"
           >
-            <ArrowLeft className="w-4 h-4 text-[#CFB073]" /> 返回片区
+            <ArrowLeft className="w-4 h-4 text-[#E2BD72]" /> 返回片区
           </button>
           <div className="text-right text-shadow-stage">
-            <div className="font-editorial text-sm font-bold text-[#F5F2EA]">{prop.displayName}</div>
-            <div className="text-[10px] text-[#CFB073]">装潢 Lv.{prop.renovationLevel}</div>
+            <div className="font-editorial text-[16px] font-black gold-gradient-text">{prop.displayName}</div>
+            <div className="text-[10px] text-[#E2BD72]">装潢 Lv.{prop.renovationLevel}</div>
           </div>
         </div>
 
         {/* Bottom Dock */}
-        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#08090C] via-[#08090C]/90 to-transparent space-y-3">
+        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/90 to-transparent space-y-3">
           {featuredResident ? (
             <div className="text-center text-xs text-[#E6E3DC] text-shadow-stage">
               {featuredResident.name}正在客厅等你
             </div>
           ) : (
             <div className="text-center text-xs text-[#C6C9D2]">
-              估值 <span className="text-[#EBD4A2] font-semibold tabular-nums">{formatMoney(prop.currentValuation)}</span>
+              估值 <span className="text-[#F6DDA4] font-semibold tabular-nums">{formatMoney(prop.currentValuation)}</span>
               {prop.energyBonus > 0 ? ` · 精力上限 +${prop.energyBonus}` : ''}
             </div>
           )}
@@ -254,7 +266,7 @@ export const CityMapView: React.FC = () => {
               }}
               className="game-action-tile rounded-[4px] py-2.5 text-xs font-medium text-[#F3F0E8] flex flex-col items-center gap-1"
             >
-              <Heart className="w-4 h-4 text-[#D97791]" />
+              <Heart className="w-4 h-4 text-[#F0789A]" />
               居家时光
             </button>
             <button
@@ -277,7 +289,7 @@ export const CityMapView: React.FC = () => {
               }}
               className="game-action-tile rounded-[4px] py-2.5 text-xs font-medium text-[#F3F0E8] flex flex-col items-center gap-1"
             >
-              <KeyRound className="w-4 h-4 text-[#CFB073]" />
+              <KeyRound className="w-4 h-4 text-[#E2BD72]" />
               物业管理
             </button>
           </div>
@@ -291,16 +303,16 @@ export const CityMapView: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 border-t border-[#CFB073]/30 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
+              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
             >
               <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
-                <span className="font-editorial text-sm font-bold text-[#F5F2EA]">居家时光</span>
-                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#848896]">
+                <span className="font-editorial text-[16px] font-black gold-gradient-text">居家时光</span>
+                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#8B93AD]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
               {residentObjs.length === 0 ? (
-                <div className="text-xs text-[#9EA2AE] py-6 text-center space-y-3">
+                <div className="text-xs text-[#A3AAC2] py-6 text-center space-y-3">
                   <div>这套私宅暂未赠予钥匙</div>
                   <button onClick={() => setHomeSheet('manage')} className="btn-brass px-4 py-1.5 rounded-[4px] text-xs">
                     赠予钥匙
@@ -323,9 +335,9 @@ export const CityMapView: React.FC = () => {
                         >
                           <div>
                             <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
-                            <div className="text-[11px] text-[#8E92A0] mt-0.5">{inter.desc}</div>
+                            <div className="text-[11px] text-[#929AB4] mt-0.5">{inter.desc}</div>
                           </div>
-                          <span className="text-xs text-[#CFB073] flex items-center gap-0.5 shrink-0 tabular-nums">
+                          <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 tabular-nums">
                             <Zap className="w-3 h-3" /> {inter.energy}
                           </span>
                         </button>
@@ -346,24 +358,24 @@ export const CityMapView: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 border-t border-[#CFB073]/30 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
+              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
             >
               <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2">
-                  <span className="font-editorial text-sm font-bold text-[#F5F2EA]">{prop.displayName}</span>
+                  <span className="font-editorial text-[16px] font-black gold-gradient-text">{prop.displayName}</span>
                   {prop.canRename && (
                     <button
                       onClick={() => {
                         setRenameText(prop.displayName);
                         setShowRename(!showRename);
                       }}
-                      className="p-1 text-[#CFB073]"
+                      className="p-1 text-[#E2BD72]"
                     >
                       <Pencil className="w-3.5 h-3.5" />
                     </button>
                   )}
                 </div>
-                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#848896]">
+                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#8B93AD]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -374,7 +386,7 @@ export const CityMapView: React.FC = () => {
                     value={renameText}
                     onChange={(e) => setRenameText(e.target.value)}
                     placeholder="输入大楼冠名"
-                    className="flex-1 bg-[#0B0C10] border border-white/12 rounded-[4px] px-3 py-2 text-xs text-white outline-none"
+                    className="flex-1 bg-[#0D1326] border border-white/12 rounded-[4px] px-3 py-2 text-xs text-white outline-none"
                   />
                   <button onClick={handleRename} className="btn-brass px-3.5 rounded-[4px] text-xs">
                     保存
@@ -407,10 +419,10 @@ export const CityMapView: React.FC = () => {
               {prop.maxResidents > 0 && (
                 <div className="space-y-2.5 pt-2 border-t border-white/[0.08]">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-[#EBD4A2]">
+                    <span className="font-medium text-[#F6DDA4]">
                       居所钥匙 ({residentObjs.length}/{prop.maxResidents})
                     </span>
-                    <span className="text-[10.5px] text-[#848896]">入住后每日增进好感</span>
+                    <span className="text-[10.5px] text-[#8B93AD]">入住后每日增进好感</span>
                   </div>
                   {unlockedHeroines.length > 0 ? (
                     <div className="grid grid-cols-2 gap-2">
@@ -422,20 +434,20 @@ export const CityMapView: React.FC = () => {
                             disabled={here}
                             onClick={() => handleAssignHeroine(h.id)}
                             className={`rounded-[4px] p-2.5 flex items-center gap-2 text-left border transition ${
-                              here ? 'bg-[#D97791]/12 border-[#D97791]/40' : 'panel-arch hover:border-[#CFB073]/40'
+                              here ? 'bg-[#F0789A]/12 border-[#F0789A]/40' : 'panel-arch hover:border-[#E2BD72]/40'
                             }`}
                           >
                             <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
                             <div className="min-w-0">
                               <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
-                              <div className="text-[10px] text-[#CFB073]">{here ? '已入住' : '赠予钥匙'}</div>
+                              <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
                             </div>
                           </button>
                         );
                       })}
                     </div>
                   ) : (
-                    <div className="text-xs text-[#848896]">推进主线结识联系人后即可赠予钥匙。</div>
+                    <div className="text-xs text-[#8B93AD]">推进主线结识联系人后即可赠予钥匙。</div>
                   )}
                 </div>
               )}
@@ -683,10 +695,10 @@ export const CityMapView: React.FC = () => {
     };
 
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#08090C] flex flex-col justify-between">
+      <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] flex flex-col justify-between">
         <img src={d.bg} alt={d.name} className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 vignette-stage pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#08090C]/94 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#0A0F1F]/94 pointer-events-none" />
 
         {streetHeroineFull && (
           <div
@@ -710,24 +722,24 @@ export const CityMapView: React.FC = () => {
             }}
             className="text-xs text-[#F3F0E8] flex items-center gap-1 text-shadow-stage active:opacity-75"
           >
-            <ArrowLeft className="w-4 h-4 text-[#CFB073]" /> 海城
+            <ArrowLeft className="w-4 h-4 text-[#E2BD72]" /> 海城
           </button>
 
           <div className="text-right text-shadow-stage">
-            <div className="font-editorial text-base font-bold text-[#F5F2EA] tracking-wider">{d.name}</div>
-            <div className="text-[10px] text-[#CFB073]">{d.tag}</div>
+            <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">{d.name}</div>
+            <div className="text-[10px] text-[#E2BD72]">{d.tag}</div>
           </div>
         </div>
 
         {/* Bottom Spatial Dock */}
-        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#08090C] via-[#08090C]/90 to-transparent space-y-3">
+        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/90 to-transparent space-y-3">
           {streetHeroineFull ? (
             <div className="flex justify-center">
               <button
                 onClick={() => openHeroineChat(streetHeroineFull.id, d.name)}
-                className="px-3.5 py-1.5 bg-[#0C0D12]/80 backdrop-blur-md border-l-2 border-l-[#D97791] border-y border-r border-white/12 text-xs text-[#F3F0E8] flex items-center gap-1.5"
+                className="pl-1 pr-3.5 py-1 rounded-full bg-[#2A0F1E]/85 backdrop-blur-md border border-[#F0789A]/60 text-xs text-[#FBE3EA] flex items-center gap-1.5 shadow-[0_0_14px_rgba(240,120,154,0.3)]"
               >
-                <MessageCircle className="w-3.5 h-3.5 text-[#D97791]" />
+                <GameIcon name="heart" size={24} />
                 <span>偶遇 {streetHeroineFull.name} · 搭话</span>
               </button>
             </div>
@@ -743,9 +755,9 @@ export const CityMapView: React.FC = () => {
                 playTap();
                 setDistrictSheet('minigame');
               }}
-              className="btn-brass clip-chamfer-sm py-2.5 px-1 text-xs flex flex-col items-center gap-1"
+              className="gold-btn-shimmer py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
             >
-              <Gamepad2 className="w-4 h-4" />
+              <GameIcon name={DISTRICT_ICON[d.coreMinigame] || 'nav_map'} size={34} />
               <span className="truncate max-w-full">{d.coreMinigameLabel}</span>
             </button>
 
@@ -755,9 +767,9 @@ export const CityMapView: React.FC = () => {
                 setExpandedDateSpotId(null);
                 setDistrictSheet('explore');
               }}
-              className="game-action-tile rounded-[4px] py-2.5 px-1 text-xs font-medium text-[#F3F0E8] flex flex-col items-center gap-1"
+              className="btn-navy py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
             >
-              <Footprints className="w-4 h-4 text-[#CFB073]" />
+              <GameIcon name="champagne" size={34} />
               <span>赴约 · 闲逛</span>
             </button>
 
@@ -766,9 +778,9 @@ export const CityMapView: React.FC = () => {
                 playTap();
                 setDistrictSheet('properties');
               }}
-              className="game-action-tile rounded-[4px] py-2.5 px-1 text-xs font-medium text-[#F3F0E8] flex flex-col items-center gap-1"
+              className="btn-navy py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
             >
-              <Building2 className="w-4 h-4 text-[#CFB073]" />
+              <GameIcon name="key" size={34} />
               <span>地产 ({districtProps.length})</span>
             </button>
           </div>
@@ -782,14 +794,14 @@ export const CityMapView: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 border-t border-[#CFB073]/30 p-4 max-h-[82%] flex flex-col"
+              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[82%] flex flex-col"
             >
               <div className="flex items-start justify-between gap-2 shrink-0 pb-3 border-b border-white/[0.08]">
                 <div>
-                  <h3 className="font-editorial text-base font-bold text-[#F5F2EA]">{d.coreMinigameLabel}</h3>
-                  <p className="text-xs text-[#9EA2AE] mt-0.5">{d.coreMinigameDesc}</p>
+                  <h3 className="font-editorial text-[16px] font-black gold-gradient-text">{d.coreMinigameLabel}</h3>
+                  <p className="text-xs text-[#A3AAC2] mt-0.5">{d.coreMinigameDesc}</p>
                 </div>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#848896]">
+                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#8B93AD]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -805,7 +817,7 @@ export const CityMapView: React.FC = () => {
                       ].map((t) => (
                         <div key={t.name} className="flex flex-col items-center gap-1">
                           <img src={t.img} alt={t.name} className="w-11 h-11 object-contain" />
-                          <span className="text-[10px] text-[#9EA2AE]">{t.name}</span>
+                          <span className="text-[10px] text-[#A3AAC2]">{t.name}</span>
                         </div>
                       ))}
                     </div>
@@ -819,11 +831,11 @@ export const CityMapView: React.FC = () => {
                           key={s.tier}
                           disabled={busy}
                           onClick={() => cutJade(s.tier)}
-                          className="panel-arch rounded-[4px] py-3 px-2 text-center hover:border-[#CFB073]/45 transition"
+                          className="panel-arch rounded-[4px] py-3 px-2 text-center hover:border-[#E2BD72]/45 transition"
                         >
                           <div className="text-xs font-semibold text-[#F3F0E8]">{s.label}</div>
-                          <div className="text-sm font-bold text-[#EBD4A2] mt-1 tabular-nums">{s.cost}</div>
-                          <div className="text-[10px] text-[#848896] mt-0.5">⚡6 · {s.desc}</div>
+                          <div className="text-sm font-bold text-[#F6DDA4] mt-1 tabular-nums">{s.cost}</div>
+                          <div className="text-[10px] text-[#8B93AD] mt-0.5">⚡6 · {s.desc}</div>
                         </button>
                       ))}
                     </div>
@@ -840,7 +852,7 @@ export const CityMapView: React.FC = () => {
                       <div key={p.name} className="py-3 flex items-center justify-between gap-2">
                         <div>
                           <div className="text-xs font-semibold text-[#F3F0E8]">{p.name}</div>
-                          <div className="text-[11px] text-[#848896] mt-0.5">{p.tag}</div>
+                          <div className="text-[11px] text-[#8B93AD] mt-0.5">{p.tag}</div>
                         </div>
                         <button
                           disabled={busy}
@@ -856,7 +868,7 @@ export const CityMapView: React.FC = () => {
 
                 {d.coreMinigame === 'street_race' && (
                   <div className="space-y-3">
-                    <div className="bg-[radial-gradient(ellipse_at_50%_75%,rgba(207,176,115,0.14),#0B0C10_70%)] border border-white/[0.07] p-4 flex flex-col items-center">
+                    <div className="bg-[radial-gradient(ellipse_at_50%_75%,rgba(207,176,115,0.14),#0D1326_70%)] border border-white/[0.07] p-4 flex flex-col items-center">
                       {equippedCar?.image && (
                         <img
                           src={equippedCar.image}
@@ -865,7 +877,7 @@ export const CityMapView: React.FC = () => {
                         />
                       )}
                       <div className="text-xs font-bold text-[#F3F0E8] mt-2">{equippedCar?.name}</div>
-                      <div className="text-[11px] text-[#CFB073]">马力值 {equippedCar?.racePower || 10}</div>
+                      <div className="text-[11px] text-[#E2BD72]">马力值 {equippedCar?.racePower || 10}</div>
                     </div>
                     <div className="grid grid-cols-2 gap-2.5">
                       <button
@@ -878,7 +890,7 @@ export const CityMapView: React.FC = () => {
                       <button
                         disabled={busy}
                         onClick={() => runRace(500000)}
-                        className="game-action-tile rounded-[4px] py-2.5 text-xs font-semibold border-[#CFB073]/45 text-[#EBD4A2]"
+                        className="game-action-tile rounded-[4px] py-2.5 text-xs font-semibold border-[#E2BD72]/45 text-[#F6DDA4]"
                       >
                         高额对决（¥50万）
                       </button>
@@ -889,7 +901,7 @@ export const CityMapView: React.FC = () => {
                 {d.coreMinigame === 'stock_market' && (
                   <div className="space-y-2.5">
                     {stocksData?.insiderTip && (
-                      <div className="border-l-2 border-[#CFB073] pl-3 py-1 text-xs text-[#EBD4A2]">
+                      <div className="border-l-2 border-[#E2BD72] pl-3 py-1 text-xs text-[#F6DDA4]">
                         {stocksData.insiderTip}
                       </div>
                     )}
@@ -898,7 +910,7 @@ export const CityMapView: React.FC = () => {
                         <div key={q.id} className="py-3 flex items-center justify-between gap-2">
                           <div>
                             <div className="text-xs font-semibold text-[#F3F0E8] flex items-center gap-1.5">
-                              <TrendingUp className="w-3.5 h-3.5 text-[#CFB073]" /> {q.name}
+                              <TrendingUp className="w-3.5 h-3.5 text-[#E2BD72]" /> {q.name}
                             </div>
                             <div className="text-xs tabular-nums mt-0.5">
                               <span className="text-[#F3F0E8]">¥{q.price}</span>{' '}
@@ -912,7 +924,7 @@ export const CityMapView: React.FC = () => {
                             <button
                               disabled={busy}
                               onClick={() => tradeStock(q.id, 'long')}
-                              className="px-3 py-1.5 rounded-[4px] bg-[#D95B78]/15 border border-[#D95B78]/40 text-[#EEA0B8] text-xs font-semibold"
+                              className="px-3 py-1.5 rounded-[4px] bg-[#FF4F72]/15 border border-[#FF4F72]/40 text-[#EEA0B8] text-xs font-semibold"
                             >
                               做多
                             </button>
@@ -935,10 +947,10 @@ export const CityMapView: React.FC = () => {
                     <div className="panel-arch rounded-[4px] p-3 space-y-2">
                       <div className="flex justify-between text-xs">
                         <span className="text-[#EEA0B8] font-semibold">沈琉璃直播间</span>
-                        <span className="text-[#848896]">VS 赵氏公会</span>
+                        <span className="text-[#8B93AD]">VS 赵氏公会</span>
                       </div>
                       <div className="h-1.5 bg-white/10 overflow-hidden">
-                        <div className="h-full w-2/3 bg-gradient-to-r from-[#D97791] to-[#CFB073]" />
+                        <div className="h-full w-2/3 bg-gradient-to-r from-[#F0789A] to-[#E2BD72]" />
                       </div>
                     </div>
                     <div className="grid grid-cols-2 gap-2.5">
@@ -952,7 +964,7 @@ export const CityMapView: React.FC = () => {
                       <button
                         disabled={busy}
                         onClick={() => runLivestreamPk(1500000)}
-                        className="game-action-tile rounded-[4px] py-2.5 text-xs font-semibold border-[#D97791]/45 text-[#EEA0B8]"
+                        className="game-action-tile rounded-[4px] py-2.5 text-xs font-semibold border-[#F0789A]/45 text-[#EEA0B8]"
                       >
                         50 发绝杀 (¥150万)
                       </button>
@@ -962,7 +974,7 @@ export const CityMapView: React.FC = () => {
 
                 {d.coreMinigame === 'cruise_event' && cruiseEvent?.active && (
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs text-[#EBD4A2]">
+                    <div className="flex items-center justify-between text-xs text-[#F6DDA4]">
                       <span>星耀勋章：{cruiseEvent.tokens}</span>
                       <span>今日次数：{cruiseEvent.playsToday}/5</span>
                     </div>
@@ -976,7 +988,7 @@ export const CityMapView: React.FC = () => {
                           <button
                             disabled={busy || (rew.assetId && cruiseEvent.redeemed?.includes(rew.id))}
                             onClick={() => redeemCruise(rew.id)}
-                            className="px-2.5 py-1 rounded-[4px] border border-[#CFB073]/35 text-[#EBD4A2] text-[11px] disabled:opacity-40"
+                            className="px-2.5 py-1 rounded-[4px] border border-[#E2BD72]/35 text-[#F6DDA4] text-[11px] disabled:opacity-40"
                           >
                             {rew.assetId && cruiseEvent.redeemed?.includes(rew.id) ? '已兑换' : `${rew.costTokens} 勋章`}
                           </button>
@@ -987,7 +999,7 @@ export const CityMapView: React.FC = () => {
                 )}
 
                 {minigameResult && (
-                  <div className="border-l-2 border-[#CFB073] bg-[#161410] px-3.5 py-2.5 text-xs text-[#EFE0BC] leading-relaxed">
+                  <div className="border-l-2 border-[#E2BD72] bg-[#1A1F33] px-3.5 py-2.5 text-xs text-[#EFE0BC] leading-relaxed">
                     {minigameResult}
                   </div>
                 )}
@@ -1004,11 +1016,11 @@ export const CityMapView: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 border-t border-[#CFB073]/30 p-4 max-h-[82%] flex flex-col"
+              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[82%] flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
-                <span className="font-editorial text-sm font-bold text-[#F5F2EA]">{d.name} · 赴约与闲逛</span>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#848896]">
+                <span className="font-editorial text-[16px] font-black gold-gradient-text">{d.name} · 赴约与闲逛</span>
+                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#8B93AD]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1037,14 +1049,14 @@ export const CityMapView: React.FC = () => {
                             <div className="text-[13.5px] font-semibold text-[#F5F2EA] flex items-center gap-2">
                               <span>{inter.name}</span>
                               {isDate && (
-                                <span className="text-[10px] text-[#CFB073] font-normal">邀约</span>
+                                <span className="text-[10px] text-[#E2BD72] font-normal">邀约</span>
                               )}
                             </div>
-                            <div className="text-[11px] text-[#8E92A0] mt-0.5 leading-snug">{inter.desc}</div>
+                            <div className="text-[11px] text-[#929AB4] mt-0.5 leading-snug">{inter.desc}</div>
                           </div>
                           <div className="text-right shrink-0 text-[11px] tabular-nums">
-                            <div className="text-[#EBD4A2]">⚡{inter.energy}</div>
-                            {inter.cashCost > 0 && <div className="text-[#848896] mt-0.5">{formatMoney(inter.cashCost)}</div>}
+                            <div className="text-[#F6DDA4]">⚡{inter.energy}</div>
+                            {inter.cashCost > 0 && <div className="text-[#8B93AD] mt-0.5">{formatMoney(inter.cashCost)}</div>}
                           </div>
                         </button>
 
@@ -1059,7 +1071,7 @@ export const CityMapView: React.FC = () => {
                             >
                               <div className="pt-1 pb-1">
                                 {unlockedHeroines.length === 0 ? (
-                                  <div className="text-xs text-[#848896] py-2">先推进主线结识联系人再来邀约。</div>
+                                  <div className="text-xs text-[#8B93AD] py-2">先推进主线结识联系人再来邀约。</div>
                                 ) : (
                                   <div className="grid grid-cols-2 gap-2">
                                     {unlockedHeroines.map((h: any) => (
@@ -1067,7 +1079,7 @@ export const CityMapView: React.FC = () => {
                                         key={h.id}
                                         disabled={busy}
                                         onClick={() => triggerDate(inter, h)}
-                                        className="panel-arch rounded-[4px] p-2 flex items-center gap-2.5 text-left hover:border-[#CFB073]/50 transition active:scale-[0.98]"
+                                        className="panel-arch rounded-[4px] p-2 flex items-center gap-2.5 text-left hover:border-[#E2BD72]/50 transition active:scale-[0.98]"
                                       >
                                         <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
                                         <div className="min-w-0">
@@ -1089,7 +1101,7 @@ export const CityMapView: React.FC = () => {
 
                 {strollEvent && (
                   <div className="border-t border-white/[0.08] pt-3 space-y-2.5">
-                    <div className="text-xs font-semibold text-[#EBD4A2]">{strollEvent.title}</div>
+                    <div className="text-xs font-semibold text-[#F6DDA4]">{strollEvent.title}</div>
                     <p className="text-xs text-[#C8CBD6] leading-relaxed">{strollEvent.desc}</p>
                     <div className="space-y-2">
                       {strollEvent.choices.map((c: any, idx: number) => (
@@ -1097,7 +1109,7 @@ export const CityMapView: React.FC = () => {
                           key={idx}
                           disabled={busy}
                           onClick={() => resolveStroll(idx)}
-                          className="w-full text-left border border-white/12 border-l-2 border-l-[#CFB073] bg-[#13151C] px-3.5 py-2.5 text-xs text-[#F3F0E8]"
+                          className="w-full text-left border border-white/12 border-l-2 border-l-[#E2BD72] bg-[#13151C] px-3.5 py-2.5 text-xs text-[#F3F0E8]"
                         >
                           {c.label}
                         </button>
@@ -1124,13 +1136,13 @@ export const CityMapView: React.FC = () => {
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 h-[78%] border-t border-[#CFB073]/30 p-4 flex flex-col"
+              className="panel-elevated absolute inset-x-0 bottom-0 z-40 h-[78%] border-t border-[#E2BD72]/30 p-4 flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
-                <span className="font-editorial text-sm font-bold text-[#F5F2EA]">
+                <span className="font-editorial text-[16px] font-black gold-gradient-text">
                   {d.name} · 地产 ({districtProps.length})
                 </span>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#848896]">
+                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#8B93AD]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1143,8 +1155,8 @@ export const CityMapView: React.FC = () => {
                     </div>
                     <div className="flex items-start justify-between gap-2">
                       <div>
-                        <div className="font-editorial text-sm font-bold text-[#F5F2EA]">{p.displayName}</div>
-                        <div className="text-[11px] text-[#CFB073] tabular-nums mt-0.5">
+                        <div className="font-editorial text-[16px] font-black gold-gradient-text">{p.displayName}</div>
+                        <div className="text-[11px] text-[#E2BD72] tabular-nums mt-0.5">
                           估值 {formatMoney(p.currentValuation)}
                           {p.currentRentPerHour > 0 ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : ''}
                         </div>
@@ -1169,7 +1181,7 @@ export const CityMapView: React.FC = () => {
                         </button>
                       )}
                     </div>
-                    <p className="text-xs text-[#9EA2AE] leading-snug">{p.description}</p>
+                    <p className="text-xs text-[#A3AAC2] leading-snug">{p.description}</p>
                   </div>
                 ))}
               </div>
@@ -1184,7 +1196,7 @@ export const CityMapView: React.FC = () => {
   const previewDistrict = map.districts.find((d: any) => d.id === previewDistrictId) || null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#08090C]">
+    <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F]">
       <img
         src={map.mapImage}
         alt="海城地图"
@@ -1194,13 +1206,15 @@ export const CityMapView: React.FC = () => {
       <div className="absolute inset-0 vignette-stage pointer-events-none" />
       <div className="absolute inset-0 bg-gradient-to-b from-black/48 via-transparent to-black/68 pointer-events-none" />
 
-      {/* Minimal Top Map Strip: City + Time (Left) & Equipped Car (Right) */}
-      <div className="relative z-20 px-4 pt-3 flex items-center justify-between gap-2 pointer-events-none">
-        <div className="pointer-events-auto text-shadow-stage">
-          <div className="font-editorial text-[16px] font-bold text-[#F6F3EB] tracking-[0.14em] leading-none">
+      {/* Map header plate */}
+      <div className="relative z-20 px-3 pt-3 flex items-center justify-between gap-2 pointer-events-none">
+        <div className="pointer-events-auto relative pl-3 pr-5 py-1.5 rounded-r-full"
+          style={{ background: 'linear-gradient(90deg, rgba(8,12,26,0.9), rgba(8,12,26,0.4) 85%, transparent)' }}>
+          <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E]" />
+          <div className="font-editorial text-[20px] font-black gold-gradient-text tracking-[0.3em] leading-none">
             {map.cityName}
           </div>
-          <div className="text-[10.5px] text-[#CFB073] mt-1">{state.timeLabel}</div>
+          <div className="text-[10.5px] text-[#C3C9DC] mt-1 font-num tracking-wider">{state.timeLabel}</div>
         </div>
 
         <button
@@ -1208,21 +1222,21 @@ export const CityMapView: React.FC = () => {
             playTap();
             setActiveTab('assets');
           }}
-          className="pointer-events-auto hud-strip px-2.5 py-1 flex items-center gap-2 active:opacity-80"
+          className="pointer-events-auto btn-navy !rounded-full pl-1.5 pr-3 py-1 flex items-center gap-1.5 active:opacity-80"
         >
-          {equippedCar?.image && (
-            <img src={equippedCar.image} alt="" className="w-8 h-5 object-contain shrink-0" />
-          )}
-          <span className="text-[11px] text-[#EBD4A2] font-medium whitespace-nowrap">{equippedCar?.name}</span>
+          {equippedCar?.image && <img src={equippedCar.image} alt="" className="w-9 h-6 object-contain shrink-0" />}
+          <span className="text-[11px] whitespace-nowrap">{equippedCar?.name}</span>
         </button>
       </div>
 
-      {/* Architectural Landmark Pins */}
+      {/* Location plaques */}
       {map.districts.map((d: any) => {
         const isCurrent = player.currentDistrict === d.id;
         const isPreviewed = previewDistrictId === d.id;
         const hasCruise = d.id === 'peak_coast' && cruiseEvent?.active;
         const namedProp = d.ownedProperties?.find((p: any) => p.type === 'landmark' || p.isMain);
+        const icon = DISTRICT_ICON[d.coreMinigame] || 'nav_map';
+        const hot = isPreviewed || isCurrent;
 
         return (
           <button
@@ -1241,39 +1255,52 @@ export const CityMapView: React.FC = () => {
           >
             <div className="flex flex-col items-center">
               {d.presentHeroines?.length > 0 && (
-                <div className="flex -space-x-1 mb-1">
+                <div className="flex -space-x-1.5 mb-1">
                   {d.presentHeroines.slice(0, 3).map((h: any) => (
-                    <PortraitAvatar key={h.id} src={h.avatar} alt={h.name} className="w-6 h-6" rounded="sm" />
+                    <div key={h.id} className="w-7 h-7 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74] shadow">
+                      <PortraitAvatar src={h.avatar} alt={h.name} className="w-full h-full !border-0" rounded="full" />
+                    </div>
                   ))}
                 </div>
               )}
 
               <div className="relative">
-                {(isCurrent || isPreviewed) && (
-                  <span className="absolute -inset-1 border border-[#CFB073]/70 pulse-ring pointer-events-none" />
+                {hot && (
+                  <span className="absolute -inset-1.5 rounded-full border-2 border-[#FFE7B0]/80 pulse-ring pointer-events-none" />
                 )}
                 <div
-                  className={`px-2.5 py-1 text-[11px] font-medium backdrop-blur-md border flex items-center gap-1 whitespace-nowrap shadow-[0_8px_20px_rgba(0,0,0,0.72)] transition active:scale-95 ${
-                    !d.unlocked
-                      ? 'bg-black/72 border-white/12 text-[#848896]'
-                      : isPreviewed || isCurrent
-                        ? 'bg-[#CFB073] text-[#0E0D0A] border-[#F4E3B8] font-bold'
-                        : 'bg-[#0D0E14]/86 border-white/22 text-[#F5F2EA]'
+                  className={`relative pl-0.5 pr-2.5 h-[30px] rounded-full flex items-center gap-1 whitespace-nowrap transition active:scale-95 ${
+                    !d.unlocked ? 'grayscale-[0.8] opacity-75' : ''
                   }`}
+                  style={{
+                    background: hot
+                      ? 'linear-gradient(180deg,#FFF0C8 0%,#E8C27A 55%,#B7843A 100%)'
+                      : 'linear-gradient(180deg, rgba(30,40,78,0.95) 0%, rgba(10,15,31,0.95) 100%)',
+                    border: hot ? '1px solid #FFF3D2' : '1px solid rgba(226,189,114,0.65)',
+                    boxShadow: hot
+                      ? '0 0 18px rgba(255,220,150,0.6), 0 6px 14px rgba(0,0,0,0.6)'
+                      : 'inset 0 1px 0 rgba(255,231,176,0.25), 0 6px 14px rgba(0,0,0,0.65)',
+                  }}
                 >
-                  {!d.unlocked && <Lock className="w-2.5 h-2.5" />}
-                  {d.hasNextStory && <span className="w-1.5 h-1.5 rounded-full bg-[#D95B78]" />}
-                  {hasCruise && <Sparkles className="w-3 h-3 text-[#CFB073]" />}
-                  <span>{d.name}</span>
+                  <GameIcon name={d.unlocked ? icon : 'lock'} size={28} className="-my-1" />
+                  <span
+                    className={`font-editorial text-[12px] font-black tracking-wider ${
+                      hot ? 'text-[#2A1C06]' : d.unlocked ? 'text-[#FBF1D8]' : 'text-[#A3AAC2]'
+                    }`}
+                  >
+                    {d.name}
+                  </span>
+                  {hasCruise && <Sparkles className="w-3 h-3 text-[#FFE7B0]" />}
+                  {d.hasNextStory && <span className="red-dot -top-1 -right-1" />}
                 </div>
               </div>
 
-              <div className="w-[1px] h-2.5 bg-white/45" />
-              <div className={`w-1.5 h-1.5 rotate-45 ${d.unlocked ? 'bg-[#EBD4A2]' : 'bg-white/30'}`} />
+              <div className={`w-px h-3 ${hot ? 'bg-[#FFE7B0]' : 'bg-[#E2BD72]/60'}`} />
+              <div className={`w-2 h-2 rotate-45 border ${d.unlocked ? 'bg-[#FFE7B0] border-white/80 shadow-[0_0_8px_rgba(255,231,176,0.9)]' : 'bg-white/30 border-white/30'}`} />
 
               {d.ownedProperties?.length > 0 && (
-                <div className="mt-1 px-2 py-[2px] bg-[#08090C]/92 backdrop-blur-sm border border-[#CFB073]/40 text-[9.5px] text-[#F1DDA9] flex items-center gap-1 whitespace-nowrap shadow-md">
-                  <Crown className="w-2.5 h-2.5 text-[#CFB073]" />
+                <div className="mt-1 pl-0.5 pr-2 py-[1px] rounded-full bg-[#0A0F1F]/92 border border-[#E2BD72]/50 text-[9.5px] text-[#F1DDA9] flex items-center gap-0.5 whitespace-nowrap shadow-md">
+                  <GameIcon name="crown" size={14} shadow={false} />
                   {namedProp ? namedProp.name : `${d.ownedProperties.length}处物业`}
                 </div>
               )}
@@ -1299,9 +1326,10 @@ export const CityMapView: React.FC = () => {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-            className="panel-elevated absolute inset-x-3 bottom-3 z-30 border-l-2 border-l-[#CFB073] overflow-hidden"
+            className="panel-elevated absolute inset-x-3 bottom-3 z-30 rounded-[10px]"
           >
-            <div className="flex items-stretch">
+            <OrnateCorners size={20} inset={-4} />
+            <div className="flex items-stretch rounded-[10px] overflow-hidden">
               <div className="w-28 shrink-0 bg-black overflow-hidden relative">
                 <img
                   src={previewDistrict.bg}
@@ -1309,7 +1337,7 @@ export const CityMapView: React.FC = () => {
                   className={`w-full h-full object-cover ${!previewDistrict.unlocked ? 'grayscale opacity-55' : ''}`}
                 />
                 {player.currentDistrict === previewDistrict.id && (
-                  <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-black/80 text-[9px] text-[#EBD4A2]">
+                  <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-black/80 text-[9px] text-[#F6DDA4]">
                     当前所在
                   </span>
                 )}
@@ -1318,12 +1346,12 @@ export const CityMapView: React.FC = () => {
                 <div>
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-baseline gap-2 min-w-0">
-                      <span className="font-editorial text-base font-bold text-[#F5F2EA] truncate">
+                      <span className="font-editorial text-[17px] font-black gold-gradient-text truncate">
                         {previewDistrict.name}
                       </span>
-                      <span className="text-[10px] text-[#CFB073] shrink-0">{previewDistrict.tag}</span>
+                      <span className="text-[10px] text-[#E2BD72] shrink-0">{previewDistrict.tag}</span>
                     </div>
-                    <button onClick={() => setPreviewDistrictId(null)} className="text-[#848896] hover:text-white">
+                    <button onClick={() => setPreviewDistrictId(null)} className="text-[#8B93AD] hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>
@@ -1333,7 +1361,7 @@ export const CityMapView: React.FC = () => {
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[10.5px] text-[#B8BBC6] truncate">
+                  <span className="text-[10.5px] text-[#B4BBD0] truncate">
                     {previewDistrict.presentHeroines?.length > 0
                       ? `在场：${previewDistrict.presentHeroines.map((h: any) => h.name).join('、')}`
                       : `地产 ${properties.filter((p: any) => p.districtId === previewDistrict.id).length} 处`}
@@ -1341,7 +1369,7 @@ export const CityMapView: React.FC = () => {
                   <button
                     onClick={() => handleTravelIntoDistrict(previewDistrict)}
                     disabled={!previewDistrict.unlocked}
-                    className="btn-brass clip-chamfer-sm px-4 py-1.5 text-xs shrink-0 disabled:opacity-40"
+                    className="gold-btn-shimmer px-5 py-1.5 text-[13px] font-editorial shrink-0"
                   >
                     {previewDistrict.unlocked ? '前往' : `阶层 Lv.${previewDistrict.unlockTier}`}
                   </button>

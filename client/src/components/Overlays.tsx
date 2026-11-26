@@ -17,6 +17,7 @@ import { formatMoney, formatShortTime } from '../lib/format';
 import { playCoinBurst, playSystemPing, playTap } from '../lib/sound';
 import { useGameStore } from '../store/useGameStore';
 import { AnimatedNumber } from './AnimatedNumber';
+import { GameIcon } from './GameIcon';
 
 export const Overlays: React.FC = () => {
   const {
@@ -148,11 +149,11 @@ export const Overlays: React.FC = () => {
             onClick={dismissToast}
             className="absolute top-3 left-3.5 right-3.5 z-50 cursor-pointer"
           >
-            <div className="panel-elevated rounded-[6px] px-3.5 py-2.5 flex items-center gap-3 border-l-2 border-l-[#CFB073]">
+            <div className="panel-elevated rounded-[6px] px-3.5 py-2.5 flex items-center gap-3 border-l-2 border-l-[#E2BD72]">
               <div
                 className={`w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 ${
                   topToast.kind === 'bank'
-                    ? 'bg-[#CFB073]/15 text-[#EBD4A2]'
+                    ? 'bg-[#E2BD72]/15 text-[#F6DDA4]'
                     : topToast.kind === 'wechat'
                       ? 'bg-emerald-500/15 text-emerald-300'
                       : 'bg-white/[0.07] text-[#E6E3DC]'
@@ -169,7 +170,7 @@ export const Overlays: React.FC = () => {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-xs font-semibold text-[#F3F0E8] truncate">{topToast.title}</span>
-                  <span className="text-[10px] text-[#7D818E] shrink-0">刚刚</span>
+                  <span className="text-[10px] text-[#7F88A6] shrink-0">刚刚</span>
                 </div>
                 <p className="text-[11px] text-[#B4B7C2] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
               </div>
@@ -185,7 +186,7 @@ export const Overlays: React.FC = () => {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 14 }}
-            className="absolute bottom-20 left-4 right-4 z-50 bg-[#231218]/96 backdrop-blur-xl border border-[#D95B78]/45 text-[#F6CFD9] text-xs px-4 py-2.5 rounded-[6px] shadow-xl text-center"
+            className="absolute bottom-20 left-4 right-4 z-50 bg-[#231218]/96 backdrop-blur-xl border border-[#FF4F72]/45 text-[#F6CFD9] text-xs px-4 py-2.5 rounded-[6px] shadow-xl text-center"
           >
             {errorToast}
           </motion.div>
@@ -214,7 +215,7 @@ export const Overlays: React.FC = () => {
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               className="w-full panel-brass clip-chamfer px-6 py-7 text-center space-y-2.5"
             >
-              <div className="text-[11px] tracking-[0.26em] text-[#CFB073] font-medium">
+              <div className="text-[11px] tracking-[0.26em] text-[#E2BD72] font-medium">
                 消费返现 · ×{critBanner.multiplier}
               </div>
               <div className="hairline-gold w-20 mx-auto" />
@@ -222,7 +223,7 @@ export const Overlays: React.FC = () => {
                 +<AnimatedNumber value={critBanner.amount} duration={650} />
               </div>
               {critBanner.subtitle && <div className="text-xs text-[#B9BCC8]">{critBanner.subtitle}</div>}
-              <div className="pt-2 text-[10px] text-[#7D818E] tracking-[0.16em]">点击继续</div>
+              <div className="pt-2 text-[10px] text-[#7F88A6] tracking-[0.16em]">点击继续</div>
             </motion.div>
           </motion.div>
         )}
@@ -236,7 +237,7 @@ export const Overlays: React.FC = () => {
               key={`${barrage.id}-${i}`}
               className={`absolute whitespace-nowrap font-medium text-xs px-3 py-1 rounded-[4px] animate-barrage ${
                 barrage.style === 'gold'
-                  ? 'bg-[#1D1810]/92 border border-[#CFB073]/50 text-[#EBD4A2]'
+                  ? 'bg-[#1D1810]/92 border border-[#E2BD72]/50 text-[#F6DDA4]'
                   : 'bg-black/72 border border-white/12 text-[#EBE8E1]'
               }`}
               style={{ top: `${(i % 4) * 32 + 6}px`, animationDelay: `${i * 0.65}s` }}
@@ -263,19 +264,19 @@ export const Overlays: React.FC = () => {
               exit={{ y: 18, opacity: 0 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[82%] rounded-[8px] flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[82%] rounded-[12px] flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2 text-sm text-[#F3F0E8]">
-                  <Trophy className="w-4 h-4 text-[#CFB073]" />
-                  <span className="font-editorial font-bold tracking-wider">海城财富榜</span>
+                  <GameIcon name="rank" size={28} />
+                  <span className="font-editorial text-[17px] font-black tracking-[0.2em] gold-gradient-text">海城财富榜</span>
                 </div>
                 <button
                   onClick={() => {
                     playTap();
                     setShowLeaderboard(false);
                   }}
-                  className="p-1 text-[#8C8F9A] hover:text-white"
+                  className="p-1 text-[#8E96B0] hover:text-white"
                 >
                   <X className="w-5 h-5" />
                 </button>
@@ -286,12 +287,12 @@ export const Overlays: React.FC = () => {
                     <div
                       className={`w-6 h-6 rounded-[4px] flex items-center justify-center font-bold text-xs shrink-0 tabular-nums ${
                         idx === 0
-                          ? 'bg-[#CFB073] text-[#0D0C0A]'
+                          ? 'bg-[#E2BD72] text-[#0D0C0A]'
                           : idx === 1
                             ? 'bg-white/15 text-[#F3F0E8]'
                             : idx === 2
-                              ? 'bg-[#937A49]/35 text-[#EBD4A2]'
-                              : 'text-[#8C8F9A]'
+                              ? 'bg-[#A07C3E]/35 text-[#F6DDA4]'
+                              : 'text-[#8E96B0]'
                       }`}
                     >
                       {idx + 1}
@@ -299,17 +300,17 @@ export const Overlays: React.FC = () => {
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2">
                         <span className="font-semibold text-sm text-[#F3F0E8] truncate">{row.nickname}</span>
-                        <span className="text-[10px] text-[#CFB073] shrink-0">{row.tierName}</span>
+                        <span className="text-[10px] text-[#E2BD72] shrink-0">{row.tierName}</span>
                       </div>
-                      <div className="text-[11px] text-[#848896] mt-0.5 truncate">
+                      <div className="text-[11px] text-[#8B93AD] mt-0.5 truncate">
                         {row.mainResidence} · {row.carName}
                       </div>
                     </div>
                     <div className="text-right shrink-0">
-                      <div className="text-sm font-bold text-[#EBD4A2]">
+                      <div className="text-sm font-bold text-[#F6DDA4]">
                         <AnimatedNumber value={row.netWorth} />
                       </div>
-                      <div className="text-[10px] text-[#757986]">身价</div>
+                      <div className="text-[10px] text-[#6F7896]">身价</div>
                     </div>
                   </div>
                 ))}
@@ -335,42 +336,42 @@ export const Overlays: React.FC = () => {
               exit={{ y: 18, opacity: 0 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[82%] rounded-[8px] flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[82%] rounded-[12px] flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
                 <div className="flex items-center gap-2 text-sm text-[#F3F0E8]">
-                  <Mail className="w-4 h-4 text-[#CFB073]" />
-                  <span className="font-editorial font-bold tracking-wider">私人信箱</span>
+                  <GameIcon name="mail" size={28} />
+                  <span className="font-editorial text-[17px] font-black tracking-[0.2em] gold-gradient-text">私人信箱</span>
                 </div>
                 <button
                   onClick={() => {
                     playTap();
                     setShowMail(false);
                   }}
-                  className="p-1 text-[#8C8F9A] hover:text-white"
+                  className="p-1 text-[#8E96B0] hover:text-white"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
               <div className="divide-y divide-white/[0.06] overflow-y-auto no-scrollbar px-4">
                 {state.mails?.length === 0 && (
-                  <div className="text-center text-xs text-[#848896] py-10">暂无来信</div>
+                  <div className="text-center text-xs text-[#8B93AD] py-10">暂无来信</div>
                 )}
                 {state.mails?.map((m: any) => (
                   <div key={m.id} className={`py-3.5 space-y-2 ${m.claimed ? 'opacity-65' : ''}`}>
                     <div className="flex items-center justify-between gap-2">
                       <span className="text-xs font-semibold text-[#F3F0E8]">{m.title}</span>
-                      <span className="text-[10px] text-[#7D818E]">{formatShortTime(m.created_at)}</span>
+                      <span className="text-[10px] text-[#7F88A6]">{formatShortTime(m.created_at)}</span>
                     </div>
                     <p className="text-xs text-[#A5A9B5] leading-relaxed">{m.body}</p>
                     <div className="flex items-center justify-between pt-1">
-                      <div className="text-xs text-[#EBD4A2] space-x-2.5 tabular-nums">
+                      <div className="text-xs text-[#F6DDA4] space-x-2.5 tabular-nums">
                         {m.cash > 0 && <span>{formatMoney(m.cash)}</span>}
                         {m.sys_points > 0 && <span>积分 +{m.sys_points}</span>}
                         {m.energy > 0 && <span>精力 +{m.energy}</span>}
                       </div>
                       {m.claimed ? (
-                        <span className="text-[11px] text-[#757986]">已领取</span>
+                        <span className="text-[11px] text-[#6F7896]">已领取</span>
                       ) : (
                         <button onClick={() => claimMail(m.id)} className="btn-brass text-xs px-3 py-1 rounded-[4px]">
                           领取
@@ -401,13 +402,13 @@ export const Overlays: React.FC = () => {
               exit={{ y: 18, opacity: 0 }}
               transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[86%] rounded-[8px] flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[86%] rounded-[12px] flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2 font-semibold text-sm text-[#EBD4A2]">
+                <div className="flex items-center gap-2 font-semibold text-sm text-[#F6DDA4]">
                   <Shield className="w-4 h-4" /> 服主控制台
                 </div>
-                <button onClick={() => setShowAdmin(false)} className="p-1 text-[#8C8F9A] hover:text-white">
+                <button onClick={() => setShowAdmin(false)} className="p-1 text-[#8E96B0] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -415,11 +416,11 @@ export const Overlays: React.FC = () => {
                 <div className="panel-arch rounded-[6px] p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-[#F3F0E8]">DeepSeek 对话接口</span>
-                    <span className={adminData?.stats?.keyConfigured ? 'text-emerald-400' : 'text-[#CFB073]'}>
+                    <span className={adminData?.stats?.keyConfigured ? 'text-emerald-400' : 'text-[#E2BD72]'}>
                       {adminData?.stats?.keyConfigured ? '已接入' : '未配置 Key'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#848896]">
+                  <div className="text-[11px] text-[#8B93AD]">
                     累计对话 {adminData?.stats?.totalMessages || 0} 条 · Tokens {adminData?.stats?.totalTokensUsed || 0}
                   </div>
                   <input
@@ -427,14 +428,14 @@ export const Overlays: React.FC = () => {
                     placeholder="DeepSeek API Key (sk-...)"
                     value={gmKey}
                     onChange={(e) => setGmKey(e.target.value)}
-                    className="w-full rounded-[4px] bg-[#0B0C10] border border-white/12 px-3 py-2 text-xs text-white outline-none focus:border-[#CFB073]/55"
+                    className="w-full rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-2 text-xs text-white outline-none focus:border-[#E2BD72]/55"
                   />
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={gmModel}
                       onChange={(e) => setGmModel(e.target.value)}
-                      className="flex-1 rounded-[4px] bg-[#0B0C10] border border-white/12 px-3 py-1.5 text-xs text-white outline-none focus:border-[#CFB073]/55"
+                      className="flex-1 rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/55"
                     />
                     <button onClick={saveGmConfig} className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs">
                       保存
@@ -444,16 +445,16 @@ export const Overlays: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <button onClick={toggleCruiseEvent} className="game-action-tile rounded-[6px] p-3 text-left">
-                    <div className="font-semibold text-[#EBD4A2]">限时游轮活动</div>
-                    <div className="text-[11px] text-[#848896] mt-0.5">
+                    <div className="font-semibold text-[#F6DDA4]">限时游轮活动</div>
+                    <div className="text-[11px] text-[#8B93AD] mt-0.5">
                       {adminData?.stats?.eventActive ? '开启中' : '已关闭'}
                     </div>
                   </button>
                   <button onClick={reloadContent} className="game-action-tile rounded-[6px] p-3 text-left">
                     <div className="font-semibold text-[#F3F0E8] flex items-center gap-1">
-                      <RefreshCw className="w-3.5 h-3.5 text-[#CFB073]" /> 重载剧本配置
+                      <RefreshCw className="w-3.5 h-3.5 text-[#E2BD72]" /> 重载剧本配置
                     </div>
-                    <div className="text-[11px] text-[#848896] mt-0.5">免重启刷新 content/</div>
+                    <div className="text-[11px] text-[#8B93AD] mt-0.5">免重启刷新 content/</div>
                   </button>
                 </div>
 
@@ -462,7 +463,7 @@ export const Overlays: React.FC = () => {
                   <input
                     value={mailTitle}
                     onChange={(e) => setMailTitle(e.target.value)}
-                    className="w-full rounded-[4px] bg-[#0B0C10] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
+                    className="w-full rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
                   />
                   <div className="grid grid-cols-2 gap-2">
                     <input
@@ -470,14 +471,14 @@ export const Overlays: React.FC = () => {
                       value={mailCash}
                       onChange={(e) => setMailCash(e.target.value)}
                       placeholder="现金"
-                      className="rounded-[4px] bg-[#0B0C10] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
+                      className="rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
                     />
                     <input
                       type="number"
                       value={mailPts}
                       onChange={(e) => setMailPts(e.target.value)}
                       placeholder="积分"
-                      className="rounded-[4px] bg-[#0B0C10] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
+                      className="rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none"
                     />
                   </div>
                   <button
@@ -490,7 +491,7 @@ export const Overlays: React.FC = () => {
 
                 <button
                   onClick={logout}
-                  className="w-full py-2.5 rounded-[4px] border border-[#D95B78]/40 hover:bg-[#D95B78]/10 text-[#E88CA1] text-xs font-medium flex items-center justify-center gap-1.5 transition"
+                  className="w-full py-2.5 rounded-[4px] border border-[#FF4F72]/40 hover:bg-[#FF4F72]/10 text-[#E88CA1] text-xs font-medium flex items-center justify-center gap-1.5 transition"
                 >
                   <LogOut className="w-3.5 h-3.5" /> 退出账号
                 </button>
