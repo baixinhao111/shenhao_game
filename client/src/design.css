@@ -162,7 +162,7 @@
   background-color: var(--ink-1);
   background-image:
     radial-gradient(90% 50% at 50% 0%, rgba(70, 90, 170, 0.22) 0%, transparent 70%),
-    linear-gradient(180deg, rgba(10, 15, 31, 0.55), rgba(10, 15, 31, 0.92)),
+    linear-gradient(180deg, rgba(10, 15, 31, 0.8), rgba(10, 15, 31, 0.94)),
     url('/assets/ui/deco_tile.webp');
   background-size: auto, auto, 220px 220px;
 }
@@ -506,4 +506,13 @@
     0 0 2px rgba(5, 8, 20, 0.95),
     0 0 2px rgba(5, 8, 20, 0.95),
     0 2px 6px rgba(0, 0, 0, 0.8);
+}
+
+@keyframes loadSlide {
+  0% {
+    transform: translateX(-110%);
+  }
+  100% {
+    transform: translateX(330%);
+  }
 }

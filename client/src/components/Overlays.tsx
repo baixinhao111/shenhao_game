@@ -137,7 +137,7 @@ export const Overlays: React.FC = () => {
 
   return (
     <>
-      {/* 1. Sleek Tap-to-Dismiss Top Notice */}
+      {/* 1. Top notice */}
       <AnimatePresence>
         {topToast && (
           <motion.div
@@ -145,34 +145,30 @@ export const Overlays: React.FC = () => {
             initial={{ y: -72, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: -72, opacity: 0 }}
-            transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
             onClick={dismissToast}
-            className="absolute top-3 left-3.5 right-3.5 z-50 cursor-pointer"
+            className="absolute top-2.5 left-3 right-3 z-50 cursor-pointer"
           >
-            <div className="panel-elevated rounded-[6px] px-3.5 py-2.5 flex items-center gap-3 border-l-2 border-l-[#E2BD72]">
-              <div
-                className={`w-7 h-7 rounded-[4px] flex items-center justify-center shrink-0 ${
-                  topToast.kind === 'bank'
-                    ? 'bg-[#E2BD72]/15 text-[#F6DDA4]'
-                    : topToast.kind === 'wechat'
-                      ? 'bg-emerald-500/15 text-emerald-300'
-                      : 'bg-white/[0.07] text-[#E6E3DC]'
-                }`}
-              >
-                {topToast.kind === 'bank' ? (
-                  <CreditCard className="w-3.5 h-3.5" />
-                ) : topToast.kind === 'wechat' ? (
-                  <MessageCircle className="w-3.5 h-3.5" />
-                ) : (
-                  <Bell className="w-3.5 h-3.5" />
-                )}
-              </div>
+            <div
+              className="relative rounded-[12px] pl-2 pr-3.5 py-2 flex items-center gap-2.5"
+              style={{
+                background: 'linear-gradient(180deg, rgba(26,36,72,0.97), rgba(10,15,31,0.97))',
+                border: `1px solid ${
+                  topToast.kind === 'wechat' ? 'rgba(240,120,154,0.6)' : topToast.kind === 'system' ? 'rgba(99,230,242,0.55)' : 'rgba(226,189,114,0.6)'
+                }`,
+                boxShadow: '0 12px 28px rgba(0,0,0,0.55)',
+              }}
+            >
+              <GameIcon
+                name={topToast.kind === 'bank' ? 'income' : topToast.kind === 'wechat' ? 'nav_contact' : 'tianshu'}
+                size={38}
+              />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-xs font-semibold text-[#F3F0E8] truncate">{topToast.title}</span>
+                  <span className="text-[13px] font-editorial font-black text-[#FBF1D8] truncate">{topToast.title}</span>
                   <span className="text-[10px] text-[#7F88A6] shrink-0">刚刚</span>
                 </div>
-                <p className="text-[11px] text-[#B4B7C2] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
+                <p className="text-[11.5px] text-[#C3C9DC] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
               </div>
             </div>
           </motion.div>
@@ -186,14 +182,16 @@ export const Overlays: React.FC = () => {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 14 }}
-            className="absolute bottom-20 left-4 right-4 z-50 bg-[#231218]/96 backdrop-blur-xl border border-[#FF4F72]/45 text-[#F6CFD9] text-xs px-4 py-2.5 rounded-[6px] shadow-xl text-center"
+            className="absolute bottom-24 left-6 right-6 z-50 flex justify-center pointer-events-none"
           >
-            {errorToast}
+            <span className="px-4 py-2 rounded-full text-[12.5px] text-[#FFE3EA] text-center leading-snug shadow-[0_10px_24px_rgba(0,0,0,0.55)]" style={{ background: 'linear-gradient(180deg, rgba(70,20,40,0.96), rgba(36,10,22,0.96))', border: '1px solid rgba(255,120,150,0.55)' }}>
+              {errorToast}
+            </span>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* 3. Architectural Crit Cashback Curtain */}
+      {/* 3. Crit cashback */}
       <AnimatePresence>
         {critBanner && critBanner.id !== dismissedCritId && (
           <motion.div
@@ -206,24 +204,43 @@ export const Overlays: React.FC = () => {
               playTap();
               setDismissedCritId(critBanner.id);
             }}
-            className="absolute inset-0 z-50 bg-black/68 backdrop-blur-[5px] flex items-center justify-center px-6 cursor-pointer"
+            className="absolute inset-0 z-[70] bg-[#05070F]/80 backdrop-blur-[5px] flex items-center justify-center px-8 cursor-pointer overflow-hidden"
           >
             <motion.div
-              initial={{ opacity: 0, scale: 0.93, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 1.02 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="w-full panel-brass clip-chamfer px-6 py-7 text-center space-y-2.5"
+              aria-hidden
+              className="absolute left-1/2 top-1/2 w-[820px] h-[820px] -ml-[410px] -mt-[410px] pointer-events-none opacity-60"
+              style={{
+                background: 'repeating-conic-gradient(rgba(255,226,160,0.3) 0deg 7deg, transparent 7deg 20deg)',
+                maskImage: 'radial-gradient(circle, #000, transparent 58%)',
+                WebkitMaskImage: 'radial-gradient(circle, #000, transparent 58%)',
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 24, ease: 'linear' }}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.6 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 1.05 }}
+              transition={{ type: 'spring', stiffness: 360, damping: 18 }}
+              className="relative w-full text-center"
             >
-              <div className="text-[11px] tracking-[0.26em] text-[#E2BD72] font-medium">
-                消费返现 · ×{critBanner.multiplier}
+              <div className="cyan-glow-text text-[11px] font-black tracking-[0.5em]">天枢 · 消费返现</div>
+              <motion.div
+                initial={{ scale: 2.6, rotate: -14, opacity: 0 }}
+                animate={{ scale: 1, rotate: -6, opacity: 1 }}
+                transition={{ delay: 0.1, type: 'spring', stiffness: 520, damping: 14 }}
+                className="inline-block mt-2 px-4 border-[3px] border-[#FF5C7A] rounded-[8px] font-num text-[46px] font-semibold text-[#FF5C7A] leading-tight shadow-[0_0_26px_rgba(255,92,122,0.55)]"
+              >
+                暴击 ×{critBanner.multiplier}
+              </motion.div>
+              <div className="flex justify-center mt-3">
+                <GameIcon name="income" size={86} />
               </div>
-              <div className="hairline-gold w-20 mx-auto" />
-              <div className="font-editorial text-4xl font-bold gold-gradient-text tracking-tight py-1">
+              <div className="font-num text-[40px] font-semibold gold-gradient-text leading-none mt-1 drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
                 +<AnimatedNumber value={critBanner.amount} duration={650} />
               </div>
-              {critBanner.subtitle && <div className="text-xs text-[#B9BCC8]">{critBanner.subtitle}</div>}
-              <div className="pt-2 text-[10px] text-[#7F88A6] tracking-[0.16em]">点击继续</div>
+              {critBanner.subtitle && <div className="text-[12.5px] text-[#D3D8E8] mt-2">{critBanner.subtitle}</div>}
+              <div className="pt-5 text-[11px] text-[#8B93AD] tracking-[0.3em]">轻触继续</div>
             </motion.div>
           </motion.div>
         )}
@@ -237,8 +254,8 @@ export const Overlays: React.FC = () => {
               key={`${barrage.id}-${i}`}
               className={`absolute whitespace-nowrap font-medium text-xs px-3 py-1 rounded-[4px] animate-barrage ${
                 barrage.style === 'gold'
-                  ? 'bg-[#1D1810]/92 border border-[#E2BD72]/50 text-[#F6DDA4]'
-                  : 'bg-black/72 border border-white/12 text-[#EBE8E1]'
+                  ? 'bg-gradient-to-r from-[#3A2A10]/95 to-[#1A1F33]/90 border border-[#E2BD72]/70 text-[#FFE7B0] !rounded-full font-bold shadow-[0_0_12px_rgba(226,189,114,0.3)]'
+                  : 'bg-[#0A0F1F]/80 border border-white/15 text-[#EBE8E1] !rounded-full'
               }`}
               style={{ top: `${(i % 4) * 32 + 6}px`, animationDelay: `${i * 0.65}s` }}
             >
@@ -281,39 +298,35 @@ export const Overlays: React.FC = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="divide-y divide-white/[0.06] overflow-y-auto no-scrollbar px-4">
-                {leaderboard.map((row, idx) => (
-                  <div key={row.userId} className="py-3.5 flex items-center gap-3">
-                    <div
-                      className={`w-6 h-6 rounded-[4px] flex items-center justify-center font-bold text-xs shrink-0 tabular-nums ${
-                        idx === 0
-                          ? 'bg-[#E2BD72] text-[#0D0C0A]'
-                          : idx === 1
-                            ? 'bg-white/15 text-[#F3F0E8]'
-                            : idx === 2
-                              ? 'bg-[#A07C3E]/35 text-[#F6DDA4]'
-                              : 'text-[#8E96B0]'
-                      }`}
-                    >
-                      {idx + 1}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-[#F3F0E8] truncate">{row.nickname}</span>
-                        <span className="text-[10px] text-[#E2BD72] shrink-0">{row.tierName}</span>
+              <div className="overflow-y-auto no-scrollbar p-3 space-y-1.5">
+                {leaderboard.map((row, idx) => {
+                  const medal = ['linear-gradient(180deg,#FFF0C8,#D6A85A)', 'linear-gradient(180deg,#F2F5FF,#9AA6C8)', 'linear-gradient(180deg,#F5C9A0,#A8693A)'][idx];
+                  return (
+                    <div key={row.userId} className={`rounded-[10px] px-3 py-2.5 flex items-center gap-3 ${idx === 0 ? 'panel-brass' : 'panel-arch'}`}>
+                      <div
+                        className={`w-8 h-8 shrink-0 flex items-center justify-center font-num text-[15px] font-semibold ${medal ? 'rotate-45 rounded-[6px] text-[#1E1506] shadow-[0_3px_8px_rgba(0,0,0,0.5)]' : 'text-[#8E96B0]'}`}
+                        style={medal ? { background: medal } : undefined}
+                      >
+                        <span className={medal ? '-rotate-45' : ''}>{idx + 1}</span>
                       </div>
-                      <div className="text-[11px] text-[#8B93AD] mt-0.5 truncate">
-                        {row.mainResidence} · {row.carName}
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-editorial font-black text-[14px] text-[#FBF1D8] truncate">{row.nickname}</span>
+                          <span className="px-1.5 rounded-sm text-[9.5px] text-[#F6DDA4] border border-[#E2BD72]/40 shrink-0">{row.tierName}</span>
+                        </div>
+                        <div className="text-[11px] text-[#8B93AD] mt-0.5 truncate">
+                          {row.mainResidence} · {row.carName}
+                        </div>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <div className="font-num text-[15px] text-[#FFE7B0]">
+                          <AnimatedNumber value={row.netWorth} />
+                        </div>
+                        <div className="text-[10px] text-[#6F7896]">身价</div>
                       </div>
                     </div>
-                    <div className="text-right shrink-0">
-                      <div className="text-sm font-bold text-[#F6DDA4]">
-                        <AnimatedNumber value={row.netWorth} />
-                      </div>
-                      <div className="text-[10px] text-[#6F7896]">身价</div>
-                    </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </motion.div>
           </motion.div>
@@ -353,27 +366,31 @@ export const Overlays: React.FC = () => {
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="divide-y divide-white/[0.06] overflow-y-auto no-scrollbar px-4">
+              <div className="overflow-y-auto no-scrollbar p-3 space-y-2">
                 {state.mails?.length === 0 && (
-                  <div className="text-center text-xs text-[#8B93AD] py-10">暂无来信</div>
+                  <div className="flex flex-col items-center gap-2 text-xs text-[#8B93AD] py-10">
+                    <GameIcon name="mail" size={56} className="opacity-50 grayscale" />
+                    暂无来信
+                  </div>
                 )}
                 {state.mails?.map((m: any) => (
-                  <div key={m.id} className={`py-3.5 space-y-2 ${m.claimed ? 'opacity-65' : ''}`}>
-                    <div className="flex items-center justify-between gap-2">
-                      <span className="text-xs font-semibold text-[#F3F0E8]">{m.title}</span>
-                      <span className="text-[10px] text-[#7F88A6]">{formatShortTime(m.created_at)}</span>
+                  <div key={m.id} className={`rounded-[10px] px-3 py-3 space-y-2 ${m.claimed ? 'panel-arch opacity-60' : 'panel-brass'}`}>
+                    <div className="flex items-center gap-2">
+                      <GameIcon name="mail" size={30} className={m.claimed ? 'grayscale' : ''} />
+                      <span className="flex-1 min-w-0 text-[13.5px] font-editorial font-black text-[#FBF1D8] truncate">{m.title}</span>
+                      <span className="text-[10px] text-[#7F88A6] shrink-0">{formatShortTime(m.created_at)}</span>
                     </div>
-                    <p className="text-xs text-[#A5A9B5] leading-relaxed">{m.body}</p>
-                    <div className="flex items-center justify-between pt-1">
-                      <div className="text-xs text-[#F6DDA4] space-x-2.5 tabular-nums">
-                        {m.cash > 0 && <span>{formatMoney(m.cash)}</span>}
-                        {m.sys_points > 0 && <span>积分 +{m.sys_points}</span>}
-                        {m.energy > 0 && <span>精力 +{m.energy}</span>}
+                    <p className="text-[12px] text-[#B4BBD0] leading-relaxed">{m.body}</p>
+                    <div className="flex items-center justify-between gap-2 pt-0.5">
+                      <div className="flex items-center gap-3 font-num text-[12px]">
+                        {m.cash > 0 && (<span className="flex items-center gap-0.5 text-[#FFE7B0]"><GameIcon name="cash" size={18} shadow={false} />{formatMoney(m.cash)}</span>)}
+                        {m.sys_points > 0 && (<span className="flex items-center gap-0.5 text-[#B9F6FB]"><GameIcon name="syspoint" size={18} shadow={false} />+{m.sys_points}</span>)}
+                        {m.energy > 0 && (<span className="flex items-center gap-0.5 text-[#F4EFE4]"><GameIcon name="energy" size={18} shadow={false} />+{m.energy}</span>)}
                       </div>
                       {m.claimed ? (
                         <span className="text-[11px] text-[#6F7896]">已领取</span>
                       ) : (
-                        <button onClick={() => claimMail(m.id)} className="btn-brass text-xs px-3 py-1 rounded-[4px]">
+                        <button onClick={() => claimMail(m.id)} className="gold-btn-shimmer text-[12.5px] font-editorial px-4 py-1">
                           领取
                         </button>
                       )}

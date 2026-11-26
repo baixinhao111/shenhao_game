@@ -960,28 +960,24 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[72%] border-t border-[#E2BD72]/30 flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[72%] rounded-t-[16px] border-t border-[#E2BD72]/50 flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
                   <button
+                    data-active={residenceSheet === 'interact'}
                     onClick={() => setResidenceSheet('interact')}
-                    className={`text-sm font-editorial font-bold pb-0.5 border-b-2 transition ${
-                      residenceSheet === 'interact'
-                        ? 'text-[#F6DDA4] border-[#E2BD72]'
-                        : 'text-[#8B93AD] border-transparent'
-                    }`}
+                    className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
                   >
+                    <GameIcon name="heart" size={20} shadow={false} />
                     居家时光
                   </button>
                   <button
+                    data-active={residenceSheet === 'keys'}
                     onClick={() => setResidenceSheet('keys')}
-                    className={`text-sm font-editorial font-bold pb-0.5 border-b-2 transition ${
-                      residenceSheet === 'keys'
-                        ? 'text-[#F6DDA4] border-[#E2BD72]'
-                        : 'text-[#8B93AD] border-transparent'
-                    }`}
+                    className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
                   >
+                    <GameIcon name="key" size={20} shadow={false} />
                     居所与钥匙
                   </button>
                 </div>

@@ -26,7 +26,7 @@ import {
 } from '../lib/sound';
 import { useGameStore, type VNChoiceOption, type VNNode } from '../store/useGameStore';
 import { PortraitAvatar } from './PortraitAvatar';
-import { GameIcon, OrnateCorners } from './GameIcon';
+import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 
 export interface VNSettlementData {
   mode: 'main' | 'date' | 'home' | 'stroll';
@@ -738,7 +738,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           {!hideUi && !settlement && (
             <div className="h-[2px] w-full bg-white/[0.06] overflow-hidden">
               <div
-                className="h-full bg-[#E2BD72] transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0] shadow-[0_0_6px_rgba(255,231,176,0.8)] transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -753,13 +753,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-between gap-2 px-3.5 pt-2.5"
               >
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35">
                   <button
                     onClick={() => {
                       playTap();
                       onExit();
                     }}
-                    className="h-7 px-2 text-xs text-[#EAE7E0] hover:text-white flex items-center gap-1 text-shadow-stage active:opacity-75"
+                    className="h-7 px-2 text-[12px] font-editorial font-bold text-[#F6DDA4] flex items-center gap-1 active:opacity-75"
                   >
                     <ArrowLeft className="w-4 h-4" /> 返回
                   </button>
@@ -767,13 +767,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     onClick={handleBack}
                     disabled={prevStepIdx < 0}
                     title="上一句"
-                    className="h-7 w-7 flex items-center justify-center text-[#C8CBD6] disabled:opacity-25 hover:text-white"
+                    className="h-7 w-7 flex items-center justify-center text-[#F6DDA4] border-l border-white/10 disabled:opacity-25"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2.5 text-[#D8DAE2]">
+                <div className="flex items-center h-8 px-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35 text-[#D8DAE2] divide-x divide-white/10">
                   <button
                     onClick={() => {
                       playTap();
@@ -781,7 +781,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward(false);
                       setShowLog(true);
                     }}
-                    className="text-[11px] hover:text-white flex items-center gap-1 text-shadow-stage"
+                    className="text-[11px] px-2 hover:text-white flex items-center gap-1"
                   >
                     <History className="w-3.5 h-3.5" /> 回顾
                   </button>
@@ -791,8 +791,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward(false);
                       setAutoPlay((v) => !v);
                     }}
-                    className={`text-[11px] flex items-center gap-1 text-shadow-stage ${
-                      autoPlay ? 'text-[#F6DDA4] font-semibold' : 'hover:text-white'
+                    className={`text-[11px] px-2 flex items-center gap-1 ${
+                      autoPlay ? 'text-[#FFE7B0] font-bold' : 'hover:text-white'
                     }`}
                   >
                     {autoPlay ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />} 自动
@@ -804,7 +804,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward((v) => !v);
                     }}
                     title="快进"
-                    className={`p-1 ${fastForward ? 'text-[#F6DDA4]' : 'hover:text-white'}`}
+                    className={`px-2 py-1 ${fastForward ? 'text-[#FFE7B0]' : 'hover:text-white'}`}
                   >
                     <FastForward className="w-3.5 h-3.5" />
                   </button>
@@ -816,7 +816,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setHideUi(true);
                     }}
                     title="隐藏文字"
-                    className="p-1 hover:text-white"
+                    className="px-2 py-1 hover:text-white"
                   >
                     <EyeOff className="w-3.5 h-3.5" />
                   </button>
@@ -1135,7 +1135,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 9. Balanced Editorial Epilogue Curtain */}
+      {/* 9. Settlement */}
       <AnimatePresence>
         {settlement && (
           <motion.div
@@ -1143,173 +1143,239 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="absolute inset-0 z-50 bg-[#0A0F1F]/92 backdrop-blur-xl flex flex-col justify-center px-6 py-8 overflow-y-auto no-scrollbar"
+            className="absolute inset-0 z-50 overflow-hidden"
           >
+            {/* backdrop: blurred scene + glow + rotating rays */}
+            <img src={script.bg} alt="" className="absolute inset-0 w-full h-full object-cover scale-110 blur-[14px] brightness-[0.45]" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1F]/70 via-[#0A0F1F]/80 to-[#05070F]/95" />
             <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.06, duration: 0.3 }}
-              className="w-full space-y-6"
-            >
-              {/* Title Block */}
-              <div className="text-center space-y-2">
-                <div className="text-[11px] tracking-[0.24em] text-[#E2BD72]">
-                  {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
-                </div>
-                <h2 className="font-editorial text-[26px] font-bold tracking-[0.12em] text-[#F6F3EB]">
-                  {settlement.title}
-                </h2>
-                <div className="w-12 hairline-gold mx-auto pt-1" />
-              </div>
+              aria-hidden
+              className="absolute left-1/2 top-[18%] w-[760px] h-[760px] -ml-[380px] -mt-[380px] pointer-events-none opacity-40"
+              style={{
+                background:
+                  'repeating-conic-gradient(from 0deg, rgba(255,226,160,0.22) 0deg 6deg, transparent 6deg 22deg)',
+                maskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+                WebkitMaskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
+            />
+            <div className="absolute left-1/2 top-[18%] w-[300px] h-[300px] -ml-[150px] -mt-[150px] rounded-full bg-[radial-gradient(circle,rgba(255,220,150,0.28),transparent_70%)] pointer-events-none" />
 
-              {/* Natural Closing Note */}
-              {(settlement.reactionText || settlement.resultText) && (
-                <div className="border-y border-white/[0.09] py-4 space-y-2.5">
-                  {settlement.heroineName && (
-                    <div className="flex items-center gap-2.5">
-                      {settlement.heroineAvatar && (
-                        <PortraitAvatar
-                          src={settlement.heroineAvatar}
-                          alt={settlement.heroineName}
-                          className="w-8 h-8"
-                          rounded="sm"
-                        />
-                      )}
-                      <div>
-                        <div className="text-xs font-semibold text-[#F5F2EA]">{settlement.heroineName}</div>
-                        {settlement.locationLabel && (
-                          <div className="text-[10px] text-[#8B93AD]">{settlement.locationLabel}</div>
+            {settlement.mode !== 'main' && settlement.heroinePortrait && (
+              <motion.img
+                src={settlement.heroinePortrait}
+                alt=""
+                initial={{ opacity: 0, x: 40 }}
+                animate={{ opacity: 0.9, x: 0 }}
+                transition={{ delay: 0.15, duration: 0.5 }}
+                className="absolute right-[-18%] bottom-0 h-[78%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
+              />
+            )}
+
+            <div className="relative h-full overflow-y-auto no-scrollbar flex flex-col justify-center px-5 py-8">
+              <div className="w-full space-y-5">
+                {/* Title */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ delay: 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="text-center"
+                >
+                  <div className="inline-flex items-center gap-2 px-4 py-[3px] rounded-full text-[10.5px] font-black tracking-[0.35em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow-[0_4px_14px_rgba(226,189,114,0.4)]">
+                    {settlement.alreadyCompleted
+                      ? '回顾结束'
+                      : settlement.mode === 'main'
+                        ? '本幕完成'
+                        : settlement.mode === 'date'
+                          ? '约会结束'
+                          : settlement.mode === 'home'
+                            ? '居家时光'
+                            : '漫步结束'}
+                  </div>
+                  <div className="mt-3 text-[11px] tracking-[0.3em] text-[#E2BD72] font-bold">
+                    {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
+                  </div>
+                  <h2 className="mt-1 font-editorial text-[32px] font-black tracking-[0.14em] gold-gradient-text leading-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
+                    {settlement.title}
+                  </h2>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
+                    <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
+                    <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
+                  </div>
+                </motion.div>
+
+                {/* Closing note */}
+                {(settlement.reactionText || settlement.resultText) && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2, duration: 0.35 }}
+                    className={`relative rounded-[10px] px-4 py-3.5 space-y-2 ${settlement.mode !== 'main' ? 'max-w-[78%]' : ''}`}
+                    style={{
+                      background: 'linear-gradient(180deg, rgba(20,28,58,0.85), rgba(8,12,26,0.9))',
+                      border: '1px solid rgba(226,189,114,0.35)',
+                    }}
+                  >
+                    {settlement.heroineName && (
+                      <div className="flex items-center gap-2">
+                        {settlement.heroineAvatar && (
+                          <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74]">
+                            <PortraitAvatar src={settlement.heroineAvatar} alt="" className="w-full h-full !border-0" rounded="full" />
+                          </div>
                         )}
+                        <div>
+                          <div className="text-[12.5px] font-editorial font-black text-[#FBF1D8]">{settlement.heroineName}</div>
+                          {settlement.locationLabel && (
+                            <div className="text-[10px] text-[#8B93AD]">{settlement.locationLabel}</div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
-                  <p className="text-[13px] leading-[1.82] text-[#E4E1DA]">
-                    {settlement.reactionText || settlement.resultText}
-                  </p>
-                </div>
-              )}
+                    )}
+                    <p className="text-[13px] leading-[1.82] text-[#E9E6DE]">{settlement.reactionText || settlement.resultText}</p>
+                  </motion.div>
+                )}
 
-              {/* Compact Hairline Rewards Strip */}
-              {settlement.rewards && !settlement.alreadyCompleted && (
-                (() => {
-                  const r = settlement.rewards;
-                  const items: { label: string; value: string; color: string }[] = [];
-                  if (r.critCashback && r.critCashback > 0) {
-                    items.push({
-                      label: `返现 ×${r.critMultiplier || 10}`,
-                      value: `+${formatMoney(r.critCashback)}`,
-                      color: 'text-[#F6DDA4]',
-                    });
-                    if (r.cash && r.cash > r.critCashback) {
+                {/* Rewards */}
+                {settlement.rewards &&
+                  !settlement.alreadyCompleted &&
+                  (() => {
+                    const r = settlement.rewards;
+                    const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string }[] = [];
+                    if (r.critCashback && r.critCashback > 0) {
                       items.push({
-                        label: '资金',
-                        value: `+${formatMoney(r.cash - r.critCashback)}`,
-                        color: 'text-[#F6DDA4]',
+                        icon: 'income',
+                        label: '暴击返现',
+                        value: `+${formatMoney(r.critCashback)}`,
+                        tone: 'text-[#FFE7B0]',
+                        ribbon: `×${r.critMultiplier || 10}`,
+                      });
+                      if (r.cash && r.cash > r.critCashback) {
+                        items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash - r.critCashback)}`, tone: 'text-[#FFE7B0]' });
+                      }
+                    } else if (r.cash && r.cash > 0) {
+                      items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash)}`, tone: 'text-[#FFE7B0]' });
+                    }
+                    if (r.affectionGain && r.affectionGain > 0) {
+                      items.push({
+                        icon: 'heart',
+                        label: r.affectionHeroineName ? `${r.affectionHeroineName}` : '好感',
+                        value: `+${r.affectionGain}`,
+                        tone: 'text-[#FFB3C6]',
                       });
                     }
-                  } else if (r.cash && r.cash > 0) {
-                    items.push({ label: '资金', value: `+${formatMoney(r.cash)}`, color: 'text-[#F6DDA4]' });
-                  }
-                  if (r.affectionGain && r.affectionGain > 0) {
-                    items.push({
-                      label: r.affectionHeroineName ? `${r.affectionHeroineName}好感` : '好感',
-                      value: `+${r.affectionGain}`,
-                      color: 'text-[#EEA0B8]',
-                    });
-                  }
-                  if (r.sysPoints && r.sysPoints > 0) {
-                    items.push({ label: '积分', value: `+${r.sysPoints}`, color: 'text-emerald-300' });
-                  }
-                  if (r.unlockedHeroineName) {
-                    items.push({ label: '新联系人', value: r.unlockedHeroineName, color: 'text-[#EEA0B8]' });
-                  }
-                  if (r.unlockedAssetName) {
-                    items.push({ label: '入库', value: r.unlockedAssetName, color: 'text-[#F6DDA4]' });
-                  }
-                  if (items.length === 0) return null;
-                  return (
-                    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2.5 py-1">
-                      {items.map((it, i) => (
-                        <div key={i} className="text-center">
-                          <div className="text-[10px] text-[#8B93AD]">{it.label}</div>
-                          <div className={`text-sm font-bold tabular-nums mt-0.5 ${it.color}`}>{it.value}</div>
+                    if (r.sysPoints && r.sysPoints > 0) {
+                      items.push({ icon: 'syspoint', label: '天枢积分', value: `+${r.sysPoints}`, tone: 'text-[#B9F6FB]' });
+                    }
+                    if (r.unlockedHeroineName) {
+                      items.push({ icon: 'nav_contact', label: '新联系人', value: r.unlockedHeroineName, tone: 'text-[#FFB3C6]' });
+                    }
+                    if (r.unlockedAssetName) {
+                      items.push({ icon: 'key', label: '入库', value: r.unlockedAssetName, tone: 'text-[#FFE7B0]' });
+                    }
+                    if (items.length === 0) return null;
+                    return (
+                      <div>
+                        <div className="text-center text-[10.5px] tracking-[0.4em] text-[#A3AAC2] mb-2">— 获得奖励 —</div>
+                        <div className="flex flex-wrap justify-center gap-2">
+                          {items.map((it, i) => (
+                            <motion.div
+                              key={i}
+                              initial={{ opacity: 0, scale: 0.5, y: 10 }}
+                              animate={{ opacity: 1, scale: 1, y: 0 }}
+                              transition={{ delay: 0.35 + i * 0.12, type: 'spring', stiffness: 380, damping: 18 }}
+                              className="relative w-[84px] rounded-[10px] pt-2 pb-2 px-1 flex flex-col items-center"
+                              style={{
+                                background:
+                                  'radial-gradient(70% 55% at 50% 35%, rgba(255,220,150,0.22), transparent 75%), linear-gradient(180deg, rgba(30,40,78,0.92), rgba(10,15,31,0.95))',
+                                border: '1px solid rgba(226,189,114,0.55)',
+                                boxShadow: 'inset 0 1px 0 rgba(255,231,176,0.2), 0 8px 18px rgba(0,0,0,0.45)',
+                              }}
+                            >
+                              {it.ribbon && (
+                                <span className="absolute -top-2 -right-1.5 px-1.5 rounded-sm bg-[#FF4F72] text-white font-num text-[11px] shadow">
+                                  {it.ribbon}
+                                </span>
+                              )}
+                              <GameIcon name={it.icon} size={42} />
+                              <div className={`font-num text-[13px] font-semibold mt-1 max-w-full truncate ${it.tone}`}>{it.value}</div>
+                              <div className="text-[9.5px] text-[#A3AAC2] max-w-full truncate">{it.label}</div>
+                            </motion.div>
+                          ))}
                         </div>
-                      ))}
+                      </div>
+                    );
+                  })()}
+
+                {/* Next teaser */}
+                {settlement.cliffhanger && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.6, duration: 0.35 }}
+                    className="relative rounded-[10px] px-4 pt-4 pb-3"
+                    style={{ background: 'rgba(5,7,15,0.7)', border: '1px solid rgba(226,189,114,0.28)' }}
+                  >
+                    <OrnateCorners size={16} inset={-4} />
+                    <div className="absolute -top-2.5 left-3 px-2 bg-[#0A0F1F] text-[10.5px] font-black tracking-[0.3em] text-[#E2BD72]">
+                      下幕预告
                     </div>
-                  );
-                })()
-              )}
+                    <p className="text-[12px] text-[#C6CBDB] leading-[1.8]">{settlement.cliffhanger}</p>
+                  </motion.div>
+                )}
 
-              {settlement.alreadyCompleted && (
-                <div className="text-center text-xs text-[#8B93AD]">本幕回顾结束</div>
-              )}
-
-              {/* Next Chapter Teaser */}
-              {settlement.cliffhanger && (
-                <div className="border-l-2 border-[#E2BD72]/70 pl-3.5 py-0.5 space-y-1">
-                  <div className="text-[10px] tracking-[0.2em] text-[#E2BD72]">下幕预告</div>
-                  <p className="text-xs text-[#C6C9D4] leading-[1.8]">{settlement.cliffhanger}</p>
-                </div>
-              )}
-
-              {/* Actions */}
-              <div className="pt-2 space-y-2.5">
-                {settlement.mode === 'main' &&
-                  settlement.nextEpisodeId &&
-                  settlement.nextEpisodeUnlocked &&
-                  onNextEpisode && (
+                {/* Actions */}
+                <div className="pt-1 space-y-2.5">
+                  {settlement.mode === 'main' && settlement.nextEpisodeId && settlement.nextEpisodeUnlocked && onNextEpisode && (
                     <button
                       onClick={() => {
                         playSystemPing();
                         onNextEpisode(settlement.nextEpisodeId!);
                       }}
-                      className="w-full btn-brass clip-chamfer-sm py-3 px-4 text-sm flex items-center justify-center gap-1.5"
+                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-1.5"
                     >
-                      <span>
-                        下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}
-                      </span>
-                      <ChevronRight className="w-4 h-4" />
+                      <span className="truncate">下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}</span>
+                      <ChevronRight className="w-4 h-4 shrink-0" />
                     </button>
                   )}
 
-                {settlement.mode === 'main' &&
-                  settlement.nextEpisodeId &&
-                  !settlement.nextEpisodeUnlocked &&
-                  settlement.nextEpisodeLockReason && (
-                    <div className="text-center text-[11px] text-[#E6829A]">
-                      下一幕需{settlement.nextEpisodeLockReason}
+                  {settlement.mode === 'main' && settlement.nextEpisodeId && !settlement.nextEpisodeUnlocked && settlement.nextEpisodeLockReason && (
+                    <div className="flex items-center justify-center gap-1.5 text-[12px] text-[#FF8FA6]">
+                      <GameIcon name="lock" size={18} /> 下一幕需{settlement.nextEpisodeLockReason}
                     </div>
                   )}
 
-                {settlement.mode !== 'main' && settlement.heroineId && onOpenChat && (
+                  {settlement.mode !== 'main' && settlement.heroineId && onOpenChat && (
+                    <button
+                      onClick={() => {
+                        playTap();
+                        onOpenChat(settlement.heroineId!, settlement.locationLabel || null);
+                      }}
+                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-2"
+                    >
+                      <GameIcon name="nav_contact" size={24} shadow={false} />
+                      <span>发微信给{settlement.heroineName || '她'}</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={() => {
                       playTap();
-                      onOpenChat(settlement.heroineId!, settlement.locationLabel || null);
+                      onExit();
                     }}
-                    className="w-full btn-brass clip-chamfer-sm py-3 px-4 text-sm flex items-center justify-center gap-2"
+                    className={`w-full py-2.5 text-[14px] font-editorial ${
+                      (settlement.mode === 'main' && settlement.nextEpisodeUnlocked) ||
+                      (settlement.mode !== 'main' && settlement.heroineId)
+                        ? 'btn-navy'
+                        : 'gold-btn-shimmer'
+                    }`}
                   >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>发微信给{settlement.heroineName || '她'}</span>
+                    {settlement.mode === 'main' ? '返回目录' : '返回'}
                   </button>
-                )}
-
-                <button
-                  onClick={() => {
-                    playTap();
-                    onExit();
-                  }}
-                  className={`w-full py-2.5 rounded-[4px] text-xs font-medium transition active:scale-[0.99] ${
-                    (settlement.mode === 'main' && settlement.nextEpisodeUnlocked) ||
-                    (settlement.mode !== 'main' && settlement.heroineId)
-                      ? 'border border-white/12 text-[#C8CBD6] hover:bg-white/[0.04]'
-                      : 'btn-brass text-sm py-3'
-                  }`}
-                >
-                  {settlement.mode === 'main' ? '返回目录' : '返回'}
-                </button>
+                </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
