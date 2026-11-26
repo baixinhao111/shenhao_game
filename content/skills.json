@@ -1,0 +1,82 @@
+{
+  "skills": [
+    {
+      "id": "sk_crit_rate",
+      "branch": "wealth",
+      "branchName": "资本",
+      "name": "消费返现概率",
+      "maxLevel": 5,
+      "costPerLevel": 60,
+      "desc": "每级提升消费返现触发概率 5%，并提高高倍返现比重",
+      "effectKey": "critRatePct",
+      "valuePerLevel": 0.05
+    },
+    {
+      "id": "sk_crit_mult",
+      "branch": "wealth",
+      "branchName": "资本",
+      "name": "返现倍率增幅",
+      "maxLevel": 5,
+      "costPerLevel": 90,
+      "desc": "每级提升返现基础倍率 1.0 倍",
+      "effectKey": "critMultBonus",
+      "valuePerLevel": 1
+    },
+    {
+      "id": "sk_offline_boost",
+      "branch": "wealth",
+      "branchName": "资本",
+      "name": "资产复利管理",
+      "maxLevel": 5,
+      "costPerLevel": 75,
+      "desc": "每级提升名下产业分红与物业租金收益 15%",
+      "effectKey": "incomePct",
+      "valuePerLevel": 0.15
+    },
+    {
+      "id": "sk_insight_eye",
+      "branch": "insight",
+      "branchName": "洞察",
+      "name": "商战与鉴宝直觉",
+      "maxLevel": 5,
+      "costPerLevel": 65,
+      "desc": "每级提升赌石鉴宝精度、股市研判准确率与早期投资胜率",
+      "effectKey": "insightLevel",
+      "valuePerLevel": 1
+    },
+    {
+      "id": "sk_biz_discount",
+      "branch": "insight",
+      "branchName": "洞察",
+      "name": "并购谈判",
+      "maxLevel": 5,
+      "costPerLevel": 80,
+      "desc": "每级降低产业升级与物业装潢成本 5%",
+      "effectKey": "upgradeDiscountPct",
+      "valuePerLevel": 0.05
+    },
+    {
+      "id": "sk_charm_aura",
+      "branch": "charm",
+      "branchName": "魅力",
+      "name": "从容气度",
+      "maxLevel": 5,
+      "costPerLevel": 60,
+      "desc": "每级提升赴约与赠礼好感 12%，并小幅提升红颜顾问分成",
+      "effectKey": "charmPct",
+      "valuePerLevel": 0.12
+    }
+  ],
+  "dailyTasks": [
+    { "id": "task_signin", "title": "完成今日签到", "target": 1, "rewardCash": 100000, "rewardPoints": 40, "rewardEnergy": 20 },
+    { "id": "task_collect", "title": "收取一次产业或租金收益", "target": 1, "rewardCash": 150000, "rewardPoints": 35, "rewardEnergy": 10 },
+    { "id": "task_chat", "title": "在微信和任意联系人聊天 3 句", "target": 3, "rewardCash": 80000, "rewardPoints": 50, "rewardEnergy": 15 },
+    { "id": "task_minigame", "title": "在海城各区参与 2 次活动或赴约", "target": 2, "rewardCash": 200000, "rewardPoints": 60, "rewardEnergy": 15 },
+    { "id": "task_spend", "title": "完成任意一笔资产消费或升级", "target": 1, "rewardCash": 250000, "rewardPoints": 55, "rewardEnergy": 20 }
+  ],
+  "mallItems": [
+    { "id": "item_energy_drink", "name": "特调黑咖啡（+50 精力）", "costPoints": 35, "icon": "⚡", "desc": "立即恢复 50 点精力，便于连续推进主线或外出赴约。" },
+    { "id": "item_crit_charge", "name": "满格返现蓄能", "costPoints": 80, "icon": "💥", "desc": "将返现蓄能直接补满至 100%，下一次大额消费必触发高倍返现。" },
+    { "id": "item_cash_pack", "name": "应急周转金", "costPoints": 50, "icon": "💼", "desc": "按当前阶层兑换一笔流动资金入账。" }
+  ]
+}

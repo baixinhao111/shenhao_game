@@ -1,0 +1,141 @@
+{
+  "cityId": "haicheng",
+  "cityName": "海城",
+  "subtitle": "江岸霓虹与旧巷烟火交织之城",
+  "mapImage": "/assets/bg/haicheng_map.jpg",
+  "tiers": [
+    { "tier": 1, "name": "初入海城", "minNetWorth": 0, "badge": "初入海城", "color": "#94A3B8" },
+    { "tier": 2, "name": "新锐新贵", "minNetWorth": 1000000, "badge": "新锐新贵", "color": "#38BDF8" },
+    { "tier": 3, "name": "海城名流", "minNetWorth": 30000000, "badge": "海城名流", "color": "#A78BFA" },
+    { "tier": 4, "name": "商界巨鳄", "minNetWorth": 500000000, "badge": "商界巨鳄", "color": "#E6C165" },
+    { "tier": 5, "name": "顶级豪门", "minNetWorth": 5000000000, "badge": "顶级豪门", "color": "#F59E0B" },
+    { "tier": 6, "name": "跨国财阀", "minNetWorth": 50000000000, "badge": "跨国财阀", "color": "#F43F5E" },
+    { "tier": 7, "name": "全球教父", "minNetWorth": 500000000000, "badge": "全球教父", "color": "#EC4899" },
+    { "tier": 8, "name": "幕后苍穹", "minNetWorth": 10000000000000, "badge": "幕后苍穹", "color": "#F9DF8B" }
+  ],
+  "districts": [
+    {
+      "id": "old_street",
+      "name": "城南旧街",
+      "tag": "古玩烟火",
+      "unlockTier": 1,
+      "x": 22,
+      "y": 54,
+      "bg": "/assets/bg/bg_old_street.jpg",
+      "themeColor": "#F59E0B",
+      "description": "青石老巷与红灯笼交错，白日里原石古玩暗流涌动，入夜则是热气腾腾的夜宵摊。",
+      "coreMinigame": "jade_gambling",
+      "coreMinigameLabel": "古玩赌石",
+      "coreMinigameDesc": "挑选原石切料，考验眼力与运气",
+      "interactions": [
+        { "id": "night_noodles", "name": "深夜大排档", "energy": 6, "cashCost": 200, "desc": "点两碗热汤面配烧烤，坐在巷口聊聊天", "type": "date_spot", "image": "/assets/bg/bg_old_street.jpg" },
+        { "id": "stroll_old_street", "name": "老街闲逛", "energy": 5, "cashCost": 0, "desc": "沿青石巷转转，偶遇意想不到的奇闻与捡漏", "type": "stroll", "image": "/assets/items/prop_old_shop.jpg" }
+      ]
+    },
+    {
+      "id": "university",
+      "name": "海城大学城",
+      "tag": "银杏文创",
+      "unlockTier": 1,
+      "x": 26,
+      "y": 35,
+      "bg": "/assets/bg/bg_campus_ginkgo.jpg",
+      "themeColor": "#34D399",
+      "description": "银杏大道连着琴房与独立咖啡馆，创业社团与年轻想法在这里生长。",
+      "coreMinigame": "angel_invest",
+      "coreMinigameLabel": "天使投资",
+      "coreMinigameDesc": "物色校园早期创业项目，以小博大",
+      "interactions": [
+        { "id": "ginkgo_walk", "name": "银杏大道漫步", "energy": 6, "cashCost": 500, "desc": "买杯热拿铁，在傍晚落叶里慢慢走一段路", "type": "date_spot", "image": "/assets/bg/bg_campus_ginkgo.jpg" },
+        { "id": "stroll_university", "name": "校园漫步", "energy": 5, "cashCost": 0, "desc": "去旧书店与音乐厅转转，看看今天会遇上什么事", "type": "stroll", "image": "/assets/items/prop_campus_apt.jpg" }
+      ]
+    },
+    {
+      "id": "bund",
+      "name": "外滩名利场",
+      "tag": "江岸奢品",
+      "unlockTier": 1,
+      "x": 58,
+      "y": 47,
+      "bg": "/assets/bg/bg_luxury_4s.jpg",
+      "themeColor": "#E6C165",
+      "description": "一线江景与超跑展厅、高定买手店相邻，海城最耀眼的社交中心。",
+      "coreMinigame": "street_race",
+      "coreMinigameLabel": "江畔竞速",
+      "coreMinigameDesc": "驾驶你的座驾参与午夜江岸竞速",
+      "interactions": [
+        { "id": "michelin_dinner", "name": "米其林江景包厢", "energy": 8, "cashCost": 28000, "desc": "预订靠窗江景位，共进一顿安静讲究的晚餐", "type": "date_spot", "image": "/assets/items/prop_bund_flat.jpg" },
+        { "id": "stroll_bund", "name": "外滩夜游", "energy": 5, "cashCost": 0, "desc": "沿外滩大道开一圈，总能碰上形形色色的人", "type": "stroll", "image": "/assets/bg/bg_luxury_4s.jpg" }
+      ]
+    },
+    {
+      "id": "cbd",
+      "name": "陆家湾 CBD",
+      "tag": "金融中心",
+      "unlockTier": 2,
+      "x": 74,
+      "y": 32,
+      "bg": "/assets/bg/bg_cbd.jpg",
+      "themeColor": "#38BDF8",
+      "description": "摩天大楼林立的金融腹地，买下整栋甲级写字楼可挂上你的名字。",
+      "coreMinigame": "stock_market",
+      "coreMinigameLabel": "海城股市",
+      "coreMinigameDesc": "结合盘面与消息研判做多或做空",
+      "interactions": [
+        { "id": "tower_lightshow", "name": "摩天楼灯光秀", "energy": 8, "cashCost": 100000, "desc": "包下地标幕墙，在江风里为她点亮整面夜空", "type": "date_spot", "image": "/assets/items/prop_cbd_tower.jpg" },
+        { "id": "stroll_cbd", "name": "金融圈走访", "energy": 6, "cashCost": 0, "desc": "出入顶层酒廊与董事会走廊，留意商界暗流", "type": "stroll", "image": "/assets/items/biz_quant.jpg" }
+      ]
+    },
+    {
+      "id": "night_city",
+      "name": "星耀不夜城",
+      "tag": "演艺霓虹",
+      "unlockTier": 2,
+      "x": 46,
+      "y": 67,
+      "bg": "/assets/bg/bg_night_city.jpg",
+      "themeColor": "#F43F5E",
+      "description": "星耀传媒总部与霓虹商圈所在地，入夜之后整片街区才真正苏醒。",
+      "coreMinigame": "livestream_pk",
+      "coreMinigameLabel": "星耀打榜",
+      "coreMinigameDesc": "进入星耀直播间为沈琉璃撑起排面",
+      "interactions": [
+        { "id": "vinyl_lounge", "name": "黑胶爵士酒廊", "energy": 7, "cashCost": 18000, "desc": "微醺灯光与老唱片，适合在霓虹夜色里小酌", "type": "date_spot", "image": "/assets/items/prop_night_loft.jpg" },
+        { "id": "stroll_night", "name": "不夜城探班", "energy": 6, "cashCost": 0, "desc": "在演播厅与霓虹街逛逛，偶遇圈内风波", "type": "stroll", "image": "/assets/items/biz_mcn.jpg" }
+      ]
+    },
+    {
+      "id": "peak_coast",
+      "name": "云顶海岸",
+      "tag": "半山码头",
+      "unlockTier": 3,
+      "x": 78,
+      "y": 59,
+      "bg": "/assets/bg/bg_peak_coast.jpg",
+      "themeColor": "#A78BFA",
+      "description": "半山独栋庄园与私人游艇泊位所在地，码头停泊着驶向公海的星耀号。",
+      "coreMinigame": "cruise_event",
+      "coreMinigameLabel": "星耀号码头",
+      "coreMinigameDesc": "登上公海星耀号参与限时夜宴与典藏兑换",
+      "interactions": [
+        { "id": "yacht_party", "name": "私人游艇出海", "energy": 10, "cashCost": 80000, "desc": "吹着海风开香槟看落日，远离岸上喧嚣", "type": "date_spot", "image": "/assets/bg/bg_peak_coast.jpg" },
+        { "id": "stroll_coast", "name": "半山球会", "energy": 8, "cashCost": 0, "desc": "在果岭与游艇会结交顶层人脉", "type": "stroll", "image": "/assets/items/prop_peak_manor.jpg" }
+      ]
+    },
+    {
+      "id": "airport",
+      "name": "公务机航站",
+      "tag": "远航航线",
+      "unlockTier": 5,
+      "x": 22,
+      "y": 21,
+      "bg": "/assets/bg/bg_cbd.jpg",
+      "themeColor": "#22D3EE",
+      "description": "私人公务机专属楼，晋升顶级豪门后将开放跨城与海外航线。",
+      "coreMinigame": "future_expansion",
+      "coreMinigameLabel": "航线调度",
+      "coreMinigameDesc": "晋升顶级豪门后开放更多城市版图",
+      "interactions": []
+    }
+  ]
+}

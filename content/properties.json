@@ -1,0 +1,141 @@
+[
+  {
+    "id": "prop_old_room",
+    "name": "城南老巷单间",
+    "districtId": "old_street",
+    "type": "residence",
+    "price": 0,
+    "baseValuation": 180000,
+    "rentPerHour": 0,
+    "energyBonus": 0,
+    "maxResidents": 1,
+    "canRename": false,
+    "unlockTier": 1,
+    "starterOwned": true,
+    "image": "/assets/items/prop_old_room.jpg",
+    "bg": "/assets/items/prop_old_room.jpg",
+    "description": "十八平米的老旧隔断房，推开窗就是城南老巷的雨声与霓虹，也是一切的起点。",
+    "facilities": ["书桌", "临街窗"],
+    "homeInteractions": [
+      { "id": "home_tea", "name": "泡杯热茶聊旧事", "energy": 3, "affection": 4, "desc": "在安静的旧屋里聊聊从前的故事" }
+    ]
+  },
+  {
+    "id": "prop_old_shop",
+    "name": "老街临街旺铺",
+    "districtId": "old_street",
+    "type": "commercial",
+    "price": 1200000,
+    "baseValuation": 1500000,
+    "rentPerHour": 8500,
+    "energyBonus": 0,
+    "maxResidents": 0,
+    "canRename": true,
+    "unlockTier": 1,
+    "image": "/assets/items/prop_old_shop.jpg",
+    "bg": "/assets/items/prop_old_shop.jpg",
+    "description": "古玩街口人流最旺的两层临街商铺，租金稳定。",
+    "facilities": ["临街门面", "展柜"],
+    "homeInteractions": []
+  },
+  {
+    "id": "prop_campus_apt",
+    "name": "学区江景公寓",
+    "districtId": "university",
+    "type": "residence",
+    "price": 2800000,
+    "baseValuation": 3200000,
+    "rentPerHour": 14000,
+    "energyBonus": 20,
+    "maxResidents": 1,
+    "canRename": false,
+    "unlockTier": 1,
+    "image": "/assets/items/prop_campus_apt.jpg",
+    "bg": "/assets/items/prop_campus_apt.jpg",
+    "description": "紧邻海大银杏大道的高层精装复式，落地窗正对校园夕阳。",
+    "facilities": ["全景落地窗", "钢琴角", "影音厅"],
+    "homeInteractions": [
+      { "id": "home_piano", "name": "听她弹一首夜曲", "energy": 5, "affection": 9, "desc": "落地灯微暖，琴声漫过傍晚的风" },
+      { "id": "home_cook", "name": "一起做顿家常菜", "energy": 5, "affection": 8, "desc": "卸下白天的防备，在厨房里慢下来" }
+    ]
+  },
+  {
+    "id": "prop_bund_flat",
+    "name": "外滩一线江景大平层",
+    "districtId": "bund",
+    "type": "residence",
+    "price": 18000000,
+    "baseValuation": 22000000,
+    "rentPerHour": 68000,
+    "energyBonus": 40,
+    "maxResidents": 2,
+    "canRename": false,
+    "unlockTier": 2,
+    "image": "/assets/items/prop_bund_flat.jpg",
+    "bg": "/assets/items/prop_bund_flat.jpg",
+    "description": "四百二十平米环幕江景大平层，推窗便见外滩灯火与陆家湾天际线。",
+    "facilities": ["江景露台", "私藏酒窖", "地下车位"],
+    "homeInteractions": [
+      { "id": "home_wine", "name": "落地窗前小酌", "energy": 6, "affection": 13, "desc": "江面灯火在脚下铺开，夜色正浓" },
+      { "id": "home_cinema", "name": "私人影院夜话", "energy": 6, "affection": 11, "desc": "关掉顶灯，窝在沙发里看一部老电影" }
+    ]
+  },
+  {
+    "id": "prop_night_loft",
+    "name": "星耀天际复式 Loft",
+    "districtId": "night_city",
+    "type": "residence",
+    "price": 12500000,
+    "baseValuation": 15000000,
+    "rentPerHour": 52000,
+    "energyBonus": 30,
+    "maxResidents": 1,
+    "canRename": false,
+    "unlockTier": 2,
+    "image": "/assets/items/prop_night_loft.jpg",
+    "bg": "/assets/items/prop_night_loft.jpg",
+    "description": "挑高六米的复式空间，带黑胶试听室与独立衣帽间，静谧又张扬。",
+    "facilities": ["星空露台", "黑胶室", "衣帽间"],
+    "homeInteractions": [
+      { "id": "home_fashion", "name": "私密试衣夜", "energy": 6, "affection": 14, "desc": "她换上刚送到的高定礼服，只给你一个人看" }
+    ]
+  },
+  {
+    "id": "prop_cbd_tower",
+    "name": "陆家湾甲级金融大厦",
+    "districtId": "cbd",
+    "type": "landmark",
+    "price": 160000000,
+    "baseValuation": 200000000,
+    "rentPerHour": 450000,
+    "energyBonus": 30,
+    "maxResidents": 0,
+    "canRename": true,
+    "unlockTier": 2,
+    "image": "/assets/items/prop_cbd_tower.jpg",
+    "bg": "/assets/items/prop_cbd_tower.jpg",
+    "description": "四十八层陆家湾核心写字楼，购入后可自定义大楼冠名并在海城地图展示。",
+    "facilities": ["幕墙灯光", "停机坪", "顶层交易厅"],
+    "homeInteractions": []
+  },
+  {
+    "id": "prop_peak_manor",
+    "name": "云顶半山独栋庄园",
+    "districtId": "peak_coast",
+    "type": "residence",
+    "price": 380000000,
+    "baseValuation": 480000000,
+    "rentPerHour": 900000,
+    "energyBonus": 80,
+    "maxResidents": 4,
+    "canRename": true,
+    "unlockTier": 3,
+    "image": "/assets/items/prop_peak_manor.jpg",
+    "bg": "/assets/items/prop_peak_manor.jpg",
+    "description": "占地十亩的半山独栋庄园，配无边海景泳池、地下车库与私人游艇泊位。",
+    "facilities": ["地下车库", "无边泳池", "私人码头"],
+    "homeInteractions": [
+      { "id": "home_pool", "name": "星夜无边泳池", "energy": 8, "affection": 20, "desc": "海风与香槟气泡交织的私密夜晚" }
+    ]
+  }
+]

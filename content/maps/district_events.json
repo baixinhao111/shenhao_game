@@ -1,0 +1,1852 @@
+{
+  "old_street": [
+    {
+      "id": "ev_old_1",
+      "title": "黑心古玩贩子的骗局",
+      "desc": "老街拐角，油滑贩子正忽悠一位老教授花五万买假青花瓶。天枢洞察眼扫过他脚边沾满泥垢的破铜镇纸，竟泛出耀眼金光。",
+      "bg": "/assets/items/biz_antique.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "城南旧街 · 古玩巷口",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "午后青石巷口人声嘈杂。一名满口江湖气的摊主正托着一只釉色贼亮的青花瓶，死死缠住一位戴金丝眼镜的老教授，口口声声称这是祖传宣德官窑，五万块只求交个朋友。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "釉面浮光刺眼，底足胎土发干，分明是批量化学做旧的工艺品，成本不超过两百块。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 拾遗触发",
+          "text": "扫描完成：青花瓶为劣质仿品（估价 ¥180）。摊位左下角垫帆布的泥垢铜条检测到明代内府鎏金工艺，实为官造鎏金镇纸，市场估价 ¥168,000。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "摊主已经催着老先生扫码，再晚十秒这五万块就要打水漂。脚边那块沾泥的破铜条，倒比台面上的“重器”值钱得多。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "拆穿骗局并顺手花 ¥800 买下破铜镇纸",
+          "cashCost": 800,
+          "cashGain": 168000,
+          "sysPoints": 35,
+          "resultText": "老教授连声致谢，而你顺手捡漏的竟是明代官造鎏金镇纸，转手被行家 ¥168,000 收走，系统积分 +35。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "老先生，别扫。氢氟酸褪的火光连底足青花料都没吃进胎里，这瓶子两百都嫌贵。倒是老板脚边压帆布那块烂铜条，我出八百，凑个手把件玩玩。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "围观行家凑近细看纷纷拆台。摊主被戳穿老底，面红耳赤又怕闹大，只想赶紧送走瘟神，顺手踢出那块沾泥的破铜条换了八百块。老教授如梦初醒，拱手连声道谢。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "转出巷口冲净泥垢，明代内府鎏金双龙纹在日光下折射出温润金辉。巷尾雅宝斋掌柜只扫了一眼，当场开价十六万八千元现金收入囊中。"
+            }
+          ]
+        },
+        {
+          "label": "高调打脸贩子，只收声望与积分",
+          "cashCost": 0,
+          "cashGain": 15000,
+          "sysPoints": 55,
+          "resultText": "你当场三句话点破做旧破绽，围观群众拍手称快，系统判定【明辨真伪】，奖励现金 ¥15,000 与积分 +55。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "宣德官窑用苏麻离青，铁锈斑自然沉骨；你这只连釉面气泡都是现代机械窑的产物，底款笔锋发飘。拿两百块的假货坑老人五万块，手不抖吗？"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "寥寥三句字字切中要害，整条巷子的行人瞬间围拢指点。摊主脸色由青转白，手忙脚乱卷起摊布灰溜溜钻进人群，老教授激动地握住你的手连声称赞。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "天枢评价 · 声望加身",
+              "text": "专业眼力与沉稳气度折服在场众人，老教授临别坚持留下一笔鉴宝咨询谢礼，系统同步结算声望积分 +55。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_old_2",
+      "title": "雨巷里的落魄天才厨师",
+      "desc": "巷尾一家快倒闭的私房面馆里，年轻厨师正被房东逼租。洞察眼提示：此人厨艺 S 级，若获资金扶持，半年内必成海城黑马名店。",
+      "bg": "/assets/bg/bg_rain_street.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "城南旧街 · 雨巷深处",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "细雨顺着灰瓦滴落，巷尾那间招牌褪色的私房面馆灯火昏黄。清冽浓郁的骨汤香气穿透雨帘，店里却传出一阵刺耳的拍桌声。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "叼着烟的房东把一把铁锁甩在案板上冷笑：“拖了三个月房租一共五万，今晚拿不出来，明早我就砸了这破灶台转租。”年轻厨师死死护着灶上那口熬了十二小时的高汤，指节发白。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 人才评估",
+          "text": "目标人物：周明轩（前星级主厨弟子）。厨艺评级：S 级（稀缺）。若本周内渡过资金危机，半年内将凭借口碑逆袭为海城黑珍珠级私房名馆，商业回报极高。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "满街都是预制菜和流水线网红店，这种肯守着一锅真高汤死磕的手艺人，比黄金稀缺得多。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "当场甩出 ¥50,000 替他交租并签下分红协议",
+          "cashCost": 50000,
+          "cashGain": 260000,
+          "sysPoints": 50,
+          "canCrit": true,
+          "resultText": "厨师红着眼眶签下契约，当晚面馆被探店大V意外拍爆，你顺手触发消费返现大赚一笔。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "五万块我替他付，房东，把你那把破锁收起来，现在签续租。至于老板——这笔钱算我的天使注资，我要三成干股，灶台全权归你管。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "银行实时到账的提示音瞬间让房东换上一副谄媚笑脸，连滚带爬收起铁锁退了出去。年轻厨师怔怔盯着那份极有诚意的协议，眼眶通红，落笔签字后亲手为你下了一碗绝味阳春面。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "当晚一名百万粉丝美食博主避雨误入小馆，一碗清汤面直接把视频送上同城热搜。你的果断眼光迅速转化为滚烫分红与消费返现。"
+            }
+          ]
+        },
+        {
+          "label": "点一碗招牌面并留 ¥2,000 小费鼓励",
+          "cashCost": 2000,
+          "cashGain": 12000,
+          "sysPoints": 25,
+          "resultText": "一碗滚烫的阳春面暖透心窝，你记住了这家隐秘小馆，下次可以带苏清婉来。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "老板，来一碗最拿手的招牌阳春面，葱花多放一点。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "滚烫清亮的汤头入口，鲜味在雨夜里层层化开。你吃完搁下筷子，在碗底压了两千元小费，不动声色替他顶住了明早采购鲜骨食材的缺口。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "heartbeat",
+              "text": "厨师追到雨檐下深深鞠了一躬。这份隐秘的烟火气值得记住——改天苏清婉加班到深夜，带她来喝一口热汤，大概比米其林更合她胃口。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_old_3",
+      "title": "偶遇鬼市神秘酷女孩",
+      "desc": "昏黄灯笼下，戴着银色耳机的短发少女正用紫外线小手电猛盯一只宋代残碗，低声吐槽摊主作假。正是古玩圈传闻中的陆知微。",
+      "bg": "/assets/bg/bg_old_street.jpg",
+      "npcSprite": "/assets/characters/lu_zhiwei.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "城南旧街 · 子夜鬼市",
+          "sprite": "/assets/characters/lu_zhiwei.png",
+          "text": "午夜十二点，旧街深处的灯笼与手电光影交错。一个挂着银色头戴耳机、短发挑染银蓝的女孩正蹲在青石摊前，举着紫外线小手电细扫一只宋代影青残碗。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lu_zhiwei",
+          "name": "陆知微",
+          "role": "古玩天才少女",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lu_zhiwei.png",
+          "activeSide": "right",
+          "text": "啧，新补的冷釉连荧光反应都藏不住，这帮老狐狸真当姑奶奶看不出来？",
+          "innerThought": "连着逛了三条巷子全是坑货，今晚不会真要空手回工作室吧……"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 暗格提示",
+          "text": "摊位台面陈列品皆为拼接仿品；但在摊主左手边木箱第三格暗槽内，藏有一枚清代乾隆老坑翡翠扳指残件，品相极佳。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lu_zhiwei.png",
+          "activeSide": "left",
+          "text": "手法利落，一眼识破修补暗伤，正是古玩圈传闻中那个从不走眼的陆知微。不过她还没留意到摊主藏私货的暗格。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "轻笑提醒她真正的好货在摊主左手边第三格",
+          "cashCost": 0,
+          "cashGain": 38000,
+          "sysPoints": 45,
+          "unlockHeroine": "lu_zhiwei",
+          "affectionHeroine": "lu_zhiwei",
+          "affectionGain": 12,
+          "resultText": "陆知微猛地回头盯住你：『喂，你居然也有这眼力？』她顺手扫了你的微信——【新红颜 · 陆知微已结识】",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "left",
+              "text": "别盯着台面上那堆残次品了。真正压箱底的货，在摊主左手边木箱第三格里。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lu_zhiwei",
+              "name": "陆知微",
+              "role": "古玩天才少女",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "right",
+              "effect": "impact",
+              "text": "喂，你什么时候站在我后面的？……等等，第三格那抹老坑绿，你连灯都没打怎么看出来的？",
+              "innerThought": "海城什么时候冒出来眼力这么毒的家伙？心跳怎么莫名漏了一拍……"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "both",
+              "text": "陆知微顺着你的提示三言两语击穿摊主心理底价，联手将暗格好货收入囊中，转手便被鬼市熟客溢价收走，干脆利落分了你三万八千元分成。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lu_zhiwei",
+              "name": "陆知微",
+              "role": "古玩天才少女",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "算你有点真本事。二维码拿来，下回赌石局正好少个不拖后腿的搭子，本小姐勉为其难带你一个。",
+              "innerThought": "哼，才不是想多见他，纯粹是这种级别的合伙人太稀缺了！"
+            }
+          ]
+        },
+        {
+          "label": "低调旁观学一手鉴宝技巧",
+          "cashCost": 0,
+          "cashGain": 22000,
+          "sysPoints": 35,
+          "resultText": "你默默记下她的鉴宝手法，顺手低价淘了件小玉佩转卖小赚一笔。",
+          "branchNodes": [
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "right",
+              "text": "你没有惊动她，只静静退后半步，将她侧光验胎、指腹扣釉听音的全套老派鉴宝手法尽收眼底。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "既有学院派的严谨分析，又有老江湖的毒辣直觉，难怪能在鬼市来去自如。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "等她戴上耳机利落转身消失在灯影里后，你现学现卖，在隔壁旧货摊低价捡漏了一枚温润古玉佩，转手稳赚两万两千元。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "university": [
+    {
+      "id": "ev_uni_1",
+      "title": "音乐厅外的琴弦危机",
+      "desc": "海大琴房外，一名富二代纠缠着林晚星要她陪酒，还故意碰倒了她的琴谱。周围学生敢怒不敢言。",
+      "bg": "/assets/bg/bg_campus_ginkgo.jpg",
+      "npcSprite": "/assets/characters/lin_wanxing.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "海城大学 · 音乐厅长廊",
+          "sprite": "/assets/characters/lin_wanxing.png",
+          "text": "傍晚的金色阳光穿过银杏叶洒在琴房外。几页写满铅笔批注的肖邦夜曲乐谱散落在地，一名戴着粗金链的纨绔二代横在台阶前拦住了去路。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lin_wanxing",
+          "name": "林晚星",
+          "role": "海大音乐系校花",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lin_wanxing.png",
+          "activeSide": "right",
+          "effect": "shake",
+          "text": "这位先生，我说过很多次了，晚上要准备系里汇演，不会去参加什么私人酒局。请你让开。",
+          "innerThought": "琴谱弄脏了可以重新抄，可周围学弟学妹都在看着，我不能在这里露怯……"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lin_wanxing.png",
+          "activeSide": "right",
+          "text": "那二代嗤笑一声，刻意用皮鞋尖压住一张飘到脚边的乐谱：“装什么清高？我爸刚给学院捐了五万块琴凳，今晚给面子陪哥几个喝两杯，下个月独奏名额包你稳拿。”"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lin_wanxing.png",
+          "activeSide": "left",
+          "text": "区区五万块就敢在校园里耀武扬威。那双干净的手本该留在黑白琴键上，不该用来应付这种脏东西。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "单手扶起琴谱，冷声让保安把人请出去",
+          "cashCost": 0,
+          "cashGain": 28000,
+          "sysPoints": 45,
+          "affectionHeroine": "lin_wanxing",
+          "affectionGain": 10,
+          "resultText": "你的气场瞬间镇住全场，林晚星眼眶微红却笑得格外明亮，悄悄往你手心塞了颗水果糖。",
+          "branchNodes": [
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lin_wanxing.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "你走上前，不疾不徐蹲下身将散落的乐谱一张张拾起拂净灰尘，随即直起身，冷冽的目光平视过去，逼得那二代下意识往后退了半步。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lin_wanxing.png",
+              "activeSide": "left",
+              "text": "鞋拿开。校保卫处和学院赞助审核部的电话我刚好都有，你是自己体面走出去，还是让保安把你请出去？"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "压倒性的气场瞬间镇住整条长廊，巡逻保安听见动静快步赶来。那二代被你盯得脊背发寒，丢下一句虚张声势的狠话灰头土脸地溜了。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_wanxing",
+              "name": "林晚星",
+              "role": "海大音乐系校花",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lin_wanxing.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "谢谢你……刚才手心其实一直在冒汗，看见你走过来突然就不怕了。这颗柠檬糖给你，别嫌弃呀。",
+              "innerThought": "他捡琴谱的时候动作好轻，连页角折痕都替我抚平了……心口暖得发烫。"
+            }
+          ]
+        },
+        {
+          "label": "直接刷卡 ¥30,000 给音乐社赞助一整套施坦威配件",
+          "cashCost": 30000,
+          "cashGain": 180000,
+          "sysPoints": 55,
+          "canCrit": true,
+          "affectionHeroine": "lin_wanxing",
+          "affectionGain": 16,
+          "resultText": "全场学弟学妹集体沸腾欢呼，富二代灰溜溜逃跑，林晚星看你的眼神彻底藏不住心动。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lin_wanxing.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "五万块就想在音乐学院指手画脚？正好，音乐社这批施坦威调律配件和琴房修缮费三万，我以个人名义现在刷卡赞助，不附加任何条件——至于这位先生，可以请出去了。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "黑金卡在社团干事的便携终端上利落刷过，回执单吐出的轻响让长廊里瞬间爆发出欢呼与掌声。纨绔二代涨红了脸，在满堂嗤笑中狼狈逃离。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_wanxing",
+              "name": "林晚星",
+              "role": "海大音乐系校花",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lin_wanxing.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "陆沉……连社团攒了半年的调律费你都替大家解决了。下个月我的专场汇报演出，第一排正中间的位置留给你，好不好？",
+              "innerThought": "他护着我的样子耀眼得让人移不开眼……明明知道不该这么快沦陷，可心跳根本藏不住。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "title": "天枢返现触发",
+              "text": "为艺术与尊严买单，消费暴击返现与声望积分同步入账。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_uni_2",
+      "title": "二手书店的绝版黑胶",
+      "desc": "校园角落的旧书店里，店主正在清理一批老唱片。天枢洞察眼闪烁蓝光：最底层藏有 1978 年肖邦大赛限量签名黑胶。",
+      "bg": "/assets/items/prop_campus_apt.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "海城大学城 · 梧桐旧书店",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "校园后街的二手书店飘着旧纸与木屑的气息。店主正准备把一箱积灰的老唱片打包清仓，纸板上写着“整箱处理一千五，概不单挑”。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 孤品锁定",
+          "text": "纸箱最底层夹层检测到 1978 年华沙肖邦国际钢琴大赛初版黑胶，封套内附大师亲笔钢笔签名，音轨无划痕，海城收藏界估价 ¥95,000+。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "这种品相的初版签名黑胶，放在拍卖行能引来一群老乐迷抢破头。一千五整箱拿下，简直像白捡。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "你不动声色抱起纸箱扫码结账。捧着那张沉甸甸的墨绿色封套走出店门，夕阳正温柔地漫过不远处音乐学院的玻璃窗。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "花 ¥1,500 打包买下，转手高价出售或珍藏",
+          "cashCost": 1500,
+          "cashGain": 95000,
+          "sysPoints": 40,
+          "resultText": "典藏级签名黑胶被海城藏家高价求购，净赚 ¥95,000，系统积分 +40。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "好东西得配懂行的人。陈默，帮我联系那位一直在找七八年华沙初版黑胶的唱片藏家。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "不到两小时，一位专程从外滩赶来的资深黑胶藏家戴着白手套验完封套签名，激动得声音发颤，当场溢价转账九万五千元将唱片请走。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "净赚九万多，顺手还结了一笔收藏圈人脉。眼光本身就是最好的印钞机。"
+            }
+          ]
+        },
+        {
+          "label": "买下来匿名放进林晚星的琴房储物柜",
+          "cashCost": 1500,
+          "cashGain": 10000,
+          "sysPoints": 50,
+          "affectionHeroine": "lin_wanxing",
+          "affectionGain": 14,
+          "resultText": "当晚林晚星在微信里激动得连发三条语音，她一眼就猜到是你送的。",
+          "branchNodes": [
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "你没有联系藏家，只买了牛皮纸仔细包好唱片，趁琴房午休空档，悄悄放进了林晚星专属的储物柜里，连署名的字条都没留。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_wanxing",
+              "name": "林晚星",
+              "role": "海大音乐系校花",
+              "sprite": "/assets/characters/lin_wanxing.png",
+              "effect": "heartbeat",
+              "text": "（当晚微信语音）陆沉！储物柜里那张 1978 年的肖邦签名黑胶……一定是你放的对不对？你连我上次随口提过最想听这个版本都记得……",
+              "innerThought": "抱着唱片站在琴房里差点哭出来……怎么会有人把我的小小心愿记在心上呀。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "语音里藏不住的雀跃与温柔比九万五千元更有分量，系统也顺势结算了一笔暖心回馈与额外积分。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "bund": [
+    {
+      "id": "ev_bund_1",
+      "title": "外滩餐厅撞见白梦瑶炫富",
+      "desc": "江景露台餐厅门口，白梦瑶挽着新认识的暴发户阴阳怪气：『陆沉？这儿最低消费两万，你送几个月外卖够吃一顿？』",
+      "bg": "/assets/bg/bg_bund_penthouse.jpg",
+      "npcSprite": "/assets/characters/bai_mengyao.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "外滩 · 江景露台法餐厅",
+          "sprite": "/assets/characters/bai_mengyao.png",
+          "text": "华灯初上，江风拂过二百七十度全景露台。刚踏进迎宾廊，一声刻意拔高的轻笑便从身侧传来——白梦瑶正挽着一名穿花衬衫的暴发户，故意举起手腕晃了晃钻石手链。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "bai_mengyao",
+          "name": "白梦瑶",
+          "role": "前女友",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/bai_mengyao.png",
+          "activeSide": "right",
+          "text": "哎呀，这不是陆沉吗？这儿最低消费两万起，你送几个月外卖才够坐在这儿喝杯气泡水呀？别是被门童拦着还不肯走吧。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/bai_mengyao.png",
+          "activeSide": "right",
+          "text": "旁边的暴发户配合地抖了抖车钥匙，斜眼打量你的衣着：“梦瑶，你这前男友怎么还阴魂不散？服务生，没预约的闲杂人等怎么放进来的？”"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/bai_mengyao.png",
+          "activeSide": "left",
+          "text": "每次碰面都还是那套廉价戏码。既然他们这么喜欢把消费门槛挂在嘴边，那就按这里的规矩办事。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "直接刷 ¥88,000 包下整片江景露台清场",
+          "cashCost": 88000,
+          "cashGain": 520000,
+          "sysPoints": 75,
+          "canCrit": true,
+          "resultText": "经理立刻九十度鞠躬请走了白梦瑶一行，白梦瑶脸色惨白不敢置信，你顺手触发消费返现狂赚一笔。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/bai_mengyao.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "经理，把整片江景露台今晚全包下来，刷八万八——顺便清一下场，我不习惯吃饭时听见太吵的声音。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/bai_mengyao.png",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "刷卡机发出清脆确认音，餐厅经理脸色一凛，立刻九十度鞠躬上前，礼貌而强硬地向白梦瑶一行做出请的手势：“抱歉二位，整片露台已被陆先生包场，麻烦移步离场。”"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "bai_mengyao",
+              "name": "白梦瑶",
+              "role": "前女友",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/bai_mengyao.png",
+              "activeSide": "right",
+              "text": "什么？八万八清场……陆沉，你哪来这么多钱？等等，我刚才只是跟你开个玩笑……"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "暴发户脸面丢尽，拉着僵在原地的白梦瑶仓皇钻进电梯。你独享整片璀璨外滩江景，手机同时震动——高额消费返现轰然到账。"
+            }
+          ]
+        },
+        {
+          "label": "懒得理会，亮出车钥匙潇洒上楼进 VIP 厅",
+          "cashCost": 0,
+          "cashGain": 35000,
+          "sysPoints": 45,
+          "resultText": "无视才是最致命的降维打击，白梦瑶在身后气得直跺脚，系统奖励气度积分 +45。",
+          "branchNodes": [
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/bai_mengyao.png",
+              "activeSide": "left",
+              "text": "你连脚步都没停顿，只淡淡扫了她一眼，像路过一截无关紧要的装饰柱。指间随意转过一枚定制超跑钥匙，抬步径直走向顶层私人黑卡专用电梯。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/bai_mengyao.png",
+              "activeSide": "right",
+              "effect": "impact",
+              "text": "专用电梯门前两位侍者齐声欠身：“晚上好，陆先生，顶层江景包厢已为您留好。”电梯门合上的瞬间，门外白梦瑶脸色惨白，气得高跟鞋死死跺在红毯上。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "真正的降维打击从不需要多费口舌。系统对你的从容气度给出了清脆的积分与现金嘉奖。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_bund_2",
+      "title": "高定橱窗的限量神秘礼盒",
+      "desc": "外滩顶奢买手店推出仅限黑卡会员抽签的限量高定香氛礼盒，门外排着一长串盛装名媛。",
+      "bg": "/assets/items/prop_bund_flat.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "外滩 · 顶级高定买手店",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "午后的外滩奢品街人头攒动。这家只对黑卡客户开放抽签的法国高定买手店橱窗前排起长队，都在等一套海城仅配额三套的典藏木质香氛礼盒。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "门口礼宾核验完你的私人银行黑卡等级，立刻拉开丝绒隔离带将你迎进 VIP 鉴赏室。买手店总监亲自端上冰镇香槟：“陆先生，最后一套预留礼盒售价十二万，若您看中，无需抽签直接封箱。”"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢商业评估",
+          "text": "方案 A：购入高定礼盒可触发高额消费暴击返现，且香调（雪松与冷白茶）精准契合苏清婉偏好。方案 B：顺带核查隔壁空置旺铺租售底价，可赚取稳健转介佣金。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "雪松与冷白茶……确实很像苏清婉身上那股清冷又克制的味道。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "豪掷 ¥120,000 拿下并触发消费返现",
+          "cashCost": 120000,
+          "cashGain": 650000,
+          "sysPoints": 65,
+          "canCrit": true,
+          "affectionHeroine": "su_qingwan",
+          "affectionGain": 12,
+          "resultText": "买手店总监亲自奉上香槟，你顺手让专送寄去盛世集团，苏清婉当晚破天荒主动发来消息。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "封箱吧。不必写贺卡，直接叫专送寄到盛世资本顶层总裁办。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "门外排队的名媛们透过玻璃看见总监双手捧着黑色火漆礼盒亲自送你出门，议论声瞬间沸腾。与此同时，天枢消费返现准点跃入账户。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "su_qingwan",
+              "name": "苏清婉",
+              "role": "盛世资本执行总裁",
+              "sprite": "/assets/characters/su_qingwan.png",
+              "effect": "heartbeat",
+              "text": "（当晚微信）东西收到了。没署名，但海城能不排队拿到这套雪松冷茶的，除了你我想不到第二个人。下次……别总这么破费。",
+              "innerThought": "其实拆开丝带那一刻，心里居然比签下十亿并购案还轻快几分。我真是越来越纵容他了。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "嘴上说着别破费，回复速度却比平时快了一倍。这笔十二万，花得物超所值。"
+            }
+          ]
+        },
+        {
+          "label": "顺路打探一圈外滩商圈租售行情",
+          "cashCost": 0,
+          "cashGain": 48000,
+          "sysPoints": 35,
+          "resultText": "掌握了一手外滩黄金商铺空置情报，顺手促成一笔转介佣金入账。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "香氛改日再说。倒是总监刚才提过隔壁那两间临江铺面业主急着脱手，方便引荐一下吗？"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "借着黑卡圈层关系，你喝完一杯香槟的功夫便拿到了外滩核心地段的一手底价铺源，顺手牵线转介给一家急需旗舰店的瑞士腕表品牌。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "一分钱没掏，一通电话便落袋四万八千元信息佣金，外滩的每一寸空气里都飘着现金流。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cbd": [
+    {
+      "id": "ev_cbd_1",
+      "title": "董事局走廊的资本暗战",
+      "desc": "陆家湾云端酒廊，竞争对手正企图撬走盛世集团核心大客户，苏清婉站在落地窗前神色凝重。",
+      "bg": "/assets/bg/bg_cbd.jpg",
+      "npcSprite": "/assets/characters/su_qingwan.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "陆家湾 · 云端董事酒廊",
+          "sprite": "/assets/characters/su_qingwan.png",
+          "text": "六十八层落地窗外云雾翻涌。苏清婉独自站在玻璃幕墙前，金丝眼镜后的眼神微沉，指尖轻轻摩挲着一份尚未落印的长期合作协议。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/su_qingwan.png",
+          "activeSide": "right",
+          "text": "不远处的洽谈区里，竞争对手恒通资本副总正满面油光地围着盛世核心客户周总，拍胸脯承诺只要周总撕毁盛世意向书，他们替他担下五十万违约成本，还额外让利两个点。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "su_qingwan",
+          "name": "苏清婉",
+          "role": "盛世资本执行总裁",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/su_qingwan.png",
+          "activeSide": "right",
+          "text": "陆先生，你来得不巧。恒通为了抢单不惜亏本贴钱，他们算准了盛世财务审批走不了那么快。",
+          "innerThought": "董事局那群老家伙正等着看我丢掉核心客户呢……绝不能在他面前露出疲态。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 财报穿透",
+          "text": "恒通资本近期存在三笔高息过桥贷即将到期，账面现金流极度紧绷；其低价抢单实为骗取客户预付款填补窟窿，违约风险高达 89%。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/su_qingwan.png",
+          "activeSide": "left",
+          "text": "既可以用五十万真金白银当场把桌面掀翻，也可以直接撕开恒通那张画皮。无论怎么打，苏清婉今天都不会输。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "霸气入局，直接掏 ¥500,000 买断对面违约金帮苏清婉兜底",
+          "cashCost": 500000,
+          "cashGain": 2800000,
+          "sysPoints": 110,
+          "canCrit": true,
+          "affectionHeroine": "su_qingwan",
+          "affectionGain": 18,
+          "resultText": "对手目瞪口呆灰头土脸离场，苏清婉摘下眼镜轻叹一声：『陆沉，你欠我解释，今晚别走了。』",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/su_qingwan.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "周总，别听恒通画大饼了。那五十万违约保证金我以个人名义现在打进监管户替盛世兜底——恒通副总，你现在敢不敢同屏亮一下账上可用现金？"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "五十万即时到账的银行水单直接投在酒廊平板上。恒通副总冷汗涔涔，根本不敢接招，在周总骤然变冷的目光中灰头土脸退场，盛世核心大单当场落锤。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "su_qingwan",
+              "name": "苏清婉",
+              "role": "盛世资本执行总裁",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/su_qingwan.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "（她缓缓摘下金丝眼镜揉了揉眉心，唇角牵起一抹极淡的弧度）陆沉，五十万说砸就砸，你欠我一个解释——今晚别急着走，陪我喝一杯。",
+              "innerThought": "整个盛世没人敢帮我扛的事，他一句话就替我接住了……冰山好像真的要化了。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "天枢资本回馈",
+              "text": "高额商业兜底触发暴击返现与盛世项目分红，丰厚现金与积分同步入账。"
+            }
+          ]
+        },
+        {
+          "label": "亮出系统洞察到的对手财务漏洞，兵不血刃劝退客户",
+          "cashCost": 0,
+          "cashGain": 320000,
+          "sysPoints": 90,
+          "affectionHeroine": "su_qingwan",
+          "affectionGain": 12,
+          "resultText": "精准的商业洞察让苏清婉刮目相看，客户当场加码签约。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/su_qingwan.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "周总签之前，建议先问问恒通那三笔下周到期的过桥贷拿什么还。他们让利两个点，怕不是冲着您首期两千万预付款去的。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "精准到到期日与债权方的几句话犹如惊雷炸开。恒通副总脸色瞬间惨白如纸，一句辩解都吐不出，周总当场黑脸退回合同，转身与苏清婉加码签下三年独家合约。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "su_qingwan",
+              "name": "苏清婉",
+              "role": "盛世资本执行总裁",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/su_qingwan.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "兵不血刃，甚至连底牌都没亮全。陆先生，这笔三十二万的财务顾问费，盛世付得心服口服。",
+              "innerThought": "这种洞察力和分寸感……站在他身旁，居然第一次觉得商战也没那么孤单。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "一分钱没花，赚了三十二万顾问费，还把冰山总裁的防线又撬开了一寸。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_cbd_2",
+      "title": "私人银行的黑卡查验",
+      "desc": "陆家湾私人银行贵宾厅内，势利理财经理见你穿着低调欲当众清场，却不知你兜里那张黑金卡足以直通总行行长。",
+      "bg": "/assets/items/prop_cbd_tower.jpg",
+      "npcSprite": "/assets/characters/chen_mo.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "陆家湾 · 瑞银私人银行贵宾厅",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "午后的私人银行穹顶挑高十二米，安静得只剩咖啡机低鸣。你穿着一身剪裁随意、没有显眼标志的深灰大衣步入贵宾厅，准备调阅一笔跨境资产额度。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "刚在茶几旁落座，一名发胶油亮的理财经理便皱着眉快步上前，连名片都懒得递：“先生，一楼才是普通储蓄网点。这里门槛是两千万金融净资产，闲逛请下楼，别耽误等会儿真正的大客户。”"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 内部配额监测",
+          "text": "检测到该行今日释出一笔顶层客户专属的 AI 算力母基金优先份额（仅限顶级黑卡认购），短期套利空间极高；该经理正私扣额度讨好熟客。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "连抬头验资的耐心都没有，就急着替银行赶客。既然他这么迷信资产门槛，不妨帮他长长见识。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "直接刷卡 ¥200,000 锁定限量算力份额，要求总行总监亲自接待",
+          "cashCost": 200000,
+          "cashGain": 1180000,
+          "sysPoints": 95,
+          "canCrit": true,
+          "resultText": "总行私行总监亲自鞠躬致歉并将势利经理当场停职，你拿下的稀缺算力份额叠加消费返现暴赚 ¥1,180,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "两千万门槛？把你们那份藏着不放的算力优先份额调出来，我先刷二十万定金锁额。另外，请你们大中华区私行总监下来接单，你不够格跟我说话。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "金属黑金卡轻叩在胡桃木桌面，查验终端一经感应立刻弹出猩红最高礼遇弹窗，直连顶层办公室。三分钟不到，总行私行总监一路小跑赶来，铁青着脸将势利经理当场停职调离，亲自奉上顶级茶点与优先配额合同。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "份额锁定瞬间触发天枢高额返现，叠加算力母基金首日溢价收益，账面资金再度大涨。"
+            }
+          ]
+        },
+        {
+          "label": "冷静亮出黑金卡号，让总行风控系统与陈默联手验资打脸",
+          "cashCost": 0,
+          "cashGain": 180000,
+          "sysPoints": 75,
+          "resultText": "终端屏幕亮起最高级黑钻私行标识，势利经理吓得魂飞魄散，总行赔礼送上优先通道返利 ¥180,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/chen_mo.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "既然怕我走错楼层，麻烦拿终端刷一下这张卡。顺便，陈默应该已经带着账户托管函到电梯口了。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "chen_mo",
+              "name": "陈默",
+              "role": "私人事务管家",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/chen_mo.png",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "先生，总行行长刚刚致电致歉，表示若贵行留不住您的资金托管，他们愿承担全部责任并立刻为您开通最高礼遇通道。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "查验屏幕上跳出的黑钻最高标识令理财经理双腿一软。总行高层火速登门赔礼，不仅清退失职人员，还奉上一笔十八万元黑钻专属利率回馈。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_cbd_3",
+      "title": "电梯厅里的并购截胡战",
+      "desc": "陆家湾摩天楼高管电梯厅外，赵天宇正仗着资金优势恶意压价吞并一家精密芯片标的，你一眼看穿合同里的抽屉陷阱。",
+      "bg": "/assets/items/biz_quant.jpg",
+      "npcSprite": "/assets/characters/zhao_tianyu.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "陆家湾金融中心 · 42层高管电梯厅",
+          "sprite": "/assets/characters/zhao_tianyu.png",
+          "text": "玻璃幕墙将晚霞切得锋利如刀。电梯厅尽头，赵天宇正带着两名法务把一家精密芯片供应链创始人堵在角落，语气盛气凌人地逼对方落笔。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhao_tianyu",
+          "name": "赵天宇",
+          "role": "赵氏地产少爷",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/zhao_tianyu.png",
+          "activeSide": "right",
+          "text": "林总，别给脸不要脸。你们这轮资金链就剩十天，除了我们赵氏没人接盘——今天降价四成签了，明早款到；不签，等着产线停工吧。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 并购透视",
+          "text": "该芯片封装标的掌握独家良率专利，下周将入围头部车企一级名录，估值即将暴涨三倍。赵氏协议附件第七页埋有恶意回购抽屉条款，意图零成本鲸吞核心专利。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhao_tianyu",
+          "name": "赵天宇",
+          "role": "赵氏地产少爷",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/zhao_tianyu.png",
+          "activeSide": "right",
+          "text": "哟，陆沉？怎么哪儿都有你？资本并购场可不是外滩超跑展厅，轮不到你这种暴发户插嘴。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "当场出价 ¥350,000 签下优先排他意向金，截胡核心标的",
+          "cashCost": 350000,
+          "cashGain": 2100000,
+          "sysPoints": 105,
+          "canCrit": true,
+          "resultText": "赵天宇眼睁睁看着优质标的易主，次周定点公告落地估值飙升，叠加消费返现净收 ¥2,100,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/zhao_tianyu.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "林总，别跟他浪费时间。原估值一分不砍，三十五万排他意向金现在打进贵司公账，三天内全额过桥资金到位——赵少，这单我接了。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhao_tianyu",
+              "name": "赵天宇",
+              "role": "赵氏地产少爷",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/zhao_tianyu.png",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "陆沉你疯了？敢跟我赵家抢食，你知不知道这笔盘子多大——"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "创始人如获大赦，当着赵天宇的面把那份压榨协议推回对方怀里，利落签下你的排他函。次周车企定点公告落地，标的身价翻倍，叠加天枢返现豪揽巨额回报。"
+            }
+          ]
+        },
+        {
+          "label": "冷静点破赵天宇的抽屉对赌条款，替创始人避坑换取顾问红利",
+          "cashCost": 0,
+          "cashGain": 260000,
+          "sysPoints": 85,
+          "resultText": "创始人惊出一身冷汗当场撕毁赵氏协议，顺手向你奉上 ¥260,000 战略咨询红利与深厚人情。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/zhao_tianyu.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "赵少这么急着催人签字，是因为附件第七页第十二条写明了“首季产能延期即无偿划转核心专利”吧？林总，这签下去不是融资，是卖身契。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/zhao_tianyu.png",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "创始人猛地翻开附件密密麻麻的小字，额头瞬间渗出冷汗，当场黑脸合上文件夹转身离席。赵天宇眼见算盘彻底落空，死死瞪着你却一句反驳都憋不出来。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "次日创始人专程登门致谢，不仅顺利拿到正规机构过桥资金，还执意奉上二十六万元战略顾问酬劳与长期优先配股权。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "night_city": [
+    {
+      "id": "ev_night_1",
+      "title": "星耀后台偶遇顶流女神受欺",
+      "desc": "星耀大厦演播厅走廊，油腻投资人正拿解约威胁顶流主播沈琉璃陪酒。灯光下她红唇紧抿，眼底全是倔强与厌恶。",
+      "bg": "/assets/items/biz_mcn.jpg",
+      "npcSprite": "/assets/characters/shen_liuli.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "星耀大厦 · 演播厅后台走廊",
+          "sprite": "/assets/characters/shen_liuli.png",
+          "text": "录影棚外的走廊灯光冷白。刚摘下一半舞台耳返的沈琉璃被一名满身酒气的油腻投资人堵在休息室门口，一袭酒红高开叉礼服在阴影下格外明艳刺眼。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "right",
+          "text": "投资人晃着解约函冷笑：“琉璃，别敬酒不吃吃罚酒。今晚跟我去包厢陪几位平台老大喝两杯，明天黄金档推荐照给；不然三十万违约金加全网限流，你自己掂量。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "shen_liuli",
+          "name": "沈琉璃",
+          "role": "星耀传媒顶流女神",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "right",
+          "effect": "shake",
+          "text": "陈总，合约写得清清楚楚，我只卖艺不陪酒。想用限流压我，你最好先掂量掂量自己扛不扛得住全网舆论。",
+          "innerThought": "手心都掐出印子了……表面必须硬气，可真要是被冻结账号，这三年心血就全毁了。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "left",
+          "text": "嘴上带刺，眼底却藏着不肯低头的倔强。区区三十万违约金，就敢把星耀最亮眼的台柱子逼到墙角。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "both",
+          "text": "投资人恼羞成怒，伸手便要去拽沈琉璃的手腕。你迈步上前，稳稳横在两人之间。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "当场豪掷 ¥300,000 买断她的违约金并将投资人轰出大楼",
+          "cashCost": 300000,
+          "cashGain": 1950000,
+          "sysPoints": 95,
+          "canCrit": true,
+          "unlockHeroine": "shen_liuli",
+          "affectionHeroine": "shen_liuli",
+          "affectionGain": 18,
+          "resultText": "沈琉璃美眸骤亮，踩着高跟鞋走到你身旁挽住你手臂：『新老板，以后我只听你的话哦～』【新红颜 · 沈琉璃已结识】",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "三十万违约金我替她付了，账户发来。从现在起她的商业约归我管——至于你，请立刻从星耀大楼滚出去。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "三十万实时转账截图亮在眼前，闻讯赶来的大厦安保主管核实你的顶层资方身份后，二话不说架起面如死灰的油腻投资人轰出了演播厅走廊。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "shen_liuli",
+              "name": "沈琉璃",
+              "role": "星耀传媒顶流女神",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "（她红唇微扬，踩着细高跟上前一步，自然地挽住你的臂弯）出手这么利落，都不怕我狮子大开口？新老板，以后星耀的场子，我可只听你的话哦。",
+              "innerThought": "见过那么多只会画饼的油腻老板，第一次有人连价都不还就把我护在身后……心脏跳得太快了。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "新红颜结识 · 消费返现",
+              "text": "成功结识【沈琉璃】，豪掷护花触发高额返现与系统积分入账。"
+            }
+          ]
+        },
+        {
+          "label": "叫来保安并递上私人名片",
+          "cashCost": 0,
+          "cashGain": 80000,
+          "sysPoints": 60,
+          "unlockHeroine": "shen_liuli",
+          "affectionHeroine": "shen_liuli",
+          "affectionGain": 10,
+          "resultText": "沈琉璃挑眉接过你的黑金名片，当晚立刻通过了你的微信好友申请。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "走廊正上方有三台高清监控，再往前碰一下，明天热搜第一就不是限流，是拘留通知书。安保，送客。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "both",
+              "text": "投资人被安保盯得心虚，骂骂咧咧地摔门而去。你从西装内袋抽出一张烫金私人名片递到沈琉璃手中：“后续若真有解约麻烦，随时联系我。”"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "shen_liuli",
+              "name": "沈琉璃",
+              "role": "星耀传媒顶流女神",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "（指尖夹过黑金名片，挑眉轻笑）沉得住气又有分寸，倒比满屋子土豪顺眼多了。晚上记得看微信，新老板。",
+              "innerThought": "不借机占便宜，还留了最体面的退路……这男人有点意思，必须加回来慢慢了解。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_night_2",
+      "title": "地下 Livehouse 的天价买断约",
+      "desc": "星耀地下 Livehouse 后台，一支极具爆款潜质的独立乐队正被无良经纪人用霸王高利合约逼签，天枢洞察眼给出 S+ 级商业评级。",
+      "bg": "/assets/bg/bg_night_city.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "星耀不夜城 · 地下霓虹 Livehouse",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "鼓点震得玻璃酒杯微微发颤，台上一支年轻独立乐队刚演完原创主打，观众久久不散。可刚拐进后台通道，几名黑心经纪公司的打手便拿着一纸十年“卖身约”围了上来。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "油滑经纪人把签字笔硬塞进主唱手里：“去年借你们录音棚那三万块，滚到现在连本带利十八万！要么签下十年全版权抽成九成，要么明早把所有乐器抵债！”"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 爆款潜质扫描",
+          "text": "该独立乐队原创单曲具备年度破圈旋律基因，三个月内全网二创播放量预计破十亿，商业价值评级：S+。原经纪合约存在严重高利欺诈条款。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "把一棵未来的摇钱树按在地下室里当韭菜割，真是暴殄天物。这单生意，我接手了。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "豪掷 ¥180,000 买断霸王约，签入旗下厂牌三七分账捧红",
+          "cashCost": 180000,
+          "cashGain": 1120000,
+          "sysPoints": 85,
+          "canCrit": true,
+          "resultText": "单曲上线三日登顶全网音乐榜首，厂牌分成叠加消费返现豪赚 ¥1,120,000，系统积分 +85。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "十八万？账号拿来，我现在全额清账买断。旧约撕了，吉他留下，以后跟着我的独立厂牌，分成三七开——你们七，我三。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "黑心经纪人盯着瞬间到账的十八万短信，还以为碰上冤大头，得意洋洋地撕碎旧约扬长而去。乐队主唱红着眼眶紧紧握住你的手，当场签下深度厂牌协议。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "不出半月，你砸出宣发资源推上的现场剪辑火遍全网，商演排期直通年底。丰厚版权回报叠加天枢暴击返现滚滚入账，无良经纪人肠子都悔青了。"
+            }
+          ]
+        },
+        {
+          "label": "以法务铁拳戳破高利阴阳合同，¥20,000 清结并拿下单曲投资权",
+          "cashCost": 20000,
+          "cashGain": 210000,
+          "sysPoints": 65,
+          "resultText": "无良经纪人因涉嫌欺诈灰溜溜退场，乐队感激涕零送上首张专辑分成，稳收 ¥210,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "三万录音费一年滚到十八万，年化利率远超法定红线。我的私人律师十分钟后到场，你是打算收两万本息和解，还是顺便去经侦解释一下阴阳账本？"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "几句精准的法务重锤彻底浇灭经纪人气焰。对方见你气度绝非普通听众，只得咬牙收下两万元清结费灰溜溜退场。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "乐队脱困后感激万分，主动将最看好的主打单曲首轮商业投资权交到你手上，随着单曲走红稳稳兑现了二十一万元收益。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_night_3",
+      "title": "顶层卡座的香槟压场战",
+      "desc": "星耀不夜城顶层黑金爵士吧，嚣张二代甩出五万块想强抢你的全景卡座并骚扰沈琉璃，一场排面碾压一触即发。",
+      "bg": "/assets/items/prop_night_loft.jpg",
+      "npcSprite": "/assets/characters/shen_liuli.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "星耀不夜城 · 顶层黑金爵士吧",
+          "sprite": "/assets/characters/shen_liuli.png",
+          "text": "午夜两点，霓虹光影透过全景落地窗倾泻而下。沈琉璃刚收工约你在顶层临窗卡座小酌，隔壁桌一名满身潮牌的富二代便晃着酒杯走了过来。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "right",
+          "text": "那二代居高临下扫了你一眼，把一张五万块的储值卡甩在桌面：“哥们，这全景卡座今晚我要了。五万块算替你买单，顺便请琉璃美女挪个座陪我们玩两局骰子，识相点。”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "shen_liuli",
+          "name": "沈琉璃",
+          "role": "星耀传媒顶流女神",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "right",
+          "text": "（她轻晃杯里冰球，连眼皮都懒得抬，只偏头看向你笑得风情万种）哟，老板，有人出五万块想撬你墙角呢。今晚这排面，你打算怎么给？",
+          "innerThought": "挑衅谁不好偏挑衅陆沉，我已经准备好坐着看大戏了。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/shen_liuli.png",
+          "activeSide": "left",
+          "text": "五万块就想在星耀顶层清场，连开瓶好酒的零头都不够。既然琉璃想看排面，那就把今晚的气氛彻底拉满。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "点一套 ¥260,000 黑桃 A 顶奢神龙套列队压场，请全场独留对面买单",
+          "cashCost": 260000,
+          "cashGain": 1680000,
+          "sysPoints": 95,
+          "canCrit": true,
+          "affectionHeroine": "shen_liuli",
+          "affectionGain": 12,
+          "resultText": "金衣礼宾高举黑桃 A 神龙套环场致敬，嚣张二代彻底社死；沈琉璃笑意盈盈碰杯，叠加返现入账 ¥1,680,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "经理，上一套二十六万黑桃 A 顶奢神龙套，再请全场每桌喝一杯——唯独隔壁那桌不用送，免得耽误人家结账。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "音乐骤停一拍随即炸响重低音。十二名金衣礼宾高举冷焰火与鎏金黑桃 A 列队穿过舞池，齐声向你的卡座躬身致意。挑衅的富二代脸色由红转青，在漫天哄笑中仓皇买单遁走。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "shen_liuli",
+              "name": "沈琉璃",
+              "role": "星耀传媒顶流女神",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "（举起香槟杯与你轻轻一碰，眼底映着漫天冷焰火）不愧是我的老板，一出手就把整座不夜城的星光都抢干净了。今晚这酒，我陪你喝到底。",
+              "innerThought": "这男人给足排面的时候，真是该死地让人心跳加速……"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "天枢狂欢返现",
+              "text": "顶奢消费触发神豪暴击返现，丰厚现金与声望积分同步入账。"
+            }
+          ]
+        },
+        {
+          "label": "亮出星耀夜场隐名股东黑卡，让经理直接请对方结账离席",
+          "cashCost": 0,
+          "cashGain": 145000,
+          "sysPoints": 70,
+          "affectionHeroine": "shen_liuli",
+          "affectionGain": 8,
+          "resultText": "全场大屏切出贵宾致意字幕，二代尴尬买单落荒而逃，当晚酒水股东分红 ¥145,000 顺手落袋。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "你的五万块自己留着吧。经理，顺便提醒这位客人，这间顶层酒廊的实控人今晚不想被人打扰。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "经理看清你亮出的黑金股东印章，立刻肃穆召来安保，恭敬请那名目瞪口呆的富二代当场结清账单离席。巨幕同步亮起低调的金色致意纹章。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "shen_liuli",
+              "name": "沈琉璃",
+              "role": "星耀传媒顶流女神",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/shen_liuli.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "连一分冤枉钱都懒得花，直接拿主人的规矩清场……老板，你这不动声色的狠劲儿，比砸香槟还勾人呢。",
+              "innerThought": "不动声色就把局面拿捏得死死的，越靠近他越觉得深不可测。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "peak_coast": [
+    {
+      "id": "ev_coast_1",
+      "title": "半山高尔夫场的顶级人脉局",
+      "desc": "云顶高尔夫果岭，两位京城老牌财阀继承人正在闲聊新能源并购案，见你驾驶顶级超跑驶来，主动递来球杆。",
+      "bg": "/assets/bg/bg_peak_coast.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "云顶半山 · 临海高尔夫果岭",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "晨雾散尽，碧绿的悬崖果岭直面蔚蓝海面。你驾车滑入私人会所车道，果岭边两位穿着低调定制针织衫的京城老牌财阀继承人正低声商讨一桩十亿级新能源并购案。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "听见沉浑的引擎声，领头那位气度沉稳的京城公子转过身，目光在你神态上停顿两秒，唇角扬起一抹考校意味的浅笑：“海城最近风头最盛的陆先生？久仰。果岭刚好缺一位球友，不知有没有兴致打一杆，顺便聊聊华东新能源的牌桌？”"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢人脉雷达 · 顶级圈层入场券",
+          "text": "检测到京城世家资本核心人物。展现从容财力气魄或精准宏观商业见地，均可撬动高额协同收益并大幅提升顶豪圈层声望。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "递过来的不只是一根高尔夫球杆，而是踏入京海顶级资本圈层的试金石。球要打漂亮，格局更不能落半步下风。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "一杆进洞加豪气包下全场顶级红酒",
+          "cashCost": 200000,
+          "cashGain": 1600000,
+          "sysPoints": 140,
+          "canCrit": true,
+          "resultText": "顶级圈层正式向你敞开大门，两位大佬当场递来千万级合作备忘录。",
+          "branchNodes": [
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "你接过球杆，干脆利落挥出一记弧线极佳的远程推杆——白球顺着草坡划过海风，清脆落洞。随即你抬手示意侍者：“今天云顶酒窖这批罗曼尼康帝记我账上，请各位球友共饮。”"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "果岭掌声骤起。两位京城继承人眼中闪过真切赞赏，再无半分试探，当场举杯邀你落座私人露台，将华东新能源并购案的优先联合份额直接推到你手边。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "圈层跃迁 · 暴击回报",
+              "text": "顶级合作备忘录落地叠加消费返现，丰厚现金与高额积分同步入账。"
+            }
+          ]
+        },
+        {
+          "label": "沉稳聊透国际资本局势，不卑不亢",
+          "cashCost": 0,
+          "cashGain": 480000,
+          "sysPoints": 100,
+          "resultText": "你的格局令世家子弟暗暗心惊，海城豪门圈开始流传你的名字。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "好酒留到庆功再开。二位盯着的电池上游矿权，海外关税窗口下季度就会收紧，不如借海城保税港做离岸结算——我刚好有一条现成通道。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "一语道破跨境并购最棘手的隐形死穴，两位眼高于顶的世家继承人同时一怔，随即神色郑重起来，当场与你交换私人加密联系方式并划出一笔四十八万元联合调研分红。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "不卑不亢，以势压人不如以局服人。从今天起，海城乃至京城的顶豪名录上，正式有了你的名字。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_coast_2",
+      "title": "游艇码头一号泊位之争",
+      "desc": "云顶私人游艇码头 1 号深水泊位被一名嚣张豪门少爷强行霸占，对方仗着家里老资格冷嘲热讽，丝毫不把码头预约放在眼里。",
+      "bg": "/assets/bg/bg_peak_coast.jpg",
+      "npcSprite": "/assets/characters/chen_mo.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "云顶半山海岸 · 1 号深水游艇泊位",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "夕阳将海面染成碎金。你提前预约的 1 号主航道深水泊位上，却横停着一艘刺眼橙色的运动游艇，甲板上几名纨绔公子开着震耳电音，正嗤笑上前劝离的码头调度员。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/chen_mo.png",
+          "activeSide": "left",
+          "text": "领头那名港城少爷倚在船舷，举着香槟朝岸上的你挑衅扬手：“调度，告诉那位海城新贵，一号位我看上了。码头规矩是谁先靠岸算谁的——不服气，让他去外圈跟渔船挤着去！”"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "chen_mo",
+          "name": "陈默",
+          "role": "私人事务管家",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/chen_mo.png",
+          "activeSide": "right",
+          "text": "先生，此人仗着家族持有游艇会早期老股屡次强占泊位。码头理事长正在会所二层，您打算买断泊位一劳永逸，还是按最高章程强制清退？"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/chen_mo.png",
+          "activeSide": "left",
+          "text": "靠着祖辈那点旧面子在码头撒野。既然他想谈海城的规矩，今天就让他重新学一遍什么叫实力说话。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "刷卡 ¥400,000 买断一号泊位十年专属权，请港务拖船清场",
+          "cashCost": 400000,
+          "cashGain": 2650000,
+          "sysPoints": 135,
+          "canCrit": true,
+          "resultText": "码头理事长亲自签署十年冠名泊位契约，嚣张少爷的游艇被拖船当众移出主航道，叠加返现狂赚 ¥2,650,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/chen_mo.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "陈默，通知理事长：一号深水泊位十年独家冠名权，四十万首期定金我现在刷卡买断。给他五分钟开走，五分钟后让港务拖船清场。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "shake",
+              "text": "三分钟后码头广播轰然响起，宣告一号泊位正式变更为陆先生终身优先专属席位。两艘港务拖船亮起警示灯缓缓逼近，嚣张少爷脸色铁青，在整片码头名流的注视下狼狈起锚倒船，退进了最外侧角落。"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "title": "顶豪资产冠名 · 暴击返现",
+              "text": "专属泊位稀缺溢价叠加高额消费返现，巨额现金与积分同步入账。"
+            }
+          ]
+        },
+        {
+          "label": "由陈默出示天枢离岸会员金章，按最高章程清退并划扣违约金",
+          "cashCost": 0,
+          "cashGain": 360000,
+          "sysPoints": 95,
+          "resultText": "会所最高委员会秒级冻结对方会员资格，违约赔付金 ¥360,000 直接划入你的名下账户。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/chen_mo.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "不必为这种人多花一分钱。陈默，出示我的离岸黑钻创始会员编号，启动游艇会《违规占泊强制清退条款》。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "chen_mo",
+              "name": "陈默",
+              "role": "私人事务管家",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/chen_mo.png",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "已办理完毕。会所执行委员会即刻冻结了对方本年度停泊权，并依约划扣其三十六万元保证金作为对您的延误赔付。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "游艇会法务与安保船双双靠舷，那名港城少爷的电音瞬间哑火，颜面扫地地被请离主码头。海风重归宁静，一笔意外赔付金稳稳入账。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_coast_3",
+      "title": "悬崖庄园的午夜慈善预展",
+      "desc": "云顶悬崖庄园闭门慈善古玩预展上暗流涌动，你在角落展柜偶遇微服探查的陆知微，一只冷门黑漆残匣里竟藏着京城世家私印线索。",
+      "bg": "/assets/items/prop_peak_manor.jpg",
+      "npcSprite": "/assets/characters/lu_zhiwei.png",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "云顶半山 · 悬崖庄园午夜预展",
+          "sprite": "/assets/characters/lu_zhiwei.png",
+          "text": "海潮拍打悬崖礁石，水晶吊灯下的半山庄园正举行一场闭门慈善古玩预展。你刚接过香槟，便在展柜阴影里瞥见那道熟悉的银蓝挑染身影——陆知微难得换上一袭利落小黑裙，手里却仍偷偷藏着迷你光谱笔。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lu_zhiwei",
+          "name": "陆知微",
+          "role": "黑客 & 古玩鉴宝天才",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lu_zhiwei.png",
+          "activeSide": "right",
+          "text": "嘘，小声点大老板。前排那几个举牌喊得最凶的都是京城来的拍托，专坑海城冤大头——不过角落展柜里那只不起眼的黑漆残匣，看着有点古怪。",
+          "innerThought": "本来只是混进来查一条京城古玩暗线，没想到撞见他了……他穿正装的样子还真有点犯规。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 双层夹壁透视",
+          "text": "17 号黑漆残匣内藏精密机括夹层，封存有一枚明宫秘色玉璧（估价 ¥2,250,000+），玉璧背面阴刻“京城林氏”老族徽暗印，疑与海城某段隐秘身世相连。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lu_zhiwei.png",
+          "activeSide": "left",
+          "effect": "heartbeat",
+          "text": "京城林氏的旧族印怎么会流落到半山午夜预展？这只残匣不仅价值连城，更可能是揭开京城暗流的第一把钥匙。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lu_zhiwei",
+          "name": "陆知微",
+          "role": "黑客 & 古玩鉴宝天才",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/characters/lu_zhiwei.png",
+          "activeSide": "right",
+          "text": "暗标封盘还有两分钟。我们是直接把那只怪匣子抢下来，还是顺手掀了这帮拍托的桌子？听你的。",
+          "innerThought": "不管选哪个，只要和他搭档，今晚肯定能玩票大的。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "出价 ¥320,000 暗标拍下黑漆残匣，揭开夹层玉璧与京城暗印",
+          "cashCost": 320000,
+          "cashGain": 2250000,
+          "sysPoints": 130,
+          "canCrit": true,
+          "affectionHeroine": "lu_zhiwei",
+          "affectionGain": 15,
+          "resultText": "匣底暗层竟藏着价值连城的明宫秘色玉璧与京城林氏旧印，陆知微惊叹连连，叠加返现斩获 ¥2,250,000。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "拍托留给别人头疼，真正值钱的东西不能放跑。三十二万暗标，把十七号残匣收进囊中。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "暗标落槌，全场名流暗笑你花三十二万买了只破木匣。退到庄园露台后，陆知微拨开匣底暗扣，温润透亮的明宫秘色玉璧与那枚清晰的京城林氏暗印赫然现世。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lu_zhiwei",
+              "name": "陆知微",
+              "role": "黑客 & 古玩鉴宝天才",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "真让你赌中夹层重宝了……等等，这枚京城旧印的纹路我在暗网档案里见过。陆沉，回头请我吃宵夜，我通宵帮你把这条京城线顺藤摸瓜挖出来。",
+              "innerThought": "每次都能精准踩在真相点上，明明帅得要命还一脸风轻云淡，太犯规了……"
+            },
+            {
+              "type": "system_alert",
+              "sprite": "/assets/characters/protagonist.png",
+              "title": "重宝入手 · 暴击返现",
+              "text": "明宫秘色玉璧估值与高额返现同步结算，京城世家暗线线索悄然浮现。"
+            }
+          ]
+        },
+        {
+          "label": "与陆知微联手戳破假拍托局，赢取京城藏家重金酬谢与密函",
+          "cashCost": 0,
+          "cashGain": 420000,
+          "sysPoints": 105,
+          "affectionHeroine": "lu_zhiwei",
+          "affectionGain": 10,
+          "resultText": "你们精准戳破拍托抬价戏码，京城藏家代表大加赞赏，当场奉上 ¥420,000 鉴宝酬金并留下京城密函。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "先掀桌。知微，把你刚截到的拍托内部通讯记录发给前排那位京城老藏家——顺便请主办方出来解释一下。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "陆知微嘴角一勾，指尖在手机屏幕轻点两下。几名恶意抬价的拍托手机同时弹出露馅回执，现场一片哗然。前排那位来自京城的神秘藏家抚掌大笑，当场奉上四十二万鉴宝重谢，并递来一张刻着京城老宅暗纹的邀约密函。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lu_zhiwei",
+              "name": "陆知微",
+              "role": "黑客 & 古玩鉴宝天才",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/characters/lu_zhiwei.png",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "完美配合！连京城那边的老派藏家都对你另眼相看了。这四十二万我不要分成，下次海城有什么刺激局，记得第一个喊我就行。",
+              "innerThought": "光是跟他并肩把这群老狐狸耍得团团转，就已经比拿分成开心多了。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "京城密函入手，陆知微又多了一份默契。海城之外更大的牌桌，正在缓缓浮出水面。"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

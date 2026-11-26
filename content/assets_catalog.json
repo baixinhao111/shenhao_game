@@ -1,0 +1,129 @@
+{
+  "assets": [
+    {
+      "id": "car_ebike",
+      "name": "雨夜旧电驴",
+      "type": "car",
+      "price": 0,
+      "valuation": 2000,
+      "racePower": 10,
+      "starterOwned": true,
+      "image": "/assets/items/car_ebike.png",
+      "description": "陪你送过无数雨夜外卖的老伙计，见证底层的最后一夜。"
+    },
+    {
+      "id": "car_porsche_911",
+      "name": "保时捷 911 Turbo S",
+      "type": "car",
+      "price": 2380000,
+      "valuation": 2600000,
+      "racePower": 55,
+      "setId": "set_speed",
+      "image": "/assets/items/car_porsche_911.png",
+      "description": "曜石黑配熔岩金卡钳，你买下的第一辆顶级超跑，4S 店打脸名场面功臣。"
+    },
+    {
+      "id": "car_ferrari_sf90",
+      "name": "法拉利 SF90 Stradale",
+      "type": "car",
+      "price": 5680000,
+      "valuation": 6500000,
+      "racePower": 78,
+      "setId": "set_speed",
+      "image": "/assets/items/car_ferrari_sf90.png",
+      "description": "千匹马力烈马轰鸣，驶过海大校门与外滩时回头率 100%。"
+    },
+    {
+      "id": "car_bugatti_chiron",
+      "name": "布加迪 Chiron 黑金定制版",
+      "type": "car",
+      "price": 38000000,
+      "valuation": 45000000,
+      "racePower": 98,
+      "setId": "set_speed",
+      "image": "/assets/items/car_bugatti_chiron.png",
+      "description": "全球限量孤品黑金超跑，停在云顶会所门口即是绝对权势的象征。"
+    },
+    {
+      "id": "yacht_poseidon",
+      "name": "海神号 88尺豪华游艇",
+      "type": "vehicle",
+      "price": 46000000,
+      "valuation": 55000000,
+      "racePower": 0,
+      "image": "/assets/items/yacht_poseidon.png",
+      "description": "停泊在黄金海岸私人泊位，三层甲板配海上 KTV 与香槟吧。"
+    },
+    {
+      "id": "jet_g700",
+      "name": "湾流 G700 私人公务机",
+      "type": "vehicle",
+      "price": 480000000,
+      "valuation": 560000000,
+      "racePower": 0,
+      "image": "/assets/items/jet_g700.png",
+      "description": "随时起飞直抵全球任何金融中心与私人海岛，真正的云端座驾。"
+    },
+    {
+      "id": "col_jade_emperor",
+      "name": "玻璃种帝王绿翡翠原玉",
+      "type": "collectible",
+      "price": 0,
+      "dropOnly": true,
+      "valuation": 18000000,
+      "setId": "set_antique",
+      "image": "/assets/items/col_jade_emperor.png",
+      "description": "城南赌石街切出的绝世帝王绿，荧光流转，令古玩大佬彻夜难眠。"
+    },
+    {
+      "id": "col_blue_vase",
+      "name": "明宣德青花缠枝莲赏瓶",
+      "type": "collectible",
+      "price": 0,
+      "dropOnly": true,
+      "valuation": 12000000,
+      "setId": "set_antique",
+      "image": "/assets/items/col_blue_vase.png",
+      "description": "苏麻离青晕散自然，传世稀珍，摆在豪宅藏宝室瞬间提升格调。"
+    },
+    {
+      "id": "col_blood_agate",
+      "name": "鸡血红玛瑙龙纹印章",
+      "type": "collectible",
+      "price": 0,
+      "dropOnly": true,
+      "valuation": 5200000,
+      "setId": "set_antique",
+      "image": "/assets/items/col_blood_agate.png",
+      "description": "温润如凝脂，色如丹霞，古玩鬼市万中无一的镇宅之宝。"
+    },
+    {
+      "id": "col_ocean_diamond",
+      "name": "海洋之心 32克拉蓝钻",
+      "type": "collectible",
+      "price": 0,
+      "dropOnly": true,
+      "valuation": 68000000,
+      "image": "/assets/items/col_ocean_diamond.png",
+      "description": "《公海星耀号》限时活动绝版典藏，深海星辉般的稀世蓝钻。"
+    }
+  ],
+  "sets": [
+    {
+      "id": "set_speed",
+      "name": "海城速度传奇",
+      "requiredIds": ["car_porsche_911", "car_ferrari_sf90", "car_bugatti_chiron"],
+      "bonusDesc": "全局身价估值 +12%，消费暴击概率 +5%",
+      "netWorthPct": 0.12,
+      "critBonusPct": 0.05
+    },
+    {
+      "id": "set_antique",
+      "name": "鬼市传世奇珍",
+      "requiredIds": ["col_jade_emperor", "col_blue_vase", "col_blood_agate"],
+      "bonusDesc": "全局身价估值 +15%，产业离线收益 +15%",
+      "netWorthPct": 0.15,
+      "incomeBonusPct": 0.15
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+[
+  {
+    "id": "event_cruise_01",
+    "title": "公海星耀号：七日豪赌风云",
+    "subtitle": "限时番外活动 · 云顶游艇码头登船",
+    "active": true,
+    "endsAt": "2026-12-31T23:59:59Z",
+    "bannerBg": "/assets/bg/bg_bund_penthouse.png",
+    "districtId": "peak_coast",
+    "description": "百亿级豪华游轮【星耀号】停泊海城公海！东南亚财阀与海城豪门齐聚甲板，使用活动筹码参与赌局赢取【星耀勋章】，兑换绝版 32 克拉【海洋之心蓝钻】与海量系统积分！",
+    "rewards": [
+      { "id": "ev_rew_diamond", "name": "绝版藏品：海洋之心蓝钻", "costTokens": 300, "assetId": "col_ocean_diamond", "icon": "💎" },
+      { "id": "ev_rew_points", "name": "系统积分大礼盒（+200 积分）", "costTokens": 80, "sysPoints": 200, "icon": "⚡" },
+      { "id": "ev_rew_cash", "name": "公海离岸筹码兑现（+¥5,000,000）", "costTokens": 100, "cash": 5000000, "icon": "💰" }
+    ]
+  }
+]
