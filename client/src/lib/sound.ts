@@ -1,7 +1,13 @@
 // Pure Web Audio API synthesizer for instant juicy feedback with zero audio file lag
 
 let audioCtx: AudioContext | null = null;
-let muted = localStorage.getItem('tianshu_muted') === '1';
+let muted = (() => {
+  try {
+    return localStorage.getItem('tianshu_muted') === '1';
+  } catch {
+    return false;
+  }
+})();
 
 function getCtx(): AudioContext | null {
   if (muted) return null;
@@ -21,7 +27,11 @@ export function isSoundMuted(): boolean {
 
 export function toggleSoundMute(): boolean {
   muted = !muted;
-  localStorage.setItem('tianshu_muted', muted ? '1' : '0');
+  try {
+    localStorage.setItem('tianshu_muted', muted ? '1' : '0');
+  } catch {
+    /* storage unavailable */
+  }
   return muted;
 }
 

@@ -7,3 +7,5 @@ data/
 *.sqlite
 *.sqlite.tmp
 *.tsbuildinfo
+client/dist-demo/
+scripts/demo/out/
