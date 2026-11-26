@@ -5,6 +5,10 @@ import { config } from './config.js';
 import { getContent, reloadContent } from './contentLoader.js';
 import { execute, getGmSetting, getLastInsertId, queryAll, queryOne, setGmSetting } from './db.js';
 import { chatWithHeroine } from './deepseekService.js';
+import { assertCashSufficient, assertEnergySufficient, spendCashOrThrow, spendEnergyOrThrow } from './economy.js';
+import { getCurrentStockQuotes, registerMinigameRoutes } from './minigames.js';
+import { registerNegotiationRoutes } from './negotiation.js';
+import { getBusinessDef, getPropertyDef, purchaseBusiness, purchaseProperty } from './purchases.js';
 import {
   buildFullGameState,
   computePortfolioAndTier,
@@ -48,34 +52,6 @@ function authMiddleware(req: AuthedRequest, res: Response, next: NextFunction): 
   } catch {
     res.status(401).json({ error: '登录状态已过期，请重新登录' });
   }
-}
-
-function assertEnergySufficient(userId: number, cost: number): void {
-  if (cost <= 0) return;
-  const st = ensureDailyResetAndEnergy(userId);
-  if (st.energy < cost) {
-    throw new Error(`精力不足（需要 ⚡${cost}，当前 ⚡${st.energy}），可在【系统商城】喝精力特饮或等待恢复`);
-  }
-}
-
-function assertCashSufficient(userId: number, cost: number): void {
-  if (cost <= 0) return;
-  const st = queryOne<any>('SELECT cash FROM player_state WHERE user_id = ?', [userId]);
-  if (!st || st.cash < cost) {
-    throw new Error(`现金不足（需要 ${formatMoney(cost)}，当前 ${formatMoney(st?.cash || 0)}）`);
-  }
-}
-
-function spendEnergyOrThrow(userId: number, cost: number): void {
-  if (cost <= 0) return;
-  assertEnergySufficient(userId, cost);
-  execute('UPDATE player_state SET energy = energy - ? WHERE user_id = ?', [cost, userId]);
-}
-
-function spendCashOrThrow(userId: number, cost: number): void {
-  if (cost <= 0) return;
-  assertCashSufficient(userId, cost);
-  execute('UPDATE player_state SET cash = cash - ? WHERE user_id = ?', [cost, userId]);
 }
 
 // Track last home poke line index per user+companion so rapid taps cycle fresh lines
@@ -653,24 +629,6 @@ function buildHomePokePayload(
 }
 
 // Deterministic time-bucketed virtual stocks for Lujiazui CBD
-function getCurrentStockQuotes() {
-  const bucket = Math.floor(Date.now() / (10 * 60 * 1000)); // shifts every 10 minutes
-  const stocks = [
-    { id: 'stk_tech', name: '天枢芯科', code: '688001', base: 128 },
-    { id: 'stk_land', name: '海城锦绣地产', code: '600882', base: 42 },
-    { id: 'stk_media', name: '星耀娱乐控股', code: '300619', base: 66 },
-    { id: 'stk_bio', name: '云顶生物医药', code: '688309', base: 94 },
-  ];
-  return stocks.map((s, idx) => {
-    const wave = Math.sin(bucket * 0.7 + idx * 1.9) * 0.14 + Math.cos(bucket * 0.35 + idx) * 0.08;
-    const price = Number((s.base * (1 + wave)).toFixed(2));
-    const changePct = Number((wave * 100).toFixed(2));
-    const nextWave = Math.sin((bucket + 1) * 0.7 + idx * 1.9) * 0.14 + Math.cos((bucket + 1) * 0.35 + idx) * 0.08;
-    const trend = nextWave >= wave ? 'up' : 'down';
-    return { ...s, price, changePct, trend };
-  });
-}
-
 export function createApiRouter(): Router {
   const router = Router();
 
@@ -1329,45 +1287,8 @@ export function createApiRouter(): Router {
     try {
       const userId = req.userId!;
       const { propertyId } = req.body || {};
-      const content = getContent();
-      const prop = content.properties.find((p) => p.id === propertyId);
-      if (!prop) throw new Error('房产不存在');
-
-      const owned = queryOne('SELECT property_id FROM player_properties WHERE user_id = ? AND property_id = ?', [
-        userId,
-        propertyId,
-      ]);
-      if (owned) throw new Error('你已拥有该房产');
-
-      const { tierInfo } = computePortfolioAndTier(userId);
-      if (tierInfo.tier < prop.unlockTier) throw new Error(`社会阶层达到 Lv.${prop.unlockTier} 才可购入该顶奢物业`);
-
-      spendCashOrThrow(userId, prop.price);
-      const critResult = rollCritCashback(userId, prop.price);
-      const now = Date.now();
-      execute(
-        `INSERT INTO player_properties (user_id, property_id, renovation_level, custom_name, residents_json, last_rent_at, purchased_at)
-         VALUES (?, ?, 1, '', '[]', ?, ?)`,
-        [userId, propertyId, now, now],
-      );
-
-      // Auto-upgrade main residence if higher energy bonus
-      const state = queryOne<any>('SELECT main_property_id FROM player_state WHERE user_id = ?', [userId]);
-      const currMain = content.properties.find((p) => p.id === state.main_property_id);
-      if (prop.type === 'residence' && (prop.energyBonus || 0) > (currMain?.energyBonus || 0)) {
-        execute('UPDATE player_state SET main_property_id = ? WHERE user_id = ?', [propertyId, userId]);
-      }
-
-      const user = queryOne<any>('SELECT nickname FROM users WHERE id = ?', [userId]);
-      postMoment(
-        userId,
-        user.nickname,
-        `刚刚全款签下【${prop.name}】，钥匙到手！海城的版图又多了一块属于我的坐标。`,
-        `海城 · ${prop.name}`,
-        [{ author: '陈默（私人管家）', text: '少爷大气！物业权证与全城收租系统已自动对接完毕。' }],
-        ['陈默（私人管家）'],
-      );
-
+      const prop = getPropertyDef(String(propertyId || ''));
+      const { critResult } = purchaseProperty(userId, prop.id, prop.price);
       res.json({ success: true, critResult, state: buildFullGameState(userId) });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
@@ -1653,24 +1574,8 @@ export function createApiRouter(): Router {
     try {
       const userId = req.userId!;
       const { businessId } = req.body || {};
-      const content = getContent();
-      const biz = content.businesses.find((b) => b.id === businessId);
-      if (!biz) throw new Error('产业不存在');
-      const owned = queryOne('SELECT business_id FROM player_businesses WHERE user_id = ? AND business_id = ?', [
-        userId,
-        businessId,
-      ]);
-      if (owned) throw new Error('已拥有该产业');
-
-      const { tierInfo } = computePortfolioAndTier(userId);
-      if (tierInfo.tier < biz.unlockTier) throw new Error(`需达到社会阶层 Lv.${biz.unlockTier} 才可收购该产业`);
-
-      spendCashOrThrow(userId, biz.buyCost);
-      const critResult = rollCritCashback(userId, biz.buyCost);
-      execute(
-        'INSERT INTO player_businesses (user_id, business_id, level, assigned_heroine_id, last_collected_at) VALUES (?, ?, 1, ?, ?)',
-        [userId, businessId, '', Date.now()],
-      );
+      const biz = getBusinessDef(String(businessId || ''));
+      const { critResult } = purchaseBusiness(userId, biz.id, biz.buyCost);
       res.json({ success: true, critResult, state: buildFullGameState(userId) });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
@@ -1865,153 +1770,10 @@ export function createApiRouter(): Router {
 
   // ================= DISTRICT MINI-GAMES =================
   // 1. Old Street: Jade Gambling
-  router.post('/minigame/jade/cut', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const tier = Number(req.body?.tier || 1); // 1=50k, 2=300k, 3=1.5M
-      const costs: Record<number, number> = { 1: 50000, 2: 300000, 3: 1500000 };
-      const cost = costs[tier] || 50000;
-
-      spendEnergyOrThrow(userId, 6);
-      spendCashOrThrow(userId, cost);
-      const { skills } = computePortfolioAndTier(userId);
-      const luckBoost = skills.insightLevel * 0.05;
-      const roll = Math.random() + luckBoost;
-
-      let outcome = 'miss';
-      let payout = 0;
-      let headline = '切垮了！里面只是普通大理石白皮……';
-      let droppedAsset: any = null;
-      let unlockedHeroine: string | null = null;
-
-      if (roll > 0.96 && tier >= 2) {
-        outcome = 'legendary';
-        payout = cost * 8;
-        const rares = ['col_jade_emperor', 'col_blue_vase', 'col_blood_agate'];
-        const chosenId = rares[Math.floor(Math.random() * rares.length)];
-        const content = getContent();
-        droppedAsset = content.assetsCatalog.assets.find((a) => a.id === chosenId);
-        execute('INSERT OR IGNORE INTO player_assets (user_id, asset_id, acquired_at) VALUES (?, ?, ?)', [
-          userId,
-          chosenId,
-          Date.now(),
-        ]);
-        headline = `惊天出绿！！一刀切出传世稀珍【${droppedAsset?.name}】并当场高价变现边角料！`;
-        // Also unlock Lu Zhiwei if not yet unlocked!
-        const zhiwei = queryOne<any>('SELECT unlocked FROM player_heroines WHERE user_id = ? AND heroine_id = ?', [
-          userId,
-          'lu_zhiwei',
-        ]);
-        if (zhiwei && !zhiwei.unlocked) {
-          execute('UPDATE player_heroines SET unlocked = 1, affection = affection + 20 WHERE user_id = ? AND heroine_id = ?', [
-            userId,
-            'lu_zhiwei',
-          ]);
-          unlockedHeroine = 'lu_zhiwei';
-        }
-      } else if (roll > 0.65) {
-        outcome = 'big_win';
-        payout = Math.round(cost * (2.2 + Math.random() * 1.8));
-        headline = `出冰种飘花翡翠啦！行家当场疯抢加价，狂赚 ${formatMoney(payout)}！`;
-      } else if (roll > 0.35) {
-        outcome = 'small_win';
-        payout = Math.round(cost * (1.15 + Math.random() * 0.45));
-        headline = `切出糯种春带彩，稳稳回本小赚 ${formatMoney(payout)}！`;
-      } else {
-        payout = Math.round(cost * 0.25);
-        headline = `切垮了，只剩一丢丢边角料卖了 ${formatMoney(payout)}，下次升级【黄金洞察眼】再来！`;
-      }
-
-      execute('UPDATE player_state SET cash = cash + ?, sys_points = sys_points + 20 WHERE user_id = ?', [payout, userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({
-        success: true,
-        outcome,
-        payout,
-        profit: payout - cost,
-        headline,
-        droppedAsset,
-        unlockedHeroine,
-        state: buildFullGameState(userId),
-      });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   // 2. University: Angel Investment Corner
-  router.post('/minigame/angel/invest', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const amount = Math.max(20000, Math.min(2000000, Number(req.body?.amount || 100000)));
-      const pitchName = String(req.body?.pitchName || '校园 AI 音乐创作插件');
-      spendEnergyOrThrow(userId, 6);
-      spendCashOrThrow(userId, amount);
-
-      const { skills } = computePortfolioAndTier(userId);
-      const roll = Math.random() + skills.insightLevel * 0.06;
-      let mult = 0.4;
-      let headline = `项目「${pitchName}」首月冷启动不及预期，收回残值。`;
-      if (roll > 0.88) {
-        mult = 6.5;
-        headline = `神级黑马！「${pitchName}」一夜登顶热搜获红杉追投，你的天使轮暴赚 6.5 倍！`;
-      } else if (roll > 0.5) {
-        mult = 2.1;
-        headline = `稳健翻倍！「${pitchName}」顺利盈利分红，回报 2.1 倍！`;
-      } else if (roll > 0.25) {
-        mult = 1.25;
-        headline = `「${pitchName}」小有起色，稳拿 1.25 倍回报！`;
-      }
-
-      const payout = Math.round(amount * mult);
-      execute('UPDATE player_state SET cash = cash + ?, sys_points = sys_points + 22 WHERE user_id = ?', [payout, userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({ success: true, payout, mult, headline, state: buildFullGameState(userId) });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   // 3. Bund: Midnight Street Race (uses equipped supercar!)
-  router.post('/minigame/race/run', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const stake = Math.max(50000, Math.min(3000000, Number(req.body?.stake || 100000)));
-      spendEnergyOrThrow(userId, 7);
-      spendCashOrThrow(userId, stake);
-
-      const content = getContent();
-      const state = queryOne<any>('SELECT equipped_car_id FROM player_state WHERE user_id = ?', [userId]);
-      const car = content.assetsCatalog.assets.find((a) => a.id === state.equipped_car_id);
-      const power = car?.racePower || 10;
-      const winChance = Math.min(0.92, 0.25 + power / 130);
-      const won = Math.random() < winChance;
-
-      const payout = won ? Math.round(stake * 2.4) : 0;
-      const pts = won ? 40 : 10;
-      if (payout > 0) {
-        execute('UPDATE player_state SET cash = cash + ? WHERE user_id = ?', [payout, userId]);
-      }
-      execute('UPDATE player_state SET sys_points = sys_points + ? WHERE user_id = ?', [pts, userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({
-        success: true,
-        won,
-        carName: car?.name || '小电驴',
-        winChance: Math.round(winChance * 100),
-        payout,
-        headline: won
-          ? `驾驶【${car?.name}】在外滩弯道极限漂移甩开嚣张富少三个车身！赢得彩头 ${formatMoney(payout)} + 积分 ${pts}！`
-          : `【${car?.name}】马力稍逊一筹惜败，快去车库升级更顶级的超跑来复仇！`,
-        state: buildFullGameState(userId),
-      });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   // 4. CBD: Virtual Stock Market
   router.get('/minigame/stocks', authMiddleware, (req: AuthedRequest, res) => {
@@ -2023,108 +1785,10 @@ export function createApiRouter(): Router {
     res.json({ quotes, insiderTip });
   });
 
-  router.post('/minigame/stocks/trade', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const { stockId, direction, amount } = req.body || {}; // direction: 'long' | 'short'
-      const stake = Math.max(100000, Math.min(20000000, Number(amount || 200000)));
-      spendEnergyOrThrow(userId, 6);
-      spendCashOrThrow(userId, stake);
-
-      const quotes = getCurrentStockQuotes();
-      const st = quotes.find((q) => q.id === stockId) || quotes[0];
-      const { skills } = computePortfolioAndTier(userId);
-      const predictedCorrect = (direction === 'long' && st.trend === 'up') || (direction === 'short' && st.trend === 'down');
-      const winProb = predictedCorrect ? Math.min(0.95, 0.72 + skills.insightLevel * 0.05) : 0.3;
-      const won = Math.random() < winProb;
-
-      const returnRate = won ? 1.55 + Math.random() * 0.65 : 0.65 + Math.random() * 0.2;
-      const payout = Math.round(stake * returnRate);
-      execute('UPDATE player_state SET cash = cash + ?, sys_points = sys_points + 28 WHERE user_id = ?', [payout, userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({
-        success: true,
-        won,
-        payout,
-        profit: payout - stake,
-        headline: won
-          ? `精准${direction === 'long' ? '抄底做多' : '高位做空'}【${st.name}】，单波收割 ${formatMoney(payout - stake)}！`
-          : `市场突发震荡，本轮【${st.name}】止损离场，收回 ${formatMoney(payout)}。`,
-        state: buildFullGameState(userId),
-      });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   // 5. Night City: Livestream PK
-  router.post('/minigame/livestream/pk', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const giftTotal = Math.max(100000, Math.min(10000000, Number(req.body?.amount || 300000)));
-      spendEnergyOrThrow(userId, 8);
-      spendCashOrThrow(userId, giftTotal);
-
-      const critResult = rollCritCashback(userId, giftTotal);
-      // Unlock Shen Liuli & boost affection
-      execute('UPDATE player_heroines SET unlocked = 1, affection = affection + 18 WHERE user_id = ? AND heroine_id = ?', [
-        userId,
-        'shen_liuli',
-      ]);
-      execute('UPDATE player_state SET sys_points = sys_points + 45 WHERE user_id = ?', [userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({
-        success: true,
-        critResult,
-        headline: `满屏星海嘉年华炸裂公屏！对面榜一大哥直接破防退网，沈琉璃好感度 +18，系统积分 +45！`,
-        barrage: ['卧槽神豪大哥空降！！', '这嘉年华雨停不下来了！！', '对面榜一连夜注销账号哈哈哈哈！', '琉璃眼眶都红了太宠了吧！'],
-        state: buildFullGameState(userId),
-      });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   // 6. Limited-Time Cruise Event
-  router.post('/event/cruise/play', authMiddleware, (req: AuthedRequest, res) => {
-    try {
-      const userId = req.userId!;
-      const eventId = 'event_cruise_01';
-      spendEnergyOrThrow(userId, 8);
-      const today = todayKey();
-      const row = queryOne<any>('SELECT * FROM player_events WHERE user_id = ? AND event_id = ?', [userId, eventId]);
-      const playsToday = row && row.daily_date === today ? row.plays_today : 0;
-      if (playsToday >= 5) throw new Error('今日公海赌局挑战次数已用完（5/5），明天再来赢星耀勋章！');
-
-      const winTokens = 35 + Math.floor(Math.random() * 45);
-      const cashBonus = 400000 + Math.floor(Math.random() * 600000);
-      if (!row) {
-        execute(
-          'INSERT INTO player_events (user_id, event_id, tokens, plays_today, daily_date, redeemed_json) VALUES (?, ?, ?, 1, ?, ?)',
-          [userId, eventId, winTokens, today, '[]'],
-        );
-      } else {
-        execute(
-          'UPDATE player_events SET tokens = tokens + ?, plays_today = ?, daily_date = ? WHERE user_id = ? AND event_id = ?',
-          [winTokens, playsToday + 1, today, userId, eventId],
-        );
-      }
-      execute('UPDATE player_state SET cash = cash + ? WHERE user_id = ?', [cashBonus, userId]);
-      incrementDailyTask(userId, 'task_minigame', 1);
-
-      res.json({
-        success: true,
-        winTokens,
-        cashBonus,
-        headline: `你在星耀号顶层赌桌一举压倒东南亚财阀！赢得【星耀勋章 +${winTokens}】与筹码分红 ${formatMoney(cashBonus)}！`,
-        state: buildFullGameState(userId),
-      });
-    } catch (err: any) {
-      res.status(400).json({ error: err.message });
-    }
-  });
 
   router.post('/event/cruise/redeem', authMiddleware, (req: AuthedRequest, res) => {
     try {
@@ -2375,6 +2039,9 @@ export function createApiRouter(): Router {
     reloadContent();
     res.json({ success: true, message: '已热重载 content/ 目录下所有剧本、地图与活动配置！' });
   });
+
+  registerMinigameRoutes(router, authMiddleware);
+  registerNegotiationRoutes(router, authMiddleware);
 
   return router;
 }

@@ -1,10 +1,21 @@
 import { create } from 'zustand';
 import { apiRequest, getStoredToken, setStoredToken } from '../lib/api';
-import { formatMoney } from '../lib/format';
 import { playCoinBurst, playCritExplosion, playSystemPing, playWeChatChime } from '../lib/sound';
 
 export type MainTab = 'home' | 'map' | 'story' | 'assets' | 'heroines' | 'system';
 export type ProfileSubTab = 'tasks' | 'skills' | 'mall';
+export type MinigameKind = 'jade' | 'stock' | 'race' | 'live' | 'angel' | 'cruise';
+export interface DealTarget {
+  kind: 'business' | 'property';
+  id: string;
+}
+export interface RewardFx {
+  id: number;
+  amount: number;
+  kind: 'cash' | 'points';
+  x: number;
+  y: number;
+}
 
 export interface TopNotification {
   id: number;
@@ -129,6 +140,9 @@ interface GameStore {
   critBanner: CritBanner | null;
   barrage: BarragePayload | null;
   errorToast: string | null;
+  activeMinigame: MinigameKind | null;
+  activeDeal: DealTarget | null;
+  rewardFx: RewardFx[];
 
   initSession: () => Promise<void>;
   setAuth: (token: string, state: any) => void;
@@ -156,9 +170,19 @@ interface GameStore {
   triggerCrit: (multiplier: number, amount: number, subtitle?: string, silentToast?: boolean) => void;
   triggerBarrage: (style: 'mock' | 'gold', lines: string[]) => void;
   showError: (msg: string) => void;
+  openMinigame: (kind: MinigameKind) => void;
+  closeMinigame: () => void;
+  openDeal: (target: DealTarget) => void;
+  closeDeal: () => void;
+  /** Coins fly from a screen point (client coords) into the cash/points capsule. */
+  flyReward: (amount: number, from?: { x: number; y: number }, kind?: 'cash' | 'points') => void;
 }
 
 let toastTimer: any = null;
+let lastPointer: { x: number; y: number; at: number } | null = null;
+export function recordPointer(x: number, y: number) {
+  lastPointer = { x, y, at: Date.now() };
+}
 let critTimer: any = null;
 let errTimer: any = null;
 let barrageTimer: any = null;
@@ -184,6 +208,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
   critBanner: null,
   barrage: null,
   errorToast: null,
+  activeMinigame: null,
+  activeDeal: null,
+  rewardFx: [],
 
   initSession: async () => {
     const token = getStoredToken();
@@ -250,12 +277,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   applyServerState: (newState, critResult, options) => {
     if (newState) set({ state: newState });
     if (critResult?.triggered && critResult?.cashback > 0) {
-      get().triggerCrit(
-        critResult.multiplier,
-        critResult.cashback,
-        critResult.leveledUp ? `天枢晋升至 Lv.${critResult.newLevel}` : '招商私行已入账',
-        options?.silentToast,
-      );
+      // Small cashbacks just fly into the wallet; only big multipliers earn the full-screen moment.
+      if (critResult.multiplier >= 5 || critResult.leveledUp) {
+        get().triggerCrit(
+          critResult.multiplier,
+          critResult.cashback,
+          critResult.leveledUp ? `天枢晋升至 Lv.${critResult.newLevel}` : '招商私行已入账',
+          options?.silentToast,
+        );
+      } else {
+        get().flyReward(critResult.cashback);
+      }
     }
   },
 
@@ -322,14 +354,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ topToast: null });
   },
 
-  triggerCrit: (multiplier, amount, subtitle, silentToast = false) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  triggerCrit: (multiplier, amount, subtitle, _silentToast = false) => {
     playCritExplosion();
     clearTimeout(critTimer);
     const id = Date.now();
     set({ critBanner: { id, multiplier, amount, subtitle } });
-    if (!silentToast) {
-      get().notifyTop('bank', '招商私人银行', `触发 ${multiplier} 倍返现，入账 ${formatMoney(amount)}`);
-    }
     critTimer = setTimeout(() => {
       if (get().critBanner?.id === id) set({ critBanner: null });
     }, 3200);
@@ -348,5 +378,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
     clearTimeout(errTimer);
     set({ errorToast: msg });
     errTimer = setTimeout(() => set({ errorToast: null }), 3200);
+  },
+
+  openMinigame: (kind) => set({ activeMinigame: kind, showProfile: false }),
+  closeMinigame: () => set({ activeMinigame: null }),
+  openDeal: (target) => set({ activeDeal: target, showProfile: false }),
+  closeDeal: () => set({ activeDeal: null }),
+
+  flyReward: (amount, from, kind = 'cash') => {
+    if (!amount || amount <= 0) return;
+    playCoinBurst();
+    const id = Date.now() + Math.random();
+    // default origin: where the player last tapped (recorded by RewardFlyLayer), else screen centre
+    const last = lastPointer && Date.now() - lastPointer.at < 4000 ? lastPointer : null;
+    const x = from?.x ?? last?.x ?? (typeof window !== 'undefined' ? window.innerWidth / 2 : 200);
+    const y = from?.y ?? last?.y ?? (typeof window !== 'undefined' ? window.innerHeight / 2 : 400);
+    set({ rewardFx: [...get().rewardFx.slice(-3), { id, amount, kind, x, y }] });
+    setTimeout(() => set({ rewardFx: get().rewardFx.filter((f) => f.id !== id) }), 1400);
   },
 }));

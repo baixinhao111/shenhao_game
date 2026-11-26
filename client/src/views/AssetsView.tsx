@@ -18,6 +18,8 @@ export const AssetsView: React.FC = () => {
     setActiveTab,
     setSelectedDistrictId,
     setActivePropertyId,
+    openDeal,
+    flyReward,
   } = useGameStore();
 
   const [subTab, setSubTab] = useState<'garage' | 'biz' | 'props'>('garage');
@@ -37,9 +39,9 @@ export const AssetsView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/income/collect', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '收益已入账', res.message);
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -381,13 +383,27 @@ export const AssetsView: React.FC = () => {
                         升级 {formatMoney(b.upgradeCost)}
                       </button>
                     ) : (
-                      <button
-                        disabled={busy || locked}
-                        onClick={() => buyBiz(b.id)}
-                        className="gold-btn-shimmer px-3 py-1.5 text-[12px] shrink-0 font-num"
-                      >
-                        {locked ? '未解锁' : `收购 ${formatMoney(b.buyCost)}`}
-                      </button>
+                      <div className="flex gap-1.5 shrink-0">
+                        {!locked && (
+                          <button
+                            disabled={busy}
+                            onClick={() => {
+                              playTap();
+                              openDeal({ kind: 'business', id: b.id });
+                            }}
+                            className="btn-navy px-3 py-1.5 text-[12px] font-editorial"
+                          >
+                            谈判
+                          </button>
+                        )}
+                        <button
+                          disabled={busy || locked}
+                          onClick={() => buyBiz(b.id)}
+                          className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-num"
+                        >
+                          {locked ? '未解锁' : `全款 ${formatMoney(b.buyCost)}`}
+                        </button>
+                      </div>
                     )}
                   </div>
                 </div>

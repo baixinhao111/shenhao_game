@@ -3,6 +3,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { AuthScreen } from './components/AuthScreen';
 import { BottomNav } from './components/BottomNav';
 import { Overlays } from './components/Overlays';
+import { RewardFlyLayer } from './components/RewardFly';
+import { MinigameHost } from './minigames/MinigameHost';
 import { TopBar } from './components/TopBar';
 import { MiniStoryOverlay } from './components/VisualNovelTheater';
 import { useGameStore } from './store/useGameStore';
@@ -23,6 +25,8 @@ export function App() {
     activeStoryEpisodeId,
     activeChatHeroineId,
     activeMiniStory,
+    activeMinigame,
+    activeDeal,
     initSession,
     refreshState,
   } = useGameStore();
@@ -48,13 +52,14 @@ export function App() {
     return () => clearInterval(id);
   }, [token, refreshState]);
 
-  const hideChrome = Boolean(activeStoryEpisodeId) || Boolean(activeChatHeroineId) || Boolean(activeMiniStory);
+  const hideChrome =
+    Boolean(activeStoryEpisodeId) || Boolean(activeChatHeroineId) || Boolean(activeMiniStory) || Boolean(activeMinigame) || Boolean(activeDeal);
   const isHome = activeTab === 'home';
 
   return (
     <div className="min-h-[100dvh] w-full bg-[#05070F] flex items-center justify-center sm:py-4" style={{ background: "radial-gradient(60% 50% at 50% 30%, #141C38 0%, #05070F 100%)" }}>
       {/* 9:16 Mobile-First Viewport Shell */}
-      <div className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#E2BD72]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#0B1122] overflow-hidden flex flex-col">
+      <div data-app-shell className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#E2BD72]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#0B1122] overflow-hidden flex flex-col">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-5 deco-texture">
             <img src="/assets/ui/logo.webp" alt="天枢神豪" className="w-[72%] max-w-[300px] animate-float-slow drop-shadow-[0_6px_18px_rgba(0,0,0,0.75)]" />
@@ -96,8 +101,10 @@ export function App() {
             {!hideChrome && !showProfile && <BottomNav hidden={isHome && pureArtMode} />}
           </>
         )}
+        {token && state && <MinigameHost />}
         <MiniStoryOverlay />
         <Overlays />
+        <RewardFlyLayer />
       </div>
     </div>
   );

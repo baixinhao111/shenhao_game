@@ -145,6 +145,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     applyServerState,
     notifyTop,
     showError,
+    flyReward,
   } = useGameStore();
 
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -372,10 +373,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     setSigningIn(true);
     try {
       const res = await apiRequest('/system/signin', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '签到完成', res.message || '今日补给已入账');
-      spawnParticle('签到已领', 'gold');
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -391,9 +391,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       const collected = Math.max(livePendingIncome, Number(res?.collected || 0));
       applyServerState(res.state);
       setLiveDriftCash(0);
-      playCoinBurst();
-      spawnParticle(`+${formatMoney(collected)}`, 'gold');
-      notifyTop('bank', '收益已入账', `产业分红与物业租金共计 ${formatMoney(collected)}`);
+      flyReward(collected);
     } catch (e: any) {
       showError(e.message);
     } finally {

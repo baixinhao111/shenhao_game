@@ -57,6 +57,7 @@ export const ResourceCapsules: React.FC<{ compact?: boolean }> = ({ compact = fa
         }}
         className="res-capsule active:scale-95 transition"
         title="流动资金"
+        data-fx-anchor="cash"
       >
         <GameIcon name="cash" size={30} className="res-icon" shadow={false} />
         <span className="font-num text-[13px] font-semibold text-[#FFE7B0] min-w-[44px] text-right">

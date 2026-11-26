@@ -37,6 +37,7 @@ export const Overlays: React.FC = () => {
     notifyTop,
     showError,
     logout,
+    flyReward,
   } = useGameStore();
 
   const [leaderboard, setLeaderboard] = useState<any[]>([]);
@@ -70,9 +71,9 @@ export const Overlays: React.FC = () => {
   const claimMail = async (mailId: number) => {
     try {
       const res = await apiRequest('/mail/claim', { body: { mailId } });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '已领取附件', '款项与补给已汇入账户');
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     }

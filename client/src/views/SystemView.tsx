@@ -30,6 +30,7 @@ export const SystemView: React.FC = () => {
     applyServerState,
     notifyTop,
     showError,
+    flyReward,
   } = useGameStore();
 
   const [subTab, setSubTab] = useState<ProfileSubTab>(profileTab || 'tasks');
@@ -51,9 +52,9 @@ export const SystemView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/system/signin', { method: 'POST' });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
-      notifyTop('bank', '签到完成', res.message);
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -65,8 +66,9 @@ export const SystemView: React.FC = () => {
     setBusy(true);
     try {
       const res = await apiRequest('/system/task/claim', { body: { taskId } });
+      const gained = Math.max(0, (res.state?.player?.cash || 0) - (useGameStore.getState().state?.player?.cash || 0));
       applyServerState(res.state);
-      playCoinBurst();
+      flyReward(gained);
     } catch (e: any) {
       showError(e.message);
     } finally {

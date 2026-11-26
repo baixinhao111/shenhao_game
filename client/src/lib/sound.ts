@@ -172,3 +172,39 @@ export function playAffectionChime(): void {
 export function playTap(): void {
   playTone(540, 0, 0.05, 'sine', 0.05);
 }
+
+// ---------- minigame feedback ----------
+let lastScrape = 0;
+// Gritty scrape while rubbing a stone (throttled)
+export function playScrape(): void {
+  const now = Date.now();
+  if (now - lastScrape < 90) return;
+  lastScrape = now;
+  playTone(140 + Math.random() * 60, 0, 0.06, 'sawtooth', 0.035);
+}
+
+// Short UI tick (timing gauges, card deal)
+export function playTick(): void {
+  playTone(1320, 0, 0.05, 'square', 0.05);
+}
+
+// Perfect hit
+export function playPerfect(): void {
+  playTone(1567.98, 0, 0.12, 'triangle', 0.14);
+  playTone(2093, 0.06, 0.2, 'sine', 0.12);
+  vibrate(25);
+}
+
+// Descending sting for a loss
+export function playLose(): void {
+  playTone(392, 0, 0.18, 'triangle', 0.12);
+  playTone(311.13, 0.14, 0.22, 'triangle', 0.12);
+  playTone(233.08, 0.3, 0.38, 'sine', 0.12);
+  vibrate([40, 30, 40]);
+}
+
+// Card flip / deal
+export function playCard(): void {
+  playTone(900, 0, 0.04, 'square', 0.04);
+  playTone(600, 0.03, 0.05, 'triangle', 0.05);
+}
