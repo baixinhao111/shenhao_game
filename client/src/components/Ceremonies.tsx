@@ -123,8 +123,8 @@ export const CritShow: React.FC<{ multiplier: number; amount: number; subtitle?:
       exit={{ opacity: 0 }}
       transition={{ duration: stage === 2 ? 0.4 : 0.2 }}
       onClick={advance}
-      className="absolute inset-0 z-[70] flex items-center justify-center px-8 cursor-pointer overflow-hidden"
-      style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(40,26,6,0.72), rgba(3,5,12,0.92))' }}
+      className="absolute inset-0 z-[70] flex items-center justify-center px-8 cursor-pointer overflow-hidden backdrop-blur-md"
+      style={{ background: 'radial-gradient(70% 55% at 50% 45%, rgba(40,26,6,0.9), rgba(3,5,12,0.97))' }}
     >
       {stage >= 2 && <Rays />}
       {stage >= 2 && (
@@ -182,13 +182,17 @@ export const CritShow: React.FC<{ multiplier: number; amount: number; subtitle?:
           )}
         </div>
 
-        <motion.div
-          animate={{ opacity: stage >= 3 ? [0.35, 1, 0.35] : 0 }}
-          transition={{ repeat: Infinity, duration: 1.6 }}
-          className="pt-4 text-[11px] text-[#C9B58A] tracking-[0.4em]"
-        >
-          轻触收下
-        </motion.div>
+        <div className="h-[34px] pt-4">
+          {stage >= 3 && (
+            <motion.div
+              animate={{ opacity: [0.35, 1, 0.35] }}
+              transition={{ repeat: Infinity, duration: 1.6 }}
+              className="text-[11px] text-[#C9B58A] tracking-[0.4em]"
+            >
+              轻触收下
+            </motion.div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
@@ -223,8 +227,8 @@ export const TierUpShow: React.FC<{ fx: TierUpFx; onClose: () => void }> = ({ fx
       exit={{ opacity: 0 }}
       transition={{ duration: 0.3 }}
       onClick={advance}
-      className="absolute inset-0 z-[72] flex items-center justify-center px-7 cursor-pointer overflow-hidden"
-      style={{ background: 'radial-gradient(80% 60% at 50% 40%, rgba(30,24,10,0.9), rgba(3,5,12,0.97))' }}
+      className="absolute inset-0 z-[72] flex items-start justify-center px-7 pt-[22%] cursor-pointer overflow-hidden backdrop-blur-md"
+      style={{ background: 'radial-gradient(80% 60% at 50% 40%, rgba(30,24,10,0.95), rgba(3,5,12,0.985))' }}
     >
       {/* light pillar */}
       <motion.div
