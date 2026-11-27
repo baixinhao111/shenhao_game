@@ -178,7 +178,7 @@ export const StockGame: React.FC = () => {
                       <span className="font-editorial font-black text-[13.5px] text-[#ECE6DA] truncate">{q.name}</span>
                       {q.storyTag && (
                         <span
-                          className={`px-1.5 py-[0.5px] rounded-sm text-[9px] font-bold shrink-0 border ${
+                          className={`px-1.5 py-[0.5px] rounded-sm text-[10px] font-bold shrink-0 border ${
                             isBearTag
                               ? 'bg-[#2C0E18]/85 border-[#FF5C7A]/45 text-[#FF8FA6]'
                               : 'bg-[#0C241E]/85 border-[#3FD69A]/45 text-[#7BE0A8]'
@@ -188,7 +188,7 @@ export const StockGame: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <div className="font-num text-[10.5px] text-[#7A7E8E]">{q.code}</div>
+                    <div className="font-num text-[10.5px] text-[#8C90A0]">{q.code}</div>
                   </div>
                   <div className="font-num text-[15px] text-[#ECE6DA] shrink-0">¥{q.price}</div>
                   <div className={`font-num text-[12.5px] w-[62px] text-right shrink-0 ${up ? 'text-[#FF5C7A]' : 'text-[#3FD69A]'}`}>
@@ -238,7 +238,7 @@ export const StockGame: React.FC = () => {
           <div className="px-4 pt-2 flex items-end justify-between">
             <div>
               <div className="font-editorial text-[16px] font-black text-[#ECE6DA] text-stroke-dark">
-                {session.name} <span className="font-num text-[12px] text-[#7A7E8E]">{session.code}</span>
+                {session.name} <span className="font-num text-[12px] text-[#8C90A0]">{session.code}</span>
               </div>
               <div className="text-[11px] text-stroke-dark">
                 <span className={session.direction === 'long' ? 'text-[#FF8FA6]' : 'text-[#6FE3B4]'}>
@@ -270,7 +270,7 @@ export const StockGame: React.FC = () => {
               {/* terminal header */}
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06] text-[10px] tracking-wider">
                 <span className="flex items-center gap-1.5 text-[#8C90A0]">
-                  <span className={`w-1.5 h-1.5 rounded-full ${result ? 'bg-[#5E6273]' : 'bg-[#FF5C7A] animate-pulse'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${result ? 'bg-[#7C8093]' : 'bg-[#FF5C7A] animate-pulse'}`} />
                   {result ? '已收盘' : '实时 · 秒级 K 线'}
                 </span>
                 <span className="font-num text-[#B3B6C2]">
@@ -288,7 +288,7 @@ export const StockGame: React.FC = () => {
                 {chart.ticks.map((v, i) => (
                   <g key={i}>
                     <line x1={0} x2={CHART_W} y1={4 + (CHART_H * i) / 4} y2={4 + (CHART_H * i) / 4} stroke="rgba(160,178,230,0.08)" />
-                    <text x={CHART_W + 6} y={4 + (CHART_H * i) / 4 + 3} fill="#5E6273" fontSize="9" fontFamily="Oswald, sans-serif">
+                    <text x={CHART_W + 6} y={4 + (CHART_H * i) / 4 + 3} fill="#7C8093" fontSize="9" fontFamily="Oswald, sans-serif">
                       {v.toFixed(2)}
                     </text>
                   </g>

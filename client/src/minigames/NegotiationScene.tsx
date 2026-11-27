@@ -222,13 +222,13 @@ export const NegotiationScene: React.FC = () => {
                 <div className="absolute top-1.5 w-0.5 h-6 bg-[#FF8FA6]" style={{ left: `${ruler.pct(deal.ask)}%` }} />
                 <div className="absolute top-1.5 w-0.5 h-6 bg-white/50" style={{ left: `${ruler.pct(deal.item.list)}%` }} />
                 <div
-                  className="absolute -top-0.5 text-[9.5px] text-[#FF8FA6] -translate-x-1/2 whitespace-nowrap"
+                  className="absolute -top-0.5 text-[10.5px] text-[#FF8FA6] -translate-x-1/2 whitespace-nowrap"
                   style={{ left: `${Math.max(7, Math.min(93, ruler.pct(deal.ask)))}%` }}
                 >
                   报价
                 </div>
                 <div
-                  className="absolute top-7 text-[9.5px] text-[#8C90A0] -translate-x-1/2 whitespace-nowrap"
+                  className="absolute top-7 text-[10.5px] text-[#8C90A0] -translate-x-1/2 whitespace-nowrap"
                   style={{ left: `${Math.max(7, Math.min(93, ruler.pct(deal.item.list)))}%` }}
                 >
                   挂牌
@@ -262,7 +262,7 @@ export const NegotiationScene: React.FC = () => {
                     >
                       <GameIcon name={c.icon} size={28} />
                       <span className="text-[11px] font-editorial font-black text-[#ECE6DA] mt-0.5">{c.name}</span>
-                      <span className="text-[9px] text-[#8C90A0] leading-tight whitespace-nowrap">{c.sub}</span>
+                      <span className="text-[10px] text-[#8C90A0] leading-tight whitespace-nowrap">{c.sub}</span>
                     </button>
                   ))}
                 </div>
@@ -281,7 +281,7 @@ export const NegotiationScene: React.FC = () => {
                         </span>
                         <span>
                           <span className="block text-[12px] font-editorial font-black text-[#FBE3EA]">{h.name}</span>
-                          <span className="block text-[9.5px] text-[#FFB3C6] max-w-[150px] truncate">{h.effect}</span>
+                          <span className="block text-[10.5px] text-[#FFB3C6] max-w-[150px] truncate">{h.effect}</span>
                         </span>
                       </button>
                     ))}
@@ -295,7 +295,7 @@ export const NegotiationScene: React.FC = () => {
                     <GameIcon name="tianshu" size={18} shadow={false} />
                     读心
                   </span>
-                  <span className="text-[9.5px] opacity-80">{deal.cards.mindread.cost}积分</span>
+                  <span className="text-[10.5px] opacity-80">{deal.cards.mindread.cost}积分</span>
                 </button>
                 <button
                   disabled={busy || cash < deal.ask}

@@ -215,7 +215,7 @@ export const RaceGame: React.FC = () => {
               {session.segments.map((sg, i) => (
                 <div key={i} className="absolute top-0 bottom-0" style={{ left: `${6 + ((i + 1) / total) * 80}%` }}>
                   <div className={`w-px h-full ${i < hits.length ? 'bg-[#EADBB8]/40' : 'bg-white/12'}`} />
-                  <span className="absolute top-0.5 -translate-x-1/2 text-[8.5px] text-[#7A7E8E] whitespace-nowrap">{sg.name}</span>
+                  <span className="absolute top-0.5 -translate-x-1/2 text-[10px] text-[#8C90A0] whitespace-nowrap">{sg.name}</span>
                 </div>
               ))}
               <div className="absolute top-0 bottom-0 left-[6%] w-[3px] bg-white/50" />

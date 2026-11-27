@@ -146,8 +146,8 @@ export const BizSkyline: React.FC<{ businesses: any[]; tier: number; selectedId:
                 className="absolute top-full mt-2 flex flex-col items-center leading-none whitespace-nowrap"
                 style={{ zIndex: 2 }}
               >
-                <span className={`text-[10.5px] font-editorial font-black ${sel ? 'text-[var(--ivory-2)]' : locked ? 'text-[#4C5062]' : 'text-[#9A9EAE]'}`}>{SHORT[b.category] || b.name.slice(0, 2)}</span>
-                <span className={`mt-1 font-num text-[9px] ${b.owned ? 'text-[var(--champagne)]' : 'text-[#5E6273]'}`}>{b.owned ? `Lv${lv}` : locked ? '未解锁' : '可收购'}</span>
+                <span className={`text-[10.5px] font-editorial font-black ${sel ? 'text-[var(--ivory-2)]' : locked ? 'text-[#666A7E]' : 'text-[#9A9EAE]'}`}>{SHORT[b.category] || b.name.slice(0, 2)}</span>
+                <span className={`mt-1 font-num text-[10px] ${b.owned ? 'text-[var(--champagne)]' : 'text-[#7C8093]'}`}>{b.owned ? `Lv${lv}` : locked ? '未解锁' : '可收购'}</span>
               </span>
             </button>
           );

@@ -6,6 +6,8 @@
 ## 必守规则（摘要）
 
 - **服务端权威**：钱、积分、好感、资产只在服务端计算；客户端输入必须校验/钳制。写接口返回 `state: buildFullGameState(userId)`，前端用 `applyServerState` 覆盖。
+- **写接口不带主线剧本**：`stories.volumes` 只在 `/state`/登录/注册下发（`buildFullGameState(id, { withStory: true })`），别把大块静态内容塞回写接口（DEV_GUIDE §4）。
+- **可读性下限**：正文 ≥ 12px、辅助 ≥ 10px，次要文字不暗于 `#8C90A0`；跨 Tab 跳进地图用 `openSpot`/`openHome`，返回走 `mapBack()`（DEV_GUIDE §5.8）。
 - **经济只走 `server/src/economy.ts`**（`spend*OrThrow` / `grant`），购买只走 `server/src/purchases.ts`。不要手写 `UPDATE player_state SET cash`。
 - **小玩法** = `server/src/minigames.ts` 会话（start → act → finish），先扣钱的必须 `ledgerOpen` 记账；前端用 `client/src/minigames/Stage.tsx` 外壳并在 `MinigameHost.tsx` 注册。期望回报 0.9–1.1×，用 `scripts/qa/balance_*.mjs` 模拟验证。
 - **UI 视觉「海城夜金」**：颜色/组件类只用 `client/src/design.css` 里的；入口、资源、奖励用彩绘 `<GameIcon>`，lucide 只用于返回/关闭等微控件；冰蓝只给天枢，玫瑰色只给红颜。

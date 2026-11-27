@@ -103,6 +103,6 @@ export const DecoHeading: React.FC<{ title: React.ReactNode; aside?: React.React
       {title}
     </span>
     <span className="flex-1 h-px bg-gradient-to-r from-[#D9C49A]/25 to-transparent" />
-    {aside && <span className="text-[11px] text-[#7A7E8E] whitespace-nowrap">{aside}</span>}
+    {aside && <span className="text-[11px] text-[#8C90A0] whitespace-nowrap">{aside}</span>}
   </div>
 );

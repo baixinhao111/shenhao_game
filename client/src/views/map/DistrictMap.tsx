@@ -50,6 +50,11 @@ type Spot = {
   sysPoints?: number;
   affinity?: string;
   visited?: boolean;
+  /** visit spots: something is going on here today */
+  hot?: boolean;
+  /** false outside the spot's hours (closedReason says when it opens) */
+  open?: boolean;
+  closedReason?: string;
 };
 
 function showroomIcon(stock: string[] = [], assets: any[]): GameIconName {
@@ -63,7 +68,6 @@ function showroomIcon(stock: string[] = [], assets: any[]): GameIconName {
 export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
   const {
     state,
-    setSelectedDistrictId,
     setActivePropertyId,
     applyServerState,
     openHeroineChat,
@@ -76,6 +80,8 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
     focusSpotId,
     clearFocusSpot,
     focusBusiness,
+    returnTo,
+    mapBack,
   } = useGameStore();
   const [openId, setOpenId] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -108,12 +114,16 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
   }, [d.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
-    setStockIdx(0);
+    const sp = (d.spots || []).find((x: any) => x.id === openId);
+    const dealId = useGameStore.getState().state?.map?.weeklyDeal?.assetId;
+    const idx = sp?.kind === 'showroom' ? (sp.stock || []).indexOf(dealId) : -1;
+    setStockIdx(Math.max(0, idx));
     setVisitLine(null);
-  }, [openId]);
+  }, [openId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!state) return null;
   const { player, properties, businesses, heroines, assets, events, map } = state;
+  const weeklyDeal = map.weeklyDeal || null;
   const unlockedHeroines = heroines.filter((h: any) => h.unlocked);
   const present: any[] = (d.presentHeroines || []).map((p: any) => ({ ...p, full: heroines.find((h: any) => h.id === p.id) }));
   const cruiseEvent = events?.find((e: any) => e.id === 'event_cruise_01');
@@ -289,7 +299,12 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
       case 'showroom':
         return { size: 46, ring: 'linear-gradient(160deg,#EEE2C6,#8E7B58)', dim: false, halo: '' };
       case 'visit':
-        return { size: 38, ring: 'linear-gradient(160deg,#B9F6FB,#2C8C99)', dim: Boolean(sp.visited), halo: sp.visited ? '' : 'rgba(99,230,242,0.25)' };
+        return {
+          size: sp.hot ? 40 : 34,
+          ring: sp.hot ? 'linear-gradient(160deg,#B9F6FB,#2C8C99)' : 'rgba(150,170,180,0.35)',
+          dim: Boolean(sp.visited) || !sp.hot,
+          halo: sp.hot && !sp.visited && sp.open !== false ? 'rgba(99,230,242,0.3)' : '',
+        };
       default:
         return { size: 42, ring: owned ? 'linear-gradient(160deg,#EEE2C6,#8E7B58)' : 'rgba(170,175,190,0.4)', dim: !owned, halo: '' };
     }
@@ -309,8 +324,11 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
           <div className="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-[#04050A] to-transparent pointer-events-none" />
 
           {spots.map((sp, i) => {
-            const look = markerLook(sp);
+            const look0 = markerLook(sp);
+            const closed = sp.open === false;
+            const look = closed ? { ...look0, dim: true, halo: '' } : look0;
             const biz = sp.kind === 'business' ? bizOf(sp) : null;
+            const deal = sp.kind === 'showroom' && weeklyDeal?.spotId === sp.id;
             const active = openId === sp.id;
             return (
               <button
@@ -344,11 +362,20 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
                       <GameIcon name={iconOf(sp)} size={Math.round(look.size * 0.66)} shadow={false} />
                     </span>
                     {sp.kind === 'business' && biz?.owned && (
-                      <span className="absolute -right-1.5 -top-1 px-1 rounded-full bg-[#04050A] border border-[var(--champagne-dim)] font-num text-[9px] text-[var(--champagne)] leading-[14px]">
+                      <span className="absolute -right-1.5 -top-1 px-1 rounded-full bg-[#04050A] border border-[var(--champagne-dim)] font-num text-[10px] text-[var(--champagne)] leading-[14px]">
                         Lv{biz.level}
                       </span>
                     )}
                     {sp.kind === 'business' && biz?.activeEvent && <span className="red-dot -top-0.5 -left-0.5" />}
+                    {(closed || (sp.kind === 'visit' && sp.hot && !sp.visited) || deal) && (
+                      <span
+                        className={`absolute left-1/2 -translate-x-1/2 -top-2.5 px-1.5 rounded-full text-[10px] leading-[15px] font-bold whitespace-nowrap ${
+                          closed ? 'bg-[#0B0E18] text-[#9AA3C0] border border-white/15' : deal ? 'bg-[#E6D6B2] text-[#19130A]' : 'bg-[#04121F] text-[#B9F6FB] border border-[#63E6F2]/60'
+                        }`}
+                      >
+                        {closed ? '夜间' : deal ? '特惠' : '今日'}
+                      </span>
+                    )}
                     {sp.kind === 'visit' && sp.visited && (
                       <span className="absolute -right-1 -bottom-1 w-[16px] h-[16px] rounded-full bg-[#04121F] border border-[#63E6F2]/60 flex items-center justify-center">
                         <Check className="w-2.5 h-2.5 text-[#B9F6FB]" />
@@ -357,7 +384,7 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
                   </span>
                   <span className="mt-1 flex flex-col items-center leading-none text-shadow-stage">
                     <span className={`font-editorial font-black whitespace-nowrap ${sp.kind === 'venue' ? 'text-[13px] text-[var(--ivory-2)]' : 'text-[11px] text-[#E4DED2]'}`}>{sp.name}</span>
-                    {sp.en && <span className="mt-[3px] font-num text-[7.5px] tracking-[0.28em] text-white/45 whitespace-nowrap">{sp.en}</span>}
+                    {sp.en && <span className="mt-[3px] font-num text-[10px] tracking-[0.28em] text-white/45 whitespace-nowrap">{sp.en}</span>}
                   </span>
                   <span className="w-px h-2.5 bg-gradient-to-b from-white/50 to-transparent mt-0.5" />
                   <span className="w-[5px] h-[5px] rounded-full bg-[var(--champagne)] shadow-[0_0_6px_rgba(230,214,178,0.9)]" />
@@ -397,17 +424,19 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
         <button
           onClick={() => {
             playTap();
-            setSelectedDistrictId(null);
+            mapBack('district');
           }}
           className="pointer-events-auto text-[12px] text-[var(--ivory-2)] flex items-center gap-1 text-shadow-stage active:opacity-75 pt-1"
         >
-          <ArrowLeft className="w-4 h-4 text-[var(--champagne)]" /> 海城
+          <ArrowLeft className="w-4 h-4 text-[var(--champagne)]" /> {returnTo === 'assets' ? '返回产业' : returnTo === 'home' ? '返回邸宅' : returnTo ? '返回' : '海城'}
         </button>
         <div className="text-right text-shadow-stage">
           <div className="label-en">{d.tag}</div>
           <div className="font-editorial text-[24px] leading-none font-black ink-title tracking-[0.2em] mt-1.5">{d.name}</div>
           <div className="text-[10.5px] text-[#9A9EAE] mt-1.5">
-            {spots.length} 处可去{present.length > 0 ? ` · ${present.map((h) => h.name).join('、')}在附近` : ''}
+            {spots.length} 处可去
+            {spots.some((x) => x.kind === 'visit' && x.hot && !x.visited) ? ` · 今日 ${spots.filter((x) => x.kind === 'visit' && x.hot && !x.visited).length} 处有事` : ''}
+            {present.length > 0 ? ` · ${present.map((h) => h.name).join('、')}在附近` : ''}
           </div>
         </div>
       </div>
@@ -427,7 +456,7 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
             >
               <GameIcon name={iconOf(sp)} size={30} />
               <span className={`text-[10.5px] whitespace-nowrap ${openId === sp.id ? 'text-[var(--champagne)]' : 'text-[#B7B3AA]'}`}>{sp.name}</span>
-              <span className="text-[8.5px] tracking-[0.2em] text-[#6D7183]">{KIND_LABEL[sp.kind]}</span>
+              <span className="text-[10px] tracking-[0.2em] text-[#8A8EA0]">{KIND_LABEL[sp.kind]}</span>
             </button>
           ))}
         </div>
@@ -489,6 +518,7 @@ export const DistrictMap: React.FC<{ d: any }> = ({ d }) => {
                   openDeal({ kind, id });
                 }}
                 cruiseActive={Boolean(cruiseEvent?.active)}
+                weeklyDeal={weeklyDeal}
               />
             </motion.div>
           </motion.div>
@@ -518,6 +548,7 @@ interface SheetProps {
   setStockIdx: (i: number) => void;
   visitLine: { line: string; pts: number; aff?: string } | null;
   cruiseActive: boolean;
+  weeklyDeal: { assetId: string; spotId: string; pct: number; endsAt: number } | null;
   onClose: () => void;
   onVenue: () => void;
   onStroll: () => void;
@@ -534,7 +565,7 @@ interface SheetProps {
 
 const Stat: React.FC<{ icon?: GameIconName; label: string; value: React.ReactNode; tone?: string }> = ({ icon, label, value, tone = 'text-[var(--ivory-2)]' }) => (
   <div className="min-w-0">
-    <div className="text-[9.5px] tracking-[0.25em] text-[#6D7183]">{label}</div>
+    <div className="text-[10.5px] tracking-[0.25em] text-[#8A8EA0]">{label}</div>
     <div className={`mt-0.5 flex items-center gap-1 font-num text-[14px] ${tone} truncate`}>
       {icon && <GameIcon name={icon} size={16} shadow={false} />}
       {value}
@@ -579,7 +610,7 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
     body = (
       <>
         <p className="text-[12.5px] text-[#A9ADBA] leading-relaxed">{d.coreMinigameDesc}</p>
-        <div className="text-[11px] text-[#6D7183]">彩头随你的阶层放大 · 当前倍率 ×{player.stakeScale || 1}</div>
+        <div className="text-[11px] text-[#8A8EA0]">彩头随你的阶层放大 · 当前倍率 ×{player.stakeScale || 1}</div>
         <button disabled={busy} onClick={p.onVenue} className="btn-champagne w-full py-3 text-[15px] font-editorial tracking-[0.3em]">
           {d.coreMinigame === 'cruise_event' && !p.cruiseActive ? '星耀号暂未靠港' : MINIGAME_OF[d.coreMinigame] ? `进入${d.coreMinigameLabel}` : '敬请期待'}
         </button>
@@ -611,16 +642,16 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
         <div className="pt-1">
           <div className="text-[10.5px] tracking-[0.3em] text-[#FFB3C6] mb-2">邀请谁同去</div>
           {p.heroines.length === 0 ? (
-            <div className="text-[12px] text-[#7A7E8E] py-2">先推进主线结识她们，再来邀约。</div>
+            <div className="text-[12px] text-[#8C90A0] py-2">先推进主线结识她们，再来邀约。</div>
           ) : (
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-1">
               {p.heroines.map((h) => (
-                <button key={h.id} disabled={busy} onClick={() => p.onDate(inter, h)} className="shrink-0 flex flex-col items-center gap-1 active:scale-95 transition">
+                <button key={h.id} disabled={busy || sp.open === false} onClick={() => p.onDate(inter, h)} className="shrink-0 flex flex-col items-center gap-1 active:scale-95 transition disabled:opacity-40">
                   <span className={`relative w-[56px] h-[56px] rounded-full p-[2px] ${here.has(h.id) ? 'bg-gradient-to-b from-[#FFC2D1] to-[#C24E74] shadow-[0_0_14px_rgba(240,120,154,0.5)]' : 'bg-white/15'}`}>
                     <PortraitAvatar src={h.avatar} alt={h.name} className="w-full h-full !border-0" rounded="full" />
                   </span>
                   <span className="text-[11.5px] font-editorial font-black text-[#FBE3EA]">{h.name}</span>
-                  <span className="text-[9.5px] font-num text-[#FFB3C6] flex items-center gap-0.5">
+                  <span className="text-[10.5px] font-num text-[#FFB3C6] flex items-center gap-0.5">
                     {here.has(h.id) ? '就在附近' : <><GameIcon name="heart" size={11} shadow={false} />{h.affection}</>}
                   </span>
                 </button>
@@ -655,13 +686,22 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
             </motion.div>
           )}
         </AnimatePresence>
-        <button
-          disabled={busy || sp.visited}
-          onClick={p.onVisit}
-          className={`${sp.visited ? 'btn-ghost opacity-60' : 'btn-champagne'} w-full py-3 text-[15px] font-editorial tracking-[0.3em]`}
-        >
-          {sp.visited ? '今日已到访' : '去坐坐'}
-        </button>
+        {(() => {
+          const can = sp.hot && !sp.visited && sp.open !== false;
+          const label = sp.visited ? '今日已到访' : sp.open === false ? '还没开门' : !sp.hot ? '今天这里很安静' : '去坐坐';
+          return (
+            <>
+              {!sp.hot && !sp.visited && <p className="text-[11.5px] text-[#8C90A0]">每天只有几处地方有事发生，地图上带「今日」的才值得去。明天再来看看。</p>}
+              <button
+                disabled={busy || !can}
+                onClick={p.onVisit}
+                className={`${can ? 'btn-champagne' : 'btn-ghost opacity-60'} w-full py-3 text-[15px] font-editorial tracking-[0.3em]`}
+              >
+                {label}
+              </button>
+            </>
+          );
+        })()}
       </>
     );
   } else if (sp.kind === 'property' && p.prop) {
@@ -729,6 +769,8 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
   } else if (sp.kind === 'showroom') {
     const items = (sp.stock || []).map((id) => p.assets.find((a) => a.id === id)).filter(Boolean);
     const cur = items[Math.min(p.stockIdx, items.length - 1)];
+    const dealOn = (a: any) => p.weeklyDeal?.assetId === a?.id;
+    const priceOf = (a: any) => (dealOn(a) ? Math.round(a.price * (1 - (p.weeklyDeal?.pct || 0))) : a.price);
     body = (
       <>
         <p className="text-[12.5px] text-[#A9ADBA] leading-relaxed -mt-1">{sp.desc}</p>
@@ -760,7 +802,7 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
               </div>
               {cur.racePower > 0 && (
                 <div className="shrink-0 text-right">
-                  <div className="text-[9.5px] tracking-[0.25em] text-[#6D7183]">性能</div>
+                  <div className="text-[10.5px] tracking-[0.25em] text-[#8A8EA0]">性能</div>
                   <div className="font-num text-[18px] text-[#B9F6FB] leading-none mt-0.5">{cur.racePower}</div>
                 </div>
               )}
@@ -774,9 +816,17 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
                 <div className="btn-ghost w-full py-3 text-center text-[13px] opacity-70">{cur.equipped ? '正在驾驶' : '已入库'}</div>
               )
             ) : (
-              <button disabled={busy} onClick={() => p.onBuyAsset(cur.id)} className="btn-champagne w-full py-3 text-[15px] font-num tracking-[0.1em]">
-                {player.cash >= cur.price ? '提货' : '现金不足'} · {formatMoney(cur.price)}
-              </button>
+              <div className="space-y-1.5">
+                {dealOn(cur) && (
+                  <div className="flex items-center justify-between text-[11.5px]">
+                    <span className="text-[var(--champagne)]">本周特惠 · 9 折</span>
+                    <span className="font-num text-[#8C90A0] line-through">{formatMoney(cur.price)}</span>
+                  </div>
+                )}
+                <button disabled={busy} onClick={() => p.onBuyAsset(cur.id)} className="btn-champagne w-full py-3 text-[15px] font-num tracking-[0.1em]">
+                  {player.cash >= priceOf(cur) ? '提货' : '现金不足'} · {formatMoney(priceOf(cur))}
+                </button>
+              </div>
             )}
           </>
         )}
@@ -793,7 +843,7 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
               >
                 <img src={a.image} alt="" className="h-[44px] max-w-full object-contain" />
                 <span className="mt-1 text-[10.5px] text-[#D9D4C9] truncate max-w-full">{a.name}</span>
-                <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[var(--champagne)]'}`}>{a.owned ? '已入库' : formatMoney(a.price)}</span>
+                <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[var(--champagne)]'}`}>{a.owned ? '已入库' : `${dealOn(a) ? '特惠 ' : ''}${formatMoney(priceOf(a))}`}</span>
               </button>
             ))}
           </div>
@@ -805,7 +855,15 @@ const SpotSheet: React.FC<SheetProps> = (p) => {
   return (
     <div>
       {header}
-      <div className="px-4 pb-6 pt-2 space-y-3.5">{body}</div>
+      <div className="px-4 pb-6 pt-2 space-y-3.5">
+        {sp.open === false && (
+          <div className="text-[12px] text-[#9AA3C0] flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#9AA3C0]" />
+            {sp.closedReason}
+          </div>
+        )}
+        {body}
+      </div>
     </div>
   );
 };

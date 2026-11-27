@@ -67,6 +67,7 @@ scripts/demo/             试玩版录制与打包
 
 1. **服务端权威**。任何影响钱、积分、好感、资产的结果都由服务端计算；客户端只负责渲染和上报操作，服务端必须校验与钳制（范围、次数、冷却、时间）。
 2. **全量状态快照**。写操作接口统一返回 `{ ..., state: buildFullGameState(userId) }`，前端用 `applyServerState(res.state, critResult?)` 覆盖。不要在前端自行改数值（试玩 mock 除外）。高频只读接口（如赌石估价）可以不带 state。
+   - 主线剧本（`stories.volumes`，约 0.5MB）**只在 `/state`、登录、注册里下发**（`buildFullGameState(userId, { withStory: true })`）；写接口不带它，`applyServerState` 沿用手上那份。GM 热重载会换 `stories.contentVersion`，前端发现版本变了就自动重拉 `/state`。写接口响应因此从约 590KB 降到约 45KB，别再把大块静态内容塞回写接口。
 3. **经济操作只走 `economy.ts`**：`spendCashOrThrow / spendEnergyOrThrow / spendSysPointsOrThrow / grant`。先 `assert*` 全部校验通过再扣，避免扣了一半报错。不要在新代码里手写 `UPDATE player_state SET cash = ...`。
 4. **购买只走 `purchases.ts`**（`purchaseBusiness / purchaseProperty`），它负责阶层校验、扣款、暴击返现、入库、朋友圈。
 5. **内容与代码分离**。剧情、区域、产业、物业、资产、红颜都在 `content/`；新增内容优先改 JSON，不要把文案写死在组件里（UI 提示语除外）。
@@ -185,6 +186,9 @@ scripts/demo/             试玩版录制与打包
 - 外壳在 PC 上是 412×852 居中手机框，手机上铺满 `100dvh`。所有截图和自测按 **412×852** 视口。
 - 首页结构：左上玩家徽章、右上资源胶囊、左侧功能图标列、右侧（天枢/换人/赏图/待收分红）、底部人物名牌 + 主线入口卡。新增首页入口加到侧栏，不要加第三层浮层。
 - 主 Tab 内页：`TopBar` + 内容 + `BottomNav`。全屏场景（剧情、聊天、小玩法、谈判）隐藏 TopBar/BottomNav（`App.tsx` 的 `hideChrome`）。
+- **跨 Tab 跳转要能回去**：从别的 Tab 跳进地图（车行、私宅、产业地点）用 store 的 `openSpot(districtId, spotId)` / `openHome(districtId, propertyId)`，它们记下 `returnTo`；地图和私宅的返回键调 `mapBack()`，会回到原来的 Tab（按钮文案「返回产业」）。手动点底栏会清掉 `returnTo`。
+- 入口分工：买车/藏品在地图车行，产业页「座驾藏品」只展示并引导去车行；物业在地图看房、在产业页「全城物业」总览；收取分红以产业页为主，首页的「收」图标是快捷入口。
+- **字号与对比度下限**：正文 ≥ 12px，辅助信息 ≥ 10px（英文装饰标签 `label-en` 为 10.5px），深底上的次要文字颜色不暗于 `#8C90A0`、更次要的不暗于 `#7C8093`。只有纯装饰（`EdgeLabel` 等 aria-hidden）可以更小更暗。
 
 ## 6. 美术资产规范
 
@@ -277,6 +281,8 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 - **身价的增长引擎是「投资 + 返现」**：买/升级产业、物业会按 `rollCritCashback` 掷返现。返现规则：基础 12%（+技能/套装/红颜），未触发时蓄能，蓄能与「这笔消费 ÷ 当前身价」成正比（≥6% 记满 25 点，最少 2 点），满 100 必出 3/5/10 倍。常量在 `gameEngine.ts` 的 `CRIT`，模拟器里有一份必须同步。
 - 之前的规则（28% + 每笔固定 +25 蓄能）会让玩家一次上线就靠刷小升级把身价翻 5–10 倍，门槛形同虚设，不要改回去。
 - 小玩法期望 ~1.0×，不是身价来源；它们提供的是参与感、天枢积分、好感、收藏与每日任务奖励。
+- **可直接购买的资产估值 = 售价 × 0.9**（`assets_catalog.json`）。买东西是花钱，不能是抬身价的捷径；只有赌石、活动这类「凭本事得来」的藏品（`dropOnly`）估值可以高于来源成本。每周特惠 9 折后估值正好等于成交价。
+- **产业经营事件同时最多 2 个**（`empire.ts` 的 `BIZ_EVENT_MAX_ACTIVE`），处理掉的那个占着名额 40 分钟（`BIZ_EVENT_SLOT_MS`），所以一次上线最多处理约 2 个，红点保持有意义。模拟器同步按每次上线 2 个计算。
 
 ## 8. 商战谈判（`server/src/negotiation.ts` + `NegotiationScene.tsx`）
 
@@ -312,6 +318,11 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
   | `visit` | `desc`, `lines[]`, `energy`, `sysPoints`, `affinity?` | `/map/visit`：每天一次，花精力换天枢积分 + 一句见闻，`affinity` 红颜已解锁再 +3 好感（`server/src/mapSpots.ts`） |
 - **每件可购买资产都要出现在某个 `showroom` 的 `stock` 里**（产业页的「座驾藏品」不再直接卖，只引导去对应车行）；每个物业、产业也都要在地图上有一个点。改完跑一次 §12 里的引用校验。
 - 红颜当前在本区时，头像会站在本区第一个 `date` 点旁边，点头像进私聊。
+- **让地图有回访理由**（都在 `server/src/mapSpots.ts`）：
+  - `requireEpisode`：读完这一幕才出现（例：鬼市 ep_015、公海夜航 ep_024）。
+  - `hours: ["evening","night"]`：只在这些时段开放（day 7–18 点、evening 18–22 点、night 22–7 点），约会点的时段在 `/map/date/start` 和结算时都校验。
+  - 打卡点每天约三成「有事发生」（至少 2 个，按玩家 + 日期固定），只有这些能去，标「今日」；其余点是氛围，点开会说今天很安静。
+  - 每周特惠：每周一件车行在售品 9 折（全服一致，`map.weeklyDeal`），地图标「特惠」，`/asset/buy` 按特惠价扣款。
 - 买车只在新车性能更高时才自动设为座驾（`/asset/buy`）。
 
 ## 10. 离线试玩版（demo）
@@ -344,7 +355,8 @@ node scripts/qa/balance_jade.mjs                # 赌石期望回报（需先 bu
 node scripts/qa/balance_live.mjs                # 打榜各打法胜率
 node scripts/qa/balance_progress.mjs --suggest  # 身价成长曲线 + 每幕门槛建议（改经济/剧情奖励/门槛后必跑）
 node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,live   # 浏览器实玩并截图
-node scripts/qa/map_assets.playwright.cjs out_dir   # 各区小地图、地点抽屉、产业三页截图
+node scripts/qa/map_assets.playwright.cjs out_dir   # 各区小地图、地点抽屉、产业三页、私宅与「返回产业」截图
+# 两个浏览器脚本都用本地默认 GM 口令注册（ADMIN_SECRET），投资卡住时给自己发邮件补钱，以便到达阶层 3
 node scripts/qa/check_content.mjs                   # 小地图地点引用、每件资产/物业/产业都有出处
 ```
 
@@ -358,5 +370,5 @@ node scripts/qa/check_content.mjs                   # 小地图地点引用、�
 - 会话在内存中，只能单进程运行（§4.7）。
 - demo 版缺新玩法 mock（§10），也没有小地图打卡 `/map/visit`。
 - 早期资产里有真实品牌名与车标（保时捷/法拉利/布加迪/湾流，911 图上有车标），与 §6.2「不用真实品牌」冲突，需要改名并重出图。
-- 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 13 天读完第三卷。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
+- 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定（2026-11 按「经营事件最多 2 个」重算）：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 14 天读完第三卷。模拟器不含买资产，因为资产估值不高于售价，不会加速成长。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
 - `docs/01~05` 为早期设计稿，数值与玩法以代码和本规范为准。

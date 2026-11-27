@@ -81,7 +81,7 @@ export const AuthScreen: React.FC = () => {
               className={`pb-2 text-[13px] font-editorial font-bold tracking-[0.2em] border-b-2 transition ${
                 mode === 'register'
                   ? 'text-[#E2D3B0] border-[#D9C49A] font-semibold'
-                  : 'text-[#6D7183] border-transparent'
+                  : 'text-[#8A8EA0] border-transparent'
               }`}
             >
               新建存档
@@ -95,7 +95,7 @@ export const AuthScreen: React.FC = () => {
               className={`pb-2 text-[13px] font-editorial font-bold tracking-[0.2em] border-b-2 transition ${
                 mode === 'login'
                   ? 'text-[#E2D3B0] border-[#D9C49A] font-semibold'
-                  : 'text-[#6D7183] border-transparent'
+                  : 'text-[#8A8EA0] border-transparent'
               }`}
             >
               继续存档

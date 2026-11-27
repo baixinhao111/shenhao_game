@@ -7,7 +7,7 @@ import { execute, getGmSetting, getLastInsertId, queryAll, queryOne, setGmSettin
 import { chatWithHeroine } from './deepseekService.js';
 import { assertCashSufficient, assertEnergySufficient, spendCashOrThrow, spendEnergyOrThrow } from './economy.js';
 import { getCurrentStockQuotes, registerMinigameRoutes } from './minigames.js';
-import { registerMapSpotRoutes } from './mapSpots.js';
+import { assertInteractionOpen, assetPriceNow, registerMapSpotRoutes } from './mapSpots.js';
 import { registerNegotiationRoutes } from './negotiation.js';
 import { registerBondRoutes, resolveHeroineActivePortrait } from './bonds.js';
 import { getEquippedTitleInfo, getStoryLinkedStockExtras, registerEmpireRoutes } from './empire.js';
@@ -688,7 +688,7 @@ export function createApiRouter(): Router {
       initNewPlayer(userId, nickname.slice(0, 14));
 
       const token = signToken(userId, Boolean(isAdmin));
-      res.json({ token, state: buildFullGameState(userId) });
+      res.json({ token, state: buildFullGameState(userId, { withStory: true }) });
     } catch (err: any) {
       res.status(500).json({ error: err.message || '注册失败' });
     }
@@ -705,14 +705,14 @@ export function createApiRouter(): Router {
         return;
       }
       const token = signToken(user.id, Boolean(user.is_admin));
-      res.json({ token, state: buildFullGameState(user.id) });
+      res.json({ token, state: buildFullGameState(user.id, { withStory: true }) });
     } catch (err: any) {
       res.status(500).json({ error: err.message || '登录失败' });
     }
   });
 
   router.get('/state', authMiddleware, (req: AuthedRequest, res) => {
-    res.json({ state: buildFullGameState(req.userId!) });
+    res.json({ state: buildFullGameState(req.userId!, { withStory: true }) });
   });
 
   // ================= HOMEPAGE COMPANION INTERACTION =================
@@ -1136,6 +1136,7 @@ export function createApiRouter(): Router {
       const district = content.map.districts.find((d: any) => d.id === districtId);
       const inter = district?.interactions?.find((i: any) => i.id === interactionId);
       if (!district || !inter) throw new Error('该约会地点不存在');
+      assertInteractionOpen(districtId, interactionId);
       const { tierInfo } = computePortfolioAndTier(userId);
       if (tierInfo.tier < district.unlockTier) {
         const reqTier = content.map.tiers.find((t: any) => t.tier === district.unlockTier);
@@ -1169,6 +1170,7 @@ export function createApiRouter(): Router {
       const district = content.map.districts.find((d: any) => d.id === districtId);
       const inter = district?.interactions?.find((i: any) => i.id === interactionId);
       if (!district || !inter) throw new Error('该约会地点不存在');
+      assertInteractionOpen(districtId, interactionId);
       const { tierInfo: dateTierInfo } = computePortfolioAndTier(userId);
       if (dateTierInfo.tier < district.unlockTier) {
         const reqTier = content.map.tiers.find((t: any) => t.tier === district.unlockTier);
@@ -1604,8 +1606,9 @@ export function createApiRouter(): Router {
       const owned = queryOne('SELECT asset_id FROM player_assets WHERE user_id = ? AND asset_id = ?', [userId, assetId]);
       if (owned) throw new Error('你已拥有该藏品');
 
-      spendCashOrThrow(userId, asset.price);
-      const critResult = rollCritCashback(userId, asset.price);
+      const price = assetPriceNow(asset);
+      spendCashOrThrow(userId, price);
+      const critResult = rollCritCashback(userId, price);
       execute('INSERT INTO player_assets (user_id, asset_id, acquired_at) VALUES (?, ?, ?)', [userId, assetId, Date.now()]);
 
       if (asset.type === 'car') {

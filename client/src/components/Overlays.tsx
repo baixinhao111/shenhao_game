@@ -170,7 +170,7 @@ export const Overlays: React.FC = () => {
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[13px] font-editorial font-black text-[#ECE6DA] truncate">{topToast.title}</span>
-                  <span className="text-[10px] text-[#6D7183] shrink-0">刚刚</span>
+                  <span className="text-[10px] text-[#8A8EA0] shrink-0">刚刚</span>
                 </div>
                 <p className="text-[11.5px] text-[#B3B6C2] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
               </div>
@@ -289,10 +289,10 @@ export const Overlays: React.FC = () => {
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="font-editorial font-black text-[14px] text-[#ECE6DA] truncate">{row.nickname}</span>
-                          <span className="px-1.5 rounded-sm text-[9.5px] text-[#E2D3B0] border border-[#D9C49A]/40 shrink-0">{row.tierName}</span>
+                          <span className="px-1.5 rounded-sm text-[10.5px] text-[#E2D3B0] border border-[#D9C49A]/40 shrink-0">{row.tierName}</span>
                           {row.equippedTitle?.titleBadge && (
                             <span
-                              className={`px-1.5 rounded-sm text-[9px] font-bold shrink-0 border ${
+                              className={`px-1.5 rounded-sm text-[10px] font-bold shrink-0 border ${
                                 row.equippedTitle.titleTone === 'cyan'
                                   ? 'bg-[#072330]/85 border-[#63E6F2]/50 text-[#B9F6FB]'
                                   : row.equippedTitle.titleTone === 'rose'
@@ -304,7 +304,7 @@ export const Overlays: React.FC = () => {
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-[#7A7E8E] mt-0.5 truncate">
+                        <div className="text-[11px] text-[#8C90A0] mt-0.5 truncate">
                           {row.mainResidence} · {row.carName}
                         </div>
                       </div>
@@ -358,7 +358,7 @@ export const Overlays: React.FC = () => {
               </div>
               <div className="overflow-y-auto no-scrollbar p-3 space-y-2">
                 {state.mails?.length === 0 && (
-                  <div className="flex flex-col items-center gap-2 text-xs text-[#7A7E8E] py-10">
+                  <div className="flex flex-col items-center gap-2 text-xs text-[#8C90A0] py-10">
                     <GameIcon name="mail" size={56} className="opacity-50 grayscale" />
                     暂无来信
                   </div>
@@ -368,7 +368,7 @@ export const Overlays: React.FC = () => {
                     <div className="flex items-center gap-2">
                       <GameIcon name="mail" size={30} className={m.claimed ? 'grayscale' : ''} />
                       <span className="flex-1 min-w-0 text-[13.5px] font-editorial font-black text-[#ECE6DA] truncate">{m.title}</span>
-                      <span className="text-[10px] text-[#6D7183] shrink-0">{formatShortTime(m.created_at)}</span>
+                      <span className="text-[10px] text-[#8A8EA0] shrink-0">{formatShortTime(m.created_at)}</span>
                     </div>
                     <p className="text-[12px] text-[#B4BBD0] leading-relaxed">{m.body}</p>
                     <div className="flex items-center justify-between gap-2 pt-0.5">
@@ -427,7 +427,7 @@ export const Overlays: React.FC = () => {
                       {adminData?.stats?.keyConfigured ? '已接入' : '未配置 Key'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#7A7E8E]">
+                  <div className="text-[11px] text-[#8C90A0]">
                     累计对话 {adminData?.stats?.totalMessages || 0} 条 · Tokens {adminData?.stats?.totalTokensUsed || 0}
                   </div>
                   <input
@@ -453,7 +453,7 @@ export const Overlays: React.FC = () => {
                 <div className="grid grid-cols-2 gap-2.5">
                   <button onClick={toggleCruiseEvent} className="game-action-tile rounded-[6px] p-3 text-left">
                     <div className="font-semibold text-[#E2D3B0]">限时游轮活动</div>
-                    <div className="text-[11px] text-[#7A7E8E] mt-0.5">
+                    <div className="text-[11px] text-[#8C90A0] mt-0.5">
                       {adminData?.stats?.eventActive ? '开启中' : '已关闭'}
                     </div>
                   </button>
@@ -461,7 +461,7 @@ export const Overlays: React.FC = () => {
                     <div className="font-semibold text-[#F3F0E8] flex items-center gap-1">
                       <RefreshCw className="w-3.5 h-3.5 text-[#D9C49A]" /> 重载剧本配置
                     </div>
-                    <div className="text-[11px] text-[#7A7E8E] mt-0.5">免重启刷新 content/</div>
+                    <div className="text-[11px] text-[#8C90A0] mt-0.5">免重启刷新 content/</div>
                   </button>
                 </div>
 

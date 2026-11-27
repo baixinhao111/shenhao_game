@@ -119,7 +119,11 @@
           "name": "深夜大排档",
           "en": "NIGHT STALLS",
           "x": 27,
-          "y": 63
+          "y": 63,
+          "hours": [
+            "evening",
+            "night"
+          ]
         },
         {
           "id": "os_lanes",
@@ -194,6 +198,27 @@
           ],
           "energy": 4,
           "sysPoints": 20
+        },
+        {
+          "id": "os_ghost",
+          "kind": "visit",
+          "name": "地下鬼市",
+          "en": "GHOST MARKET",
+          "x": 74,
+          "y": 93,
+          "hours": [
+            "night"
+          ],
+          "requireEpisode": "ep_015",
+          "desc": "子夜的旧码头，手电如林，真货假货都压低了声音交易。",
+          "lines": [
+            "一个蒙面摊主把一只缺口的瓷碗推到你面前，只说了句「懂的人自然懂」。",
+            "周老远远朝你点了点头，示意今晚别碰东头那几摊。",
+            "你在角落里看见有人在收赵家旧账本，天枢悄悄记下了买家的样子。"
+          ],
+          "energy": 5,
+          "sysPoints": 34,
+          "affinity": "lu_zhiwei"
         }
       ],
       "localMap": "/assets/maps/map_old_street.jpg"
@@ -553,7 +578,11 @@
             "酒保替你留了靠窗的位置，说今晚整层都是做并购的人。"
           ],
           "energy": 5,
-          "sysPoints": 26
+          "sysPoints": 26,
+          "hours": [
+            "evening",
+            "night"
+          ]
         }
       ],
       "localMap": "/assets/maps/map_cbd.jpg"
@@ -607,7 +636,11 @@
           "name": "黑胶爵士酒廊",
           "en": "JAZZ LOUNGE",
           "x": 20,
-          "y": 42
+          "y": 42,
+          "hours": [
+            "evening",
+            "night"
+          ]
         },
         {
           "id": "nc_street",
@@ -664,7 +697,11 @@
           ],
           "energy": 4,
           "sysPoints": 22,
-          "affinity": "shen_liuli"
+          "affinity": "shen_liuli",
+          "hours": [
+            "evening",
+            "night"
+          ]
         }
       ],
       "localMap": "/assets/maps/map_night_city.jpg"
@@ -778,6 +815,28 @@
           ],
           "energy": 5,
           "sysPoints": 26
+        },
+        {
+          "id": "pk_night_sea",
+          "kind": "visit",
+          "name": "公海夜航",
+          "en": "NIGHT SAIL",
+          "x": 66,
+          "y": 86,
+          "hours": [
+            "evening",
+            "night"
+          ],
+          "requireEpisode": "ep_024",
+          "desc": "风暴过后的公海很安静，星耀号的灯在远处一闪一闪。",
+          "lines": [
+            "快艇切开平静的海面，你想起那晚牌桌上的十二分钟。",
+            "船长说今晚能看见银河，你关掉了所有灯。",
+            "卫星电话响了一声又断了，天枢提示：北边有资金在悄悄集结。"
+          ],
+          "energy": 6,
+          "sysPoints": 40,
+          "affinity": "shen_liuli"
         }
       ],
       "localMap": "/assets/maps/map_peak_coast.jpg"

@@ -10,7 +10,8 @@ async function api(path, body) {
 }
 function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type === 'system_choice' && n.options?.length) { const x = n.options.find((y) => !(y.cost?.cash || y.cashCost)) || n.options[0]; o.push(x.id); firstChoices(x.branchNodes, o); } return o; }
 (async () => {
-  const reg = await api('/auth/register', { username: 'ma' + Date.now(), password: '123456', nickname: '陆沉' });
+  // registered as GM (local default secret) so the run can mail itself a top-up when investing stalls
+  const reg = await api('/auth/register', { username: 'ma' + Date.now(), password: '123456', nickname: '陆沉', adminSecret: process.env.ADMIN_SECRET || 'tianshu_gm_2026' });
   token = reg.token;
   for (const ep of reg.state.stories.volumes.flatMap((v) => v.episodes)) {
     const st = (await api('/state')).state;
@@ -26,7 +27,14 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
     const buy = st.businesses.find((x) => !x.owned && x.unlockTier <= st.player.tier.tier && x.buyCost <= st.player.cash);
     if (buy) { await api('/business/buy', { businessId: buy.id }); continue; }
     const up = st.businesses.filter((x) => x.owned && x.upgradeCost <= st.player.cash).sort((a, b) => a.upgradeCost - b.upgradeCost)[0];
-    if (!up) break;
+    if (!up) {
+      // story gates are tuned for days of play; top up the test account instead of waiting
+      await api('/admin/mail/send', { targetUserId: st.user.id, title: 'QA', cash: 30000000 });
+      const mail = ((await api('/state')).state.mails || []).find((m) => !m.claimed && m.title === 'QA');
+      if (!mail) break;
+      await api('/mail/claim', { mailId: mail.id });
+      continue;
+    }
     await api('/business/upgrade', { businessId: up.id });
   }
   await api('/asset/buy', { assetId: 'car_used_ev' });
@@ -49,9 +57,12 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
   const close = async () => { await p.locator('button[aria-label="关闭"]').first().click(); await p.waitForTimeout(500); };
   await p.goto('http://localhost:3080'); await p.waitForTimeout(1800);
   await nav('海城'); await shot('m0_city');
-  await tap('城南旧街', 400); await tap('前往', 1600); await shot('m1_old_street');
+  await tap('城南旧街', 600); await shot('m0b_preview');
+  await tap('前往', 1600); await shot('m1_old_street');
   await tap('老码头车行', 800); await shot('m2_showroom'); await close();
-  await tap('老茶馆', 800); await tap('去坐坐', 1400); await shot('m3_visit'); await close();
+  await tap('老茶馆', 800);
+  if (await p.locator('button:not([disabled])', { hasText: '去坐坐' }).count()) await tap('去坐坐', 1400);
+  await shot('m3_visit'); await close();
   await tap('云起古玩轩', 800); await shot('m4_business'); await close();
   await tap('深夜大排档', 800); await shot('m5_date'); await close();
   for (const [name, id] of [['海城大学城', 'university'], ['外滩名利场', 'bund'], ['陆家湾', 'cbd'], ['星耀不夜城', 'night_city'], ['云顶海岸', 'peak_coast']]) {
@@ -60,12 +71,17 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
   }
   await tap('云顶游艇会', 800); await shot('m6_marina'); await close();
   await nav('产业'); await shot('a2_biz');
-  await p.mouse.wheel(0, 600); await p.waitForTimeout(500); await shot('a2b_biz_scroll');
+  await p.mouse.move(206, 600); await p.mouse.wheel(0, 600); await p.waitForTimeout(500); await shot('a2b_biz_scroll');
   await p.locator('button', { hasText: '全城物业' }).first().click(); await p.waitForTimeout(900); await shot('a3_props');
-  await p.mouse.wheel(0, 700); await p.waitForTimeout(500); await shot('a3b_props_scroll');
+  await p.mouse.move(206, 600); await p.mouse.wheel(0, 700); await p.waitForTimeout(500); await shot('a3b_props_scroll');
   await p.locator('button', { hasText: '座驾藏品' }).first().click(); await p.waitForTimeout(900); await shot('a1_garage');
-  await p.mouse.wheel(0, 600); await p.waitForTimeout(500); await shot('a1b_garage_scroll');
-  await p.mouse.wheel(0, 900); await p.waitForTimeout(500); await shot('a1c_garage_scroll');
+  await p.mouse.move(206, 600); await p.mouse.wheel(0, 600); await p.waitForTimeout(500); await shot('a1b_garage_scroll');
+  await p.mouse.move(206, 600); await p.mouse.wheel(0, 900); await p.waitForTimeout(500); await shot('a1c_garage_scroll');
+  // 产业 → 物业 → 回家 → back lands on 产业 again
+  await p.locator('button', { hasText: '全城物业' }).first().click(); await p.waitForTimeout(700);
+  await tap('回家', 1400); await shot('h1_home');
+  await tap('物业管理', 800); await shot('h1b_manage'); await p.mouse.click(206, 150); await p.waitForTimeout(500);
+  await p.locator('button:has(svg.lucide-arrow-left)').first().click(); await p.waitForTimeout(900); await shot('h2_back_to_assets');
   console.log('errors:', errs.length ? errs : 'none');
   await b.close();
 })();

@@ -80,13 +80,13 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
   return (
     <motion.div
       layout
-      className={`relative rounded-[10px] overflow-hidden ${b.owned ? 'panel-brass' : 'panel-arch'}`}
-      animate={pulse ? { boxShadow: ['0 0 0 rgba(255,220,150,0)', '0 0 34px rgba(255,220,150,0.75)', '0 0 0 rgba(255,220,150,0)'] } : {}}
+      className="relative"
+      animate={pulse ? { filter: ['brightness(1)', 'brightness(1.35)', 'brightness(1)'] } : {}}
       transition={{ duration: 0.9 }}
       key={b.id}
     >
       {/* ---------- poster ---------- */}
-      <div className="relative h-[132px] w-full overflow-hidden">
+      <div className="relative h-[150px] -mx-3 overflow-hidden">
         <motion.img
           src={b.image}
           alt={b.name}
@@ -94,7 +94,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
           transition={{ duration: 0.6 }}
           className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : !b.owned ? 'brightness-[0.8]' : ''}`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#05070D] via-[#05070D]/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#04050A] via-[#04050A]/30 to-[#04050A]/40" />
 
         {b.owned && (
           <motion.span
@@ -102,16 +102,18 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
             initial={pulse ? { scale: 1.8, rotate: -10 } : false}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 420, damping: 14 }}
-            className="absolute top-2 left-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/65 border border-[#D9C49A]/70"
+            className="absolute top-3 left-4 flex items-baseline gap-1 text-shadow-stage"
           >
-            <GameIcon name="medal" size={18} shadow={false} />
-            <span className="font-num text-[12px] text-[#EADBB8]">Lv.{b.level}</span>
+            <span className="font-num text-[10px] tracking-[0.3em] text-[#B7B3AA]">LV</span>
+            <span className="font-num text-[26px] leading-none text-[var(--ivory-2)]">{b.level}</span>
           </motion.span>
         )}
         {assigned && (
-          <span className="absolute top-2 right-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/65 border border-[#F0789A]/70">
-            <PortraitAvatar src={assigned.avatar} alt="" className="w-5 h-5" rounded="full" />
-            <span className="text-[10.5px] text-[#FFC9D6]">{assigned.name} 坐镇</span>
+          <span className="absolute top-3 right-4 flex items-center gap-1.5 text-shadow-stage">
+            <span className="w-6 h-6 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFC2D1] to-[#C24E74]">
+              <PortraitAvatar src={assigned.avatar} alt="" className="w-full h-full !border-0" rounded="full" />
+            </span>
+            <span className="text-[11px] text-[#FFC9D6]">{assigned.name} 坐镇</span>
           </span>
         )}
         {locked && (
@@ -121,10 +123,11 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
           </span>
         )}
 
-        <div className="absolute left-3 right-3 bottom-2 flex items-end justify-between gap-2">
-          <h3 className="font-editorial text-[18px] font-black text-[#ECE6DA] text-stroke-dark truncate">{b.name}</h3>
-          <span className="font-num text-[13px] text-[#EADBB8] text-stroke-dark shrink-0 flex items-center gap-1">
-            <GameIcon name="income" size={18} /> {formatMoney(b.currentIncomePerHour)}/时
+        <div className="absolute left-4 right-4 bottom-2.5 flex items-end justify-between gap-2 text-shadow-stage">
+          <span className="text-[11px] text-[#B7B3AA]">{b.owned ? '当前时薪' : '收购后时薪'}</span>
+          <span className="font-num text-[20px] leading-none text-[var(--ivory-2)] shrink-0">
+            {formatMoney(b.currentIncomePerHour)}
+            <span className="text-[11px] text-[#8C90A0]"> /时</span>
           </span>
         </div>
 
@@ -162,29 +165,27 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
       </div>
 
       {/* ---------- body ---------- */}
-      <div className="px-3 pt-2.5 pb-3 space-y-2.5">
+      <div className="pt-3 space-y-3.5">
         {b.owned ? (
           <>
             <VaultMeter hours={b.pendingHours || 0} pending={b.pendingIncome || 0} />
 
             {/* Business Operating Event */}
             {b.activeEvent && onResolveEvent && (
-              <div className="rounded-[8px] border border-[#D9C49A]/45 bg-[#121933]/90 overflow-hidden">
+              <div className="relative pl-3 border-l-2 border-[#FF8FA6]/70">
                 <button
                   type="button"
                   onClick={() => {
                     playTap();
                     setEventOpen((v) => !v);
                   }}
-                  className="w-full px-2.5 py-2 flex items-center justify-between gap-2 text-left"
+                  className="w-full py-0.5 flex items-center justify-between gap-2 text-left"
                 >
-                  <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="w-2 h-2 rounded-full bg-[#EADBB8] animate-pulse shrink-0" />
-                    <span className="text-[11.5px] font-editorial font-black text-[#EADBB8] truncate">
-                      突发经营事件 · {b.activeEvent.title}
-                    </span>
+                  <div className="min-w-0">
+                    <div className="text-[10px] tracking-[0.3em] text-[#FF8FA6]">经营事件</div>
+                    <div className="text-[14px] font-editorial font-black text-[var(--ivory-2)] truncate mt-0.5">{b.activeEvent.title}</div>
                   </div>
-                  <span className="text-[10.5px] text-[#B3B6C2] shrink-0">{eventOpen ? '收起 ▴' : '决策 ▾'}</span>
+                  <span className="text-[11px] text-[var(--champagne)] shrink-0">{eventOpen ? '收起' : '去决策 ›'}</span>
                 </button>
                 <AnimatePresence>
                   {eventOpen && (
@@ -192,10 +193,10 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: 'auto', opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden border-t border-white/[0.07] px-2.5 pb-2.5 pt-2 space-y-2"
+                      className="overflow-hidden pt-2 space-y-1"
                     >
-                      <p className="text-[11.5px] text-[#C8CEE0] leading-relaxed">{b.activeEvent.desc}</p>
-                      <div className="space-y-1.5">
+                      <p className="text-[12px] text-[#A9ADBA] leading-relaxed pb-1">{b.activeEvent.desc}</p>
+                      <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
                         {(b.activeEvent.choices || []).map((c: any) => {
                           const isHeroineChoice = c.kind === 'heroine';
                           const isTianshuChoice = c.kind === 'tianshu';
@@ -217,22 +218,17 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                                   setTimeout(() => setEventOutcome(null), 6500);
                                 }
                               }}
-                              className={`w-full rounded-[6px] px-2.5 py-2 text-left border transition active:scale-[0.98] disabled:opacity-45 ${
-                                isTianshuChoice
-                                  ? 'bg-[#07202D]/85 border-[#63E6F2]/45 hover:border-[#63E6F2]'
-                                  : isHeroineChoice
-                                    ? 'bg-[#2C1020]/85 border-[#F0789A]/45 hover:border-[#F0789A]'
-                                    : 'bg-[#0A1024]/85 border-white/12 hover:border-[#D9C49A]/50'
-                              }`}
+                              className="w-full py-2.5 text-left transition active:bg-white/[0.03] disabled:opacity-45"
                             >
                               <div className="flex items-center justify-between gap-2">
-                                <span className={`text-[12px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#ECE6DA]'}`}>
+                                <span className={`flex items-center gap-1.5 text-[13px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#ECE6DA]'}`}>
+                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isTianshuChoice ? 'bg-[#63E6F2]' : isHeroineChoice ? 'bg-[#F0789A]' : 'bg-[var(--champagne)]'}`} />
                                   {c.label}
                                 </span>
                                 <span className="font-num text-[11px] text-[#7BE0A8] shrink-0">+{formatMoney(estCash)}</span>
                               </div>
-                              <div className="flex items-center justify-between gap-2 mt-1 text-[10px]">
-                                <span className="text-[#858999]">
+                              <div className="flex items-center justify-between gap-2 mt-1 pl-3 text-[11px]">
+                                <span className="text-[#8C90A0]">
                                   {c.costEnergy > 0 ? `精力 -${c.costEnergy}` : ''}
                                   {c.costSysPoints > 0 ? `${c.costEnergy > 0 ? ' · ' : ''}积分 -${c.costSysPoints}` : ''}
                                   {isHeroineChoice && !heroineReady
@@ -257,8 +253,8 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
             )}
 
             {eventOutcome && (
-              <div className="rounded-[8px] px-2.5 py-2 bg-[#0B2219]/90 border border-[#7BE0A8]/45 text-[11.5px] space-y-1">
-                <div className="text-[#DDFCE9] leading-relaxed">{eventOutcome.resultText}</div>
+              <div className="pl-3 border-l-2 border-[#7BE0A8]/70 text-[12px] space-y-1">
+                <div className="text-[#DDFCE9] leading-relaxed font-editorial">「{eventOutcome.resultText}」</div>
                 <div className="font-num text-[11px] text-[#7BE0A8] flex items-center gap-2.5">
                   <span>+{formatMoney(eventOutcome.cashReward)}</span>
                   {eventOutcome.sysPoints > 0 && <span className="text-[#B9F6FB]">积分 +{eventOutcome.sysPoints}</span>}
@@ -269,7 +265,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
 
             {heroines.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-[10.5px] text-[#7A7E8E] shrink-0">委派</span>
+                <span className="text-[11px] text-[#8C90A0] shrink-0">委派红颜</span>
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-2">
                   {heroines.map((h) => {
                     const on = h.id === b.assignedHeroineId;
@@ -292,7 +288,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                           <PortraitAvatar src={h.avatar} alt={h.name} className={`w-8 h-8 !border-0 ${on ? '' : 'opacity-60 grayscale-[40%]'}`} rounded="full" />
                         </span>
                         {fit && (
-                          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1 rounded-sm text-[8.5px] leading-[12px] bg-[#F0789A] text-white whitespace-nowrap">
+                          <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1 rounded-sm text-[10px] leading-[12px] bg-[#F0789A] text-white whitespace-nowrap">
                             契合
                           </span>
                         )}
@@ -303,9 +299,9 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
               </div>
             )}
 
-            <div className="flex items-center justify-between gap-2 pt-0.5">
-              <div className="min-w-0 text-[10.5px] leading-snug">
-                <div className="text-[#7A7E8E]">升至 Lv.{b.level + 1}</div>
+            <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/[0.06]">
+              <div className="min-w-0 text-[11.5px] leading-snug">
+                <div className="text-[#8C90A0]">升至 Lv.{b.level + 1}</div>
                 <div className="font-num text-[#7BE0A8]">
                   +{formatMoney(gainPerHour)}/时 · 估值 +{formatMoney((b.nextValuation || 0) - (b.currentValuation || 0))}
                 </div>
@@ -313,32 +309,32 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
               <button
                 disabled={busy}
                 onClick={() => void onUpgrade()}
-                className={`${canAffordUpgrade ? 'btn-brass' : 'btn-navy opacity-70'} shrink-0 px-3.5 py-2 text-[12.5px] font-num flex items-center gap-1`}
+                className={`${canAffordUpgrade ? 'btn-champagne' : 'btn-ghost opacity-70'} shrink-0 px-4 py-2.5 text-[13px] font-num`}
               >
-                <GameIcon name="cash" size={16} shadow={false} /> 升级 {formatMoney(b.upgradeCost)}
+                升级 · {formatMoney(b.upgradeCost)}
               </button>
             </div>
           </>
         ) : (
           <>
-            <p className="text-[11.5px] text-[#8C90A0] leading-relaxed line-clamp-2">{b.description}</p>
-            <div className="flex items-center justify-between gap-2">
-              <div className="text-[10.5px] leading-snug min-w-0">
-                <div className="text-[#7A7E8E]">收购后</div>
+            <p className="text-[12px] text-[#A9ADBA] leading-relaxed">{b.description}</p>
+            <div className="flex items-center justify-between gap-2 pt-3 border-t border-white/[0.06]">
+              <div className="text-[11.5px] leading-snug min-w-0">
+                <div className="text-[#8C90A0]">收购后</div>
                 <div className="font-num text-[#7BE0A8]">
                   {formatMoney(b.currentIncomePerHour)}/时 · 估值 {formatMoney(b.baseValuation)}
                 </div>
               </div>
               <div className="flex gap-1.5 shrink-0">
                 {!locked && (
-                  <button disabled={busy} onClick={onDeal} className="btn-navy px-3 py-1.5 text-[12px] font-editorial">
+                  <button disabled={busy} onClick={onDeal} className="btn-ghost px-3.5 py-2.5 text-[13px] font-editorial">
                     谈判
                   </button>
                 )}
                 <button
                   disabled={busy || locked}
                   onClick={onBuy}
-                  className={`${locked || !canAffordBuy ? 'btn-navy opacity-70' : 'gold-btn-shimmer'} px-3 py-1.5 text-[12px] font-num disabled:opacity-45`}
+                  className={`${locked || !canAffordBuy ? 'btn-ghost opacity-70' : 'btn-champagne'} px-3.5 py-2.5 text-[13px] font-num disabled:opacity-45`}
                 >
                   {locked ? '未解锁' : `全款 ${formatMoney(b.buyCost)}`}
                 </button>

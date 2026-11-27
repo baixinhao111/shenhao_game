@@ -98,7 +98,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
               />
               <span
                 className={`relative text-[11px] leading-none mb-1 tracking-[0.14em] font-editorial ${
-                  active ? 'font-black gold-gradient-text' : 'font-bold text-[#6D7183]'
+                  active ? 'font-black gold-gradient-text' : 'font-bold text-[#8A8EA0]'
                 }`}
                 style={{ marginTop: active ? -4 : 2 }}
               >

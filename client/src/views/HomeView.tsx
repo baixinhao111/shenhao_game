@@ -654,7 +654,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               <span className="text-[#E2D3B0] font-bold tracking-wider truncate">{player.tier.name}</span>
               {user.equippedTitle?.titleBadge && (
                 <span
-                  className={`px-1 py-[1px] rounded-sm text-[8.5px] font-bold shrink-0 border ${
+                  className={`px-1 py-[1px] rounded-sm text-[10px] font-bold shrink-0 border ${
                     user.equippedTitle.titleTone === 'cyan'
                       ? 'bg-[#072330]/85 border-[#63E6F2]/55 text-[#B9F6FB]'
                       : user.equippedTitle.titleTone === 'rose'
@@ -845,7 +845,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             <span className="lbl !text-[#EADBB8] font-num !tracking-normal">
               <AnimatedNumber value={livePendingIncome} duration={360} />
             </span>
-            <span className="absolute -top-1 -right-1 px-1 rounded-sm bg-[#FF4F72] text-[9px] font-bold text-white leading-[14px] shadow">
+            <span className="absolute -top-1 -right-1 px-1 rounded-sm bg-[#FF4F72] text-[10px] font-bold text-white leading-[14px] shadow">
               收
             </span>
           </button>
@@ -864,7 +864,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           >
             <div className="flex items-center justify-between px-2 py-1.5 border-b border-white/[0.08]">
               <span className="text-[11px] font-medium tracking-wider text-[#D9C49A]">切换驻留人物</span>
-              <button onClick={() => setPickerOpen(false)} className="text-[#7A7E8E] hover:text-white">
+              <button onClick={() => setPickerOpen(false)} className="text-[#8C90A0] hover:text-white">
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -893,7 +893,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-semibold text-[#F3F0E8] truncate">{c.name}</span>
-                        {c.isResident && <span className="text-[9px] text-[#D9C49A]">同住</span>}
+                        {c.isResident && <span className="text-[10px] text-[#D9C49A]">同住</span>}
                       </div>
                       <div className="text-[10px] text-[#8A8E9B] truncate">
                         {c.unlocked ? c.title : '待结识'}
@@ -946,7 +946,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                       setPokeBubble(null);
                       setThoughtOpen(false);
                     }}
-                    className="text-[#7A7E8E] hover:text-white"
+                    className="text-[#8C90A0] hover:text-white"
                     aria-label="关闭"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -1098,7 +1098,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     居所与钥匙
                   </button>
                 </div>
-                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#7A7E8E] hover:text-white">
+                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#8C90A0] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1155,7 +1155,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                       <span className="text-[#E2D3B0] font-medium">
                         {mainResidence.displayName}（入住 {residentHeroineObjs.length}/{mainResidence.maxResidents}）
                       </span>
-                      <span className="text-[11px] text-[#7A7E8E]">同住每日提升好感</span>
+                      <span className="text-[11px] text-[#8C90A0]">同住每日提升好感</span>
                     </div>
                     {unlockedHeroines.length === 0 ? (
                       <div className="text-xs text-[#858999] py-4 text-center">

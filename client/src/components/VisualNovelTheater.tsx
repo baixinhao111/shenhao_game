@@ -1282,7 +1282,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
               <div>
                 <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">对话记录</div>
-                <div className="text-[10px] text-[#7A7E8E] mt-0.5">
+                <div className="text-[10px] text-[#8C90A0] mt-0.5">
                   {script.chapterTitle} · {script.title}
                 </div>
               </div>
@@ -1341,7 +1341,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     {n.type === 'dialogue' && n.name && (
                       <div className="text-xs font-semibold text-[#E2D3B0]">
                         {n.name}
-                        {n.role && <span className="text-[10px] text-[#6D7183] font-normal ml-1.5">{n.role}</span>}
+                        {n.role && <span className="text-[10px] text-[#8A8EA0] font-normal ml-1.5">{n.role}</span>}
                       </div>
                     )}
                     <p
@@ -1479,7 +1479,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                         <div className="mt-2 flex items-center gap-2 text-[11px] text-[#8C90A0]">
                           {settlement.heroineAvatar && <PortraitAvatar src={settlement.heroineAvatar} alt="" className="w-5 h-5 !border-0" rounded="full" />}
                           — {settlement.heroineName}
-                          {settlement.locationLabel && <span className="text-[#5E6273]">· {settlement.locationLabel}</span>}
+                          {settlement.locationLabel && <span className="text-[#7C8093]">· {settlement.locationLabel}</span>}
                         </div>
                       )}
                     </motion.div>
@@ -1505,7 +1505,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                           >
                             <GameIcon name={it.icon} size={30} shadow={false} />
                             <div className="min-w-0">
-                              <div className="text-[9.5px] tracking-[0.2em] text-[#6D7183]">{it.label}</div>
+                              <div className="text-[10.5px] tracking-[0.2em] text-[#8A8EA0]">{it.label}</div>
                               <div className={`font-num text-[15px] leading-tight ${it.tone}`}>
                                 {it.num != null ? <AnimatedNumber from={0} value={it.num} prefix="+" duration={900 + i * 150} /> : it.value}
                                 {it.ribbon && <span className="ml-1.5 text-[10px] text-[#E79AA8]">{it.ribbon}</span>}

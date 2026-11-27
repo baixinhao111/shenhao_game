@@ -69,8 +69,12 @@ function readOptionalMiniStories(relPath: string): MiniStoriesContent {
 }
 
 let cachedContent: GameContent | null = null;
+/** bumps on every (re)load so clients know when to refetch the static story script */
+let contentVersion = 0;
+export const getContentVersion = () => contentVersion;
 
 export function loadContent(): GameContent {
+  contentVersion = Date.now();
   cachedContent = {
     map: readJson('maps/haicheng.json'),
     districtEvents: readJson('maps/district_events.json'),

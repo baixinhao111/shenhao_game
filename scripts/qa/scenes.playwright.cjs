@@ -10,7 +10,8 @@ async function api(path, body) {
 }
 function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type === 'system_choice' && n.options?.length) { const x = n.options.find((y) => !(y.cost?.cash || y.cashCost)) || n.options[0]; o.push(x.id); firstChoices(x.branchNodes, o); } return o; }
 (async () => {
-  const reg = await api('/auth/register', { username: 'sc' + Date.now(), password: '123456', nickname: '陆沉' });
+  // registered as GM (local default secret) so the run can mail itself a top-up when investing stalls
+  const reg = await api('/auth/register', { username: 'sc' + Date.now(), password: '123456', nickname: '陆沉', adminSecret: process.env.ADMIN_SECRET || 'tianshu_gm_2026' });
   token = reg.token;
   for (const ep of reg.state.stories.volumes.flatMap((v) => v.episodes)) {
     const st = (await api('/state')).state;
@@ -29,10 +30,28 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
     const buy = st.businesses.find((x) => !x.owned && x.unlockTier <= st.player.tier.tier && x.buyCost <= st.player.cash);
     if (buy) { await api('/business/buy', { businessId: buy.id }); continue; }
     const up = own.filter((x) => x.upgradeCost <= st.player.cash).sort((a, b) => a.upgradeCost - b.upgradeCost)[0];
-    if (!up) break;
+    if (!up) {
+      // story gates are tuned for days of play; top up the test account instead of waiting
+      await api('/admin/mail/send', { targetUserId: st.user.id, title: 'QA', cash: 30000000 });
+      const mail = ((await api('/state')).state.mails || []).find((m) => !m.claimed && m.title === 'QA');
+      if (!mail) break;
+      await api('/mail/claim', { mailId: mail.id });
+      continue;
+    }
     await api('/business/upgrade', { businessId: up.id });
   }
-  console.log('tier after investing:', (await api('/state')).state.player.tier.tier);
+  {
+    // pocket money for the stakes (×stakeScale at this tier); stays below the next tier's threshold
+    const st = (await api('/state')).state;
+    const room = (st.player.nextTier?.minNetWorth || Infinity) - st.player.netWorth;
+    const amount = Math.max(0, Math.min(200000000, Math.floor(room * 0.8)));
+    if (amount > 0) {
+      await api('/admin/mail/send', { targetUserId: st.user.id, title: 'QA', cash: amount });
+      const mail = ((await api('/state')).state.mails || []).find((m) => !m.claimed && m.title === 'QA');
+      if (mail) await api('/mail/claim', { mailId: mail.id });
+    }
+  }
+  console.log('tier after investing:', (await api('/state')).state.player.tier.tier, 'cash', (await api('/state')).state.player.cash);
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 412, height: 852 }, deviceScaleFactor: 1 });
   const errs = [];

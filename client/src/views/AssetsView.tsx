@@ -25,6 +25,7 @@ export const AssetsView: React.FC = () => {
     openDeal,
     flyReward,
     openSpot,
+    openHome,
     focusBizId,
     focusBusiness,
   } = useGameStore();
@@ -311,7 +312,7 @@ export const AssetsView: React.FC = () => {
                   { label: '产业估值', value: formatMoney(bizVal) },
                 ].map((it) => (
                   <div key={it.label} className="text-center">
-                    <div className="text-[9.5px] tracking-[0.25em] text-[#6D7183]">{it.label}</div>
+                    <div className="text-[10.5px] tracking-[0.25em] text-[#8A8EA0]">{it.label}</div>
                     <div className="font-num text-[15px] text-[var(--ivory-2)] mt-1">{it.value}</div>
                   </div>
                 ))}
@@ -320,7 +321,7 @@ export const AssetsView: React.FC = () => {
               <div className="pt-4">
                 <div className="flex items-end justify-between mb-2.5 px-1">
                   <div>
-                    <div className="label-en">{selBiz.owned ? `LEVEL ${selBiz.level}` : player.tier.tier < selBiz.unlockTier ? 'LOCKED' : 'FOR SALE'}</div>
+                    <div className="label-en">{selBiz.owned ? (selBiz.activeEvent ? 'IN OPERATION · 有事待办' : 'IN OPERATION') : player.tier.tier < selBiz.unlockTier ? 'LOCKED' : 'FOR SALE'}</div>
                     <div className="font-editorial text-[20px] font-black ink-title mt-1">{selBiz.name}</div>
                   </div>
                   {(() => {
@@ -370,7 +371,7 @@ export const AssetsView: React.FC = () => {
                         : b.owned
                           ? { t: `${(b.pendingHours || 0).toFixed(1)}h`, c: 'text-[#8C90A0]' }
                           : locked
-                            ? { t: tierName(b.unlockTier), c: 'text-[#5E6273]' }
+                            ? { t: tierName(b.unlockTier), c: 'text-[#7C8093]' }
                             : { t: '可收购', c: 'text-[var(--champagne)]' };
                     return (
                       <button
@@ -386,8 +387,8 @@ export const AssetsView: React.FC = () => {
                           <img src={b.image} alt="" className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : !b.owned ? 'brightness-75' : ''}`} />
                         </span>
                         <span className="min-w-0 flex-1">
-                          <span className={`block text-[13px] font-editorial font-black truncate ${locked ? 'text-[#6D7183]' : 'text-[#E4DED2]'}`}>{b.name}</span>
-                          <span className="block text-[10.5px] font-num text-[#6D7183] mt-0.5">{b.owned ? `Lv.${b.level} · ${formatMoney(b.currentIncomePerHour)}/时` : `收购 ${formatMoney(b.buyCost)}`}</span>
+                          <span className={`block text-[13px] font-editorial font-black truncate ${locked ? 'text-[#8A8EA0]' : 'text-[#E4DED2]'}`}>{b.name}</span>
+                          <span className="block text-[10.5px] font-num text-[#8A8EA0] mt-0.5">{b.owned ? `Lv.${b.level} · ${formatMoney(b.currentIncomePerHour)}/时` : `收购 ${formatMoney(b.buyCost)}`}</span>
                         </span>
                         <span className={`text-[10.5px] font-num shrink-0 ${status.c}`}>{status.t}</span>
                       </button>
@@ -411,7 +412,7 @@ export const AssetsView: React.FC = () => {
                   { label: '物业估值', value: formatMoney(propVal) },
                 ].map((it) => (
                   <div key={it.label} className="text-center">
-                    <div className="text-[9.5px] tracking-[0.25em] text-[#6D7183]">{it.label}</div>
+                    <div className="text-[10.5px] tracking-[0.25em] text-[#8A8EA0]">{it.label}</div>
                     <div className="font-num text-[15px] text-[var(--ivory-2)] mt-1">{it.value}</div>
                   </div>
                 ))}
@@ -424,21 +425,21 @@ export const AssetsView: React.FC = () => {
                     <div className="flex items-end justify-between px-1 pb-2">
                       <div>
                         <div className="label-en">{d.tag}</div>
-                        <div className={`font-editorial text-[17px] font-black mt-1 tracking-[0.15em] ${d.unlocked ? 'ink-title' : 'text-[#5E6273]'}`}>{d.name}</div>
+                        <div className={`font-editorial text-[17px] font-black mt-1 tracking-[0.15em] ${d.unlocked ? 'ink-title' : 'text-[#7C8093]'}`}>{d.name}</div>
                       </div>
                       {d.unlocked ? (
                         <button
                           onClick={() => {
                             playTap();
-                            setActiveTab('map');
-                            setSelectedDistrictId(d.id);
+                            const first = (d.spots || []).find((sp: any) => sp.kind === 'property');
+                            if (first) openSpot(d.id, first.id);
                           }}
                           className="text-[11px] text-[var(--champagne)] flex items-center gap-1 pb-0.5"
                         >
-                          <GameIcon name="nav_map" size={16} shadow={false} /> 去逛逛
+                          <GameIcon name="nav_map" size={16} shadow={false} /> 去看房
                         </button>
                       ) : (
-                        <span className="text-[10.5px] text-[#5E6273] pb-0.5">晋升「{tierName(d.unlockTier)}」开放</span>
+                        <span className="text-[10.5px] text-[#7C8093] pb-0.5">晋升「{tierName(d.unlockTier)}」开放</span>
                       )}
                     </div>
                     {properties
@@ -454,11 +455,8 @@ export const AssetsView: React.FC = () => {
                             disabled={locked}
                             onClick={() => {
                               playTap();
-                              if (p.owned) {
-                                setActiveTab('map');
-                                setSelectedDistrictId(p.districtId);
-                                setActivePropertyId(p.id);
-                              } else if (loc) openSpot(loc.d.id, loc.sp.id);
+                              if (p.owned) openHome(p.districtId, p.id);
+                              else if (loc) openSpot(loc.d.id, loc.sp.id);
                             }}
                             className="relative w-full h-[92px] mb-2 overflow-hidden text-left flex items-end active:scale-[0.99] transition"
                           >
@@ -471,10 +469,10 @@ export const AssetsView: React.FC = () => {
                             {p.owned && <span className="absolute left-0 top-0 bottom-0 w-[2px] bg-[var(--champagne)]" />}
                             <div className="relative w-full px-3.5 pb-2.5 flex items-end justify-between gap-3">
                               <div className="min-w-0">
-                                <div className={`text-[10px] tracking-[0.25em] ${p.isMain ? 'text-[var(--champagne)]' : p.owned ? 'text-[#7BE0A8]' : 'text-[#6D7183]'}`}>
+                                <div className={`text-[10px] tracking-[0.25em] ${p.isMain ? 'text-[var(--champagne)]' : p.owned ? 'text-[#7BE0A8]' : 'text-[#8A8EA0]'}`}>
                                   {p.isMain ? '主居所' : p.owned ? '已持有' : locked ? `晋升「${tierName(reqTier)}」` : '可置业'}
                                 </div>
-                                <div className={`font-editorial text-[16px] font-black mt-0.5 truncate ${locked ? 'text-[#6D7183]' : 'text-[#ECE6DA]'}`}>{p.displayName}</div>
+                                <div className={`font-editorial text-[16px] font-black mt-0.5 truncate ${locked ? 'text-[#8A8EA0]' : 'text-[#ECE6DA]'}`}>{p.displayName}</div>
                                 <div className="mt-1 flex items-center gap-3 font-num text-[11px]">
                                   <span className="text-[var(--champagne)]">{formatMoney(p.owned ? p.currentValuation : p.price)}</span>
                                   {earnsRent && <span className="text-[#7BE0A8]">租 {formatMoney(p.currentRentPerHour)}/时</span>}
@@ -558,8 +556,9 @@ export const AssetsView: React.FC = () => {
                 </div>
                 <p className="text-[12px] text-[#8C90A0] leading-relaxed">{featuredAsset.description}</p>
                 {!featuredAsset.owned && featuredShop && (
-                  <p className="text-[11px] text-[#6D7183]">
+                  <p className="text-[11px] text-[#8A8EA0]">
                     在 {featuredShop.d.name} · {featuredShop.sp.name} 有售 <span className="font-num text-[var(--champagne)]">{formatMoney(featuredAsset.price)}</span>
+                    {state.map?.weeklyDeal?.assetId === featuredAsset.id && <span className="ml-2 text-[var(--champagne)]">本周特惠 9 折</span>}
                   </p>
                 )}
               </div>
@@ -574,7 +573,7 @@ export const AssetsView: React.FC = () => {
                         <div className="label-en">{g.en}</div>
                         <div className="font-editorial text-[16px] font-black ink-title mt-1 tracking-[0.15em]">{g.title}</div>
                       </div>
-                      <span className="font-num text-[11px] text-[#6D7183] pb-0.5">
+                      <span className="font-num text-[11px] text-[#8A8EA0] pb-0.5">
                         {list.filter((a: any) => a.owned).length} / {list.length}
                       </span>
                     </div>
@@ -604,8 +603,8 @@ export const AssetsView: React.FC = () => {
                                       className={`max-h-[56px] max-w-[88%] object-contain drop-shadow-[0_8px_6px_rgba(0,0,0,0.75)] ${!a.owned ? 'brightness-[0.35] saturate-0' : ''} ${selected ? 'scale-110' : ''} transition`}
                                     />
                                   </span>
-                                  <span className={`mt-3 text-[11px] font-bold truncate max-w-[92%] ${selected ? 'text-[var(--champagne)]' : a.owned ? 'text-[#ECE6DA]' : 'text-[#7A7E8E]'}`}>{a.name}</span>
-                                  <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[#5E6273]'}`}>
+                                  <span className={`mt-3 text-[11px] font-bold truncate max-w-[92%] ${selected ? 'text-[var(--champagne)]' : a.owned ? 'text-[#ECE6DA]' : 'text-[#8C90A0]'}`}>{a.name}</span>
+                                  <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[#7C8093]'}`}>
                                     {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
                                   </span>
                                 </button>
@@ -630,7 +629,7 @@ export const AssetsView: React.FC = () => {
                       <div className="text-[13px] font-editorial font-black text-[#ECE6DA]">{s.name}</div>
                       <div className="text-[11px] text-[#858999] mt-0.5">{s.bonusDesc}</div>
                     </div>
-                    <span className={`text-[10.5px] shrink-0 ${s.completed ? 'text-[var(--champagne)]' : 'text-[#6D7183]'}`}>{s.completed ? '已激活' : '收集中'}</span>
+                    <span className={`text-[10.5px] shrink-0 ${s.completed ? 'text-[var(--champagne)]' : 'text-[#8A8EA0]'}`}>{s.completed ? '已激活' : '收集中'}</span>
                   </div>
                 ))}
               </div>

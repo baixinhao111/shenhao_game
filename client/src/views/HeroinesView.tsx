@@ -234,9 +234,9 @@ export const HeroinesView: React.FC = () => {
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <span className="text-[15px] font-editorial font-black text-[#ECE6DA] truncate">{heroine.name}</span>
-                <span className="px-1.5 rounded-sm bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-[9.5px] font-bold text-white">{heroine.stage.name}</span>
+                <span className="px-1.5 rounded-sm bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-[10.5px] font-bold text-white">{heroine.stage.name}</span>
               </div>
-              <div className="text-[10px] text-[#7A7E8E] truncate">
+              <div className="text-[10px] text-[#8C90A0] truncate">
                 {chatLocationOverride || heroine.location?.label}
               </div>
             </div>
@@ -272,12 +272,12 @@ export const HeroinesView: React.FC = () => {
           <div className="relative shrink-0 m-2.5 rounded-[10px] panel-elevated p-3.5 space-y-1.5">
             <div className="text-xs font-medium text-[#E2D3B0] flex items-center justify-between">
               <span>她记得的事</span>
-              <button onClick={() => setShowMemories(false)} className="text-[#7A7E8E]">
+              <button onClick={() => setShowMemories(false)} className="text-[#8C90A0]">
                 收起
               </button>
             </div>
             {memories.length === 0 ? (
-              <div className="text-[11px] text-[#7A7E8E]">聊得久了，她会慢慢记下你们之间的细节。</div>
+              <div className="text-[11px] text-[#8C90A0]">聊得久了，她会慢慢记下你们之间的细节。</div>
             ) : (
               memories.map((m: any) => (
                 <div key={m.id} className="text-[11px] text-[#D7DAE3] leading-relaxed">
@@ -355,7 +355,7 @@ export const HeroinesView: React.FC = () => {
           <div className="relative shrink-0 panel-elevated rounded-t-[14px] p-3.5 max-h-56 overflow-y-auto no-scrollbar space-y-2.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-medium text-[#E2D3B0]">挑选礼物</span>
-              <button onClick={() => setShowGifts(false)} className="text-[#7A7E8E]">
+              <button onClick={() => setShowGifts(false)} className="text-[#8C90A0]">
                 关闭
               </button>
             </div>
@@ -462,7 +462,7 @@ export const HeroinesView: React.FC = () => {
                   </div>
                   <div>
                     <div className="text-[13.5px] font-editorial font-black text-[#ECE6DA]">{m.author_name}</div>
-                    <div className="text-[10px] text-[#7A7E8E]">
+                    <div className="text-[10px] text-[#8C90A0]">
                       {m.location} · {formatShortTime(m.created_at)}
                     </div>
                   </div>
@@ -470,7 +470,7 @@ export const HeroinesView: React.FC = () => {
                 <button
                   onClick={() => toggleLike(m.id)}
                   className={`pl-1 pr-2.5 py-0.5 rounded-full text-[12px] font-num flex items-center gap-0.5 border transition active:scale-90 ${
-                    m.likedByPlayer ? 'text-[#FFB3C6] border-[#F0789A]/60 bg-[#3A1428]/60' : 'text-[#7A7E8E] border-white/12'
+                    m.likedByPlayer ? 'text-[#FFB3C6] border-[#F0789A]/60 bg-[#3A1428]/60' : 'text-[#8C90A0] border-white/12'
                   }`}
                 >
                   <GameIcon name="heart" size={20} shadow={false} className={m.likedByPlayer ? '' : 'grayscale opacity-60'} />
@@ -642,7 +642,7 @@ export const HeroinesView: React.FC = () => {
               <Lock className="w-3.5 h-3.5 shrink-0" /> {current.unlockHint}
             </div>
           )}
-          <div className="text-[11px] text-[#7A7E8E]">{current.synergyDesc}</div>
+          <div className="text-[11px] text-[#8C90A0]">{current.synergyDesc}</div>
         </div>
 
         {current.unlocked && Array.isArray(current.outfits) && current.outfits.length > 1 && (
@@ -724,13 +724,13 @@ export const HeroinesView: React.FC = () => {
                   <span className="font-editorial text-[16px] font-black gold-gradient-text">{current.name} · 专属羁绊</span>
                   <div className="text-[10.5px] text-[#858999] mt-0.5">当前好感 {current.affection} · 突破解锁新装扮与永久身价加成</div>
                 </div>
-                <button onClick={() => setShowBonds(false)} className="text-[#7A7E8E] hover:text-white">
+                <button onClick={() => setShowBonds(false)} className="text-[#8C90A0] hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
               <div className="space-y-2">
                 {(current.bonds || []).length === 0 ? (
-                  <div className="text-center text-xs text-[#7A7E8E] py-6">专属羁绊剧情筹备中</div>
+                  <div className="text-center text-xs text-[#8C90A0] py-6">专属羁绊剧情筹备中</div>
                 ) : (
                   (current.bonds || []).map((b: any) => {
                     const outfitLabel = b.unlockOutfit
@@ -761,7 +761,7 @@ export const HeroinesView: React.FC = () => {
                                 永久身价 +3%
                               </span>
                             )}
-                            {locked && <span className="text-[#7A7E8E]">需好感 {b.minAffection}</span>}
+                            {locked && <span className="text-[#8C90A0]">需好感 {b.minAffection}</span>}
                           </div>
                         </div>
                         <button
@@ -803,7 +803,7 @@ export const HeroinesView: React.FC = () => {
             >
               <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
                 <span className="font-editorial text-[16px] font-black gold-gradient-text">送给 {current.name}</span>
-                <button onClick={() => setShowGifts(false)} className="text-[#7A7E8E] hover:text-white">
+                <button onClick={() => setShowGifts(false)} className="text-[#8C90A0] hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>

@@ -56,7 +56,7 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
         <div className="absolute right-5 bottom-4 text-right">
           <div className="font-num leading-none">
             <span className="text-[30px] text-[var(--ivory-2)]">{doneCount}</span>
-            <span className="text-[13px] text-[#6D7183]"> / {episodes.length}</span>
+            <span className="text-[13px] text-[#8A8EA0]"> / {episodes.length}</span>
           </div>
           <div className="mt-1.5 flex justify-end gap-[3px]">
             {states.map((s, i) => (
@@ -186,13 +186,13 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                 className={`absolute top-0 flex flex-col ${left ? 'items-start text-left' : 'items-end text-right'}`}
                 style={left ? { left: `calc(${xOf(i)}% + ${size / 2 + 14}px)`, right: '5%' } : { right: `calc(${100 - xOf(i)}% + ${size / 2 + 14}px)`, left: '5%' }}
               >
-                <span className={`text-[10px] tracking-[0.3em] ${st === 'locked' ? 'text-[#5E6273]' : 'text-[var(--champagne-dim)]'}`}>{ep.chapterTitle}</span>
+                <span className={`text-[10px] tracking-[0.3em] ${st === 'locked' ? 'text-[#7C8093]' : 'text-[var(--champagne-dim)]'}`}>{ep.chapterTitle}</span>
                 <span
                   className={`font-editorial font-black leading-tight mt-0.5 ${st === 'current' ? 'text-[19px] ink-title' : st === 'locked' ? 'text-[16px] text-[#7C8092]' : 'text-[16px] text-[#D9D4C9]'}`}
                 >
                   {ep.title}
                 </span>
-                <span className={`text-[11px] leading-snug mt-1 line-clamp-2 ${st === 'locked' ? 'text-[#585C6C]' : 'text-[#8C90A0]'}`}>{ep.summary}</span>
+                <span className={`text-[11px] leading-snug mt-1 line-clamp-2 ${st === 'locked' ? 'text-[#727689]' : 'text-[#8C90A0]'}`}>{ep.summary}</span>
                 {nwShort && (
                   <span className="mt-1 text-[10.5px] text-[#C98F9A] font-num">身价 {formatMoney(ep.requireNetWorth)} 开启</span>
                 )}

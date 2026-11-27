@@ -678,8 +678,8 @@
 /* 字距拉开的英文小标签 */
 .label-en {
   font-family: 'Oswald', sans-serif;
-  font-size: 9.5px;
-  letter-spacing: 0.42em;
+  font-size: 10.5px;
+  letter-spacing: 0.34em;
   text-transform: uppercase;
   color: var(--champagne-dim);
 }

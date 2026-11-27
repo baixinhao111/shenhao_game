@@ -30,7 +30,7 @@ const episodes = J('content/stories/stories.json').volumes.flatMap((v) => v.epis
 const assetVal = Object.fromEntries(catalog.assets.map((a) => [a.id, a.valuation || 0]));
 const dailyCash = (skillsData.dailyTasks || []).reduce((s, t) => s + (t.rewardCash || 0), 0);
 
-// 产业经营事件 (server/src/empire.ts): one event per owned business every 90 min, paying
+// 产业经营事件 (server/src/empire.ts): ≤ 2 open at a time (one per business every 90 min), paying
 // incomePerHour × incomeHoursReward. The player handles them with energy (≈4 each); energy regen is 6/h.
 const bizEventsRaw = fs.existsSync(path.join(root, 'content/business_events.json')) ? J('content/business_events.json') : [];
 const BIZ_EVENTS = Array.isArray(bizEventsRaw) ? bizEventsRaw : bizEventsRaw.events || bizEventsRaw.businessEvents || [];
@@ -161,8 +161,10 @@ function simulate({ gates, sessionsPerDay, seed = 1, days = 40, maxSessions = In
         // energy since last session (6/h, cap 100) pays ~4 per event; events need ≥ 90 min cooldown
         const hoursSince = i === 0 ? 8 : SESSIONS[sessionsPerDay][i] - SESSIONS[sessionsPerDay][i - 1];
         let energy = Math.min(100, hoursSince * 6);
+        let slots = 2; // BIZ_EVENT_MAX_ACTIVE in empire.ts; a resolved slot stays closed for 40 min
         for (const [id, lv] of Object.entries(p.biz)) {
-          if (energy < 4 || hoursSince < 1.5) break;
+          if (energy < 4 || hoursSince < 1.5 || slots <= 0) break;
+          slots -= 1;
           if (!BIZ_EVENTS.some((e) => e.businessId === id)) continue;
           energy -= 4;
           p.cash += bizDef(id).baseIncomePerHour * (1 + 0.45 * (lv - 1)) * BIZ_EVENT_HOURS;

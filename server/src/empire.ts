@@ -29,6 +29,11 @@ const KV_EQUIPPED_TITLE = 'equipped_title';
 const KV_BIZ_EV_CD = 'biz_ev_cd';
 
 const BIZ_EVENT_COOLDOWN_MS = 90 * 60 * 1000; // 90 mins between operating events per business
+/** at most this many events are open at once across all businesses (red dots everywhere stop meaning anything) */
+const BIZ_EVENT_MAX_ACTIVE = 2;
+/** a resolved event keeps its slot this long, so the queue can't be churned through in one sitting */
+const BIZ_EVENT_SLOT_MS = 40 * 60 * 1000;
+const KV_BIZ_EV_RECENT = 'biz_ev_recent';
 
 function parseKv<T>(userId: number, key: string, fallback: T): T {
   const raw = getPlayerKv(userId, key);
@@ -100,6 +105,7 @@ export function buildActiveBusinessEventsMap(userId: number, ownedBizRows: any[]
   const now = Date.now();
   const out: Record<string, any> = {};
 
+  const ready: Array<{ bizId: string; since: number; ev: any }> = [];
   for (const row of ownedBizRows) {
     const bizId = row.business_id;
     const pool = allEvents.filter((e) => e.businessId === bizId);
@@ -107,8 +113,13 @@ export function buildActiveBusinessEventsMap(userId: number, ownedBizRows: any[]
     const rec = cdMap[bizId];
     if (rec && rec.nextAt > now) continue;
     const idx = rec ? rec.idx % pool.length : 0;
-    out[bizId] = pool[idx];
+    ready.push({ bizId, since: rec?.nextAt || 0, ev: pool[idx] });
   }
+  // longest-waiting first; slots taken by recently resolved events stay closed for a while
+  const recent = parseKv<number[]>(userId, KV_BIZ_EV_RECENT, []).filter((t) => now - t < BIZ_EVENT_SLOT_MS);
+  const slots = Math.max(0, BIZ_EVENT_MAX_ACTIVE - recent.length);
+  ready.sort((a, b) => a.since - b.since || a.bizId.localeCompare(b.bizId));
+  for (const r of ready.slice(0, slots)) out[r.bizId] = r.ev;
   return out;
 }
 
@@ -255,6 +266,8 @@ export function registerEmpireRoutes(router: Router, auth: Auth): void {
       const prevIdx = cdMap[businessId]?.idx ?? 0;
       cdMap[businessId] = { nextAt: Date.now() + BIZ_EVENT_COOLDOWN_MS, idx: prevIdx + 1 };
       setPlayerKv(userId, KV_BIZ_EV_CD, JSON.stringify(cdMap));
+      const recent = parseKv<number[]>(userId, KV_BIZ_EV_RECENT, []).filter((t) => Date.now() - t < BIZ_EVENT_SLOT_MS);
+      setPlayerKv(userId, KV_BIZ_EV_RECENT, JSON.stringify([...recent, Date.now()]));
 
       incrementAchievementStat(userId, 'bizEventsResolved', 1);
 

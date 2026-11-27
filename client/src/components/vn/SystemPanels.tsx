@@ -238,7 +238,7 @@ interface StatusProps {
 
 const Stat: React.FC<{ label: string; value: React.ReactNode; tone?: string }> = ({ label, value, tone = 'text-[#F4FDFF]' }) => (
   <div className="rounded-[6px] px-2.5 py-2 bg-[#041826]/70 border border-[var(--holo-line)]">
-    <div className="text-[9.5px] tracking-[0.3em] text-[#63E6F2]/70">{label}</div>
+    <div className="text-[10.5px] tracking-[0.3em] text-[#63E6F2]/70">{label}</div>
     <div className={`font-num text-[15px] mt-0.5 leading-none ${tone}`}>{value}</div>
   </div>
 );

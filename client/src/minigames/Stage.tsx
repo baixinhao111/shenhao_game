@@ -124,7 +124,7 @@ export const ResultStrip: React.FC<{
         {line && <div className="text-[12px] text-[#C2C5CF] leading-relaxed text-stroke-dark mt-0.5">{line}</div>}
       </div>
       {typeof amount === 'number' && (
-        <div className={`font-num text-[28px] font-semibold shrink-0 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] ${amount >= 0 ? 'text-[#EADBB8]' : 'text-[#7A7E8E]'}`}>
+        <div className={`font-num text-[28px] font-semibold shrink-0 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] ${amount >= 0 ? 'text-[#EADBB8]' : 'text-[#8C90A0]'}`}>
           {amount >= 0 ? '+' : '−'}
           {formatAmount(Math.abs(amount))}
         </div>
