@@ -23,6 +23,7 @@ export const AssetsView: React.FC = () => {
     setSelectedDistrictId,
     setActivePropertyId,
     openDeal,
+    openMiniStory,
     flyReward,
     openSpot,
     openHome,
@@ -128,21 +129,28 @@ export const AssetsView: React.FC = () => {
     }
   };
 
-  const resolveBizEvent = async (businessId: string, eventId: string, choiceId: string) => {
+  const openBizEventTheater = async (businessId: string) => {
     setBusy(true);
     try {
-      const res = await apiRequest('/business/event/resolve', { body: { businessId, eventId, choiceId } });
-      applyServerState(res.state);
-      if (res.cashReward > 0) flyReward(res.cashReward);
-      return {
-        resultText: res.resultText || '经营事件已妥善化解',
-        cashReward: Number(res.cashReward || 0),
-        sysPoints: Number(res.sysPoints || 0),
-        affectionGain: Number(res.affectionGain || 0),
-      };
+      const res = await apiRequest('/business/event/start', { body: { businessId } });
+      const sc = res.script;
+      openMiniStory({
+        mode: 'biz_event',
+        businessId: sc.businessId,
+        eventId: sc.eventId,
+        title: sc.title,
+        subtitle: sc.subtitle,
+        sceneLabel: sc.sceneLabel,
+        bg: sc.bg,
+        nodes: sc.nodes,
+        heroineId: sc.heroineId,
+        heroineName: sc.heroineName,
+        heroineAvatar: sc.heroineAvatar,
+        heroinePortrait: sc.heroinePortrait,
+        locationLabel: sc.locationLabel || sc.businessName,
+      });
     } catch (e: any) {
       showError(e.message);
-      return null;
     } finally {
       setBusy(false);
     }
@@ -354,7 +362,7 @@ export const AssetsView: React.FC = () => {
                     openDeal({ kind: 'business', id: selBiz.id });
                   }}
                   onAssign={(hid) => assignHeroine(selBiz.id, hid)}
-                  onResolveEvent={(evId, chId) => resolveBizEvent(selBiz.id, evId, chId)}
+                  onOpenEvent={() => void openBizEventTheater(selBiz.id)}
                 />
               </div>
 

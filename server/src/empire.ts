@@ -3,6 +3,7 @@
  */
 import bcrypt from 'bcryptjs';
 import type { NextFunction, Request, Response, Router } from 'express';
+import { resolveHeroineActivePortrait } from './bonds.js';
 import { getContent } from './contentLoader.js';
 import { execute, queryAll, queryOne } from './db.js';
 import {
@@ -135,45 +136,75 @@ export function getWeeklyCruiseTheme(): { name: string; desc: string; tokenMult:
   return themes[weekIdx];
 }
 
-export function getStoryLinkedStockExtras(userId: number) {
+export function getStoryStockContext(userId: number) {
   const progressRows = queryAll<{ episode_id: string }>('SELECT episode_id FROM player_progress WHERE user_id = ?', [userId]);
   const done = new Set(progressRows.map((r) => r.episode_id));
   const props = queryAll<any>('SELECT custom_name FROM player_properties WHERE user_id = ? AND custom_name != ""', [userId]);
   const namedTower = props[0]?.custom_name || '';
 
-  const bucket = Math.floor(Date.now() / (10 * 60 * 1000));
-  const wave = (seed: number) => Math.sin(bucket * 0.7 + seed) * 0.11 + Math.cos(bucket * 0.4 + seed) * 0.06;
-
-  // 赵氏地产控股: bears heavily after ep_004/005/010/016 face-slaps
+  // 赵氏地产控股: bears heavily after ep_005/014/024/032 face-slaps
   let zhaoBias = 0;
   let zhaoTag = '赵氏核心上市平台';
-  if (done.has('ep_026')) {
-    zhaoBias = -0.24;
-    zhaoTag = '终局清盘 · 崩跌';
-  } else if (done.has('ep_016')) {
-    zhaoBias = -0.18;
-    zhaoTag = '资金链告急 · 利空';
+  let zhaoHot = false;
+  if (done.has('ep_032')) {
+    zhaoBias = -0.26;
+    zhaoTag = '旧案清算 · 崩盘退市';
+    zhaoHot = true;
+  } else if (done.has('ep_024')) {
+    zhaoBias = -0.22;
+    zhaoTag = '破产重组 · 暴跌';
+    zhaoHot = true;
+  } else if (done.has('ep_014')) {
+    zhaoBias = -0.16;
+    zhaoTag = '授信冻结 · 利空';
+    zhaoHot = true;
   } else if (done.has('ep_005') || done.has('ep_004')) {
     zhaoBias = -0.11;
     zhaoTag = '暗账丑闻 · 看空';
+    zhaoHot = true;
   }
 
   // 盛世资本集团: rallies after cleaning internal corruption & partnering with Lu Chen
   let shengshiBias = 0;
   let shengshiTag = '苏清婉执掌资本旗舰';
-  if (done.has('ep_022')) {
-    shengshiBias = 0.2;
-    shengshiTag = '资本联盟 · 强势看多';
-  } else if (done.has('ep_010')) {
+  let shengshiHot = false;
+  if (done.has('ep_024')) {
+    shengshiBias = 0.21;
+    shengshiTag = '共主海城 · 强势看多';
+    shengshiHot = true;
+  } else if (done.has('ep_014')) {
     shengshiBias = 0.14;
-    shengshiTag = '并购扩张 · 利好';
-  } else if (done.has('ep_005')) {
+    shengshiTag = '联手护盘 · 利好';
+    shengshiHot = true;
+  } else if (done.has('ep_006') || done.has('ep_005')) {
     shengshiBias = 0.09;
     shengshiTag = '清查内鬼 · 修复';
+    shengshiHot = true;
   }
 
-  const zhaoWave = wave(4.3) + zhaoBias * 0.5;
-  const shengshiWave = wave(5.7) + shengshiBias * 0.5;
+  let headline = '海城财经快讯：陆家湾资本暗流涌动，机构资金正密集调仓。';
+  if (namedTower) {
+    headline = `海城头条：地标【${namedTower}】登顶陆家湾成交榜，机构热议新晋神秘大鳄动向！`;
+  } else if (done.has('ep_032')) {
+    headline = '海城财经：2016 金融风暴旧账重审，海城实业联盟股价全线领涨！';
+  } else if (done.has('ep_024')) {
+    headline = '海城财经：赵氏地产多笔质押爆仓退场，盛世与新锐实业资本逆势吸筹！';
+  } else if (done.has('ep_014')) {
+    headline = '海城财经：外滩授信风暴发酵，赵氏关联盘承压，盛世资本稳步回暖。';
+  } else if (done.has('ep_005')) {
+    headline = '海城财经：盛世资本雷霆清查三十二层暗账，赵氏关联供应链股价承压。';
+  }
+
+  return { zhaoBias, zhaoTag, zhaoHot, shengshiBias, shengshiTag, shengshiHot, headline };
+}
+
+export function getStoryLinkedStockExtras(userId: number) {
+  const ctx = getStoryStockContext(userId);
+  const bucket = Math.floor(Date.now() / (10 * 60 * 1000));
+  const wave = (seed: number) => Math.sin(bucket * 0.7 + seed) * 0.11 + Math.cos(bucket * 0.4 + seed) * 0.06;
+
+  const zhaoWave = wave(4.3) + ctx.zhaoBias * 0.5;
+  const shengshiWave = wave(5.7) + ctx.shengshiBias * 0.5;
 
   const extraQuotes = [
     {
@@ -183,8 +214,8 @@ export function getStoryLinkedStockExtras(userId: number) {
       base: 58,
       price: Number(Math.max(8, 58 * (1 + zhaoWave)).toFixed(2)),
       changePct: Number((zhaoWave * 100).toFixed(2)),
-      trend: (zhaoBias < -0.05 ? 'down' : zhaoWave >= 0 ? 'up' : 'down') as 'up' | 'down',
-      storyTag: zhaoTag,
+      trend: (ctx.zhaoBias < -0.05 ? 'down' : zhaoWave >= 0 ? 'up' : 'down') as 'up' | 'down',
+      storyTag: ctx.zhaoTag,
     },
     {
       id: 'stk_shengshi',
@@ -193,27 +224,302 @@ export function getStoryLinkedStockExtras(userId: number) {
       base: 112,
       price: Number(Math.max(15, 112 * (1 + shengshiWave)).toFixed(2)),
       changePct: Number((shengshiWave * 100).toFixed(2)),
-      trend: (shengshiBias > 0.05 ? 'up' : shengshiWave >= 0 ? 'up' : 'down') as 'up' | 'down',
-      storyTag: shengshiTag,
+      trend: (ctx.shengshiBias > 0.05 ? 'up' : shengshiWave >= 0 ? 'up' : 'down') as 'up' | 'down',
+      storyTag: ctx.shengshiTag,
     },
   ];
 
-  let headline = '海城财经快讯：陆家湾资本暗流涌动，机构资金正密集调仓。';
-  if (namedTower) {
-    headline = `海城头条：地标【${namedTower}】登顶陆家湾成交榜，机构热议新晋神秘大鳄动向！`;
-  } else if (done.has('ep_016')) {
-    headline = '海城财经：赵氏地产多笔质押触发预警，盛世资本逆势吸筹！';
-  } else if (done.has('ep_005')) {
-    headline = '海城财经：盛世资本雷霆清查三十二层暗账，赵氏关联供应链股价承压。';
-  }
+  return { extraQuotes, headline: ctx.headline };
+}
 
-  return { extraQuotes, headline };
+// ================= BUSINESS EVENT MINI-THEATER BUILDER =================
+
+function buildBusinessEventScript(userId: number, businessId: string) {
+  const content = getContent();
+  const portfolio = computePortfolioAndTier(userId);
+  const owned = portfolio.ownedBiz.find((b) => b.business_id === businessId);
+  if (!owned) throw new Error('尚未收购该产业');
+
+  const activeMap = buildActiveBusinessEventsMap(userId, portfolio.ownedBiz);
+  const ev = activeMap[businessId];
+  if (!ev) throw new Error('该产业当前没有待处理的经营事件');
+
+  const biz = content.businesses.find((x: any) => x.id === businessId);
+  if (!biz) throw new Error('产业信息不存在');
+
+  const completedRows = queryAll<{ episode_id: string }>('SELECT episode_id FROM player_progress WHERE user_id = ?', [userId]);
+  const completedSet = new Set(completedRows.map((r) => r.episode_id));
+  const protagonistSprite =
+    completedSet.has('ep_003') || completedSet.size >= 3
+      ? '/assets/characters/protagonist.png'
+      : '/assets/characters/protagonist_early.png';
+
+  const assignedDef = owned.assigned_heroine_id
+    ? content.heroines.find((h: any) => h.id === owned.assigned_heroine_id)
+    : null;
+  const assignedVisual = assignedDef ? resolveHeroineActivePortrait(userId, assignedDef) : null;
+
+  const reporter = assignedDef
+    ? {
+        speaker: assignedDef.id,
+        name: assignedDef.name,
+        role: `${biz.name} · 坐镇顾问`,
+        avatar: assignedDef.avatar,
+        portrait: assignedVisual?.portrait || assignedDef.portrait,
+        isHeroine: true,
+      }
+    : {
+        speaker: 'chen_mo',
+        name: '陈默',
+        role: '私人管家',
+        avatar: '/assets/characters/chen_mo.png',
+        portrait: '/assets/characters/chen_mo.png',
+        isHeroine: false,
+      };
+
+  const heroineBriefLine: Record<string, { text: string; thought: string; close: string; closeThought: string }> = {
+    su_qingwan: {
+      text: `「${ev.title}」的风声我已让团队先压了下来。几方人马都在等你的态度，三条应对预案已经排好——你怎么定？`,
+      thought: '有他在身后兜底，哪怕是再棘手的商战局，我也不会乱半分阵脚。',
+      close: `局势已经彻底翻过来了。${biz.name}这边的额外回款我会盯紧入账，今晚留点时间给我。`,
+      closeThought: '和他并肩拆局的感觉，比一个人赢下十场并购还要让人踏实。',
+    },
+    lin_wanxing: {
+      text: `学长，${biz.name}这边刚才突然出了状况……我先把现场和客人都安抚住了，具体的应对方案想听听你的主意。`,
+      thought: '还好我今天就在这边坐镇，能帮他先顶住第一波压力。',
+      close: `太好了，总算顺顺利利化解啦！店里大家都在夸你反应快，这波额外收益马上就能结算入库。`,
+      closeThought: '能帮到学长一点点，心里就像晒过太阳一样暖融融的。',
+    },
+    shen_liuli: {
+      text: `哥哥，你看他们又来搞小动作了～「${ev.title}」这点风浪，是稳稳吃下，还是让我直接替你掀翻全场？`,
+      thought: '敢动哥哥名下的产业，真当我沈琉璃是好惹的呢？',
+      close: `搞定收工！刚才那波反杀实在太解气了，收益翻番入账，今晚庆功酒哥哥可跑不掉～`,
+      closeThought: '看吧，我就说只要我出手，全海城没谁能抢得过哥哥的风头。',
+    },
+    lu_zhiwei: {
+      text: `${biz.name}的异常动向我三分钟前就截下来了。对方冲着「${ev.title}」来的，三条可行路径都在这里，你拍板。`,
+      thought: '顺手把对方底牌也摸了一遍，等他定下方案我再补上最后一把锁。',
+      close: `链路已经闭环，对手这回算是彻底踢到铁板了。额外分红马上进账，顺便帮我带杯冰美式。`,
+      closeThought: '跟他配合打反击，效率永远比单打独斗高出一截。',
+    },
+  };
+
+  const heroineOpt = (ev.choices || []).find((c: any) => c.kind === 'heroine' && c.requireHeroine);
+  const reqHeroineForHint = heroineOpt
+    ? content.heroines.find((h: any) => h.id === heroineOpt.requireHeroine)
+    : null;
+
+  const brief = assignedDef ? heroineBriefLine[assignedDef.id] : null;
+  const briefText = brief
+    ? brief.text
+    : assignedDef
+      ? `「${ev.title}」的一线情况已经稳住，接下来怎么落子，听你定夺。`
+      : `少爷，${biz.name}突发「${ev.title}」。现场主管已把三条可行方案汇总完毕，请您定夺。`;
+  const briefThought = brief
+    ? brief.thought
+    : !assignedDef && reqHeroineForHint
+      ? `若能先委派${reqHeroineForHint.name}坐镇${biz.name}，往后此类突发状况便可动用她的专属破局方案。`
+      : undefined;
+
+  const bizDetail = portfolio.bizDetails[businessId];
+  const hr = Math.max(15000, Number(bizDetail?.incomePerHour || 20000));
+  const curEnergy = Number(portfolio.state.energy || 0);
+  const curSysPts = Number(portfolio.state.sys_points || 0);
+
+  const options = (ev.choices || []).map((c: any) => {
+    const costEnergy = Number(c.costEnergy || 0);
+    const costSysPoints = Number(c.costSysPoints || 0);
+    const estCash = Math.round(hr * Number(c.incomeHoursReward || 3));
+    const reqH = c.requireHeroine ? content.heroines.find((h: any) => h.id === c.requireHeroine) : null;
+    const heroineReady = c.kind !== 'heroine' || (c.requireHeroine && owned.assigned_heroine_id === c.requireHeroine);
+
+    let disabledReason: string | undefined;
+    if (!heroineReady) {
+      disabledReason = `需先在产业页委派 ${reqH?.name || '契合红颜'} 坐镇`;
+    } else if (costEnergy > curEnergy) {
+      disabledReason = `精力不足（需 ${costEnergy}，当前 ${curEnergy}）`;
+    } else if (costSysPoints > curSysPts) {
+      disabledReason = `天枢积分不足（需 ${costSysPoints}，当前 ${curSysPts}）`;
+    }
+
+    const branchNodes: any[] = [];
+    if (c.kind === 'tianshu') {
+      branchNodes.push(
+        {
+          type: 'system_alert',
+          title: '天枢推演 · 最优破局启动',
+          sprite: protagonistSprite,
+          text: `已消耗 ${costSysPoints} 点天枢积分，完成【${ev.title}】多维链路推演，反制指令已同步至【${biz.name}】现场。`,
+        },
+        {
+          type: 'narration',
+          effect: 'impact',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'both',
+          text: c.resultText,
+        },
+        {
+          type: 'dialogue',
+          speaker: reporter.speaker,
+          name: reporter.name,
+          role: reporter.role,
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'right',
+          text: reporter.isHeroine
+            ? `这一手实在太精准了……${biz.name}的额外回款马上就会入账。`
+            : `干脆利落，少爷。现场已全面接管，这笔额外分红正在打入您的账户。`,
+        },
+      );
+    } else if (c.kind === 'heroine') {
+      branchNodes.push(
+        {
+          type: 'dialogue',
+          speaker: 'protagonist',
+          name: '陆沉',
+          role: '你',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'left',
+          text: `好，这件事交给你来收口，需要什么资源我这边全权兜底。`,
+        },
+        {
+          type: 'narration',
+          effect: 'flash',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'right',
+          text: c.resultText,
+        },
+        {
+          type: 'dialogue',
+          speaker: reporter.speaker,
+          name: reporter.name,
+          role: reporter.role,
+          effect: 'heartbeat',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'right',
+          innerThought: brief?.closeThought,
+          text: brief?.close || `圆满解决！${biz.name}这波不仅化解了危机，额外收益也一并落袋了。`,
+        },
+      );
+    } else {
+      branchNodes.push(
+        {
+          type: 'dialogue',
+          speaker: 'protagonist',
+          name: '陆沉',
+          role: '你',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'left',
+          text: `按稳健预案立刻执行，先把现场节奏与口碑稳住。`,
+        },
+        {
+          type: 'narration',
+          effect: 'flash',
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'both',
+          text: c.resultText,
+        },
+        {
+          type: 'dialogue',
+          speaker: reporter.speaker,
+          name: reporter.name,
+          role: reporter.role,
+          leftSprite: protagonistSprite,
+          rightSprite: reporter.portrait,
+          activeSide: 'right',
+          text: reporter.isHeroine
+            ? `妥帖收尾了，${biz.name}运转恢复如常，这一波额外收益马上结算到账。`
+            : `明白，现场已平稳接管，本轮额外收益即刻为您结算入账。`,
+        },
+      );
+    }
+
+    return {
+      id: c.id,
+      label: c.label,
+      kind: c.kind,
+      costEnergy,
+      costSysPoints,
+      estCash,
+      sysPoints: Number(c.sysPoints || 0),
+      affectionGain: Number(c.affectionGain || 0),
+      requireHeroine: c.requireHeroine || undefined,
+      requireHeroineName: reqH?.name,
+      disabledReason,
+      resultText: c.resultText,
+      branchNodes,
+    };
+  });
+
+  const nodes = [
+    {
+      type: 'narration',
+      bg: biz.image,
+      sceneBanner: `${biz.name} · ${ev.tag}`,
+      sprite: reporter.portrait,
+      text: `${biz.name}传来紧急简报——${ev.summary}`,
+    },
+    {
+      type: 'dialogue',
+      speaker: reporter.speaker,
+      name: reporter.name,
+      role: reporter.role,
+      leftSprite: protagonistSprite,
+      rightSprite: reporter.portrait,
+      activeSide: 'right',
+      innerThought: briefThought,
+      text: briefText,
+    },
+    {
+      type: 'system_choice',
+      id: ev.id,
+      title: `${biz.name} · ${ev.title}`,
+      leftSprite: protagonistSprite,
+      rightSprite: reporter.portrait,
+      activeSide: 'both',
+      options,
+    },
+  ];
+
+  return {
+    businessId: biz.id,
+    businessName: biz.name,
+    eventId: ev.id,
+    title: ev.title,
+    subtitle: `${biz.name} · ${ev.tag}`,
+    sceneLabel: `${biz.name} · 经营事件`,
+    bg: biz.image,
+    locationLabel: biz.name,
+    heroineId: reporter.isHeroine ? reporter.speaker : undefined,
+    heroineName: reporter.name,
+    heroineAvatar: reporter.avatar,
+    heroinePortrait: reporter.portrait,
+    nodes,
+  };
 }
 
 // ================= ROUTES =================
 
 export function registerEmpireRoutes(router: Router, auth: Auth): void {
-  // 1. Resolve Business Operating Event
+  // 1a. Start Business Operating Event Mini-Theater
+  router.post('/business/event/start', auth, (req: AuthedRequest, res) => {
+    try {
+      const userId = req.userId!;
+      const businessId = String(req.body?.businessId || '');
+      const script = buildBusinessEventScript(userId, businessId);
+      res.json({ success: true, script });
+    } catch (err: any) {
+      res.status(400).json({ error: err.message });
+    }
+  });
+
+  // 1b. Resolve Business Operating Event
   router.post('/business/event/resolve', auth, (req: AuthedRequest, res) => {
     try {
       const userId = req.userId!;

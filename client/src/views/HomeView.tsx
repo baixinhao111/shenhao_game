@@ -201,11 +201,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   const heroines = state?.heroines || [];
   const stories = state?.stories;
   const dailyTasks = state?.dailyTasks || [];
+  const skills = state?.skills || [];
+  const canUpgradeSkill = Boolean(
+    player &&
+      skills.some((sk: any) => sk.level < sk.maxLevel && player.sysPoints >= sk.costPerLevel * (sk.level + 1)),
+  );
   const unreadMailCount = state?.unreadMailCount || 0;
   const timePeriod = state?.timePeriod;
   const timeLabel = state?.timeLabel || '';
 
   const completedEps: string[] = stories?.completedEpisodes || [];
+  const systemAwakened = completedEps.includes('ep_001') || completedEps.length > 0;
   const protagonistSrc =
     completedEps.includes('ep_003') || completedEps.length >= 3
       ? '/assets/characters/protagonist.png'
@@ -787,17 +793,22 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           pureArtMode ? 'opacity-0 translate-x-6 pointer-events-none' : 'opacity-100 translate-x-0'
         }`}
       >
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            playTap();
-            openProfile('skills');
-          }}
-          className="icon-entry"
-        >
-          <img src={iconSrc('tianshu')} alt="" style={{ filter: 'drop-shadow(0 0 8px rgba(99,230,242,0.55)) drop-shadow(0 3px 5px rgba(0,0,0,0.7))' }} />
-          <span className="lbl">天枢</span>
-        </button>
+        {systemAwakened && (
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              playTap();
+              openProfile('skills');
+            }}
+            className="icon-entry"
+          >
+            <img src={iconSrc('tianshu')} alt="" style={{ filter: 'drop-shadow(0 0 8px rgba(99,230,242,0.55)) drop-shadow(0 3px 5px rgba(0,0,0,0.7))' }} />
+            <span className="lbl">天枢</span>
+            {canUpgradeSkill && (
+              <span className="absolute top-0 right-1 w-2.5 h-2.5 rounded-full bg-[#63E6F2] shadow-[0_0_8px_#63E6F2] animate-pulse" />
+            )}
+          </button>
+        )}
         <button
           onClick={(e) => {
             e.stopPropagation();

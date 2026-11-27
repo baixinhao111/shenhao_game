@@ -29,7 +29,19 @@ import {
   setPlayerKv,
   todayKey,
 } from './gameEngine.js';
-import { getStoryLinkedStockExtras, getWeeklyCruiseTheme, incrementAchievementStat } from './empire.js';
+import { getWeeklyCruiseTheme, incrementAchievementStat } from './empire.js';
+import {
+  applySessionFeedbackToMarket,
+  buildStockMarketSnapshot,
+  generateStockSessionPath,
+  getCurrentStockQuotes,
+  getOrCreateUserStockTip,
+  rotateUserStockTip,
+  scanUserStockTip,
+  STOCK_ALERT_COST,
+  STOCK_LEVERAGES,
+  STOCK_SCAN_COST,
+} from './stocks.js';
 
 type AuthedRequest = Request & { userId?: number };
 type Auth = (req: AuthedRequest, res: Response, next: NextFunction) => void;
@@ -389,49 +401,20 @@ function settleJade(s: Session, mask: string, buyerId: BuyerId) {
 }
 
 // ======================================================================
-// 2. 股市 · 实时盯盘
+// 2. 股市 · 实时盯盘（核心行情与内参轮换见 server/src/stocks.ts）
 // ======================================================================
 
 const STOCK_TICKS = 40;
 const STOCK_TICK_MS = 750;
-const STOCK_LEVERAGE = 3;
 const STOCK_STAKES = [100000, 300000, 1000000] as const;
 
-export function getCurrentStockQuotes(userId?: number) {
-  const bucket = Math.floor(Date.now() / (10 * 60 * 1000)); // shifts every 10 minutes
-  const stocks = [
-    { id: 'stk_tech', name: '天枢芯科', code: '688001', base: 128 },
-    { id: 'stk_land', name: '海城锦绣地产', code: '600882', base: 42 },
-    { id: 'stk_media', name: '星耀娱乐控股', code: '300619', base: 66 },
-    { id: 'stk_bio', name: '云顶生物医药', code: '688309', base: 94 },
-  ];
-  const baseQuotes = stocks.map((s, idx) => {
-    const wave = Math.sin(bucket * 0.7 + idx * 1.9) * 0.14 + Math.cos(bucket * 0.35 + idx) * 0.08;
-    const price = Number((s.base * (1 + wave)).toFixed(2));
-    const changePct = Number((wave * 100).toFixed(2));
-    const nextWave = Math.sin((bucket + 1) * 0.7 + idx * 1.9) * 0.14 + Math.cos((bucket + 1) * 0.35 + idx) * 0.08;
-    const trend: 'up' | 'down' = nextWave >= wave ? 'up' : 'down';
-    return { ...s, price, changePct, trend, storyTag: '' };
-  });
-  if (userId) {
-    const { extraQuotes } = getStoryLinkedStockExtras(userId);
-    return [...baseQuotes, ...extraQuotes];
-  }
-  return baseQuotes;
-}
-
-function gaussian(): number {
-  let u = 0;
-  let v = 0;
-  while (u === 0) u = Math.random();
-  while (v === 0) v = Math.random();
-  return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
-}
+export { getCurrentStockQuotes };
 
 function stockValue(d: any, tick: number): number {
   const p0 = d.path[0];
   const pt = d.path[tick];
-  return clamp(d.stake * (1 + STOCK_LEVERAGE * d.dir * (pt / p0 - 1)), 0, d.stake * 4);
+  const lev = Number(d.leverage || 3);
+  return clamp(d.stake * (1 + lev * d.dir * (pt / p0 - 1)), 0, d.stake * (1 + lev));
 }
 
 function liquidationTick(d: any): number {
@@ -454,6 +437,9 @@ function settleStock(s: Session, tick: number) {
   grant(s.userId, payout, 28);
   if (payout > d.stake) incrementAchievementStat(s.userId, 'stockWins', 1);
   finishCommon(s.userId);
+  // Feed closing move back into the live market & rotate TianShu insider tip immediately for the next round!
+  applySessionFeedbackToMarket(d.stockId, d.path[0], d.path[t]);
+  rotateUserStockTip(s.userId, d.stockId);
   return { tick: t, price: d.path[t], payout, profit: payout - d.stake, liquidated };
 }
 
@@ -908,10 +894,24 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
 
   // ---------- 股市 ----------
   router.post(
+    '/mg/stock/scan',
+    auth,
+    handle((userId, body) => {
+      const stockId = String(body.stockId || '');
+      const insight = insightOf(userId);
+      const cost = insight >= 4 ? 0 : STOCK_SCAN_COST;
+      if (cost > 0) spendSysPointsOrThrow(userId, cost);
+      scanUserStockTip(userId, stockId);
+      return { market: buildStockMarketSnapshot(userId, insight), cost };
+    }),
+  );
+
+  router.post(
     '/mg/stock/open',
     auth,
     handle((userId, body) => {
       const stake = choice(body.amount, scaled(STOCK_STAKES, stakeScaleOf(userId)), '投入金额');
+      const leverage = body.leverage === undefined ? 3 : choice(body.leverage, STOCK_LEVERAGES, '杠杆倍数');
       const dir = body.direction === 'short' ? -1 : body.direction === 'long' ? 1 : 0;
       if (!dir) throw new Error('请选择做多或做空');
       const quote = getCurrentStockQuotes(userId).find((q) => q.id === body.stockId);
@@ -921,31 +921,76 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       spendEnergyOrThrow(userId, 6);
       spendCashOrThrow(userId, stake);
       const insight = insightOf(userId);
-      const tipRight = Math.random() < Math.min(0.95, 0.72 + insight * 0.05);
-      const up = (quote.trend === 'up') === tipRight;
-      const mu = (up ? 1 : -1) * 0.0032;
-      const shockAt = randInt(12, 30);
-      const shock = (Math.random() < 0.65 === up ? 1 : -1) * rand(0.03, 0.05);
-      const path = [quote.price];
-      for (let t = 1; t <= STOCK_TICKS; t++) {
-        let r = mu + 0.011 * gaussian();
-        if (t === shockAt) r += shock;
-        path.push(Number(Math.max(0.5, path[t - 1] * (1 + r)).toFixed(2)));
-      }
-      const s = openSession(userId, 'stock', { stake, dir, path, stockId: quote.id, name: quote.name });
+      const activeTip = getOrCreateUserStockTip(userId);
+      const gen = generateStockSessionPath({
+        stockId: quote.id,
+        startPrice: quote.price,
+        marketTrend: quote.trend,
+        activeTip,
+        insightLevel: insight,
+        ticks: STOCK_TICKS,
+      });
+      const preHistory = quote.history.slice(-8);
+      const alertCost = insight >= 3 ? 0 : STOCK_ALERT_COST;
+      const s = openSession(userId, 'stock', {
+        stake,
+        dir,
+        leverage,
+        path: gen.path,
+        stockId: quote.id,
+        name: quote.name,
+        shockAt: gen.shockAt,
+        shockDir: gen.shockDir,
+        newsText: gen.newsText,
+        alerted: false,
+      });
       ledgerOpen(userId, 'stock', stake);
       return {
         session: {
           id: s.id,
+          stockId: quote.id,
           name: quote.name,
           code: quote.code,
+          sector: quote.sector,
           stake,
           direction: dir === 1 ? 'long' : 'short',
-          leverage: STOCK_LEVERAGE,
+          leverage,
           tickMs: STOCK_TICK_MS,
-          path,
-          newsAt: shockAt,
+          preHistory,
+          path: gen.path,
+          newsAt: gen.shockAt,
+          newsText: gen.newsText,
+          alertCost,
         },
+      };
+    }),
+  );
+
+  router.post(
+    '/mg/stock/alert',
+    auth,
+    handle((userId, body) => {
+      const s = getSession(userId, body.id, 'stock');
+      if (s.data.alerted) throw new Error('本单已启动过天枢异动预警');
+      const elapsedTick = Math.floor((Date.now() - s.createdAt) / STOCK_TICK_MS);
+      if (elapsedTick >= s.data.shockAt) throw new Error('本轮突发消息已经落地，无需再预警');
+      const insight = insightOf(userId);
+      const cost = insight >= 3 ? 0 : STOCK_ALERT_COST;
+      if (cost > 0) spendSysPointsOrThrow(userId, cost);
+      s.data.alerted = true;
+      const sec = Math.max(1, Math.round((s.data.shockAt * STOCK_TICK_MS) / 1000));
+      const favorable = (s.data.shockDir === 'up' && s.data.dir === 1) || (s.data.shockDir === 'down' && s.data.dir === -1);
+      const summary = `第 ${sec} 秒附近将突发重大${s.data.shockDir === 'up' ? '利好急拉' : '利空急跌'}（对你当前${
+        s.data.dir === 1 ? '多单' : '空单'
+      }${favorable ? '极为有利，可考虑持仓等待爆发' : '不利，建议提前止盈或止损离场'}）`;
+      return {
+        alert: {
+          newsAt: s.data.shockAt,
+          shockDir: s.data.shockDir,
+          favorable,
+          summary,
+        },
+        cost,
       };
     }),
   );
@@ -955,7 +1000,8 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     auth,
     handle((userId, body) => {
       const s = getSession(userId, body.id, 'stock');
-      return { result: settleStock(s, body.tick) };
+      const result = settleStock(s, body.tick);
+      return { result, market: buildStockMarketSnapshot(userId, insightOf(userId)) };
     }),
   );
 

@@ -55,8 +55,15 @@ export interface VNChoiceOption {
   id: string;
   label: string;
   tag?: string;
+  kind?: 'standard' | 'heroine' | 'tianshu';
   cost?: { cash?: number };
   cashCost?: number;
+  costEnergy?: number;
+  costSysPoints?: number;
+  estCash?: number;
+  requireHeroine?: string;
+  requireHeroineName?: string;
+  disabledReason?: string;
   reward?: {
     cash?: number;
     sysPoints?: number;
@@ -101,7 +108,7 @@ export interface VNNode {
 }
 
 export interface MiniStoryPayload {
-  mode: 'date' | 'home' | 'stroll' | 'bond' | 'shura';
+  mode: 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
   title: string;
   subtitle?: string;
   sceneLabel?: string;
@@ -109,6 +116,7 @@ export interface MiniStoryPayload {
   nodes: VNNode[];
   districtId?: string;
   propertyId?: string;
+  businessId?: string;
   interactionId?: string;
   bondId?: string;
   unlockOutfit?: string | null;

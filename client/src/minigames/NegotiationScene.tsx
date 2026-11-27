@@ -135,16 +135,19 @@ export const NegotiationScene: React.FC = () => {
       {deal && ruler && (
         <div className="flex-1 flex flex-col min-h-0">
           {/* seller + status */}
-          <div className="relative flex-1 min-h-0">
-            <motion.img
-              key={deal.seller.portrait}
-              src={deal.seller.portrait}
-              alt=""
-              initial={{ opacity: 0, x: 30 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="absolute right-[-22%] bottom-[18%] h-[78%] max-h-[380px] object-contain object-bottom sprite-fade-bottom pointer-events-none drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
-            />
-            <div className="absolute left-4 top-2 space-y-2 max-w-[58%]">
+          <div className="relative flex-1 min-h-0 overflow-hidden">
+            <div className="absolute right-1 bottom-[14%] w-[60%] h-[82%] max-h-[350px] flex items-end justify-end pointer-events-none">
+              <motion.img
+                key={deal.seller.portrait}
+                src={deal.seller.portrait}
+                alt={deal.seller.name}
+                initial={{ opacity: 0, x: 24 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="max-h-full max-w-full w-auto h-auto object-contain object-bottom sprite-fade-bottom drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
+              />
+            </div>
+            <div className="absolute left-4 top-2 z-10 space-y-2 max-w-[50%]">
               <div>
                 <div className="font-editorial text-[20px] font-black gold-gradient-text leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{deal.seller.name}</div>
                 <div className="text-[11px] text-[#B3B6C2] text-stroke-dark">
@@ -174,8 +177,8 @@ export const NegotiationScene: React.FC = () => {
             </div>
 
             {/* dialogue on the scene */}
-            <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#04050A]/95 via-[#04050A]/75 to-transparent pointer-events-none" />
-            <div className="absolute left-4 right-4 bottom-2 space-y-1.5">
+            <div className="absolute inset-x-0 bottom-0 z-10 h-[46%] bg-gradient-to-t from-[#04050A]/95 via-[#04050A]/75 to-transparent pointer-events-none" />
+            <div className="absolute left-4 right-4 bottom-2 z-20 space-y-1.5">
               <AnimatePresence initial={false}>
                 {lastLines.map((l, i) => {
                   const ally = allyOf(l.allyId);

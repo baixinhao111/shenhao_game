@@ -25,6 +25,52 @@ const ViewFallback: React.FC = () => (
   </div>
 );
 
+class ChunkErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean; message: string }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false, message: '' };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, message: error?.message || '页面模块加载失败' };
+  }
+  componentDidCatch(error: Error) {
+    const msg = String(error?.message || '');
+    const isChunkError = /dynamically imported module|importing a module script|loading chunk|failed to fetch/i.test(msg);
+    if (isChunkError && typeof window !== 'undefined') {
+      try {
+        const key = 'tianshu_chunk_reload_at';
+        const last = Number(sessionStorage.getItem(key) || 0);
+        if (Date.now() - last > 15000) {
+          sessionStorage.setItem(key, String(Date.now()));
+          window.location.reload();
+        }
+      } catch {
+        window.location.reload();
+      }
+    }
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="absolute inset-0 z-50 bg-[#05070D]/96 flex flex-col items-center justify-center gap-4 px-6 text-center">
+          <div className="font-editorial text-[18px] font-black text-[#EADBB8]">页面资源已更新</div>
+          <p className="text-[12px] text-[#9EA4B5] leading-relaxed">检测到新版前端资源，刷新后即可继续当前进度。</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="btn-champagne px-6 py-2.5 text-[13px] font-editorial"
+          >
+            立即刷新
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export function App() {
   const {
     token,
@@ -87,6 +133,7 @@ export function App() {
     <div className="min-h-[100dvh] w-full bg-[#04050A] flex items-center justify-center sm:py-4" style={{ background: "radial-gradient(60% 50% at 50% 30%, #0E1119 0%, #04050A 100%)" }}>
       {/* 9:16 Mobile-First Viewport Shell */}
       <div data-app-shell className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#D9C49A]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#05070D] overflow-hidden flex flex-col">
+        <ChunkErrorBoundary>
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-5 deco-texture">
             <img src="/assets/ui/logo.webp" alt="天枢神豪" className="w-[72%] max-w-[300px] animate-float-slow drop-shadow-[0_6px_18px_rgba(0,0,0,0.75)]" />
@@ -148,6 +195,7 @@ export function App() {
         <MiniStoryOverlay />
         <Overlays />
         <RewardFlyLayer />
+        </ChunkErrorBoundary>
       </div>
     </div>
   );

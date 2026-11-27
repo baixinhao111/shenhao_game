@@ -784,6 +784,13 @@ export function buildFullGameState(userId: number, opts: { withStory?: boolean }
       incomePerHour: portfolio.incomePerHour,
       pendingIncome: portfolio.pendingIncome,
       critRatePct: Math.round((CRIT.baseProb + portfolio.critBonusPct) * 100),
+      bonuses: {
+        critMultBonus: Number(portfolio.critMultBonus || 0),
+        incomePct: Math.round((portfolio.incomeMult - 1) * 100),
+        insightLevel: Math.round(skills.insightLevel || 0),
+        upgradeDiscountPct: Math.round((skills.upgradeDiscountPct || 0) * 100),
+        charmPct: Math.round((skills.charmPct || 0) * 100),
+      },
     },
     map: {
       cityName: content.map.cityName,

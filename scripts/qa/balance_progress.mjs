@@ -200,11 +200,12 @@ function report(gates, label) {
 }
 
 // When (hours since first launch, engaged player) each chapter should open.
-// Prologue + first two acts flow freely; vol1 ≈ day 1–2, vol2 ≈ day 3–6, vol3 ≈ day 7–12.
+// Vol 0 (ep_001-004) + Vol 1 opener (ep_005) flow freely;
+// Vol 1 (ep_006-014) ≈ day 1–3, Vol 2 (ep_015-026) ≈ day 4–9, Vol 3 (ep_027-036) ≈ day 10–15.
 export const TARGET_HOURS = {
-  ep_006: 5, ep_007: 10, ep_008: 16, ep_009: 24, ep_010: 29, ep_011: 34,
-  ep_012: 48, ep_013: 53, ep_014: 58, ep_015: 72, ep_016: 77, ep_017: 82, ep_018: 96, ep_019: 101, ep_020: 106, ep_021: 120,
-  ep_022: 144, ep_023: 168, ep_024: 192, ep_025: 216, ep_026: 240, ep_027: 264, ep_028: 288,
+  ep_006: 4, ep_007: 9, ep_008: 14, ep_009: 20, ep_010: 27, ep_011: 34, ep_012: 42, ep_013: 50, ep_014: 58,
+  ep_015: 72, ep_016: 80, ep_017: 92, ep_018: 100, ep_019: 112, ep_020: 124, ep_021: 136, ep_022: 148, ep_023: 162, ep_024: 176, ep_025: 192, ep_026: 208,
+  ep_027: 224, ep_028: 240, ep_029: 256, ep_030: 272, ep_031: 288, ep_032: 304, ep_033: 320, ep_034: 336, ep_035: 352, ep_036: 368,
 };
 
 const nice = (n) => {

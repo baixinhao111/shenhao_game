@@ -30,7 +30,7 @@ export interface BizCardProps {
   onBuy: () => void;
   onDeal: () => void;
   onAssign: (heroineId: string) => void;
-  onResolveEvent?: (eventId: string, choiceId: string) => Promise<BizEventOutcome | null>;
+  onOpenEvent?: () => void;
 }
 
 const VaultMeter: React.FC<{ hours: number; pending: number }> = ({ hours, pending }) => {
@@ -58,14 +58,12 @@ const VaultMeter: React.FC<{ hours: number; pending: number }> = ({ hours, pendi
   );
 };
 
-export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierName, locked, busy, onUpgrade, onBuy, onDeal, onAssign, onResolveEvent }) => {
+export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierName, locked, busy, onUpgrade, onBuy, onDeal, onAssign, onOpenEvent }) => {
   const canAffordBuy = cash >= (b.buyCost || 0);
   const canAffordUpgrade = cash >= (b.upgradeCost || 0);
   const [pulse, setPulse] = useState(0);
   const [lastLevel, setLastLevel] = useState(b.level);
   const [sealed, setSealed] = useState(0);
-  const [eventOpen, setEventOpen] = useState(false);
-  const [eventOutcome, setEventOutcome] = useState<BizEventOutcome | null>(null);
 
   // level went up / just acquired → celebrate on the card itself
   useEffect(() => {
@@ -170,97 +168,33 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
           <>
             <VaultMeter hours={b.pendingHours || 0} pending={b.pendingIncome || 0} />
 
-            {/* Business Operating Event */}
-            {b.activeEvent && onResolveEvent && (
-              <div className="relative pl-3 border-l-2 border-[#FF8FA6]/70">
-                <button
-                  type="button"
-                  onClick={() => {
-                    playTap();
-                    setEventOpen((v) => !v);
-                  }}
-                  className="w-full py-0.5 flex items-center justify-between gap-2 text-left"
-                >
+            {/* Business Operating Event → opens Mini-Theater */}
+            {b.activeEvent && onOpenEvent && (
+              <button
+                type="button"
+                disabled={busy}
+                onClick={() => {
+                  playTap();
+                  onOpenEvent();
+                }}
+                className="w-full text-left relative pl-3 pr-2 py-2 border-l-2 border-[#FF8FA6]/80 bg-gradient-to-r from-[#FF8FA6]/[0.07] via-[#FF8FA6]/[0.02] to-transparent active:opacity-80 transition disabled:opacity-50"
+              >
+                <div className="flex items-center justify-between gap-2">
                   <div className="min-w-0">
-                    <div className="text-[10px] tracking-[0.3em] text-[#FF8FA6]">经营事件</div>
-                    <div className="text-[14px] font-editorial font-black text-[var(--ivory-2)] truncate mt-0.5">{b.activeEvent.title}</div>
+                    <div className="flex items-center gap-2 text-[10px] tracking-[0.28em] text-[#FF8FA6]">
+                      <span>经营事件</span>
+                      {b.activeEvent.tag && <span className="text-[#D9C49A]/85 tracking-[0.18em]">· {b.activeEvent.tag}</span>}
+                    </div>
+                    <div className="text-[14.5px] font-editorial font-black text-[var(--ivory-2)] truncate mt-0.5">{b.activeEvent.title}</div>
                   </div>
-                  <span className="text-[11px] text-[var(--champagne)] shrink-0">{eventOpen ? '收起' : '去决策 ›'}</span>
-                </button>
-                <AnimatePresence>
-                  {eventOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      className="overflow-hidden pt-2 space-y-1"
-                    >
-                      <p className="text-[12px] text-[#A9ADBA] leading-relaxed pb-1">{b.activeEvent.desc}</p>
-                      <div className="divide-y divide-white/[0.06] border-y border-white/[0.06]">
-                        {(b.activeEvent.choices || []).map((c: any) => {
-                          const isHeroineChoice = c.kind === 'heroine';
-                          const isTianshuChoice = c.kind === 'tianshu';
-                          const reqHeroine = c.requireHeroine
-                            ? heroines.find((h) => h.id === c.requireHeroine)
-                            : null;
-                          const heroineReady = !isHeroineChoice || b.assignedHeroineId === c.requireHeroine;
-                          const estCash = Math.round(Math.max(15000, Number(b.currentIncomePerHour || 20000)) * Number(c.incomeHoursReward || 3));
-                          return (
-                            <button
-                              key={c.id}
-                              disabled={busy || !heroineReady}
-                              onClick={async () => {
-                                playTap();
-                                const res = await onResolveEvent(b.activeEvent.id, c.id);
-                                if (res) {
-                                  setEventOpen(false);
-                                  setEventOutcome(res);
-                                  setTimeout(() => setEventOutcome(null), 6500);
-                                }
-                              }}
-                              className="w-full py-2.5 text-left transition active:bg-white/[0.03] disabled:opacity-45"
-                            >
-                              <div className="flex items-center justify-between gap-2">
-                                <span className={`flex items-center gap-1.5 text-[13px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#ECE6DA]'}`}>
-                                  <span className={`w-1.5 h-1.5 rounded-full shrink-0 ${isTianshuChoice ? 'bg-[#63E6F2]' : isHeroineChoice ? 'bg-[#F0789A]' : 'bg-[var(--champagne)]'}`} />
-                                  {c.label}
-                                </span>
-                                <span className="font-num text-[11px] text-[#7BE0A8] shrink-0">+{formatMoney(estCash)}</span>
-                              </div>
-                              <div className="flex items-center justify-between gap-2 mt-1 pl-3 text-[11px]">
-                                <span className="text-[#8C90A0]">
-                                  {c.costEnergy > 0 ? `精力 -${c.costEnergy}` : ''}
-                                  {c.costSysPoints > 0 ? `${c.costEnergy > 0 ? ' · ' : ''}积分 -${c.costSysPoints}` : ''}
-                                  {isHeroineChoice && !heroineReady
-                                    ? ` · 需委派${reqHeroine?.name || '契合红颜'}坐镇`
-                                    : isHeroineChoice
-                                      ? ' · 红颜坐镇加成'
-                                      : ''}
-                                </span>
-                                <span className="text-[#EADBB8]">
-                                  {c.affectionGain ? `好感 +${c.affectionGain}` : ''}
-                                  {c.sysPoints ? `${c.affectionGain ? ' · ' : ''}积分 +${c.sysPoints}` : ''}
-                                </span>
-                              </div>
-                            </button>
-                          );
-                        })}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-            )}
-
-            {eventOutcome && (
-              <div className="pl-3 border-l-2 border-[#7BE0A8]/70 text-[12px] space-y-1">
-                <div className="text-[#DDFCE9] leading-relaxed font-editorial">「{eventOutcome.resultText}」</div>
-                <div className="font-num text-[11px] text-[#7BE0A8] flex items-center gap-2.5">
-                  <span>+{formatMoney(eventOutcome.cashReward)}</span>
-                  {eventOutcome.sysPoints > 0 && <span className="text-[#B9F6FB]">积分 +{eventOutcome.sysPoints}</span>}
-                  {eventOutcome.affectionGain > 0 && <span className="text-[#FFB3C6]">好感 +{eventOutcome.affectionGain}</span>}
+                  <span className="shrink-0 btn-champagne px-3 py-1.5 text-[11.5px] font-editorial">进入现场 ›</span>
                 </div>
-              </div>
+                {(b.activeEvent.summary || b.activeEvent.desc) && (
+                  <p className="text-[11.5px] text-[#A9ADBA] leading-relaxed line-clamp-2 mt-1.5">
+                    {b.activeEvent.summary || b.activeEvent.desc}
+                  </p>
+                )}
+              </button>
             )}
 
             {heroines.length > 0 && (

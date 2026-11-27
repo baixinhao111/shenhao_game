@@ -1,7 +1,7 @@
 // Lightweight PWA Service Worker for 《天枢神豪》
 // Network-first for HTML, stale-while-revalidate for static images/fonts/bundles, API never cached.
 // Bump CACHE_NAME when the caching rules change; old caches are dropped on activate.
-const CACHE_NAME = 'tianshu-shell-v7'; // v7: map freshness, v2 big map + home, readable type
+const CACHE_NAME = 'tianshu-shell-v8'; // v8: never cache HTML under JS/CSS URLs; drop stale chunks
 const MAX_ENTRIES = 400; // hashed bundles pile up release after release; keep the cache bounded
 
 self.addEventListener('install', (event) => {
@@ -44,7 +44,9 @@ self.addEventListener('fetch', (event) => {
         const cached = await cache.match(req);
         const net = fetch(req)
           .then((res) => {
-            if (res && res.status === 200) {
+            const ct = (res.headers.get('content-type') || '').toLowerCase();
+            const badHtmlForAsset = /\.(js|mjs|css|webp|png|jpg|jpeg|woff2?)$/i.test(url.pathname) && ct.includes('text/html');
+            if (res && res.status === 200 && !badHtmlForAsset) {
               cache.put(req, res.clone()).then(() => trim(cache));
             }
             return res;

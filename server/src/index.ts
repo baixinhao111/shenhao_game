@@ -37,8 +37,26 @@ async function main() {
 
   // Serve built mobile web app directly in production (single-port zero-ops deployment!)
   if (fs.existsSync(config.clientDistDir)) {
-    app.use(express.static(config.clientDistDir));
-    app.get('*', (_req, res) => {
+    app.use(
+      express.static(config.clientDistDir, {
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('index.html') || filePath.endsWith('sw.js')) {
+            res.setHeader('Cache-Control', 'no-cache');
+          }
+        },
+      }),
+    );
+    app.get('*', (req, res) => {
+      // Never serve index.html for missing static chunks/assets or unknown API endpoints,
+      // otherwise stale tabs get a text/html MIME error and SW caches HTML under .js URLs.
+      if (
+        /^\/(assets|icons|api)\//.test(req.path) ||
+        /\.(js|mjs|css|map|png|jpg|jpeg|webp|svg|woff2?|json)$/i.test(req.path)
+      ) {
+        res.status(404).end();
+        return;
+      }
+      res.setHeader('Cache-Control', 'no-cache');
       res.sendFile(path.join(config.clientDistDir, 'index.html'));
     });
   }

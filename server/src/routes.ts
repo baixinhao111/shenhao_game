@@ -6,7 +6,8 @@ import { getContent, reloadContent } from './contentLoader.js';
 import { execute, getGmSetting, getLastInsertId, queryAll, queryOne, setGmSetting } from './db.js';
 import { chatWithHeroine } from './deepseekService.js';
 import { assertCashSufficient, assertEnergySufficient, spendCashOrThrow, spendEnergyOrThrow } from './economy.js';
-import { getCurrentStockQuotes, registerMinigameRoutes } from './minigames.js';
+import { registerMinigameRoutes } from './minigames.js';
+import { buildStockMarketSnapshot } from './stocks.js';
 import { assertInteractionOpen, assetPriceNow, registerMapSpotRoutes } from './mapSpots.js';
 import { registerNegotiationRoutes } from './negotiation.js';
 import { registerBondRoutes, resolveHeroineActivePortrait } from './bonds.js';
@@ -1747,18 +1748,11 @@ export function createApiRouter(): Router {
 
   // 3. Bund: Midnight Street Race (uses equipped supercar!)
 
-  // 4. CBD: Virtual Stock Market (with story-linked stocks & headline)
+  // 4. CBD: Virtual Stock Market (real-time ticking quotes + rotating TianShu insider tip)
   router.get('/minigame/stocks', authMiddleware, (req: AuthedRequest, res) => {
     const userId = req.userId!;
-    const quotes = getCurrentStockQuotes(userId);
-    const { headline } = getStoryLinkedStockExtras(userId);
     const { skills } = computePortfolioAndTier(userId);
-    const tipIdx = Math.floor(Date.now() / (10 * 60 * 1000)) % quotes.length;
-    const storyHot = quotes.find((q) => q.storyTag && (q.storyTag.includes('利空') || q.storyTag.includes('看空') || q.storyTag.includes('看多') || q.storyTag.includes('崩跌')));
-    const tipStock = storyHot || quotes[tipIdx];
-    const insiderTip = `【天枢内幕洞察（准确度 ${Math.min(98, 72 + skills.insightLevel * 5)}%）】预测【${tipStock.name}】下一波段大概率「${tipStock.trend === 'up' ? '强势拉升（宜做多）' : '高位回调（宜做空）'}」！`;
-    // the per-stock trend is the server's secret; only the insider tip (with its accuracy) reveals one
-    res.json({ quotes: quotes.map(({ trend: _trend, ...q }) => q), insiderTip, headline });
+    res.json(buildStockMarketSnapshot(userId, Number(skills.insightLevel || 0)));
   });
 
 

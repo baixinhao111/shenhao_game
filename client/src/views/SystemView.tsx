@@ -593,59 +593,134 @@ export const SystemView: React.FC = () => {
           </div>
         )}
 
-        {/* ---------------- 进修：天枢技能脉络 ---------------- */}
-        {subTab === 'skills' && (
-          <div className="relative pl-1">
-            <span className="absolute left-[29px] top-6 bottom-6 w-px bg-gradient-to-b from-[#63E6F2]/60 via-[#63E6F2]/25 to-transparent" />
-            {skills.map((sk: any) => {
-              const maxed = sk.level >= sk.maxLevel;
-              const cost = sk.costPerLevel * (sk.level + 1);
-              const canAfford = !maxed && player.sysPoints >= cost;
-              return (
-                <div key={sk.id} className="relative py-3 flex items-center gap-3">
-                  <span className="relative shrink-0 w-[56px] h-[56px] flex items-center justify-center">
-                    <span
-                      className="absolute inset-0 rotate-45 rounded-[10px]"
-                      style={{
-                        background: sk.level > 0 ? 'linear-gradient(135deg, rgba(99,230,242,0.35), rgba(4,18,31,0.9))' : 'rgba(4,18,31,0.9)',
-                        border: `1px solid ${sk.level > 0 ? 'rgba(155,245,255,0.7)' : 'rgba(99,230,242,0.25)'}`,
-                        boxShadow: sk.level > 0 ? '0 0 14px rgba(99,230,242,0.35)' : undefined,
-                      }}
-                    />
-                    <GameIcon name="skill" size={34} className={`relative ${sk.level > 0 ? '' : 'grayscale opacity-60'}`} />
-                    <span className="absolute -bottom-2 font-num text-[11px] text-[#B9F6FB] text-stroke-dark">Lv.{sk.level}</span>
-                  </span>
-                  <div className="min-w-0 flex-1 pl-1">
-                    <div className="text-[14px] font-editorial font-bold text-[#D9D4C9]">{sk.name}</div>
-                    <p className="text-[11px] text-[#858999] mt-0.5 leading-relaxed">{sk.desc}</p>
-                    <div className="flex gap-[3px] mt-1.5">
-                      {Array.from({ length: sk.maxLevel }).map((_, i) => (
-                        <span key={i} className={`w-[10px] h-[3px] ${i < sk.level ? 'bg-[#9BF5FF] shadow-[0_0_5px_rgba(99,230,242,0.8)]' : 'bg-white/[0.1]'}`} />
-                      ))}
+        {/* ---------------- 进修：天枢核心权能 + 技能脉络 ---------------- */}
+        {subTab === 'skills' && (() => {
+          const b = player.bonuses || {};
+          const insightLv = Number(b.insightLevel || 0);
+          const incomePct = Number(b.incomePct || 0);
+          const discountPct = Number(b.upgradeDiscountPct || 0);
+          const critMultBonus = Number(b.critMultBonus || 0);
+          const powers: Array<{ icon: GameIconName; title: string; badge: string; desc: string; tone?: string }> = [
+            {
+              icon: 'income',
+              title: '消费暴击返现',
+              badge: `概率 ${player.critRatePct ?? 12}% · 蓄能 ${critPct}%`,
+              desc: `收购产业、置业、买座驾或赠礼时概率触发 ${2 + Math.floor(critMultBonus * 0.5)}–${10 + Math.floor(critMultBonus)}× 现金返现；未触发自动蓄能，满 100% 下次大额消费必暴击。`,
+              tone: 'text-[#EADBB8]',
+            },
+            {
+              icon: 'tianshu',
+              title: '全维洞察与读心',
+              badge: `洞察 Lv.${insightLv}`,
+              desc: '剧情与微信可偷听人物「心声」；赌石透视出绿、商战谈判看穿底价、股市看天枢内参、公海 21 点透视暗牌。',
+              tone: 'text-[#9AF4FB]',
+            },
+            {
+              icon: 'briefcase',
+              title: '资产复利与压价',
+              badge: `收益 +${incomePct}% · 成本 -${discountPct}%`,
+              desc: '永久放大名下所有产业分红与物业租金，降低升星装潢花销，并可在产业突发经营事件中消耗积分破局。',
+              tone: 'text-[#7BE0A8]',
+            },
+            {
+              icon: 'syspoint',
+              title: '天枢积分用途',
+              badge: `持有 ${player.sysPoints} 积分`,
+              desc: '主线、日程、活动与产业事件均产积分；用于下方永久进修被动，或在「补给」兑换精力与满格暴击蓄能。',
+              tone: 'text-[#B9F6FB]',
+            },
+          ];
+          return (
+            <div className="space-y-5">
+              {/* 天枢系统说明（一页读懂天枢的作用与当前生效加成） */}
+              <div className="smoke-glass tick-corners px-3.5 py-3 border border-[#63E6F2]/25">
+                <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-[#63E6F2]/18">
+                  <div className="flex items-center gap-2 min-w-0">
+                    <GameIcon name="tianshu" size={24} shadow={false} />
+                    <div className="min-w-0">
+                      <div className="text-[10px] tracking-[0.34em] text-[#63E6F2] font-bold">TIANSHU · SYSTEM POWERS</div>
+                      <div className="font-editorial text-[14.5px] font-black text-[#E8FCFF] leading-tight mt-0.5">天枢系统 · 四大核心权能</div>
                     </div>
                   </div>
-                  <button
-                    disabled={busy || !canAfford}
-                    onClick={() => upgradeSkill(sk.id)}
-                    className={`shrink-0 flex items-center gap-0.5 font-num text-[12px] px-2.5 py-1 rounded-full border ${
-                      maxed
-                        ? 'border-transparent text-[#7C8093]'
-                        : canAfford
-                          ? 'border-[#63E6F2]/70 text-[#B9F6FB] bg-[#04121F] shadow-[0_0_10px_rgba(99,230,242,0.3)]'
-                          : 'border-white/10 text-[#7C8093]'
-                    }`}
-                  >
-                    {maxed ? '已满级' : (
-                      <>
-                        <GameIcon name="syspoint" size={15} shadow={false} /> {cost}
-                      </>
-                    )}
-                  </button>
+                  <span className="shrink-0 font-num text-[11px] px-2 py-0.5 rounded-sm border border-[#63E6F2]/35 text-[#B9F6FB] bg-[#041826]/70">
+                    Lv.{player.sysLevel}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
-        )}
+                <div className="divide-y divide-white/[0.06] mt-0.5">
+                  {powers.map((pw) => (
+                    <div key={pw.title} className="py-2.5 flex items-start gap-2.5">
+                      <GameIcon name={pw.icon} size={22} shadow={false} className="shrink-0 mt-0.5" />
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-baseline justify-between gap-2">
+                          <span className="text-[13px] font-editorial font-bold text-[#EDE8DD]">{pw.title}</span>
+                          <span className={`font-num text-[11px] shrink-0 ${pw.tone || 'text-[#9AF4FB]'}`}>{pw.badge}</span>
+                        </div>
+                        <p className="text-[11px] text-[#9EA4B5] leading-[1.6] mt-0.5">{pw.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-baseline justify-between px-1 mb-1">
+                  <span className="text-[10.5px] tracking-[0.32em] text-[#63E6F2]/85 font-bold">永久能力进修</span>
+                  <span className="text-[11px] text-[#8C90A0]">消耗天枢积分升级，全局持续生效</span>
+                </div>
+                <div className="relative pl-1">
+                  <span className="absolute left-[29px] top-6 bottom-6 w-px bg-gradient-to-b from-[#63E6F2]/60 via-[#63E6F2]/25 to-transparent" />
+                  {skills.map((sk: any) => {
+                    const maxed = sk.level >= sk.maxLevel;
+                    const cost = sk.costPerLevel * (sk.level + 1);
+                    const canAfford = !maxed && player.sysPoints >= cost;
+                    return (
+                      <div key={sk.id} className="relative py-3 flex items-center gap-3">
+                        <span className="relative shrink-0 w-[56px] h-[56px] flex items-center justify-center">
+                          <span
+                            className="absolute inset-0 rotate-45 rounded-[10px]"
+                            style={{
+                              background: sk.level > 0 ? 'linear-gradient(135deg, rgba(99,230,242,0.35), rgba(4,18,31,0.9))' : 'rgba(4,18,31,0.9)',
+                              border: `1px solid ${sk.level > 0 ? 'rgba(155,245,255,0.7)' : 'rgba(99,230,242,0.25)'}`,
+                              boxShadow: sk.level > 0 ? '0 0 14px rgba(99,230,242,0.35)' : undefined,
+                            }}
+                          />
+                          <GameIcon name="skill" size={34} className={`relative ${sk.level > 0 ? '' : 'grayscale opacity-60'}`} />
+                          <span className="absolute -bottom-2 font-num text-[11px] text-[#B9F6FB] text-stroke-dark">Lv.{sk.level}</span>
+                        </span>
+                        <div className="min-w-0 flex-1 pl-1">
+                          <div className="text-[14px] font-editorial font-bold text-[#D9D4C9]">{sk.name}</div>
+                          <p className="text-[11px] text-[#8C90A0] mt-0.5 leading-relaxed">{sk.desc}</p>
+                          <div className="flex gap-[3px] mt-1.5">
+                            {Array.from({ length: sk.maxLevel }).map((_, i) => (
+                              <span key={i} className={`w-[10px] h-[3px] ${i < sk.level ? 'bg-[#9BF5FF] shadow-[0_0_5px_rgba(99,230,242,0.8)]' : 'bg-white/[0.1]'}`} />
+                            ))}
+                          </div>
+                        </div>
+                        <button
+                          disabled={busy || !canAfford}
+                          onClick={() => upgradeSkill(sk.id)}
+                          className={`shrink-0 flex items-center gap-0.5 font-num text-[12px] px-2.5 py-1 rounded-full border ${
+                            maxed
+                              ? 'border-transparent text-[#7C8093]'
+                              : canAfford
+                                ? 'border-[#63E6F2]/70 text-[#B9F6FB] bg-[#04121F] shadow-[0_0_10px_rgba(99,230,242,0.3)]'
+                                : 'border-white/10 text-[#7C8093]'
+                          }`}
+                        >
+                          {maxed ? '已满级' : (
+                            <>
+                              <GameIcon name="syspoint" size={15} shadow={false} /> {cost}
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* ---------------- 补给：展台陈列 ---------------- */}
         {subTab === 'mall' && (

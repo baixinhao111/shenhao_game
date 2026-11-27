@@ -209,7 +209,7 @@
           "hours": [
             "night"
           ],
-          "requireEpisode": "ep_015",
+          "requireEpisode": "ep_019",
           "desc": "子夜的旧码头，手电如林，真货假货都压低了声音交易。",
           "lines": [
             "一个蒙面摊主把一只缺口的瓷碗推到你面前，只说了句「懂的人自然懂」。",
@@ -827,7 +827,7 @@
             "evening",
             "night"
           ],
-          "requireEpisode": "ep_024",
+          "requireEpisode": "ep_032",
           "desc": "风暴过后的公海很安静，星耀号的灯在远处一闪一闪。",
           "lines": [
             "快艇切开平静的海面，你想起那晚牌桌上的十二分钟。",

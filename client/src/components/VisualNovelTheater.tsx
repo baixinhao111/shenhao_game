@@ -29,10 +29,10 @@ import { AnimatedNumber } from './AnimatedNumber';
 import { Atmosphere, EdgeLabel, Watermark } from './Atmosphere';
 import { PortraitAvatar } from './PortraitAvatar';
 import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
-import { renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
+import { NarrativeChoicePanel, renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
 
 export interface VNSettlementData {
-  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
   chapterLabel?: string;
   title: string;
   subtitle?: string;
@@ -66,7 +66,7 @@ export interface VNSettlementData {
 
 export interface VisualNovelScript {
   id: string;
-  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
   chapterTitle: string;
   sceneLabel?: string;
   title: string;
@@ -165,6 +165,7 @@ const MODE_LABELS: Record<VisualNovelScript['mode'], string> = {
   stroll: '偶遇',
   bond: '羁绊',
   shura: '修罗场',
+  biz_event: '经营',
 };
 
 const PRELOADED_VN_URLS = new Set<string>();
@@ -351,6 +352,17 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   }, [userId, script.id, script.mode, script.alreadyCompleted, script.nodes, settlement, nodeIdx, queue, chosenIds, chosenOptions, resolvedChoices]);
 
   const currentNode = queue[nodeIdx] || null;
+  // 序章 ep_001 在首次 system_alert（「天枢静默终端 · 首次唤醒」）出现前，天枢尚未激活：
+  // 不显示右上天枢按钮、不允许唤出天枢面板、隐藏心声读心、抉择使用普通叙事面板而非天枢全息面板。
+  const firstSysAlertIdx = useMemo(() => queue.findIndex((n) => n.type === 'system_alert'), [queue]);
+  const tianshuAwakened = script.id !== 'ep_001' || (firstSysAlertIdx >= 0 && nodeIdx >= firstSysAlertIdx);
+
+  useEffect(() => {
+    if (!tianshuAwakened) {
+      setShowStatus(false);
+      setPeekOpen(false);
+    }
+  }, [tianshuAwakened]);
   const fullText = useMemo(() => {
     if (!currentNode) return '';
     if (currentNode.text) return currentNode.text;
@@ -669,6 +681,24 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   // ZERO mid-dialogue spoilers: choosing flows naturally into branch dialogue without flashing rewards/tags!
   const handleSelectChoice = (opt: VNChoiceOption) => {
     if (submitting) return;
+    if (opt.disabledReason) {
+      showError(opt.disabledReason);
+      return;
+    }
+    if (script.mode === 'biz_event') {
+      const eCost = Number(opt.costEnergy || 0);
+      const sCost = Number(opt.costSysPoints || 0);
+      const curE = Number(state?.player?.energy ?? 0);
+      const curS = Number(state?.player?.sysPoints ?? 0);
+      if (eCost > 0 && curE < eCost) {
+        showError(`精力不足（需 ${eCost}，当前 ${curE}）`);
+        return;
+      }
+      if (sCost > 0 && curS < sCost) {
+        showError(`天枢积分不足（需 ${sCost}，当前 ${curS}）`);
+        return;
+      }
+    }
     const cashCost = Number(opt.cost?.cash ?? opt.cashCost ?? 0);
     if (isOptionUnaffordable(opt)) {
       showError(`资金不足（需要 ${formatMoney(cashCost)}，当前可用 ${formatMoney(availableCash)}）`);
@@ -701,7 +731,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
 
   const handleTogglePeek = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!currentNode?.innerThought) return;
+    if (!tianshuAwakened || !currentNode?.innerThought) return;
     if (!peekOpen) {
       playHeartbeat();
       setRevealedThoughts((prev) => ({ ...prev, [nodeIdx]: true }));
@@ -1043,16 +1073,18 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     <EyeOff className="w-3.5 h-3.5" />
                   </button>
                 </div>
-                <TianshuSummonButton
-                  alert={statusFocus?.hasThought && !revealedThoughts[nodeIdx]}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    playSystemPing();
-                    setAutoPlay(false);
-                    setFastForward(false);
-                    setShowStatus(true);
-                  }}
-                />
+                {tianshuAwakened && (
+                  <TianshuSummonButton
+                    alert={statusFocus?.hasThought && !revealedThoughts[nodeIdx]}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      playSystemPing();
+                      setAutoPlay(false);
+                      setFastForward(false);
+                      setShowStatus(true);
+                    }}
+                  />
+                )}
                 </div>
               </motion.div>
             )}
@@ -1089,13 +1121,25 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             />
           )}
           {!hideUi && !settlement && !showOpeningCard && isUnansweredChoice && currentNode && (
-            <SystemChoicePanel
-              key={`choice-${nodeIdx}`}
-              node={currentNode}
-              disabled={submitting}
-              isUnaffordable={isOptionUnaffordable}
-              onChoose={handleSelectChoice}
-            />
+            !tianshuAwakened || script.mode === 'biz_event' ? (
+              <NarrativeChoicePanel
+                key={`choice-${nodeIdx}`}
+                node={currentNode}
+                kicker={script.mode === 'biz_event' ? '经营决策' : '此刻抉择'}
+                showBizMeta={script.mode === 'biz_event'}
+                disabled={submitting}
+                isUnaffordable={isOptionUnaffordable}
+                onChoose={handleSelectChoice}
+              />
+            ) : (
+              <SystemChoicePanel
+                key={`choice-${nodeIdx}`}
+                node={currentNode}
+                disabled={submitting}
+                isUnaffordable={isOptionUnaffordable}
+                onChoose={handleSelectChoice}
+              />
+            )
           )}
         </AnimatePresence>
 
@@ -1118,7 +1162,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 className="vn-dialogue-band pt-14 pb-6 px-5 cursor-pointer"
               >
                 <AnimatePresence>
-                  {peekOpen && currentNode?.innerThought && (
+                  {tianshuAwakened && peekOpen && currentNode?.innerThought && (
                     <motion.div
                       initial={{ opacity: 0, y: 6, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -1158,7 +1202,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                         </span>
                       )}
                       <span className="flex-1" />
-                      {currentNode.innerThought && (
+                      {tianshuAwakened && currentNode.innerThought && (
                         <button
                           onClick={handleTogglePeek}
                           className={`shrink-0 -mb-0.5 flex items-center gap-1 pl-0.5 pr-2 py-[2px] rounded-full text-[11px] font-bold border transition ${
@@ -1212,9 +1256,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         </AnimatePresence>
       </motion.div>
 
-      {/* 天枢宿主面板：随时唤出 */}
+      {/* 天枢宿主面板：唤醒后可随时唤出 */}
       <AnimatePresence>
-        {showStatus && !settlement && (
+        {tianshuAwakened && showStatus && !settlement && (
           <TianshuStatusPanel
             state={state}
             chapterLabel={`${script.chapterTitle} · ${script.title}`}
@@ -1382,7 +1426,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       ? 'BOND · UP'
                       : settlement.mode === 'shura'
                         ? 'SHURA · SETTLED'
-                        : 'STROLL · END';
+                        : settlement.mode === 'biz_event'
+                          ? 'BIZ · RESOLVED'
+                          : 'STROLL · END';
           const modeZh =
             settlement.alreadyCompleted
               ? '回顾结束'
@@ -1396,7 +1442,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       ? '羁绊突破'
                       : settlement.mode === 'shura'
                         ? '修罗场化解'
-                        : '漫步结束';
+                        : settlement.mode === 'biz_event'
+                          ? '危机化解'
+                          : '漫步结束';
           const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string; num?: number }[] = [];
           if (r && !settlement.alreadyCompleted) {
             if (r.critCashback && r.critCashback > 0) {
@@ -1447,7 +1495,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   initial={{ opacity: 0, x: 40 }}
                   animate={{ opacity: 0.92, x: 0 }}
                   transition={{ delay: 0.15, duration: 0.6 }}
-                  className="absolute right-[-18%] bottom-0 h-[78%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
+                  className="absolute right-[-14%] bottom-0 h-[76%] max-w-[64%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
                 />
               )}
 
@@ -1491,7 +1539,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.4, duration: 0.5 }}
-                      className={`smoke-glass tick-corners px-4 pt-3 pb-3.5 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[78%]' : ''}`}
+                      className={`smoke-glass tick-corners px-4 pt-3 pb-3.5 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[70%]' : ''}`}
                     >
                       <div className="label-en mb-2">REWARDS</div>
                       <div className="flex flex-wrap">
@@ -1585,6 +1633,7 @@ export const MiniStoryOverlay: React.FC = () => {
     applyServerState,
     openHeroineChat,
     notifyTop,
+    flyReward,
   } = useGameStore();
 
   const script = useMemo<VisualNovelScript | null>(() => {
@@ -1598,7 +1647,9 @@ export const MiniStoryOverlay: React.FC = () => {
             ? '红颜羁绊'
             : activeMiniStory.mode === 'shura'
               ? '修罗场'
-              : '偶遇';
+              : activeMiniStory.mode === 'biz_event'
+                ? '经营事件'
+                : '偶遇';
     return {
       id: `${activeMiniStory.mode}:${activeMiniStory.bondId || activeMiniStory.interactionId || activeMiniStory.eventId || activeMiniStory.title}:${activeMiniStory.heroineId || 'any'}`,
       mode: activeMiniStory.mode,
@@ -1623,6 +1674,39 @@ export const MiniStoryOverlay: React.FC = () => {
   }): Promise<VNSettlementData | null> => {
     const primaryChoiceId = chosenIds[0];
     const primaryOpt = chosenOptions[0];
+
+    if (activeMiniStory.mode === 'biz_event') {
+      const res = await apiRequest('/business/event/resolve', {
+        body: {
+          businessId: activeMiniStory.businessId,
+          eventId: activeMiniStory.eventId,
+          choiceId: primaryChoiceId,
+        },
+      });
+      applyServerState(res.state, undefined, { silentToast: true });
+      if (Number(res.cashReward || 0) > 0) flyReward(Number(res.cashReward));
+      else playCoinBurst();
+      const hObj = activeMiniStory.heroineId
+        ? (res.state?.heroines || state?.heroines || []).find((h: any) => h.id === activeMiniStory.heroineId)
+        : null;
+      return {
+        mode: 'biz_event',
+        chapterLabel: activeMiniStory.sceneLabel || '经营事件',
+        title: activeMiniStory.title,
+        reactionText: res.resultText || primaryOpt?.resultText || res.message,
+        heroineId: hObj?.unlocked ? hObj.id : undefined,
+        heroineName: hObj?.name || activeMiniStory.heroineName,
+        heroineAvatar: hObj?.avatar || activeMiniStory.heroineAvatar,
+        heroinePortrait: hObj?.portrait || activeMiniStory.heroinePortrait,
+        locationLabel: activeMiniStory.locationLabel,
+        rewards: {
+          cash: Number(res.cashReward || 0) > 0 ? Number(res.cashReward) : undefined,
+          sysPoints: Number(res.sysPoints || 0) > 0 ? Number(res.sysPoints) : undefined,
+          affectionGain: Number(res.affectionGain || 0) > 0 ? Number(res.affectionGain) : undefined,
+          affectionHeroineName: hObj?.name || activeMiniStory.heroineName,
+        },
+      };
+    }
 
     if (activeMiniStory.mode === 'bond') {
       const res = await apiRequest('/heroines/bond/complete', {

@@ -176,6 +176,127 @@ interface ChoiceProps {
   onChoose: (opt: VNChoiceOption) => void;
 }
 
+interface NarrativeChoiceProps extends ChoiceProps {
+  kicker?: string;
+  showBizMeta?: boolean;
+}
+
+/**
+ * 非天枢抉择面板：用于序章天枢未唤醒前，以及产业经营事件小剧场。
+ * 烟熏玻璃 + 香槟金角标，无天枢标识、无冰蓝全息、无「叮」特效。
+ */
+export const NarrativeChoicePanel: React.FC<NarrativeChoiceProps> = ({
+  node,
+  disabled,
+  isUnaffordable,
+  onChoose,
+  kicker = '此刻抉择',
+  showBizMeta = false,
+}) => (
+  <motion.div
+    key="narrative-choice"
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 0.2 }}
+    className="absolute inset-0 z-[35] flex items-center justify-center px-4 pt-16 pb-6"
+    style={{ background: 'radial-gradient(80% 60% at 50% 50%, rgba(10,12,20,0.46), rgba(4,5,10,0.86))' }}
+  >
+    <motion.div
+      initial={{ opacity: 0, y: 12, scale: 0.97 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 8, scale: 0.98 }}
+      transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+      className="relative w-full max-w-[372px] max-h-full origin-center"
+    >
+      <div className="smoke-glass tick-corners px-4 pt-4 pb-4 max-h-full flex flex-col">
+        <div className="pb-3 mb-3 border-b border-white/[0.08]">
+          <div className="flex items-center gap-2">
+            <span className="w-4 h-px bg-[var(--champagne)]" />
+            <span className="text-[10.5px] tracking-[0.42em] text-[var(--champagne)] font-bold">{kicker}</span>
+          </div>
+          {node.title && (
+            <div className="font-editorial text-[16px] font-black text-[var(--ivory-2)] tracking-[0.06em] leading-snug mt-1.5">
+              {node.title}
+            </div>
+          )}
+        </div>
+
+        <div className="relative space-y-2.5 overflow-y-auto no-scrollbar max-h-[60vh] pr-0.5">
+          {(node.options || []).map((opt, idx) => {
+            const poor = isUnaffordable(opt);
+            const blocked = poor || Boolean(opt.disabledReason);
+            const cashCost = opt.cost?.cash ?? opt.cashCost ?? 0;
+            const isTianshu = showBizMeta && opt.kind === 'tianshu';
+            const isHeroine = showBizMeta && opt.kind === 'heroine';
+            const borderTone = isTianshu
+              ? 'border-[#63E6F2]/40 hover:border-[#63E6F2]/70 bg-[#051824]/70'
+              : isHeroine
+                ? 'border-[#F0789A]/40 hover:border-[#F0789A]/70 bg-[#1F0B16]/70'
+                : 'border-white/[0.12] hover:border-[#D9C49A]/55 bg-[#090B12]/72';
+            const keyTone = isTianshu
+              ? 'text-[#9AF4FB] border-[#63E6F2]/50 bg-[#041826]'
+              : isHeroine
+                ? 'text-[#FFC4D3] border-[#F0789A]/55 bg-[#2A0E1C]'
+                : 'text-[var(--champagne)] border-[#D9C49A]/45 bg-[#12100C]';
+
+            return (
+              <motion.button
+                key={opt.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.08 + idx * 0.06, duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                disabled={disabled}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChoose(opt);
+                }}
+                className={`w-full text-left flex items-start gap-3 px-3.5 py-3 rounded-[4px] border transition active:scale-[0.99] ${borderTone} ${blocked ? 'opacity-50' : ''}`}
+              >
+                <span className={`shrink-0 w-6 h-6 mt-0.5 rounded-[3px] border font-num text-[11.5px] font-bold flex items-center justify-center ${keyTone}`}>
+                  {String.fromCharCode(65 + idx)}
+                </span>
+                <span className="flex-1 min-w-0">
+                  {showBizMeta && (
+                    <span className="flex items-center justify-between gap-2 mb-1">
+                      <span
+                        className={`text-[10px] tracking-[0.22em] font-bold ${
+                          isTianshu ? 'text-[#63E6F2]' : isHeroine ? 'text-[#FFB3C6]' : 'text-[var(--champagne)]'
+                        }`}
+                      >
+                        {isTianshu ? '天枢推演' : isHeroine ? `${opt.requireHeroineName || '红颜'}坐镇` : '稳健执行'}
+                      </span>
+                      {typeof opt.estCash === 'number' && opt.estCash > 0 && (
+                        <span className="font-num text-[11px] text-[#7BE0A8]">预计 +{formatMoney(opt.estCash)}</span>
+                      )}
+                    </span>
+                  )}
+                  <span className="block text-[14px] font-editorial font-bold text-[#F3EFE6] leading-[1.6]">{opt.label}</span>
+                  {showBizMeta && (
+                    <span className="flex flex-wrap items-center gap-x-2.5 gap-y-0.5 mt-1 text-[11px]">
+                      {(opt.costEnergy || 0) > 0 && <span className="text-[#A8ACB9]">精力 -{opt.costEnergy}</span>}
+                      {(opt.costSysPoints || 0) > 0 && <span className="text-[#9AF4FB]">天枢积分 -{opt.costSysPoints}</span>}
+                      {(opt.sysPoints || 0) > 0 && <span className="text-[#8FC6CC]">积分 +{opt.sysPoints}</span>}
+                      {(opt.affectionGain || 0) > 0 && <span className="text-[#FFB3C6]">好感 +{opt.affectionGain}</span>}
+                    </span>
+                  )}
+                  {opt.disabledReason ? (
+                    <span className="block text-[10.5px] text-[#FF8FA6] mt-1">{opt.disabledReason}</span>
+                  ) : poor ? (
+                    <span className="block text-[10.5px] text-[#FF8FA6] mt-0.5">
+                      资金不足{cashCost > 0 ? `（需 ${formatMoney(cashCost)}，可点左上返回筹款）` : ''}
+                    </span>
+                  ) : null}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+    </motion.div>
+  </motion.div>
+);
+
 export const SystemChoicePanel: React.FC<ChoiceProps> = ({ node, disabled, isUnaffordable, onChoose }) => (
   <motion.div
     key="sys-choice"
@@ -298,7 +419,7 @@ export const TianshuStatusPanel: React.FC<StatusProps> = ({
                 <Stat label="身价" value={formatMoney(p.netWorth)} tone="text-[#FFE7B0]" />
                 <Stat label="可用资金" value={formatMoney(p.cash)} tone="text-[#FFE7B0]" />
                 <Stat label="天枢积分" value={p.sysPoints} />
-                <Stat label="暴击概率" value={`${p.critRatePct ?? 0}%`} />
+                <Stat label="暴击 / 蓄能" value={`${p.critRatePct ?? 12}% · ${Math.min(100, p.critCharge ?? 0)}%`} />
               </div>
               {p.nextTier && (
                 <div>
@@ -309,6 +430,32 @@ export const TianshuStatusPanel: React.FC<StatusProps> = ({
                   <Bar pct={tierPct} />
                 </div>
               )}
+
+              {/* 天枢核心权能说明 */}
+              <div className="pt-1">
+                <div className="text-[10px] tracking-[0.4em] text-[#63E6F2] font-bold mb-1.5">天枢核心权能</div>
+                <div className="rounded-[6px] px-2.5 py-2 bg-[#041826]/70 border border-[var(--holo-line)] divide-y divide-[#63E6F2]/15 text-[11px] leading-[1.65]">
+                  <div className="pb-1.5 flex items-start justify-between gap-2">
+                    <span className="text-[#CFEFF3]/90">
+                      <span className="text-[#FFE7B0] font-bold">消费返现</span>：买产业/置业/座驾/赠礼触发 2–10× 返现，蓄满 100% 必暴击
+                    </span>
+                  </div>
+                  <div className="py-1.5 flex items-start justify-between gap-2">
+                    <span className="text-[#CFEFF3]/90">
+                      <span className="text-[#9AF4FB] font-bold">全维洞察</span>：剧情/微信读心、赌石透视、谈判看底价、股市研判、21点暗牌
+                    </span>
+                    <span className="shrink-0 font-num text-[#9AF4FB]">Lv.{p.bonuses?.insightLevel ?? 0}</span>
+                  </div>
+                  <div className="py-1.5 flex items-start justify-between gap-2">
+                    <span className="text-[#CFEFF3]/90">
+                      <span className="text-[#FFE7B0] font-bold">复利压价</span>：全产业分红与租金 +{p.bonuses?.incomePct ?? 0}% · 升级装潢 -{p.bonuses?.upgradeDiscountPct ?? 0}%
+                    </span>
+                  </div>
+                  <div className="pt-1.5 text-[#CFEFF3]/85">
+                    <span className="text-[#9AF4FB] font-bold">积分用途</span>：主界【天枢】永久进修、补给兑换、谈判情报及产业危机推演
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
