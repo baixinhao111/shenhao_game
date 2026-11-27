@@ -102,11 +102,11 @@ export const TopBar: React.FC<TopBarProps> = ({ hidden = false }) => {
         hidden ? 'opacity-0 -translate-y-4 pointer-events-none' : 'opacity-100 translate-y-0'
       }`}
       style={{
-        background: 'linear-gradient(180deg, rgba(20,28,56,0.98) 0%, rgba(11,16,33,0.98) 100%)',
-        boxShadow: '0 6px 18px rgba(0,0,0,0.35)',
+        background: 'linear-gradient(180deg, rgba(10,12,20,0.96) 0%, rgba(4,5,10,0.94) 100%)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
       }}
     >
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C49A]/25 to-transparent" />
 
       <button
         onClick={() => {

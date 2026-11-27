@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { Lock, Play } from 'lucide-react';
 import { StoryRoute } from './story/StoryRoute';
+import { Atmosphere, EdgeLabel } from '../components/Atmosphere';
 import { GameIcon, OrnateCorners } from '../components/GameIcon';
 import {
   VisualNovelTheater,
@@ -225,7 +226,9 @@ export const StoryView: React.FC = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto no-scrollbar deco-texture">
+    <div className="relative h-full overflow-y-auto no-scrollbar night-page">
+      <Atmosphere />
+      <EdgeLabel text="HAICHENG · MAIN STORY · TIANSHU" top="14%" />
       {/* Featured poster */}
       {featuredEpisode && (
         <div className="px-3">
@@ -241,8 +244,8 @@ export const StoryView: React.FC = () => {
                   featuredLocked ? 'grayscale brightness-50' : ''
                 }`}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/95 via-[#0A0F1F]/45 to-transparent" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-transparent to-[#0A0F1F]/40" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#04050A]/95 via-[#04050A]/50 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#04050A] via-[#04050A]/10 to-[#04050A]/50" />
             </div>
 
             {featuredEpisode.posterLead && (
@@ -256,36 +259,37 @@ export const StoryView: React.FC = () => {
             )}
 
             <div className="absolute inset-0 px-5 pt-5 pb-4 flex flex-col justify-between max-w-[68%]">
-              <div className="flex items-center gap-2">
-                <span className="px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">
-                  {featuredDone ? '回顾' : '当前主线'}
-                </span>
-                <span className="text-[11px] text-[#F6DDA4] tracking-wider text-stroke-dark">{featuredEpisode.chapterTitle}</span>
+              <div>
+                <div className="label-en">{featuredDone ? 'REPLAY' : 'NOW PLAYING'} · {featuredEpisode.episodeId.replace('ep_', 'EP.')}</div>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <span className="w-4 h-px bg-[var(--champagne)]" />
+                  <span className="text-[11px] text-[var(--champagne)] tracking-[0.25em]">{featuredEpisode.chapterTitle}</span>
+                </div>
               </div>
 
               <div className="space-y-2">
-                <h2 className="font-editorial text-[26px] font-black leading-tight gold-gradient-text drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+                <h2 className="font-editorial text-[28px] font-black leading-tight ink-title tracking-[0.08em]">
                   {featuredEpisode.title}
                 </h2>
-                <p className="text-[11.5px] text-[#D3D8E8] line-clamp-2 leading-relaxed text-stroke-dark">
+                <p className="text-[11.5px] text-[#A9AEBE] line-clamp-2 leading-relaxed" style={{ textShadow: '0 1px 8px rgba(0,0,0,0.9)' }}>
                   {featuredEpisode.summary}
                 </p>
                 <div className="pt-1 flex items-center gap-3">
                   {featuredLocked ? (
-                    <span className="btn-navy inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs">
+                    <span className="btn-ghost inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs">
                       <Lock className="w-3 h-3" /> 待解锁
                     </span>
                   ) : (
-                    <span className="gold-btn-shimmer inline-flex items-center gap-1.5 px-4 py-1.5 text-[13px] font-editorial">
+                    <span className="btn-champagne inline-flex items-center gap-1.5 px-5 py-1.5 text-[13px] font-editorial">
                       <Play className="w-3.5 h-3.5 fill-current" /> {featuredDone ? '重温' : '继续'}
                     </span>
                   )}
                   {featuredLocked && !featuredNwMet ? (
-                    <span className="text-[11px] text-[#FF8FA6] text-stroke-dark">
+                    <span className="text-[11px] text-[#D99AA6]">
                       身价需达 {formatMoney(featuredEpisode.requireNetWorth)}
                     </span>
                   ) : featuredEpisode.costEnergy > 0 && !featuredDone ? (
-                    <span className="text-[12px] text-[#F6DDA4] flex items-center gap-0.5 font-num text-stroke-dark">
+                    <span className="text-[12px] text-[var(--mist-2)] flex items-center gap-0.5 font-num">
                       <GameIcon name="energy" size={18} /> {featuredEpisode.costEnergy}
                     </span>
                   ) : null}
@@ -325,7 +329,7 @@ export const StoryView: React.FC = () => {
                     playTap();
                     openAssetsTab('biz');
                   }}
-                  className="btn-brass py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
+                  className="btn-champagne py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
                 >
                   <GameIcon name="nav_assets" size={20} shadow={false} /> 经营产业
                   {state.player.pendingIncome > 0 && <span className="font-num text-[10.5px] opacity-80">待收 {formatMoney(state.player.pendingIncome)}</span>}
@@ -335,7 +339,7 @@ export const StoryView: React.FC = () => {
                     playTap();
                     setActiveTab('map');
                   }}
-                  className="btn-navy py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
+                  className="btn-ghost py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
                 >
                   <GameIcon name="nav_map" size={20} shadow={false} /> 海城出手
                 </button>
@@ -344,11 +348,11 @@ export const StoryView: React.FC = () => {
           )}
 
           <div className="flex items-center gap-2 mt-3 px-1">
-            <span className="text-[11px] text-[#A3AAC2] tracking-wider">主线进度</span>
-            <div className="bar-track flex-1">
-              <div className="bar-fill" style={{ width: `${Math.max(3, (doneCount / Math.max(1, totalCount)) * 100)}%` }} />
+            <span className="label-en !tracking-[0.3em]">PROGRESS</span>
+            <div className="flex-1 h-px bg-white/[0.08]">
+              <div className="h-full bg-[var(--champagne)]" style={{ width: `${Math.max(3, (doneCount / Math.max(1, totalCount)) * 100)}%` }} />
             </div>
-            <span className="font-num text-[12px] text-[#F6DDA4]">
+            <span className="font-num text-[12px] text-[var(--ivory-2)]">
               {doneCount}/{totalCount}
             </span>
           </div>
@@ -356,14 +360,14 @@ export const StoryView: React.FC = () => {
       )}
 
       {/* Volume chips */}
-      <div className="sticky top-0 z-20 mt-2 px-4 flex items-center gap-5 overflow-x-auto no-scrollbar bg-gradient-to-b from-[#0A0F1F] via-[#0A0F1F]/95 to-[#0A0F1F]/0 pb-3">
+      <div className="sticky top-0 z-20 mt-2 px-4 flex items-center gap-5 overflow-x-auto no-scrollbar bg-gradient-to-b from-[#04050A] via-[#04050A]/95 to-[#04050A]/0 pb-3">
         <button
           data-active={selectedVolId === 'all'}
           onClick={() => {
             playTap();
             setSelectedVolId('all');
           }}
-          className="route-tab shrink-0 font-editorial"
+          className="route-tab v2 shrink-0 font-editorial"
         >
           全部
         </button>
@@ -375,7 +379,7 @@ export const StoryView: React.FC = () => {
               playTap();
               setSelectedVolId(vol.volumeId);
             }}
-            className="route-tab shrink-0 font-editorial"
+            className="route-tab v2 shrink-0 font-editorial"
           >
             {shortVolumeLabel(vol)}
           </button>
@@ -396,6 +400,7 @@ export const StoryView: React.FC = () => {
               completed={completedSet}
               netWorth={state.player.netWorth}
               onOpen={openEpisode}
+              volIndex={volumes.indexOf(vol)}
             />
           );
         })}

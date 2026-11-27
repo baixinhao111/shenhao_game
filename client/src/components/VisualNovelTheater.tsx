@@ -26,6 +26,7 @@ import {
 } from '../lib/sound';
 import { useGameStore, type VNChoiceOption, type VNNode } from '../store/useGameStore';
 import { AnimatedNumber } from './AnimatedNumber';
+import { Atmosphere, EdgeLabel, Watermark } from './Atmosphere';
 import { PortraitAvatar } from './PortraitAvatar';
 import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 import { renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
@@ -1363,259 +1364,213 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         )}
       </AnimatePresence>
 
-      {/* 9. Settlement */}
+      {/* 9. Settlement — calm: blurred scene, ivory title, one quiet glass sheet; rays only when a crit happened */}
       <AnimatePresence>
-        {settlement && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="absolute inset-0 z-50 overflow-hidden"
-          >
-            {/* backdrop: blurred scene + glow + rotating rays */}
-            <img src={script.bg} alt="" className="absolute inset-0 w-full h-full object-cover scale-110 blur-[14px] brightness-[0.45]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1F]/70 via-[#0A0F1F]/80 to-[#05070F]/95" />
+        {settlement && (() => {
+          const r = settlement.rewards;
+          const hasCrit = Boolean(r?.critCashback && r.critCashback > 0 && !settlement.alreadyCompleted);
+          const modeEn =
+            settlement.alreadyCompleted
+              ? 'REPLAY END'
+              : settlement.mode === 'main'
+                ? 'CHAPTER CLEAR'
+                : settlement.mode === 'date'
+                  ? 'DATE · END'
+                  : settlement.mode === 'home'
+                    ? 'AT HOME'
+                    : settlement.mode === 'bond'
+                      ? 'BOND · UP'
+                      : settlement.mode === 'shura'
+                        ? 'SHURA · SETTLED'
+                        : 'STROLL · END';
+          const modeZh =
+            settlement.alreadyCompleted
+              ? '回顾结束'
+              : settlement.mode === 'main'
+                ? '本幕完成'
+                : settlement.mode === 'date'
+                  ? '约会结束'
+                  : settlement.mode === 'home'
+                    ? '居家时光'
+                    : settlement.mode === 'bond'
+                      ? '羁绊突破'
+                      : settlement.mode === 'shura'
+                        ? '修罗场化解'
+                        : '漫步结束';
+          const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string; num?: number }[] = [];
+          if (r && !settlement.alreadyCompleted) {
+            if (r.critCashback && r.critCashback > 0) {
+              items.push({ icon: 'income', label: '暴击返现', value: `+${formatMoney(r.critCashback)}`, num: r.critCashback, tone: 'text-[#F3E3BC]', ribbon: `×${r.critMultiplier || 10}` });
+              if (r.cash && r.cash > r.critCashback) items.push({ icon: 'cash', label: '资金', value: '', num: r.cash - r.critCashback, tone: 'text-[var(--ivory-2)]' });
+            } else if (r.cash && r.cash > 0) {
+              items.push({ icon: 'cash', label: '资金', value: '', num: r.cash, tone: 'text-[var(--ivory-2)]' });
+            }
+            if (r.affectionGain && r.affectionGain > 0) items.push({ icon: 'heart', label: r.affectionHeroineName || '好感', value: `+${r.affectionGain}`, tone: 'text-[#F2B8C6]' });
+            if (r.sysPoints && r.sysPoints > 0) items.push({ icon: 'syspoint', label: '天枢积分', value: `+${r.sysPoints}`, tone: 'text-[#A8E2E8]' });
+            if (r.unlockedHeroineName) items.push({ icon: 'nav_contact', label: '新联系人', value: r.unlockedHeroineName, tone: 'text-[#F2B8C6]' });
+            if (r.unlockedAssetName) items.push({ icon: 'key', label: '入库', value: r.unlockedAssetName, tone: 'text-[var(--ivory-2)]' });
+            if (r.unlockedOutfitName) items.push({ icon: 'crown', label: '解锁装扮', value: r.unlockedOutfitName, tone: 'text-[#F2B8C6]' });
+          }
+          const primaryNext = settlement.mode === 'main' && settlement.nextEpisodeId && settlement.nextEpisodeUnlocked && onNextEpisode;
+          const primaryChat = settlement.mode !== 'main' && settlement.heroineId && onOpenChat;
+          return (
             <motion.div
-              aria-hidden
-              className="absolute left-1/2 top-[18%] w-[760px] h-[760px] -ml-[380px] -mt-[380px] pointer-events-none opacity-40"
-              style={{
-                background:
-                  'repeating-conic-gradient(from 0deg, rgba(255,226,160,0.22) 0deg 6deg, transparent 6deg 22deg)',
-                maskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
-                WebkitMaskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
-            />
-            <div className="absolute left-1/2 top-[18%] w-[300px] h-[300px] -ml-[150px] -mt-[150px] rounded-full bg-[radial-gradient(circle,rgba(255,220,150,0.28),transparent_70%)] pointer-events-none" />
-
-            {settlement.mode !== 'main' && settlement.heroinePortrait && (
-              <motion.img
-                src={settlement.heroinePortrait}
-                alt=""
-                initial={{ opacity: 0, x: 40 }}
-                animate={{ opacity: 0.9, x: 0 }}
-                transition={{ delay: 0.15, duration: 0.5 }}
-                className="absolute right-[-18%] bottom-0 h-[78%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
-              />
-            )}
-
-            <div className="relative h-full overflow-y-auto no-scrollbar flex flex-col justify-center px-5 py-8">
-              <div className="w-full space-y-5">
-                {/* Title */}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.35 }}
+              className="absolute inset-0 z-50 overflow-hidden night-page"
+            >
+              <img src={script.bg} alt="" className="absolute inset-0 w-full h-full object-cover scale-110 blur-[18px] brightness-[0.38] saturate-[0.7]" />
+              <div className="absolute inset-0 bg-gradient-to-b from-[#04050A]/55 via-[#04050A]/70 to-[#04050A]/95" />
+              <Atmosphere />
+              {hasCrit && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.92 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: 0.05, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="text-center"
-                >
-                  <div className="inline-flex items-center gap-2 px-4 py-[3px] rounded-full text-[10.5px] font-black tracking-[0.35em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow-[0_4px_14px_rgba(226,189,114,0.4)]">
-                    {settlement.alreadyCompleted
-                      ? '回顾结束'
-                      : settlement.mode === 'main'
-                        ? '本幕完成'
-                        : settlement.mode === 'date'
-                          ? '约会结束'
-                          : settlement.mode === 'home'
-                            ? '居家时光'
-                            : settlement.mode === 'bond'
-                              ? '羁绊突破'
-                              : settlement.mode === 'shura'
-                                ? '修罗场化解'
-                                : '漫步结束'}
-                  </div>
-                  <div className="mt-3 text-[11px] tracking-[0.3em] text-[#E2BD72] font-bold">
-                    {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
-                  </div>
-                  <h2 className="mt-1 font-editorial text-[32px] font-black tracking-[0.14em] gold-gradient-text leading-tight drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
-                    {settlement.title}
-                  </h2>
-                  <div className="flex items-center justify-center gap-2 mt-2">
-                    <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
-                    <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
-                    <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
-                  </div>
-                </motion.div>
+                  aria-hidden
+                  className="absolute left-1/2 top-[18%] w-[760px] h-[760px] -ml-[380px] -mt-[380px] pointer-events-none opacity-30"
+                  style={{
+                    background: 'repeating-conic-gradient(from 0deg, rgba(230,214,178,0.2) 0deg 6deg, transparent 6deg 22deg)',
+                    maskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+                    WebkitMaskImage: 'radial-gradient(circle, #000 0%, transparent 62%)',
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{ repeat: Infinity, duration: 60, ease: 'linear' }}
+                />
+              )}
+              <Watermark text={modeEn.split(' ')[0]} className="top-[10%] -left-2 text-[86px]" />
+              <EdgeLabel text={`HAICHENG · ${modeEn} · TIANSHU`} top="38%" />
 
-                {/* Closing note */}
-                {(settlement.reactionText || settlement.resultText) && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.35 }}
-                    className={`relative rounded-[10px] px-4 py-3.5 space-y-2 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[78%]' : ''}`}
-                    style={{
-                      background: 'linear-gradient(180deg, rgba(20,28,58,0.85), rgba(8,12,26,0.9))',
-                      border: '1px solid rgba(226,189,114,0.35)',
-                    }}
-                  >
-                    {settlement.heroineName && (
-                      <div className="flex items-center gap-2">
-                        {settlement.heroineAvatar && (
-                          <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74]">
-                            <PortraitAvatar src={settlement.heroineAvatar} alt="" className="w-full h-full !border-0" rounded="full" />
-                          </div>
-                        )}
-                        <div>
-                          <div className="text-[12.5px] font-editorial font-black text-[#FBF1D8]">{settlement.heroineName}</div>
-                          {settlement.locationLabel && (
-                            <div className="text-[10px] text-[#8B93AD]">{settlement.locationLabel}</div>
-                          )}
+              {settlement.mode !== 'main' && settlement.heroinePortrait && (
+                <motion.img
+                  src={settlement.heroinePortrait}
+                  alt=""
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 0.92, x: 0 }}
+                  transition={{ delay: 0.15, duration: 0.6 }}
+                  className="absolute right-[-18%] bottom-0 h-[78%] w-auto object-contain object-bottom sprite-fade-bottom pointer-events-none"
+                />
+              )}
+
+              <div className="relative h-full overflow-y-auto no-scrollbar flex flex-col justify-center px-6 py-10">
+                <div className="w-full space-y-6">
+                  {/* title */}
+                  <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}>
+                    <div className="label-en">{modeEn}</div>
+                    <div className="flex items-center gap-2 mt-2">
+                      <span className="w-5 h-px bg-[var(--champagne)]" />
+                      <span className="text-[11px] tracking-[0.3em] text-[var(--champagne)]">
+                        {modeZh} · {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
+                      </span>
+                    </div>
+                    <h2 className="mt-2 font-editorial text-[34px] font-black tracking-[0.12em] ink-title leading-tight">{settlement.title}</h2>
+                  </motion.div>
+
+                  {/* closing line, set like a quotation — no box */}
+                  {(settlement.reactionText || settlement.resultText) && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.25, duration: 0.5 }}
+                      className={`relative pl-5 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[72%]' : ''}`}
+                    >
+                      <span className="absolute -left-1 -top-3 font-editorial text-[40px] leading-none text-[var(--champagne-dim)]">“</span>
+                      <p className="text-[13.5px] leading-[1.9] text-[#D9D4C9]">{settlement.reactionText || settlement.resultText}</p>
+                      {settlement.heroineName && (
+                        <div className="mt-2 flex items-center gap-2 text-[11px] text-[#8C90A0]">
+                          {settlement.heroineAvatar && <PortraitAvatar src={settlement.heroineAvatar} alt="" className="w-5 h-5 !border-0" rounded="full" />}
+                          — {settlement.heroineName}
+                          {settlement.locationLabel && <span className="text-[#5E6273]">· {settlement.locationLabel}</span>}
                         </div>
+                      )}
+                    </motion.div>
+                  )}
+
+                  {/* rewards: one glass sheet, items divided by hairlines */}
+                  {items.length > 0 && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.4, duration: 0.5 }}
+                      className={`smoke-glass tick-corners px-4 pt-3 pb-3.5 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[78%]' : ''}`}
+                    >
+                      <div className="label-en mb-2">REWARDS</div>
+                      <div className="flex flex-wrap">
+                        {items.map((it, i) => (
+                          <motion.div
+                            key={i}
+                            initial={{ opacity: 0, y: 6 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: 0.5 + i * 0.1 }}
+                            className={`relative flex items-center gap-2 py-1.5 pr-4 mr-4 ${i ? '' : ''}`}
+                          >
+                            <GameIcon name={it.icon} size={30} shadow={false} />
+                            <div className="min-w-0">
+                              <div className="text-[9.5px] tracking-[0.2em] text-[#6D7183]">{it.label}</div>
+                              <div className={`font-num text-[15px] leading-tight ${it.tone}`}>
+                                {it.num != null ? <AnimatedNumber from={0} value={it.num} prefix="+" duration={900 + i * 150} /> : it.value}
+                                {it.ribbon && <span className="ml-1.5 text-[10px] text-[#E79AA8]">{it.ribbon}</span>}
+                              </div>
+                            </div>
+                          </motion.div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+
+                  {/* next teaser */}
+                  {settlement.cliffhanger && (
+                    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.65, duration: 0.5 }} className="pl-5 border-l border-white/[0.08]">
+                      <div className="label-en mb-1.5">NEXT · 下幕预告</div>
+                      <p className="text-[12px] text-[#8C90A0] leading-[1.85]">{settlement.cliffhanger}</p>
+                    </motion.div>
+                  )}
+
+                  {/* actions */}
+                  <div className="pt-1 space-y-2.5">
+                    {primaryNext && (
+                      <button
+                        onClick={() => {
+                          playSystemPing();
+                          onNextEpisode!(settlement.nextEpisodeId!);
+                        }}
+                        className="w-full btn-champagne py-3 px-4 text-[14.5px] font-editorial flex items-center justify-center gap-1.5"
+                      >
+                        <span className="truncate">下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}</span>
+                        <ChevronRight className="w-4 h-4 shrink-0" />
+                      </button>
+                    )}
+                    {settlement.mode === 'main' && settlement.nextEpisodeId && !settlement.nextEpisodeUnlocked && settlement.nextEpisodeLockReason && (
+                      <div className="flex items-center justify-center gap-1.5 text-[12px] text-[#C98F9A]">
+                        <GameIcon name="lock" size={16} shadow={false} /> 下一幕需{settlement.nextEpisodeLockReason}
                       </div>
                     )}
-                    <p className="text-[13px] leading-[1.82] text-[#E9E6DE]">{settlement.reactionText || settlement.resultText}</p>
-                  </motion.div>
-                )}
-
-                {/* Rewards */}
-                {settlement.rewards &&
-                  !settlement.alreadyCompleted &&
-                  (() => {
-                    const r = settlement.rewards;
-                    const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string; num?: number }[] = [];
-                    if (r.critCashback && r.critCashback > 0) {
-                      items.push({
-                        icon: 'income',
-                        label: '暴击返现',
-                        value: `+${formatMoney(r.critCashback)}`,
-                        num: r.critCashback,
-                        tone: 'text-[#FFE7B0]',
-                        ribbon: `×${r.critMultiplier || 10}`,
-                      });
-                      if (r.cash && r.cash > r.critCashback) {
-                        items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash - r.critCashback)}`, tone: 'text-[#FFE7B0]', num: r.cash - r.critCashback });
-                      }
-                    } else if (r.cash && r.cash > 0) {
-                      items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash)}`, tone: 'text-[#FFE7B0]', num: r.cash });
-                    }
-                    if (r.affectionGain && r.affectionGain > 0) {
-                      items.push({
-                        icon: 'heart',
-                        label: r.affectionHeroineName ? `${r.affectionHeroineName}` : '好感',
-                        value: `+${r.affectionGain}`,
-                        tone: 'text-[#FFB3C6]',
-                      });
-                    }
-                    if (r.sysPoints && r.sysPoints > 0) {
-                      items.push({ icon: 'syspoint', label: '天枢积分', value: `+${r.sysPoints}`, tone: 'text-[#B9F6FB]' });
-                    }
-                    if (r.unlockedHeroineName) {
-                      items.push({ icon: 'nav_contact', label: '新联系人', value: r.unlockedHeroineName, tone: 'text-[#FFB3C6]' });
-                    }
-                    if (r.unlockedAssetName) {
-                      items.push({ icon: 'key', label: '入库', value: r.unlockedAssetName, tone: 'text-[#FFE7B0]' });
-                    }
-                    if (r.unlockedOutfitName) {
-                      items.push({ icon: 'crown', label: '解锁装扮', value: r.unlockedOutfitName, tone: 'text-[#FFB3C6]' });
-                    }
-                    if (items.length === 0) return null;
-                    return (
-                      <div>
-                        <div className="text-center text-[10.5px] tracking-[0.4em] text-[#A3AAC2] mb-2">— 获得奖励 —</div>
-                        <div className="flex flex-wrap justify-center gap-2">
-                          {items.map((it, i) => (
-                            <motion.div
-                              key={i}
-                              initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                              animate={{ opacity: 1, scale: 1, y: 0 }}
-                              transition={{ delay: 0.35 + i * 0.12, type: 'spring', stiffness: 380, damping: 18 }}
-                              className="relative w-[84px] rounded-[10px] pt-2 pb-2 px-1 flex flex-col items-center"
-                              style={{
-                                background:
-                                  'radial-gradient(70% 55% at 50% 35%, rgba(255,220,150,0.22), transparent 75%), linear-gradient(180deg, rgba(30,40,78,0.92), rgba(10,15,31,0.95))',
-                                border: '1px solid rgba(226,189,114,0.55)',
-                                boxShadow: 'inset 0 1px 0 rgba(255,231,176,0.2), 0 8px 18px rgba(0,0,0,0.45)',
-                              }}
-                            >
-                              {it.ribbon && (
-                                <span className="absolute -top-2 -right-1.5 px-1.5 rounded-sm bg-[#FF4F72] text-white font-num text-[11px] shadow">
-                                  {it.ribbon}
-                                </span>
-                              )}
-                              <GameIcon name={it.icon} size={42} />
-                              <div className={`font-num text-[13px] font-semibold mt-1 max-w-full truncate ${it.tone}`}>
-                                {it.num != null ? <AnimatedNumber from={0} value={it.num} prefix="+" duration={900 + i * 150} /> : it.value}
-                              </div>
-                              <div className="text-[9.5px] text-[#A3AAC2] max-w-full truncate">{it.label}</div>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                {/* Next teaser */}
-                {settlement.cliffhanger && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.35 }}
-                    className="relative rounded-[10px] px-4 pt-4 pb-3"
-                    style={{ background: 'rgba(5,7,15,0.7)', border: '1px solid rgba(226,189,114,0.28)' }}
-                  >
-                    <OrnateCorners size={16} inset={-4} />
-                    <div className="absolute -top-2.5 left-3 px-2 bg-[#0A0F1F] text-[10.5px] font-black tracking-[0.3em] text-[#E2BD72]">
-                      下幕预告
-                    </div>
-                    <p className="text-[12px] text-[#C6CBDB] leading-[1.8]">{settlement.cliffhanger}</p>
-                  </motion.div>
-                )}
-
-                {/* Actions */}
-                <div className="pt-1 space-y-2.5">
-                  {settlement.mode === 'main' && settlement.nextEpisodeId && settlement.nextEpisodeUnlocked && onNextEpisode && (
-                    <button
-                      onClick={() => {
-                        playSystemPing();
-                        onNextEpisode(settlement.nextEpisodeId!);
-                      }}
-                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-1.5"
-                    >
-                      <span className="truncate">下一幕{settlement.nextEpisodeTitle ? ` · ${settlement.nextEpisodeTitle}` : ''}</span>
-                      <ChevronRight className="w-4 h-4 shrink-0" />
-                    </button>
-                  )}
-
-                  {settlement.mode === 'main' && settlement.nextEpisodeId && !settlement.nextEpisodeUnlocked && settlement.nextEpisodeLockReason && (
-                    <div className="flex items-center justify-center gap-1.5 text-[12px] text-[#FF8FA6]">
-                      <GameIcon name="lock" size={18} /> 下一幕需{settlement.nextEpisodeLockReason}
-                    </div>
-                  )}
-
-                  {settlement.mode !== 'main' && settlement.heroineId && onOpenChat && (
+                    {primaryChat && (
+                      <button
+                        onClick={() => {
+                          playTap();
+                          onOpenChat!(settlement.heroineId!, settlement.locationLabel || null);
+                        }}
+                        className="w-full btn-champagne py-3 px-4 text-[14.5px] font-editorial flex items-center justify-center gap-2"
+                      >
+                        <GameIcon name="nav_contact" size={22} shadow={false} />
+                        <span>发微信给{settlement.mode === 'shura' ? '她' : settlement.heroineName || '她'}</span>
+                      </button>
+                    )}
                     <button
                       onClick={() => {
                         playTap();
-                        onOpenChat(settlement.heroineId!, settlement.locationLabel || null);
+                        onExit();
                       }}
-                      className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-2"
+                      className={`w-full py-2.5 text-[13.5px] font-editorial ${primaryNext || primaryChat ? 'btn-ghost' : 'btn-champagne'}`}
                     >
-                      <GameIcon name="nav_contact" size={24} shadow={false} />
-                      <span>发微信给{settlement.mode === 'shura' ? '她' : settlement.heroineName || '她'}</span>
+                      {settlement.mode === 'main' ? '返回目录' : '返回'}
                     </button>
-                  )}
-
-                  <button
-                    onClick={() => {
-                      playTap();
-                      onExit();
-                    }}
-                    className={`w-full py-2.5 text-[14px] font-editorial ${
-                      (settlement.mode === 'main' && settlement.nextEpisodeUnlocked) ||
-                      (settlement.mode !== 'main' && settlement.heroineId)
-                        ? 'btn-navy'
-                        : 'gold-btn-shimmer'
-                    }`}
-                  >
-                    {settlement.mode === 'main' ? '返回目录' : '返回'}
-                  </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
+            </motion.div>
+          );
+        })()}
       </AnimatePresence>
     </div>
   );

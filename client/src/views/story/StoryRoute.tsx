@@ -21,6 +21,7 @@ interface Props {
   completed: Set<string>;
   netWorth: number;
   onOpen: (ep: any) => void;
+  volIndex: number;
 }
 
 /** gated = the very next chapter, waiting only on net worth */
@@ -29,7 +30,7 @@ type NodeState = 'done' | 'current' | 'gated' | 'locked';
 const xOf = (i: number) => (i % 2 === 0 ? 24 : 76);
 const yOf = (i: number) => TOP + i * ROW;
 
-export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, completed, netWorth, onOpen }) => {
+export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, completed, netWorth, onOpen, volIndex }) => {
   const states: NodeState[] = episodes.map((ep) => {
     if (completed.has(ep.episodeId)) return 'done';
     const prereq = !ep.requireEpisode || completed.has(ep.requireEpisode);
@@ -45,23 +46,21 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
       {/* ---------- masthead: cover art bleeds to the edges and dissolves into the page ---------- */}
       <div className="relative h-[176px] -mx-3 overflow-hidden">
         <img src={vol.cover || episodes[0]?.bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0F1F]/70 via-[#0A0F1F]/20 to-[#0A0F1F]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/85 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#04050A]/75 via-[#04050A]/25 to-[#04050A]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#04050A]/90 via-[#04050A]/20 to-transparent" />
         <div className="absolute left-5 bottom-3">
-          {kicker && <div className="text-[11px] tracking-[0.6em] text-[#E2BD72] font-bold">{kicker}</div>}
-          <div className="font-editorial text-[42px] leading-none font-black tracking-[0.28em] gold-gradient-text drop-shadow-[0_4px_14px_rgba(0,0,0,0.9)] mt-1">
-            {name}
-          </div>
-          {vol.subtitle && <div className="text-[11px] text-[#C3C9DC] mt-2 max-w-[240px] truncate text-stroke-dark">{vol.subtitle}</div>}
+          <div className="label-en">{volIndex === 0 ? 'PROLOGUE' : `VOLUME ${String(volIndex).padStart(2, '0')}`}{kicker ? ` · ${kicker}` : ''}</div>
+          <div className="font-editorial text-[40px] leading-none font-black tracking-[0.3em] ink-title mt-2">{name}</div>
+          {vol.subtitle && <div className="text-[11px] text-[#8C90A0] mt-2 max-w-[240px] truncate">{vol.subtitle}</div>}
         </div>
         <div className="absolute right-5 bottom-4 text-right">
-          <div className="font-num leading-none text-stroke-dark">
-            <span className="text-[30px] text-[#FFE7B0]">{doneCount}</span>
-            <span className="text-[14px] text-[#A3AAC2]"> / {episodes.length}</span>
+          <div className="font-num leading-none">
+            <span className="text-[30px] text-[var(--ivory-2)]">{doneCount}</span>
+            <span className="text-[13px] text-[#6D7183]"> / {episodes.length}</span>
           </div>
           <div className="mt-1.5 flex justify-end gap-[3px]">
             {states.map((s, i) => (
-              <span key={i} className={`w-[5px] h-[5px] rotate-45 ${s === 'done' ? 'bg-[#E2BD72]' : s === 'current' ? 'bg-[#FFE7B0] animate-pulse' : 'bg-white/15'}`} />
+              <span key={i} className={`w-[4px] h-[4px] rotate-45 ${s === 'done' ? 'bg-[var(--champagne)]' : s === 'current' ? 'bg-[var(--ivory-2)] animate-pulse' : 'bg-white/12'}`} />
             ))}
           </div>
         </div>
@@ -72,12 +71,12 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
         <svg className="absolute inset-0 w-full h-full overflow-visible" viewBox={`0 0 100 ${height}`} preserveAspectRatio="none" aria-hidden>
           <defs>
             <linearGradient id={`rt-${vol.volumeId}`} x1="0" x2="0" y1="0" y2="1">
-              <stop offset="0%" stopColor="#FFE7B0" />
-              <stop offset="100%" stopColor="#B7843A" />
+              <stop offset="0%" stopColor="#E6D6B2" />
+              <stop offset="100%" stopColor="#9C8660" />
             </linearGradient>
           </defs>
           {/* lead-in from the masthead */}
-          <path d={`M ${xOf(0)} 0 L ${xOf(0)} ${yOf(0)}`} stroke="#E2BD72" strokeOpacity={0.5} strokeWidth={1.5} vectorEffect="non-scaling-stroke" fill="none" />
+          <path d={`M ${xOf(0)} 0 L ${xOf(0)} ${yOf(0)}`} stroke="#D9C49A" strokeOpacity={0.35} strokeWidth={1.5} vectorEffect="non-scaling-stroke" fill="none" />
           {episodes.slice(0, -1).map((_, i) => {
             const x1 = xOf(i);
             const y1 = yOf(i);
@@ -88,12 +87,12 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
             return (
               <g key={i}>
                 {lit && (
-                  <path d={d} stroke="#FFE7B0" strokeOpacity={0.25} strokeWidth={7} vectorEffect="non-scaling-stroke" fill="none" strokeLinecap="round" />
+                  <path d={d} stroke="#E6D6B2" strokeOpacity={0.12} strokeWidth={6} vectorEffect="non-scaling-stroke" fill="none" strokeLinecap="round" />
                 )}
                 <path
                   d={d}
-                  stroke={lit ? `url(#rt-${vol.volumeId})` : 'rgba(160,178,230,0.32)'}
-                  strokeWidth={lit ? 2 : 1.5}
+                  stroke={lit ? `url(#rt-${vol.volumeId})` : 'rgba(200,205,220,0.2)'}
+                  strokeWidth={lit ? 1.5 : 1}
                   strokeDasharray={lit ? undefined : '3 6'}
                   strokeLinecap="round"
                   vectorEffect="non-scaling-stroke"
@@ -123,7 +122,7 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                   top: -8,
                   [left ? 'right' : 'left']: '6%',
                   color: 'transparent',
-                  WebkitTextStroke: '1px rgba(226,189,114,0.14)',
+                  WebkitTextStroke: '1px rgba(236,230,218,0.07)',
                 }}
               >
                 {String(i + 1).padStart(2, '0')}
@@ -134,23 +133,23 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                 {st === 'current' && (
                   <motion.span
                     className="absolute -inset-3 rounded-full"
-                    style={{ background: 'radial-gradient(circle, rgba(255,231,176,0.35), transparent 70%)' }}
+                    style={{ background: 'radial-gradient(circle, rgba(230,214,178,0.22), transparent 70%)' }}
                     animate={{ scale: [0.9, 1.15, 0.9], opacity: [0.6, 1, 0.6] }}
                     transition={{ repeat: Infinity, duration: 2.4 }}
                   />
                 )}
                 <span
-                  className="absolute inset-0 rounded-full p-[2.5px]"
+                  className="absolute inset-0 rounded-full p-[1.5px]"
                   style={{
                     background:
                       st === 'gated'
-                        ? 'repeating-conic-gradient(#E2BD72 0deg 14deg, rgba(226,189,114,0.15) 14deg 24deg)'
+                        ? 'repeating-conic-gradient(rgba(217,196,154,0.8) 0deg 12deg, rgba(217,196,154,0.1) 12deg 22deg)'
                         : st === 'locked'
-                        ? 'rgba(107,115,146,0.55)'
+                        ? 'rgba(120,124,140,0.35)'
                         : st === 'current'
-                          ? 'conic-gradient(from 200deg, #FFF6DC, #B7843A, #FFE7B0, #8A6428, #FFF6DC)'
-                          : 'linear-gradient(160deg,#FFE7B0,#9A7434)',
-                    boxShadow: st === 'current' ? '0 0 22px rgba(255,220,150,0.55)' : '0 6px 14px rgba(0,0,0,0.6)',
+                          ? 'conic-gradient(from 200deg, #F3EAD6, #9C8660, #E6D6B2, #7A6848, #F3EAD6)'
+                          : 'rgba(217,196,154,0.7)',
+                    boxShadow: st === 'current' ? '0 0 26px rgba(230,214,178,0.28), 0 10px 20px rgba(0,0,0,0.6)' : '0 8px 16px rgba(0,0,0,0.6)',
                   }}
                 >
                   <span className="relative block w-full h-full rounded-full overflow-hidden bg-[#0A0F1F]">
@@ -166,7 +165,7 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                   </span>
                 </span>
                 {st === 'done' && (
-                  <span className="absolute -right-1 -bottom-1 w-[22px] h-[22px] rounded-full bg-[#0A0F1F] border border-[#E2BD72] flex items-center justify-center font-editorial text-[11px] font-black text-[#E2BD72] rotate-[-12deg]">
+                  <span className="absolute -right-1 -bottom-1 w-[20px] h-[20px] rounded-full bg-[#04050A] border border-[var(--champagne-dim)] flex items-center justify-center font-editorial text-[10px] font-black text-[var(--champagne)] rotate-[-12deg]">
                     阅
                   </span>
                 )}
@@ -176,7 +175,7 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                   </span>
                 )}
                 {st === 'current' && (
-                  <span className="absolute left-1/2 -translate-x-1/2 -bottom-3 px-2.5 py-[1px] rounded-full text-[10.5px] font-editorial font-black text-[#1E1506] bg-gradient-to-b from-[#FFF0C8] to-[#D6A85A] shadow-[0_3px_8px_rgba(0,0,0,0.5)] whitespace-nowrap">
+                  <span className="absolute left-1/2 -translate-x-1/2 -bottom-3 px-2.5 py-[1px] text-[10px] btn-champagne font-editorial whitespace-nowrap">
                     继续
                   </span>
                 )}
@@ -187,15 +186,15 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                 className={`absolute top-0 flex flex-col ${left ? 'items-start text-left' : 'items-end text-right'}`}
                 style={left ? { left: `calc(${xOf(i)}% + ${size / 2 + 14}px)`, right: '5%' } : { right: `calc(${100 - xOf(i)}% + ${size / 2 + 14}px)`, left: '5%' }}
               >
-                <span className={`text-[10px] tracking-[0.3em] ${st === 'locked' ? 'text-[#7F88A6]' : 'text-[#E2BD72]'}`}>{ep.chapterTitle}</span>
+                <span className={`text-[10px] tracking-[0.3em] ${st === 'locked' ? 'text-[#5E6273]' : 'text-[var(--champagne-dim)]'}`}>{ep.chapterTitle}</span>
                 <span
-                  className={`font-editorial font-black leading-tight mt-0.5 ${st === 'current' ? 'text-[19px] gold-gradient-text' : st === 'locked' ? 'text-[16px] text-[#A3AAC2]' : 'text-[16px] text-[#FBF1D8]'}`}
+                  className={`font-editorial font-black leading-tight mt-0.5 ${st === 'current' ? 'text-[19px] ink-title' : st === 'locked' ? 'text-[16px] text-[#7C8092]' : 'text-[16px] text-[#D9D4C9]'}`}
                 >
                   {ep.title}
                 </span>
-                <span className={`text-[11px] leading-snug mt-1 line-clamp-2 ${st === 'locked' ? 'text-[#737C99]' : 'text-[#9AA2BC]'}`}>{ep.summary}</span>
+                <span className={`text-[11px] leading-snug mt-1 line-clamp-2 ${st === 'locked' ? 'text-[#585C6C]' : 'text-[#8C90A0]'}`}>{ep.summary}</span>
                 {nwShort && (
-                  <span className="mt-1 text-[10.5px] text-[#FF8FA6] font-num">身价 {formatMoney(ep.requireNetWorth)} 开启</span>
+                  <span className="mt-1 text-[10.5px] text-[#C98F9A] font-num">身价 {formatMoney(ep.requireNetWorth)} 开启</span>
                 )}
               </span>
             </button>

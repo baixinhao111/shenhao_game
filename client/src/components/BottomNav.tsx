@@ -45,14 +45,14 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
       }`}
       style={{
         background:
-          'linear-gradient(180deg, rgba(22,30,60,0.97) 0%, rgba(9,13,28,0.99) 100%)',
+          'linear-gradient(180deg, rgba(10,12,20,0.97) 0%, rgba(4,5,10,0.99) 100%)',
         boxShadow: '0 -8px 24px rgba(0,0,0,0.45)',
       }}
     >
       {/* gold rail with centre diamond */}
-      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/70 to-transparent" />
-      <div className="absolute inset-x-0 top-[3px] h-px bg-gradient-to-r from-transparent via-[#E2BD72]/20 to-transparent" />
-      <span className="absolute left-1/2 -top-[4px] -translate-x-1/2 w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] shadow-[0_0_8px_rgba(226,189,114,0.8)]" />
+      <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[#D9C49A]/35 to-transparent" />
+      
+      <span className="absolute left-1/2 -top-[3px] -translate-x-1/2 w-1.5 h-1.5 rotate-45 bg-[#D9C49A]/70" />
 
       <div className="grid grid-cols-5 px-1">
         {TABS.map(({ id, label, icon }) => {
@@ -78,7 +78,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
                   className="absolute inset-x-1 top-0 bottom-0 pointer-events-none"
                   style={{
                     background:
-                      'radial-gradient(60% 55% at 50% 45%, rgba(226,189,114,0.28) 0%, rgba(226,189,114,0) 70%)',
+                      'radial-gradient(60% 55% at 50% 45%, rgba(217,196,154,0.16) 0%, rgba(217,196,154,0) 70%)',
                   }}
                 />
               )}

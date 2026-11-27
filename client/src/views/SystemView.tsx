@@ -14,6 +14,7 @@ import {
   X,
 } from 'lucide-react';
 import { AnimatedNumber } from '../components/AnimatedNumber';
+import { Atmosphere, EdgeLabel, Watermark } from '../components/Atmosphere';
 import { GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
 import { PlayerEmblem } from '../components/TopBar';
 import { apiRequest } from '../lib/api';
@@ -186,10 +187,9 @@ export const SystemView: React.FC = () => {
   const tierRatio = player.nextTier ? Math.min(100, (player.netWorth / player.nextTier.minNetWorth) * 100) : 100;
 
   return (
-    <div className="h-full flex flex-col bg-[#0B1122]">
+    <div className="relative h-full flex flex-col night-page">
       {/* Reversible Navigation Header */}
-      <header className="relative shrink-0 h-[56px] px-4 flex items-center justify-between gap-2" style={{ background: "linear-gradient(180deg, rgba(20,28,56,0.98), rgba(11,16,33,0.98))" }}>
-        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
+      <header className="relative z-10 shrink-0 h-[56px] px-4 flex items-center justify-between gap-2">
         <button
           onClick={() => {
             playTap();
@@ -197,11 +197,14 @@ export const SystemView: React.FC = () => {
           }}
           className="flex items-center gap-1.5 text-xs text-[#E6E3DC] hover:text-white active:opacity-75"
         >
-          <ArrowLeft className="w-4 h-4 text-[#E2BD72]" />
+          <ArrowLeft className="w-4 h-4 text-[var(--champagne)]" />
           <span>返回</span>
         </button>
 
-        <span className="font-editorial text-[17px] font-black tracking-[0.3em] gold-gradient-text">个人档案</span>
+        <span className="flex flex-col items-center leading-none">
+          <span className="label-en !text-[8px]">PROFILE · DOSSIER</span>
+          <span className="font-editorial text-[15px] font-black tracking-[0.4em] ink-title mt-1">个人档案</span>
+        </span>
 
         <div className="flex items-center gap-1.5">
           <button
@@ -247,7 +250,9 @@ export const SystemView: React.FC = () => {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto no-scrollbar px-3 py-4 space-y-4 deco-texture">
+      <Atmosphere />
+      <EdgeLabel text="TIANSHU · HOST FILE · NO.0001" top="30%" />
+      <div className="relative flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-5">
         {/* Audio & Account Security Settings Panel */}
         {showSettings && (
           <section className="panel-elevated rounded-[12px] p-3.5 space-y-3.5 border border-[#E2BD72]/40">
@@ -349,15 +354,16 @@ export const SystemView: React.FC = () => {
 
         {/* Dossier: open hero, no frame */}
         <section className="relative pt-2 pb-1">
-          <div className="absolute -top-6 left-0 w-[260px] h-[200px] rounded-full bg-[radial-gradient(closest-side,rgba(226,189,114,0.16),transparent)] pointer-events-none" />
+          <Watermark text="TIANSHU" className="-top-3 right-[-6px] text-[64px]" />
           <div className="relative flex items-center gap-4">
             <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={72} />
             <div className="min-w-0 flex-1">
-              <h2 className="font-editorial text-[28px] font-black gold-gradient-text truncate leading-none tracking-[0.08em]">{user.nickname}</h2>
+              <div className="label-en">HOST · LV.{player.sysLevel}</div>
+              <h2 className="font-editorial text-[30px] font-black ink-title truncate leading-none tracking-[0.12em] mt-1.5">{user.nickname}</h2>
               <div className="flex items-center gap-2 flex-wrap mt-2">
                 <span className="inline-flex items-center gap-1">
                   <GameIcon name="crown" size={16} shadow={false} />
-                  <span className="text-[12px] text-[#F6DDA4] font-bold tracking-[0.2em]">{player.tier.name}</span>
+                  <span className="text-[12px] text-[var(--champagne)] tracking-[0.25em]">{player.tier.name}</span>
                 </span>
                 {user.equippedTitle?.titleBadge && (
                   <span
@@ -391,12 +397,12 @@ export const SystemView: React.FC = () => {
               { icon: 'syspoint' as const, label: '天枢积分', value: player.sysPoints },
               { icon: 'energy' as const, label: '精力', value: `${player.energy}/${player.maxEnergy}` },
             ].map((x, i) => (
-              <div key={x.label} className={`flex flex-col items-center ${i ? 'border-l border-[#E2BD72]/15' : ''}`}>
-                <div className="flex items-center gap-1 text-[10px] tracking-[0.25em] text-[#8B93AD]">
+              <div key={x.label} className={`flex flex-col items-center ${i ? 'border-l border-white/[0.07]' : ''}`}>
+                <div className="flex items-center gap-1 text-[10px] tracking-[0.25em] text-[#6D7183]">
                   <GameIcon name={x.icon} size={16} shadow={false} />
                   {x.label}
                 </div>
-                <div className="font-num text-[17px] text-[#FFE7B0] mt-1 truncate max-w-full">{x.value}</div>
+                <div className="font-num text-[18px] text-[var(--ivory-2)] mt-1 truncate max-w-full">{x.value}</div>
               </div>
             ))}
           </div>
@@ -414,11 +420,11 @@ export const SystemView: React.FC = () => {
             {player.nextTier && (
               <div>
                 <div className="flex items-center justify-between text-[10.5px] mb-1 gap-1">
-                  <span className="text-[#A3AAC2] truncate tracking-wider">晋升 · {player.nextTier.name}</span>
-                  <span className="font-num text-[#FFE7B0] shrink-0">{Math.round(tierRatio)}%</span>
+                  <span className="text-[#8C90A0] truncate tracking-wider">晋升 · {player.nextTier.name}</span>
+                  <span className="font-num text-[var(--ivory-2)] shrink-0">{Math.round(tierRatio)}%</span>
                 </div>
                 <div className="h-[2px] bg-white/[0.08] rounded-full">
-                  <div className="h-full rounded-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0] shadow-[0_0_8px_rgba(255,231,176,0.7)]" style={{ width: `${tierRatio}%` }} />
+                  <div className="h-full rounded-full bg-[var(--champagne)]" style={{ width: `${tierRatio}%` }} />
                 </div>
               </div>
             )}
@@ -426,7 +432,7 @@ export const SystemView: React.FC = () => {
         </section>
 
         {/* text tabs */}
-        <div className="flex items-center justify-around border-b border-white/[0.06]">
+        <div className="flex items-center justify-around border-b border-white/[0.05]">
           {[
             { id: 'tasks', label: '日程' },
             { id: 'achievements', label: '成就' },
@@ -440,7 +446,7 @@ export const SystemView: React.FC = () => {
                 playTap();
                 setSubTab(id as ProfileSubTab);
               }}
-              className="relative route-tab font-editorial"
+              className="relative route-tab v2 font-editorial"
             >
               {label}
               {id === 'achievements' && unclaimedAchCount > 0 && <span className="red-dot top-1.5 -right-2" />}
@@ -456,44 +462,44 @@ export const SystemView: React.FC = () => {
               const ratio = Math.min(100, (t.progress / t.target) * 100);
               return (
                 <div key={t.id} className={`relative py-3.5 flex items-center gap-3 ${t.claimed ? 'opacity-50' : ''}`}>
-                  {i > 0 && <span className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/20 to-transparent" />}
+                  {i > 0 && <span className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />}
                   <span
                     className={`shrink-0 w-2.5 h-2.5 rotate-45 ${
-                      t.claimed ? 'bg-[#E2BD72]/60' : ready ? 'bg-[#FFE7B0] shadow-[0_0_10px_rgba(255,231,176,0.9)] animate-pulse' : 'border border-[#6B7392]'
+                      t.claimed ? 'bg-[var(--champagne-dim)]' : ready ? 'bg-[var(--ivory-2)] shadow-[0_0_10px_rgba(236,230,218,0.8)] animate-pulse' : 'border border-[#4E5262]'
                     }`}
                   />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
-                      <span className="text-[14px] font-editorial font-bold text-[#FBF1D8] truncate">{t.title}</span>
+                      <span className="text-[14px] font-editorial font-bold text-[#D9D4C9] truncate">{t.title}</span>
                       <span className="font-num text-[11px] text-[#8B93AD] shrink-0">
                         {Math.min(t.progress, t.target)}/{t.target}
                       </span>
                     </div>
                     <div className="h-px bg-white/[0.07] mt-1.5 mb-1.5 max-w-[220px]">
-                      <div className="h-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0]" style={{ width: `${ratio}%` }} />
+                      <div className="h-full bg-[var(--champagne)]" style={{ width: `${ratio}%` }} />
                     </div>
                     <div className="flex items-center gap-3 font-num text-[11px]">
-                      <span className="flex items-center gap-0.5 text-[#FFE7B0]">
+                      <span className="flex items-center gap-0.5 text-[#CDBB93]">
                         <GameIcon name="cash" size={15} shadow={false} />+{formatMoney(t.rewardCash)}
                       </span>
-                      <span className="flex items-center gap-0.5 text-[#B9F6FB]">
+                      <span className="flex items-center gap-0.5 text-[#8FC6CC]">
                         <GameIcon name="syspoint" size={15} shadow={false} />+{t.rewardPoints}
                       </span>
-                      <span className="flex items-center gap-0.5 text-[#F4EFE4]">
+                      <span className="flex items-center gap-0.5 text-[#A9AEBE]">
                         <GameIcon name="energy" size={15} shadow={false} />+{t.rewardEnergy}
                       </span>
                     </div>
                   </div>
                   {t.claimed ? (
-                    <span className="shrink-0 w-11 h-11 rounded-full border border-[#E2BD72]/60 flex items-center justify-center text-[11px] font-black text-[#E2BD72] rotate-[-14deg] font-editorial">
+                    <span className="shrink-0 w-11 h-11 rounded-full border border-[var(--champagne-dim)] flex items-center justify-center text-[11px] font-black text-[var(--champagne)] rotate-[-14deg] font-editorial">
                       已领
                     </span>
                   ) : ready ? (
-                    <button disabled={busy} onClick={() => claimTask(t.id)} className="gold-btn-shimmer shrink-0 px-4 py-1.5 text-[12.5px] font-editorial">
+                    <button disabled={busy} onClick={() => claimTask(t.id)} className="btn-champagne shrink-0 px-4 py-1.5 text-[12.5px] font-editorial">
                       领取
                     </button>
                   ) : (
-                    <span className="shrink-0 text-[11px] text-[#6B7392] tracking-wider">进行中</span>
+                    <span className="shrink-0 label-en !tracking-[0.25em]">ONGOING</span>
                   )}
                 </div>
               );
@@ -539,7 +545,7 @@ export const SystemView: React.FC = () => {
                         {ready && (
                           <motion.span
                             className="absolute inset-0 rounded-full"
-                            style={{ background: 'radial-gradient(circle, rgba(255,231,176,0.45), transparent 70%)' }}
+                            style={{ background: 'radial-gradient(circle, rgba(230,214,178,0.3), transparent 70%)' }}
                             animate={{ scale: [0.9, 1.2, 0.9] }}
                             transition={{ repeat: Infinity, duration: 1.8 }}
                           />
@@ -550,7 +556,7 @@ export const SystemView: React.FC = () => {
                             cx="36"
                             cy="36"
                             r={R}
-                            stroke={ach.unlocked ? '#FFE7B0' : '#8B93AD'}
+                            stroke={ach.unlocked ? '#E6D6B2' : '#5E6273'}
                             strokeWidth="2"
                             fill="none"
                             strokeDasharray={`${C * ratio} ${C}`}
@@ -562,7 +568,7 @@ export const SystemView: React.FC = () => {
                           <span className="absolute -bottom-1 px-1.5 rounded-sm bg-[#E2BD72] text-[#1E1506] text-[9px] font-black">佩戴</span>
                         )}
                       </span>
-                      <span className={`mt-1.5 text-[12px] font-editorial font-black ${ach.unlocked ? 'text-[#FBF1D8]' : 'text-[#A3AAC2]'}`}>{ach.name}</span>
+                      <span className={`mt-1.5 text-[12px] font-editorial font-black ${ach.unlocked ? 'text-[var(--ivory-2)]' : 'text-[#7C8092]'}`}>{ach.name}</span>
                       {ach.titleBadge && (
                         <span
                           className={`text-[9.5px] ${
@@ -574,7 +580,7 @@ export const SystemView: React.FC = () => {
                       )}
                       <span className="text-[10px] text-[#7F88A6] leading-snug mt-0.5 line-clamp-2 px-1">{ach.desc}</span>
                       {ready ? (
-                        <span className="mt-1 px-2.5 py-[1px] rounded-full text-[10.5px] font-black text-[#1E1506] bg-gradient-to-b from-[#FFF0C8] to-[#D6A85A]">领取</span>
+                        <span className="mt-1 px-3 py-[2px] text-[10.5px] btn-champagne">领取</span>
                       ) : !ach.unlocked ? (
                         <span className="mt-1 font-num text-[10px] text-[#8B93AD]">
                           {fmtVal(ach.progress)}/{fmtVal(ach.target)}
@@ -610,7 +616,7 @@ export const SystemView: React.FC = () => {
                     <span className="absolute -bottom-2 font-num text-[11px] text-[#B9F6FB] text-stroke-dark">Lv.{sk.level}</span>
                   </span>
                   <div className="min-w-0 flex-1 pl-1">
-                    <div className="text-[14px] font-editorial font-bold text-[#FBF1D8]">{sk.name}</div>
+                    <div className="text-[14px] font-editorial font-bold text-[#D9D4C9]">{sk.name}</div>
                     <p className="text-[11px] text-[#929AB4] mt-0.5 leading-relaxed">{sk.desc}</p>
                     <div className="flex gap-[3px] mt-1.5">
                       {Array.from({ length: sk.maxLevel }).map((_, i) => (
@@ -651,11 +657,11 @@ export const SystemView: React.FC = () => {
               return (
                 <div key={item.id} className="flex flex-col items-center text-center">
                   <div className="relative h-[92px] w-full flex items-end justify-center">
-                    <span className="absolute bottom-1 w-[70%] h-[16px] rounded-[50%] bg-[radial-gradient(closest-side,rgba(226,189,114,0.45),transparent)]" />
-                    <span className="absolute bottom-[9px] w-[54%] h-px bg-gradient-to-r from-transparent via-[#E2BD72]/70 to-transparent" />
+                    <span className="absolute bottom-1 w-[70%] h-[16px] rounded-[50%] bg-[radial-gradient(closest-side,rgba(217,196,154,0.25),transparent)]" />
+                    <span className="absolute bottom-[9px] w-[54%] h-px bg-gradient-to-r from-transparent via-[#D9C49A]/45 to-transparent" />
                     <GameIcon name={icon as GameIconName} size={66} className="relative animate-float-slow mb-3" />
                   </div>
-                  <div className="text-[14px] font-editorial font-black text-[#FBF1D8] mt-1">{item.name}</div>
+                  <div className="text-[14px] font-editorial font-black text-[#D9D4C9] mt-1">{item.name}</div>
                   <div className="text-[10.5px] text-[#8B93AD] leading-snug mt-0.5 min-h-[28px] px-1">{item.desc}</div>
                   <button
                     disabled={!can}
