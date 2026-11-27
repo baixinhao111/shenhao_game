@@ -189,6 +189,7 @@ export const AngelGame: React.FC = () => {
               </div>
               <StakePicker
                 options={session.amounts as unknown as readonly number[]}
+                scale={false}
                 busy={busy}
                 onPick={invest}
                 render={(v) => (

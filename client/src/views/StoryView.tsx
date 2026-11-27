@@ -25,6 +25,7 @@ export const StoryView: React.FC = () => {
     applyServerState,
     notifyTop,
     showError,
+    setActiveTab,
   } = useGameStore();
 
   const [selectedVolId, setSelectedVolId] = useState<string>('all');
@@ -291,6 +292,55 @@ export const StoryView: React.FC = () => {
               </div>
             </div>
           </div>
+
+          {/* 身价卡点：告诉玩家差多少、去哪里赚 */}
+          {featuredEpisode && featuredPrereqMet && !featuredNwMet && !featuredDone && (
+            <div className="holo-panel mt-3 px-3.5 py-3">
+              <div className="holo-scan" aria-hidden />
+              <div className="relative flex items-center gap-2">
+                <GameIcon name="tianshu" size={26} shadow={false} />
+                <div className="min-w-0 flex-1">
+                  <div className="text-[12px] font-bold cyan-glow-text">天枢：宿主身价尚不足以撬动下一幕</div>
+                  <div className="text-[10.5px] text-[#9AF4FB]/70 mt-0.5">
+                    还差 <span className="font-num text-[#FFE7B0]">{formatMoney(featuredEpisode.requireNetWorth - state.player.netWorth)}</span>
+                    ，经营产业或在海城各区出手都能抬高身价
+                  </div>
+                </div>
+              </div>
+              <div className="relative mt-2.5 flex items-center gap-2">
+                <div className="flex-1 h-[5px] rounded-full bg-[#06222F] overflow-hidden">
+                  <div
+                    className="h-full rounded-full bg-gradient-to-r from-[#1FA9BC] to-[#B9F6FB] shadow-[0_0_6px_rgba(99,230,242,0.8)]"
+                    style={{ width: `${Math.max(3, Math.min(100, (state.player.netWorth / featuredEpisode.requireNetWorth) * 100))}%` }}
+                  />
+                </div>
+                <span className="font-num text-[11px] text-[#B9F6FB]">
+                  {formatMoney(state.player.netWorth)} / {formatMoney(featuredEpisode.requireNetWorth)}
+                </span>
+              </div>
+              <div className="relative grid grid-cols-2 gap-2 mt-3">
+                <button
+                  onClick={() => {
+                    playTap();
+                    setActiveTab('assets');
+                  }}
+                  className="btn-brass py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
+                >
+                  <GameIcon name="nav_assets" size={20} shadow={false} /> 经营产业
+                  {state.player.pendingIncome > 0 && <span className="font-num text-[10.5px] opacity-80">待收 {formatMoney(state.player.pendingIncome)}</span>}
+                </button>
+                <button
+                  onClick={() => {
+                    playTap();
+                    setActiveTab('map');
+                  }}
+                  className="btn-navy py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
+                >
+                  <GameIcon name="nav_map" size={20} shadow={false} /> 海城出手
+                </button>
+              </div>
+            </div>
+          )}
 
           <div className="flex items-center gap-2 mt-3 px-1">
             <span className="text-[11px] text-[#A3AAC2] tracking-wider">主线进度</span>

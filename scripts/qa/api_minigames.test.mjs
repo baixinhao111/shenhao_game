@@ -60,6 +60,7 @@ console.log('== validation (fresh player)');
 }
 
 const u = await progressed();
+const K = (await u.api('/state')).state.player.stakeScale || 1; // stakes scale with tier
 const st0 = (await u.api('/state')).state;
 console.log('== progressed player tier', st0.player.tier?.tier, 'cash', st0.player.cash, 'energy', st0.player.energy, 'pts', st0.player.sysPoints);
 
@@ -69,7 +70,7 @@ console.log('== jade');
   const c0 = await cash(u);
   let r = await u.api('/mg/jade/start', { tier: 2 });
   ok(r.ok && r.session.cells.length === 600, 'jade start');
-  ok((await cash(u)) === c0 - 300000, 'jade cost deducted');
+  ok((await cash(u)) === c0 - 300000 * K, 'jade cost deducted');
   const id = r.session.id; const cells = r.session.cells;
   ok(r.offers.length === 3 && r.offers.every((o) => o.offer > 0), 'initial offers');
   let mask = '0'.repeat(600);
@@ -113,13 +114,13 @@ console.log('== stocks');
   const q = await u.api('/minigame/stocks');
   const s = q.quotes[0];
   const c0 = await cash(u);
-  let r = await u.api('/mg/stock/open', { stockId: s.id, direction: 'long', amount: 300000 });
+  let r = await u.api('/mg/stock/open', { stockId: s.id, direction: 'long', amount: 300000 * K });
   ok(r.ok && r.session.path.length === 41, 'stock open');
   const id = r.session.id;
   r = await u.api('/mg/stock/close', { id, tick: 40 });
   ok(r.ok && r.result.tick <= 2, 'cannot close in the future (tick ' + r.result?.tick + ')');
-  ok((await cash(u)) === c0 - 300000 + r.result.payout, 'stock payout consistent');
-  r = await u.api('/mg/stock/open', { stockId: s.id, direction: 'short', amount: 100000 });
+  ok((await cash(u)) === c0 - 300000 * K + r.result.payout, 'stock payout consistent');
+  r = await u.api('/mg/stock/open', { stockId: s.id, direction: 'short', amount: 100000 * K });
   await sleep(3200);
   r = await u.api('/mg/stock/close', { id: r.session.id, tick: 4 });
   ok(r.ok && r.result.tick === 4, 'close at elapsed tick');
@@ -128,15 +129,15 @@ console.log('== stocks');
 // ---------- race ----------
 console.log('== race');
 {
-  let r = await u.api('/mg/race/start', { stake: 100000 });
+  let r = await u.api('/mg/race/start', { stake: 100000 * K });
   ok(r.ok && r.session.segments.length === 4, 'race start');
   let f = await u.api('/mg/race/finish', { id: r.session.id, hits: [1, 1, 1, 1] });
   ok(f.ok && f.result.win === false && f.result.accs.every((a) => a === 0), 'instant finish counts as zero');
-  r = await u.api('/mg/race/start', { stake: 100000 });
+  r = await u.api('/mg/race/start', { stake: 100000 * K });
   await sleep(4200);
   f = await u.api('/mg/race/finish', { id: r.session.id, hits: [1, 1, 1, 1] });
-  ok(f.ok && f.result.win && f.result.perfect && f.result.payout === 280000, 'perfect run pays 2.8x');
-  r = await u.api('/mg/race/start', { stake: 100000 });
+  ok(f.ok && f.result.win && f.result.perfect && f.result.payout === 280000 * K, 'perfect run pays 2.8x');
+  r = await u.api('/mg/race/start', { stake: 100000 * K });
   await sleep(4200);
   f = await u.api('/mg/race/finish', { id: r.session.id, hits: [5, -2, 'x', 0.5] });
   ok(f.ok && f.result.accs.join(',') === '1,0,0,0.5', 'hits clamped: ' + f.result.accs);
@@ -159,14 +160,14 @@ console.log('== angel');
   r = await u.api('/mg/angel/hint', { id });
   ok(r.ok && /天枢判定/.test(r.hint) && (await pts(u)) === p0 - 15, 'hint costs 15 pts');
   const c0 = await cash(u);
-  r = await u.api('/mg/angel/invest', { id, index: 1, amount: 500000 });
-  ok(r.ok && (await cash(u)) === c0 - 500000 + r.result.payout, 'invest payout consistent (' + r.result.type + ' x' + r.result.mult + ')');
+  r = await u.api('/mg/angel/invest', { id, index: 1, amount: 500000 * K });
+  ok(r.ok && (await cash(u)) === c0 - 500000 * K + r.result.payout, 'invest payout consistent (' + r.result.type + ' x' + r.result.mult + ')');
 }
 
 // ---------- livestream ----------
 console.log('== livestream (waits 26s)');
 {
-  let r = await u.api('/mg/live/start', { budget: 300000 });
+  let r = await u.api('/mg/live/start', { budget: 300000 * K });
   ok(r.ok && r.session.opp.length > 5 && r.session.warnAt > 20, 'live start');
   const s = r.session;
   let f = await u.api('/mg/live/finish', { id: s.id, actions: [] });
@@ -183,7 +184,7 @@ console.log('== livestream (waits 26s)');
   ];
   f = await u.api('/mg/live/finish', { id: s.id, actions: acts });
   ok(f.ok, 'live finish ' + (f.error || ''));
-  ok(f.result.spent <= 300000 && f.result.spent + f.result.refund === 300000, 'budget accounting spent=' + f.result.spent);
+  ok(f.result.spent <= 300000 * K && f.result.spent + f.result.refund === 300000 * K, 'budget accounting spent=' + f.result.spent);
   ok(f.result.win, 'smart timing wins (bar ' + f.result.finalBar.toFixed(1) + ')');
   const crit = f.result.crit?.cashback || 0;
   ok((await cash(u)) === c0 + f.result.refund + crit, 'refund + crit credited');

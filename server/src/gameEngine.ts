@@ -380,12 +380,22 @@ export function computePortfolioAndTier(userId: number) {
   };
 }
 
+/**
+ * 天枢消费返现。保持「×2/×5/×10」的爽感，但期望值受控：
+ *  - 基础触发率 12%（+技能/套装/红颜加成）
+ *  - 未触发时蓄能，蓄能量与「这笔消费占身价的比例」成正比（占 6% 以上记满 25 点），
+ *    小额刷单只能 +2，避免靠刷小升级稳拿保底暴击
+ *  - 蓄满 100 必出 3/5/10 倍
+ * scripts/qa/balance_progress.mjs 里的 CRIT 常量必须与这里一致。
+ */
+export const CRIT = { baseProb: 0.12, chargeOnCrit: 10, chargeMax: 25, chargeMin: 2, chargeScale: 400 };
+
 export function rollCritCashback(
   userId: number,
   spendAmount: number,
   options?: { forceMultiplier?: number; allowCrit?: boolean },
 ) {
-  const { state, critBonusPct, critMultBonus } = computePortfolioAndTier(userId);
+  const { state, critBonusPct, critMultBonus, netWorth } = computePortfolioAndTier(userId);
   if (spendAmount <= 0 || options?.allowCrit === false) {
     return { triggered: false, multiplier: 0, cashback: 0, newCharge: state.crit_charge, leveledUp: false };
   }
@@ -399,7 +409,7 @@ export function rollCritCashback(
     multiplier = options.forceMultiplier;
     newCharge = 0;
   } else {
-    const baseProb = 0.28 + critBonusPct;
+    const baseProb = CRIT.baseProb + critBonusPct;
     if (state.crit_charge >= 100) {
       triggered = true;
       newCharge = 0;
@@ -411,9 +421,10 @@ export function rollCritCashback(
       const roll = Math.random();
       multiplier = roll < 0.05 ? 10 : roll < 0.25 ? 5 : 2;
       multiplier += Math.floor(critMultBonus * 0.5);
-      newCharge = Math.min(100, state.crit_charge + 15);
+      newCharge = Math.min(100, state.crit_charge + CRIT.chargeOnCrit);
     } else {
-      newCharge = Math.min(100, state.crit_charge + 25);
+      const gain = Math.round((spendAmount / Math.max(1, netWorth)) * CRIT.chargeScale);
+      newCharge = Math.min(100, state.crit_charge + Math.max(CRIT.chargeMin, Math.min(CRIT.chargeMax, gain)));
     }
   }
 
@@ -699,10 +710,12 @@ export function buildFullGameState(userId: number) {
       aiMsgToday: state.ai_msg_today,
       netWorth,
       tier: tierInfo,
+      /** 小玩法档位倍率：彩头/本金随阶层放大，保证后期小玩法仍然动得了身价 */
+      stakeScale: Number((tierInfo as any).stakeScale || 1),
       nextTier: content.map.tiers.find((t: any) => t.tier === tierInfo.tier + 1) || null,
       incomePerHour: portfolio.incomePerHour,
       pendingIncome: portfolio.pendingIncome,
-      critRatePct: Math.round((0.28 + portfolio.critBonusPct) * 100),
+      critRatePct: Math.round((CRIT.baseProb + portfolio.critBonusPct) * 100),
     },
     map: {
       cityName: content.map.cityName,

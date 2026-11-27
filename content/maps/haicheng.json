@@ -4,14 +4,14 @@
   "subtitle": "江岸霓虹与旧巷烟火交织之城",
   "mapImage": "/assets/bg/haicheng_map.jpg",
   "tiers": [
-    { "tier": 1, "name": "初入海城", "minNetWorth": 0, "badge": "初入海城", "color": "#94A3B8" },
-    { "tier": 2, "name": "新锐新贵", "minNetWorth": 1000000, "badge": "新锐新贵", "color": "#38BDF8" },
-    { "tier": 3, "name": "海城名流", "minNetWorth": 30000000, "badge": "海城名流", "color": "#A78BFA" },
-    { "tier": 4, "name": "商界巨鳄", "minNetWorth": 500000000, "badge": "商界巨鳄", "color": "#E6C165" },
-    { "tier": 5, "name": "顶级豪门", "minNetWorth": 5000000000, "badge": "顶级豪门", "color": "#F59E0B" },
-    { "tier": 6, "name": "跨国财阀", "minNetWorth": 50000000000, "badge": "跨国财阀", "color": "#F43F5E" },
-    { "tier": 7, "name": "全球教父", "minNetWorth": 500000000000, "badge": "全球教父", "color": "#EC4899" },
-    { "tier": 8, "name": "幕后苍穹", "minNetWorth": 10000000000000, "badge": "幕后苍穹", "color": "#F9DF8B" }
+    { "tier": 1, "name": "初入海城", "minNetWorth": 0, "stakeScale": 1, "badge": "初入海城", "color": "#94A3B8" },
+    { "tier": 2, "name": "新锐新贵", "minNetWorth": 1000000, "stakeScale": 3, "badge": "新锐新贵", "color": "#38BDF8" },
+    { "tier": 3, "name": "海城名流", "minNetWorth": 30000000, "stakeScale": 30, "badge": "海城名流", "color": "#A78BFA" },
+    { "tier": 4, "name": "商界巨鳄", "minNetWorth": 500000000, "stakeScale": 300, "badge": "商界巨鳄", "color": "#E6C165" },
+    { "tier": 5, "name": "顶级豪门", "minNetWorth": 5000000000, "stakeScale": 3000, "badge": "顶级豪门", "color": "#F59E0B" },
+    { "tier": 6, "name": "跨国财阀", "minNetWorth": 50000000000, "stakeScale": 30000, "badge": "跨国财阀", "color": "#F43F5E" },
+    { "tier": 7, "name": "全球教父", "minNetWorth": 500000000000, "stakeScale": 300000, "badge": "全球教父", "color": "#EC4899" },
+    { "tier": 8, "name": "幕后苍穹", "minNetWorth": 10000000000000, "stakeScale": 3000000, "badge": "幕后苍穹", "color": "#F9DF8B" }
   ],
   "districts": [
     {

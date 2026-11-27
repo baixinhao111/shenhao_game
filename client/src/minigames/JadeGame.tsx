@@ -5,7 +5,7 @@ import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playLose, playScrape, playStoneCrack, playSystemPing, playTap } from '../lib/sound';
 import { useGameStore } from '../store/useGameStore';
-import { ResultStrip, Speech, Stage, useMgApi } from './Stage';
+import { ResultStrip, Speech, Stage, useMgApi, useStakeScale } from './Stage';
 
 const COLS = 30;
 const ROWS = 20;
@@ -161,6 +161,7 @@ const LINES: Record<string, Array<[string, string]>> = {
 export const JadeGame: React.FC = () => {
   const { closeMinigame, flyReward, notifyTop, showError } = useGameStore();
   const { busy, call } = useMgApi();
+  const stakeScale = useStakeScale();
   const [phase, setPhase] = useState<'pick' | 'scratch' | 'done'>('pick');
   const [session, setSession] = useState<JadeSession | null>(null);
   const [offers, setOffers] = useState<Offer[]>([]);
@@ -437,7 +438,7 @@ export const JadeGame: React.FC = () => {
                   <div className="mt-2 font-editorial text-[13.5px] font-black text-[#FBF1D8] text-stroke-dark">{t.name}</div>
                   <div className="font-num text-[13px] text-[#FFE7B0] flex items-center gap-0.5 text-stroke-dark">
                     <GameIcon name="cash" size={14} shadow={false} />
-                    {formatMoney(t.cost)}
+                    {formatMoney(t.cost * stakeScale)}
                   </div>
                   <div className="text-[10px] text-[#A3AAC2] flex items-center gap-0.5">
                     <GameIcon name="energy" size={11} shadow={false} />6 · {t.note}

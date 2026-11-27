@@ -156,6 +156,12 @@ function finishCommon(userId: number): void {
   incrementDailyTask(userId, 'task_minigame', 1);
 }
 
+/** 当前阶层的档位倍率（content/maps/haicheng.json 的 tiers[].stakeScale） */
+function stakeScaleOf(userId: number): number {
+  return Number((computePortfolioAndTier(userId).tierInfo as any).stakeScale || 1);
+}
+const scaled = (arr: readonly number[], k: number): number[] => arr.map((x) => Math.round(x * k));
+
 function choice<T extends number>(value: unknown, allowed: readonly T[], label: string): T {
   const n = Number(value);
   if (!allowed.includes(n as T)) throw new Error(`${label}不在可选范围内`);
@@ -771,7 +777,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     auth,
     handle((userId, body) => {
       const tier = choice(body.tier, [1, 2, 3] as const, '原石档位');
-      const cost = JADE_COST[tier];
+      const cost = Math.round(JADE_COST[tier] * stakeScaleOf(userId));
       assertEnergySufficient(userId, 6);
       assertCashSufficient(userId, cost);
       spendEnergyOrThrow(userId, 6);
@@ -888,7 +894,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     '/mg/stock/open',
     auth,
     handle((userId, body) => {
-      const stake = choice(body.amount, STOCK_STAKES, '投入金额');
+      const stake = choice(body.amount, scaled(STOCK_STAKES, stakeScaleOf(userId)), '投入金额');
       const dir = body.direction === 'short' ? -1 : body.direction === 'long' ? 1 : 0;
       if (!dir) throw new Error('请选择做多或做空');
       const quote = getCurrentStockQuotes().find((q) => q.id === body.stockId);
@@ -941,7 +947,8 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     '/mg/race/start',
     auth,
     handle((userId, body) => {
-      const stake = choice(body.stake, RACE_STAKES, '彩头');
+      const raceStakes = scaled(RACE_STAKES, stakeScaleOf(userId));
+      const stake = choice(body.stake, raceStakes, '彩头');
       assertEnergySufficient(userId, 7);
       assertCashSufficient(userId, stake);
       spendEnergyOrThrow(userId, 7);
@@ -950,7 +957,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       const st = queryOne<any>('SELECT equipped_car_id FROM player_state WHERE user_id = ?', [userId]);
       const car = content.assetsCatalog.assets.find((a: any) => a.id === st?.equipped_car_id);
       const power = car?.racePower || 10;
-      const level = RACE_STAKES.indexOf(stake);
+      const level = raceStakes.indexOf(stake);
       const oppPower = clamp(Math.round(power + rand(-15, 20) + level * 8), 20, 110);
       const oppMean = clamp(rand(0.5, 0.8) + level * 0.04, 0, 0.95);
       const oppSeg = RACE_SEGMENTS.map(() => Number(clamp(oppMean + rand(-0.15, 0.15), 0.2, 1).toFixed(3)));
@@ -988,7 +995,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     '/mg/live/start',
     auth,
     handle((userId, body) => {
-      const budget = choice(body.budget, LIVE_BUDGETS, '打赏预算');
+      const budget = choice(body.budget, scaled(LIVE_BUDGETS, stakeScaleOf(userId)), '打赏预算');
       assertEnergySufficient(userId, 8);
       assertCashSufficient(userId, budget);
       spendEnergyOrThrow(userId, 8);
@@ -1040,7 +1047,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
           id: s.id,
           pitches: pitches.map((p, i) => publicPitch(p, i, {})),
           questions: 2,
-          amounts: ANGEL_AMOUNTS,
+          amounts: scaled(ANGEL_AMOUNTS, stakeScaleOf(userId)),
           hintCost: 15,
         },
       };
@@ -1086,7 +1093,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
     handle((userId, body) => {
       const s = getSession(userId, body.id, 'angel');
       const i = choice(body.index, [0, 1, 2] as const, '项目');
-      const amount = choice(body.amount, ANGEL_AMOUNTS, '投资金额');
+      const amount = choice(body.amount, scaled(ANGEL_AMOUNTS, stakeScaleOf(userId)), '投资金额');
       spendCashOrThrow(userId, amount);
       const p = s.data.pitches[i];
       const [a, b] = ANGEL_MULT[p.type as PitchType];
@@ -1131,10 +1138,11 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       const row = cruiseRow(userId);
       const playsToday = row && row.daily_date === today ? row.plays_today : 0;
       if (playsToday >= CRUISE_DAILY_PLAYS) throw new Error(`今日赌局次数已用完（${CRUISE_DAILY_PLAYS}/${CRUISE_DAILY_PLAYS}），明天再来`);
+      const buyIn = Math.round(CRUISE_BUYIN * stakeScaleOf(userId));
       assertEnergySufficient(userId, 8);
-      assertCashSufficient(userId, CRUISE_BUYIN);
+      assertCashSufficient(userId, buyIn);
       spendEnergyOrThrow(userId, 8);
-      spendCashOrThrow(userId, CRUISE_BUYIN);
+      spendCashOrThrow(userId, buyIn);
       if (!row) {
         execute(
           'INSERT INTO player_events (user_id, event_id, tokens, plays_today, daily_date, redeemed_json) VALUES (?, ?, 0, 1, ?, ?)',
@@ -1151,8 +1159,8 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       const deck = newDeck();
       const player = [deck.pop()!, deck.pop()!];
       const dealer = [deck.pop()!, deck.pop()!];
-      const s = openSession(userId, 'cruise', { deck, player, dealer, bet: CRUISE_BUYIN, doubled: false, vision: false });
-      ledgerOpen(userId, 'cruise', CRUISE_BUYIN);
+      const s = openSession(userId, 'cruise', { deck, player, dealer, bet: buyIn, doubled: false, vision: false });
+      ledgerOpen(userId, 'cruise', buyIn);
       if (isBlackjack(player) || isBlackjack(dealer)) return { hand: cruiseFinish(s) };
       return { hand: cruisePublic(s), visionCost: 20 };
     }),

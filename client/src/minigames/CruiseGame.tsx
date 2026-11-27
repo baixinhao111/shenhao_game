@@ -5,7 +5,7 @@ import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playCard, playLose, playPerfect, playSystemPing } from '../lib/sound';
 import { useGameStore } from '../store/useGameStore';
-import { ResultStrip, Speech, Stage, useMgApi } from './Stage';
+import { ResultStrip, Speech, Stage, useMgApi, useStakeScale } from './Stage';
 
 interface Card {
   r: string;
@@ -57,6 +57,7 @@ const PlayingCard: React.FC<{ card: Card; index: number }> = ({ card, index }) =
 export const CruiseGame: React.FC = () => {
   const { state, closeMinigame, flyReward, applyServerState, showError, notifyTop } = useGameStore();
   const { busy, call } = useMgApi();
+  const stakeScale = useStakeScale();
   const [hand, setHand] = useState<Hand | null>(null);
   const tableRef = useRef<HTMLDivElement>(null);
   const ev = state?.events?.find((e: any) => e.id === 'event_cruise_01');
@@ -181,7 +182,7 @@ export const CruiseGame: React.FC = () => {
             <button disabled={busy || playsLeft <= 0} onClick={deal} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1">
               {playsLeft > 0 ? (
                 <>
-                  下注 {formatMoney(300000)} · 发牌 <GameIcon name="energy" size={16} shadow={false} />8
+                  下注 {formatMoney(300000 * stakeScale)} · 发牌 <GameIcon name="energy" size={16} shadow={false} />8
                 </>
               ) : (
                 '今日赌局已结束'

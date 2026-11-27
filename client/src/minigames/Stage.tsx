@@ -143,21 +143,33 @@ export const ResultStrip: React.FC<{
   </motion.div>
 );
 
-/** Three-way stake picker laid on the scene. */
+/** Stake multiplier of the player's tier (server: tiers[].stakeScale). Base stakes × this = real stakes. */
+export function useStakeScale(): number {
+  return useGameStore((s) => Number(s.state?.player?.stakeScale || 1));
+}
+
+/**
+ * Three-way stake picker laid on the scene. `options` are tier-1 base stakes and are scaled by the
+ * player's tier automatically; pass `scale={false}` when the server already sent scaled amounts.
+ */
 export function StakePicker<T extends number>({
   options,
   onPick,
   busy,
   render,
+  scale = true,
 }: {
   options: readonly T[];
   onPick: (v: T) => void;
   busy: boolean;
   render: (v: T, i: number) => React.ReactNode;
+  scale?: boolean;
 }) {
+  const k = useStakeScale();
+  const values = options.map((v) => (scale ? (Math.round(v * k) as T) : v));
   return (
     <div className="grid grid-cols-3 gap-2">
-      {options.map((v, i) => (
+      {values.map((v, i) => (
         <button
           key={v}
           disabled={busy}

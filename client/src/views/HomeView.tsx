@@ -313,7 +313,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       return {
         id: 'gate',
         text: `身价再涨 ${formatMoney(nextEpisode.requireNetWorth - player.netWorth)} 解锁下一幕`,
-        go: () => useGameStore.getState().setActiveTab('map'),
+        go: () => useGameStore.getState().setActiveTab('assets'),
       };
     }
     if (player.nextTier)
