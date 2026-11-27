@@ -307,7 +307,7 @@ export const StoryView: React.FC = () => {
                 <div className="min-w-0 flex-1">
                   <div className="text-[12px] font-bold cyan-glow-text">天枢：宿主身价尚不足以撬动下一幕</div>
                   <div className="text-[10.5px] text-[#9AF4FB]/70 mt-0.5">
-                    还差 <span className="font-num text-[#FFE7B0]">{formatMoney(featuredEpisode.requireNetWorth - state.player.netWorth)}</span>
+                    还差 <span className="font-num text-[#EADBB8]">{formatMoney(featuredEpisode.requireNetWorth - state.player.netWorth)}</span>
                     ，经营产业或在海城各区出手都能抬高身价
                   </div>
                 </div>

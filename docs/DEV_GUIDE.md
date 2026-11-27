@@ -140,7 +140,11 @@ scripts/demo/             试玩版录制与打包
 | 页签 | `route-tab v2` |
 | 结算 | 日常结算安静：模糊场景 + 引语 + 一张烟熏玻璃奖励单；只有出现暴击才加放射光 |
 
-新做页面直接按 v2 写；旧页面逐步迁移，迁移时整页一起换，避免一屏新旧混搭。
+**全站已迁移到 v2（2026-11）**：做法是在 `design.css` 里把通用类整体换成 v2 外观，所有页面同时生效——
+`panel-arch/panel-brass/panel-elevated` → 烟熏玻璃；`gold-btn-shimmer/btn-brass` → 香槟胶囊；`btn-navy` → 幽灵胶囊；`tab-chip` → 香槟淡底；
+`deco-texture` → 夜色底（花纹已去掉）；`gold-gradient-text` → 象牙→香槟柔和渐变；`bar-track/bar-fill` → 4px 细条；`<OrnateCorners/>` → 两个细角标。
+`--gold*` / `--ink*` 色值已改为香槟与近黑；硬编码的旧金色/藏青也已批量替换。
+**例外**：全屏大时刻（`Ceremonies.tsx`）保留亮金，用 `.gold-flash-text`；天枢面板保持冰蓝。新代码不要再写 `#E2BD72`、`#0A0F1F` 这类旧色。
 
 ### 5.4 图标
 

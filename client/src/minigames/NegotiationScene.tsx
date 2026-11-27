@@ -147,34 +147,34 @@ export const NegotiationScene: React.FC = () => {
             <div className="absolute left-4 top-2 space-y-2 max-w-[58%]">
               <div>
                 <div className="font-editorial text-[20px] font-black gold-gradient-text leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{deal.seller.name}</div>
-                <div className="text-[11px] text-[#C3C9DC] text-stroke-dark">
+                <div className="text-[11px] text-[#B3B6C2] text-stroke-dark">
                   {deal.seller.title} · <span className="text-[#FFB3C6]">{deal.seller.temper}</span>
                 </div>
               </div>
               <div className="flex items-center gap-1" title="耐心">
-                <span className="text-[10.5px] text-[#A3AAC2] mr-1 text-stroke-dark">耐心</span>
+                <span className="text-[10.5px] text-[#8C90A0] mr-1 text-stroke-dark">耐心</span>
                 {Array.from({ length: Math.max(deal.maxPatience, deal.patience) }).map((_, i) => (
                   <span
                     key={i}
                     className={`w-4 h-2.5 rounded-sm -skew-x-12 ${
-                      i < deal.patience ? (deal.patience <= 1 ? 'bg-[#FF5C7A]' : 'bg-gradient-to-r from-[#FFE7B0] to-[#D6A85A]') : 'bg-white/12'
+                      i < deal.patience ? (deal.patience <= 1 ? 'bg-[#FF5C7A]' : 'bg-gradient-to-r from-[#EADBB8] to-[#C4AE80]') : 'bg-white/12'
                     }`}
                   />
                 ))}
               </div>
-              <div className="text-[10.5px] text-[#A3AAC2] text-stroke-dark">
+              <div className="text-[10.5px] text-[#8C90A0] text-stroke-dark">
                 第 {Math.min(deal.round + 1, deal.maxRounds)} / {deal.maxRounds} 回合{deal.finalCall ? ' · 最后报价' : ''}
               </div>
               <div>
-                <div className="text-[10.5px] text-[#A3AAC2] text-stroke-dark">对方报价</div>
-                <motion.div key={deal.ask} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="font-num text-[28px] text-[#FFE7B0] leading-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
+                <div className="text-[10.5px] text-[#8C90A0] text-stroke-dark">对方报价</div>
+                <motion.div key={deal.ask} initial={{ scale: 1.2 }} animate={{ scale: 1 }} className="font-num text-[28px] text-[#EADBB8] leading-none drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
                   {formatMoney(deal.ask)}
                 </motion.div>
               </div>
             </div>
 
             {/* dialogue on the scene */}
-            <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#05070F]/95 via-[#05070F]/75 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 bottom-0 h-[46%] bg-gradient-to-t from-[#04050A]/95 via-[#04050A]/75 to-transparent pointer-events-none" />
             <div className="absolute left-4 right-4 bottom-2 space-y-1.5">
               <AnimatePresence initial={false}>
                 {lastLines.map((l, i) => {
@@ -194,12 +194,12 @@ export const NegotiationScene: React.FC = () => {
                       <span>
                         <span
                           className={`font-editorial font-black mr-1 ${
-                            l.who === 'seller' ? 'text-[#FFE7B0]' : l.who === 'me' ? 'text-[#C3C9DC]' : l.who === 'ally' ? 'text-[#FFB3C6]' : 'text-[#9BF5FF]'
+                            l.who === 'seller' ? 'text-[#EADBB8]' : l.who === 'me' ? 'text-[#B3B6C2]' : l.who === 'ally' ? 'text-[#FFB3C6]' : 'text-[#9BF5FF]'
                           }`}
                         >
                           {l.who === 'seller' ? deal.seller.name : l.who === 'me' ? '我' : l.who === 'ally' ? ally?.name : '天枢'}
                         </span>
-                        <span className={l.who === 'system' ? 'text-[#DDFBFF]' : 'text-[#F4EFE4]'}>{l.text}</span>
+                        <span className={l.who === 'system' ? 'text-[#DDFBFF]' : 'text-[#ECE6DA]'}>{l.text}</span>
                       </span>
                     </motion.div>
                   );
@@ -228,13 +228,13 @@ export const NegotiationScene: React.FC = () => {
                   报价
                 </div>
                 <div
-                  className="absolute top-7 text-[9.5px] text-[#A3AAC2] -translate-x-1/2 whitespace-nowrap"
+                  className="absolute top-7 text-[9.5px] text-[#8C90A0] -translate-x-1/2 whitespace-nowrap"
                   style={{ left: `${Math.max(7, Math.min(93, ruler.pct(deal.item.list)))}%` }}
                 >
                   挂牌
                 </div>
                 <div
-                  className="absolute top-2 w-4 h-4 -ml-2 rounded-full bg-gradient-to-b from-[#FFF0C8] to-[#D6A85A] border-2 border-white shadow-[0_0_10px_rgba(255,231,176,0.9)]"
+                  className="absolute top-2 w-4 h-4 -ml-2 rounded-full bg-gradient-to-b from-[#EEE2C6] to-[#C4AE80] border-2 border-white shadow-[0_0_10px_rgba(234,219,184,0.9)]"
                   style={{ left: `${ruler.pct(offer)}%` }}
                 />
                 <input
@@ -257,12 +257,12 @@ export const NegotiationScene: React.FC = () => {
                       key={c.id}
                       disabled={busy || c.disabled}
                       onClick={() => (c.id === 'heroine' ? setHeroPick((v) => !v) : act(c.id))}
-                      className="relative rounded-[8px] px-1 pt-1.5 pb-1 flex flex-col items-center text-center border border-[#E2BD72]/45 bg-gradient-to-b from-[#1E2850]/90 to-[#0A0F1F]/95 disabled:opacity-35 active:scale-95 transition"
+                      className="relative rounded-[8px] px-1 pt-1.5 pb-1 flex flex-col items-center text-center border border-[#D9C49A]/45 bg-gradient-to-b from-[#1E2850]/90 to-[#05070D]/95 disabled:opacity-35 active:scale-95 transition"
                       title={c.desc}
                     >
                       <GameIcon name={c.icon} size={28} />
-                      <span className="text-[11px] font-editorial font-black text-[#FBF1D8] mt-0.5">{c.name}</span>
-                      <span className="text-[9px] text-[#A3AAC2] leading-tight whitespace-nowrap">{c.sub}</span>
+                      <span className="text-[11px] font-editorial font-black text-[#ECE6DA] mt-0.5">{c.name}</span>
+                      <span className="text-[9px] text-[#8C90A0] leading-tight whitespace-nowrap">{c.sub}</span>
                     </button>
                   ))}
                 </div>
@@ -303,7 +303,7 @@ export const NegotiationScene: React.FC = () => {
                   className="btn-navy py-2 text-[13px] font-editorial flex flex-col items-center leading-tight disabled:opacity-40"
                 >
                   接受报价
-                  <span className="font-num text-[11px] text-[#FFE7B0]">{formatMoney(deal.ask)}</span>
+                  <span className="font-num text-[11px] text-[#EADBB8]">{formatMoney(deal.ask)}</span>
                 </button>
                 {deal.finalCall ? (
                   <button disabled={busy} onClick={() => act('leave')} className="btn-navy py-2 text-[13px] font-editorial">

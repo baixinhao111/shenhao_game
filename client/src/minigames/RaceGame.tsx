@@ -183,8 +183,8 @@ export const RaceGame: React.FC = () => {
             />
           </div>
           <Speech who="赵天宇" tone="rose" text="开这种车也敢来外滩？彩头你定，我奉陪。" />
-          <div className="text-[11.5px] text-[#C3C9DC] text-stroke-dark">
-            你的座驾：<span className="text-[#FFE7B0] font-bold">{equipped?.name}</span> · 马力 {equipped?.racePower || 10}
+          <div className="text-[11.5px] text-[#B3B6C2] text-stroke-dark">
+            你的座驾：<span className="text-[#EADBB8] font-bold">{equipped?.name}</span> · 马力 {equipped?.racePower || 10}
           </div>
           <StakePicker
             options={STAKES}
@@ -214,15 +214,15 @@ export const RaceGame: React.FC = () => {
               {/* checkpoints */}
               {session.segments.map((sg, i) => (
                 <div key={i} className="absolute top-0 bottom-0" style={{ left: `${6 + ((i + 1) / total) * 80}%` }}>
-                  <div className={`w-px h-full ${i < hits.length ? 'bg-[#FFE7B0]/40' : 'bg-white/12'}`} />
-                  <span className="absolute top-0.5 -translate-x-1/2 text-[8.5px] text-[#8B93AD] whitespace-nowrap">{sg.name}</span>
+                  <div className={`w-px h-full ${i < hits.length ? 'bg-[#EADBB8]/40' : 'bg-white/12'}`} />
+                  <span className="absolute top-0.5 -translate-x-1/2 text-[8.5px] text-[#7A7E8E] whitespace-nowrap">{sg.name}</span>
                 </div>
               ))}
               <div className="absolute top-0 bottom-0 left-[6%] w-[3px] bg-white/50" />
               <div className="absolute top-0 bottom-0 right-0 w-[14px] bg-[repeating-conic-gradient(#fff_0_25%,#111_0_50%)] bg-[length:7px_7px] opacity-90" />
-              <div className="absolute left-0 right-[14px] top-1/2 border-t border-dashed border-[#E2BD72]/45" />
+              <div className="absolute left-0 right-[14px] top-1/2 border-t border-dashed border-[#D9C49A]/45" />
               {[
-                { label: '你', img: session.car.image, pos: mePos, color: '#FFE7B0' },
+                { label: '你', img: session.car.image, pos: mePos, color: '#EADBB8' },
                 { label: session.opponent.name, img: '/assets/items/car_ferrari_sf90.png', pos: oppPos, color: '#FF8FA6' },
               ].map((lane, li) => (
                 <div key={lane.label} className={`relative h-[46px] ${li === 0 ? 'mt-3' : ''}`}>
@@ -235,7 +235,7 @@ export const RaceGame: React.FC = () => {
                     {/* light trail */}
                     <span
                       className="absolute right-[62px] top-1/2 -translate-y-1/2 h-[3px] w-[70px] rounded-full"
-                      style={{ background: `linear-gradient(90deg, transparent, ${li === 0 ? 'rgba(255,231,176,0.7)' : 'rgba(255,92,122,0.7)'})` }}
+                      style={{ background: `linear-gradient(90deg, transparent, ${li === 0 ? 'rgba(234,219,184,0.7)' : 'rgba(255,92,122,0.7)'})` }}
                     />
                     <img src={lane.img} alt="" className="relative h-[40px] w-[74px] object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)]" />
                     <span className="ml-0.5 text-[10px] font-bold text-stroke-dark" style={{ color: lane.color }}>
@@ -257,7 +257,7 @@ export const RaceGame: React.FC = () => {
                   style={{
                     top: `${st.top}%`,
                     width: st.w,
-                    background: `linear-gradient(90deg, transparent, ${i % 3 ? 'rgba(255,255,255,0.35)' : 'rgba(255,231,176,0.5)'})`,
+                    background: `linear-gradient(90deg, transparent, ${i % 3 ? 'rgba(255,255,255,0.35)' : 'rgba(234,219,184,0.5)'})`,
                   }}
                   initial={{ left: '110%' }}
                   animate={{ left: '-40%' }}
@@ -284,7 +284,7 @@ export const RaceGame: React.FC = () => {
                 </AnimatePresence>
                 <div className="relative w-full h-10">
                   <div className="absolute -inset-[3px] rounded-full bg-gradient-to-b from-[#C9CED8] via-[#5A606C] to-[#2A2E36] shadow-[0_6px_16px_rgba(0,0,0,0.7)]" />
-                  <div className="absolute inset-0 rounded-full bg-[#05070F] overflow-hidden">
+                  <div className="absolute inset-0 rounded-full bg-[#04050A] overflow-hidden">
                     <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.12)_0_1px,transparent_1px_10%)]" />
                     <div
                       className="absolute top-0 bottom-0 bg-gradient-to-r from-[#3FD69A]/40 via-[#7BFFC8] to-[#3FD69A]/40 shadow-[0_0_14px_rgba(123,255,200,0.7)]"
@@ -295,18 +295,18 @@ export const RaceGame: React.FC = () => {
                     />
                   </div>
                   <div
-                    className="absolute -top-2 -bottom-2 w-1.5 -ml-[3px] rounded-full bg-[#FFE7B0] shadow-[0_0_12px_rgba(255,231,176,0.9)]"
+                    className="absolute -top-2 -bottom-2 w-1.5 -ml-[3px] rounded-full bg-[#EADBB8] shadow-[0_0_12px_rgba(234,219,184,0.9)]"
                     style={{ left: `${needle * 100}%`, opacity: intro ? 0.3 : 1 }}
                   />
                 </div>
-                <div className="mt-4 text-[12px] text-[#C3C9DC] tracking-[0.3em] text-stroke-dark">
+                <div className="mt-4 text-[12px] text-[#B3B6C2] tracking-[0.3em] text-stroke-dark">
                   {intro ? '准备……' : '指针进入绿区时 · 轻触屏幕'}
                 </div>
                 <div className="mt-2 flex gap-1.5">
                   {session.segments.map((_, i) => (
                     <span
                       key={i}
-                      className={`w-6 h-1.5 rounded-full ${i < hits.length ? (hits[i] >= 0.75 ? 'bg-[#7BFFC8]' : 'bg-[#FF5C7A]') : i === seg ? 'bg-[#FFE7B0]' : 'bg-white/15'}`}
+                      className={`w-6 h-1.5 rounded-full ${i < hits.length ? (hits[i] >= 0.75 ? 'bg-[#7BFFC8]' : 'bg-[#FF5C7A]') : i === seg ? 'bg-[#EADBB8]' : 'bg-white/15'}`}
                     />
                   ))}
                 </div>
@@ -330,7 +330,7 @@ export const RaceGame: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 1.6 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className={`font-editorial text-[44px] font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] ${result.win ? 'gold-gradient-text' : 'text-[#A3AAC2]'}`}
+                className={`font-editorial text-[44px] font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] ${result.win ? 'gold-gradient-text' : 'text-[#8C90A0]'}`}
               >
                 {result.win ? (result.perfect ? '完美胜利' : '胜') : '惜败'}
               </motion.div>

@@ -743,14 +743,14 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         : { x: 0, y: 0, scale: 1 };
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] select-none">
+    <div className="relative h-full w-full overflow-hidden bg-[#05070D] select-none">
       <motion.div
         animate={cameraAnimate}
         transition={{ duration: 0.42, ease: 'easeOut' }}
         className="relative h-full w-full flex flex-col justify-between overflow-hidden"
       >
         {/* 1. Crossfading Scene Backdrop */}
-        <div className="absolute inset-0 overflow-hidden bg-[#0A0F1F]">
+        <div className="absolute inset-0 overflow-hidden bg-[#05070D]">
           <AnimatePresence mode="sync">
             <motion.img
               key={activeBg}
@@ -765,8 +765,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           </AnimatePresence>
           <div className="absolute inset-0 vignette-stage pointer-events-none" />
           <div className="absolute inset-0 film-grain pointer-events-none" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/52 via-transparent to-[#0A0F1F] pointer-events-none" />
-          <div className="absolute inset-x-0 bottom-0 h-[44%] bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/78 to-transparent pointer-events-none" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/52 via-transparent to-[#05070D] pointer-events-none" />
+          <div className="absolute inset-x-0 bottom-0 h-[44%] bg-gradient-to-t from-[#05070D] via-[#05070D]/78 to-transparent pointer-events-none" />
         </div>
 
         {/* 2. Screen Effects */}
@@ -945,7 +945,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               transition={{ duration: 0.32 }}
               className="absolute top-14 inset-x-4 z-30 flex justify-center pointer-events-none"
             >
-              <div className="px-4 py-1 bg-[#0A0B0F]/76 backdrop-blur-md border-y border-[#E2BD72]/35 flex items-center gap-2.5 max-w-full">
+              <div className="px-4 py-1 bg-[#0A0B0F]/76 backdrop-blur-md border-y border-[#D9C49A]/35 flex items-center gap-2.5 max-w-full">
                 <span className="text-[11px] font-medium tracking-[0.16em] text-[#EFE2C6] truncate">
                   {activeBanner.text}
                 </span>
@@ -959,7 +959,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           {!hideUi && !settlement && (
             <div className="h-[2px] w-full bg-white/[0.06] overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0] shadow-[0_0_6px_rgba(255,231,176,0.8)] transition-all duration-300"
+                className="h-full bg-gradient-to-r from-[#9C8660] to-[#EADBB8] shadow-[0_0_6px_rgba(234,219,184,0.8)] transition-all duration-300"
                 style={{ width: `${progressPct}%` }}
               />
             </div>
@@ -974,13 +974,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-between gap-2 px-3.5 pt-2.5"
               >
-                <div className="pointer-events-auto flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#070B18]/78 backdrop-blur-md border border-[#E2BD72]/35">
+                <div className="pointer-events-auto flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#06080E]/78 backdrop-blur-md border border-[#D9C49A]/35">
                   <button
                     onClick={() => {
                       playTap();
                       onExit();
                     }}
-                    className="h-7 px-2 text-[12px] font-editorial font-bold text-[#F6DDA4] flex items-center gap-1 active:opacity-75"
+                    className="h-7 px-2 text-[12px] font-editorial font-bold text-[#E2D3B0] flex items-center gap-1 active:opacity-75"
                   >
                     <ArrowLeft className="w-4 h-4" /> 返回
                   </button>
@@ -988,14 +988,14 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     onClick={handleBack}
                     disabled={prevStepIdx < 0}
                     title="上一句"
-                    className="h-7 w-7 flex items-center justify-center text-[#F6DDA4] border-l border-white/10 disabled:opacity-25"
+                    className="h-7 w-7 flex items-center justify-center text-[#E2D3B0] border-l border-white/10 disabled:opacity-25"
                   >
                     <ChevronLeft className="w-4 h-4" />
                   </button>
                 </div>
 
                 <div className="pointer-events-auto flex items-center gap-2">
-                <div className="flex items-center h-8 px-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35 text-[#D8DAE2] divide-x divide-white/10">
+                <div className="flex items-center h-8 px-1 rounded-full bg-[#06080E]/70 backdrop-blur-md border border-[#D9C49A]/35 text-[#D8DAE2] divide-x divide-white/10">
                   <button
                     onClick={() => {
                       playTap();
@@ -1014,7 +1014,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setAutoPlay((v) => !v);
                     }}
                     className={`text-[11px] px-2 flex items-center gap-1 ${
-                      autoPlay ? 'text-[#FFE7B0] font-bold' : 'hover:text-white'
+                      autoPlay ? 'text-[#EADBB8] font-bold' : 'hover:text-white'
                     }`}
                   >
                     {autoPlay ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3" />} 自动
@@ -1026,7 +1026,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setFastForward((v) => !v);
                     }}
                     title="快进"
-                    className={`px-2 py-1 ${fastForward ? 'text-[#FFE7B0]' : 'hover:text-white'}`}
+                    className={`px-2 py-1 ${fastForward ? 'text-[#EADBB8]' : 'hover:text-white'}`}
                   >
                     <FastForward className="w-3.5 h-3.5" />
                   </button>
@@ -1069,7 +1069,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               onClick={() => setHideUi(false)}
               className="absolute bottom-5 right-4 z-30 px-3 py-1.5 bg-black/50 backdrop-blur-md border border-white/12 rounded-[4px] text-[11px] text-[#EAE7E0] flex items-center gap-1.5"
             >
-              <Eye className="w-3.5 h-3.5 text-[#E2BD72]" /> 恢复界面
+              <Eye className="w-3.5 h-3.5 text-[#D9C49A]" /> 恢复界面
             </motion.button>
           )}
         </AnimatePresence>
@@ -1192,7 +1192,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   {fullText.slice(0, typedCount)}
                   {!isTyping && !submitting && (
                     isLast ? (
-                      <span className="ml-2 inline-flex items-center text-[12px] not-italic font-editorial font-bold text-[#E2BD72] align-middle">
+                      <span className="ml-2 inline-flex items-center text-[12px] not-italic font-editorial font-bold text-[#D9C49A] align-middle">
                         {script.alreadyCompleted ? '结束' : '继续'}
                         <ChevronRight className="w-3.5 h-3.5" />
                       </span>
@@ -1200,11 +1200,11 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       <motion.span
                         animate={{ opacity: [0.3, 1, 0.3] }}
                         transition={{ repeat: Infinity, duration: 1.2 }}
-                        className="inline-block ml-1.5 w-[7px] h-[7px] rotate-45 align-middle bg-[#E2BD72] shadow-[0_0_6px_rgba(255,231,176,0.9)]"
+                        className="inline-block ml-1.5 w-[7px] h-[7px] rotate-45 align-middle bg-[#D9C49A] shadow-[0_0_6px_rgba(234,219,184,0.9)]"
                       />
                     )
                   )}
-                  {submitting && <span className="ml-2 text-[12px] text-[#E2BD72]">请稍候…</span>}
+                  {submitting && <span className="ml-2 text-[12px] text-[#D9C49A]">请稍候…</span>}
                 </p>
               </div>
             </motion.div>
@@ -1248,13 +1248,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             onClick={() => setShowOpeningCard(false)}
             className="absolute inset-0 z-40 bg-[#050814]/96 backdrop-blur-md flex flex-col items-center justify-center px-8 text-center cursor-pointer"
           >
-            <div className="text-[11px] tracking-[0.4em] text-[#E2BD72] font-bold text-stroke-dark">
+            <div className="text-[11px] tracking-[0.4em] text-[#D9C49A] font-bold text-stroke-dark">
               {script.sceneLabel || `${MODE_LABELS[script.mode]} · ${script.chapterTitle}`}
             </div>
             <div className="flex items-center gap-2 my-4">
-              <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
-              <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
-              <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
+              <span className="w-14 h-px bg-gradient-to-r from-transparent to-[#D9C49A]" />
+              <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#EADBB8] to-[#8A7650]" />
+              <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#D9C49A]" />
             </div>
             <h2
               className={`font-editorial font-black tracking-[0.16em] gold-gradient-text leading-snug text-balance ${
@@ -1277,12 +1277,12 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="absolute inset-0 z-50 bg-[#0A0F1F]/96 backdrop-blur-xl flex flex-col"
+            className="absolute inset-0 z-50 bg-[#05070D]/96 backdrop-blur-xl flex flex-col"
           >
             <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
               <div>
                 <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">对话记录</div>
-                <div className="text-[10px] text-[#8B93AD] mt-0.5">
+                <div className="text-[10px] text-[#7A7E8E] mt-0.5">
                   {script.chapterTitle} · {script.title}
                 </div>
               </div>
@@ -1300,12 +1300,12 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       setRevealedThoughts({});
                       setShowLog(false);
                     }}
-                    className="px-2.5 py-1 rounded-full text-[11px] text-[#E2BD72] border border-[#E2BD72]/40 bg-[#0F1630]/80 active:opacity-75"
+                    className="px-2.5 py-1 rounded-full text-[11px] text-[#D9C49A] border border-[#D9C49A]/40 bg-[#0B0E17]/80 active:opacity-75"
                   >
                     重读本章
                   </button>
                 )}
-                <button onClick={() => setShowLog(false)} className="p-1.5 text-[#929AB4] hover:text-white">
+                <button onClick={() => setShowLog(false)} className="p-1.5 text-[#858999] hover:text-white">
                   <X className="w-4 h-4" />
                 </button>
               </div>
@@ -1316,8 +1316,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   const chosen = resolvedChoices[idx];
                   if (!chosen) return null;
                   return (
-                    <div key={`log-choice-${idx}`} className="border-l-2 border-[#E2BD72] pl-3 py-1">
-                      <div className="text-[10px] text-[#E2BD72]">你的选择</div>
+                    <div key={`log-choice-${idx}`} className="border-l-2 border-[#D9C49A] pl-3 py-1">
+                      <div className="text-[10px] text-[#D9C49A]">你的选择</div>
                       <div className="text-xs text-[#F3EAD5] mt-0.5 leading-relaxed">{chosen.label}</div>
                     </div>
                   );
@@ -1336,12 +1336,12 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 return (
                   <div key={`log-${idx}`} className="space-y-1">
                     {n.sceneBanner && (
-                      <div className="text-[10px] tracking-[0.16em] text-[#E2BD72]/80 pb-1">— {n.sceneBanner} —</div>
+                      <div className="text-[10px] tracking-[0.16em] text-[#D9C49A]/80 pb-1">— {n.sceneBanner} —</div>
                     )}
                     {n.type === 'dialogue' && n.name && (
-                      <div className="text-xs font-semibold text-[#F6DDA4]">
+                      <div className="text-xs font-semibold text-[#E2D3B0]">
                         {n.name}
-                        {n.role && <span className="text-[10px] text-[#7F88A6] font-normal ml-1.5">{n.role}</span>}
+                        {n.role && <span className="text-[10px] text-[#6D7183] font-normal ml-1.5">{n.role}</span>}
                       </div>
                     )}
                     <p
@@ -1794,7 +1794,7 @@ export const MiniStoryOverlay: React.FC = () => {
   };
 
   return (
-    <div className="absolute inset-0 z-[38] bg-[#0A0F1F]">
+    <div className="absolute inset-0 z-[38] bg-[#05070D]">
       <VisualNovelTheater
         script={script}
         onExit={closeMiniStory}

@@ -152,7 +152,7 @@ export const StoryRoute: React.FC<Props> = ({ vol, kicker, name, episodes, compl
                     boxShadow: st === 'current' ? '0 0 26px rgba(230,214,178,0.28), 0 10px 20px rgba(0,0,0,0.6)' : '0 8px 16px rgba(0,0,0,0.6)',
                   }}
                 >
-                  <span className="relative block w-full h-full rounded-full overflow-hidden bg-[#0A0F1F]">
+                  <span className="relative block w-full h-full rounded-full overflow-hidden bg-[#05070D]">
                     <img src={ep.bg} alt="" className={`w-full h-full object-cover ${st === 'locked' ? 'grayscale brightness-[0.35]' : st === 'gated' ? 'brightness-[0.5] saturate-[0.6]' : st === 'done' ? 'brightness-[0.85]' : ''}`} />
                     {ep.posterLead && st !== 'locked' && (
                       <img src={ep.posterLead} alt="" className="absolute left-1/2 -translate-x-1/2 bottom-[-12%] h-[120%] w-auto object-contain" />

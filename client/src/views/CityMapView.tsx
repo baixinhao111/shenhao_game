@@ -210,14 +210,14 @@ export const CityMapView: React.FC = () => {
     };
 
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] flex flex-col justify-between">
+      <div className="relative h-full w-full overflow-hidden bg-[#05070D] flex flex-col justify-between">
         <img
           src={prop.image || prop.bg}
           alt={prop.displayName}
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 vignette-stage pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#0A0F1F]/95 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#05070D]/95 pointer-events-none" />
 
         {featuredResident && (
           <div className="absolute inset-x-0 top-12 bottom-6 z-10 flex items-end justify-center pointer-events-none px-4">
@@ -238,27 +238,27 @@ export const CityMapView: React.FC = () => {
             }}
             className="text-xs text-[#F3F0E8] flex items-center gap-1 text-shadow-stage active:opacity-75"
           >
-            <ArrowLeft className="w-4 h-4 text-[#E2BD72]" /> 返回片区
+            <ArrowLeft className="w-4 h-4 text-[#D9C49A]" /> 返回片区
           </button>
           <div className="text-right text-shadow-stage">
             <div className="font-editorial text-[16px] font-black gold-gradient-text">{prop.displayName}</div>
-            <div className="text-[10px] text-[#E2BD72]">装潢 Lv.{prop.renovationLevel}</div>
+            <div className="text-[10px] text-[#D9C49A]">装潢 Lv.{prop.renovationLevel}</div>
           </div>
         </div>
 
         {/* Bottom Dock */}
-        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/90 to-transparent space-y-3">
+        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#05070D] via-[#05070D]/90 to-transparent space-y-3">
           {featuredResident ? (
             <div className="text-center text-xs text-[#E6E3DC] text-shadow-stage">
               {featuredResident.name}正在客厅等你
             </div>
           ) : (
             <div className="flex justify-center gap-4 font-num text-[13px] text-stroke-dark">
-              <span className="flex items-center gap-1 text-[#FFE7B0]">
+              <span className="flex items-center gap-1 text-[#EADBB8]">
                 <GameIcon name="cash" size={18} /> 估值 {formatMoney(prop.currentValuation)}
               </span>
               {prop.energyBonus > 0 && (
-                <span className="flex items-center gap-1 text-[#F4EFE4]">
+                <span className="flex items-center gap-1 text-[#ECE6DA]">
                   <GameIcon name="energy" size={18} /> 上限 +{prop.energyBonus}
                 </span>
               )}
@@ -319,16 +319,16 @@ export const CityMapView: React.FC = () => {
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
                 onClick={(e) => e.stopPropagation()}
-                className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
+                className="panel-elevated w-full rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
               >
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
                   <span className="font-editorial text-[16px] font-black gold-gradient-text">居家时光</span>
-                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
+                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#7A7E8E] hover:text-white">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
                 {residentObjs.length === 0 ? (
-                  <div className="text-xs text-[#A3AAC2] py-6 text-center space-y-3">
+                  <div className="text-xs text-[#8C90A0] py-6 text-center space-y-3">
                     <div>这套私宅暂未赠予钥匙</div>
                     <button onClick={() => setHomeSheet('keys')} className="btn-brass px-4 py-1.5 rounded-[4px] text-xs">
                       赠予钥匙
@@ -351,9 +351,9 @@ export const CityMapView: React.FC = () => {
                           >
                             <div>
                               <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
-                              <div className="text-[11px] text-[#929AB4] mt-0.5">{inter.desc}</div>
+                              <div className="text-[11px] text-[#858999] mt-0.5">{inter.desc}</div>
                             </div>
-                            <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 font-num">
+                            <span className="text-xs text-[#D9C49A] flex items-center gap-0.5 shrink-0 font-num">
                               <GameIcon name="energy" size={14} shadow={false} /> {inter.energy}
                             </span>
                           </button>
@@ -383,10 +383,10 @@ export const CityMapView: React.FC = () => {
                 exit={{ y: '100%' }}
                 transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
                 onClick={(e) => e.stopPropagation()}
-                className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
+                className="panel-elevated w-full rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
               >
                 <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
-                  <div className="flex items-center gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
+                  <div className="flex items-center gap-1 p-1 rounded-full bg-[#06080E]/90 border border-[#D9C49A]/25">
                     {prop.maxResidents > 0 && (
                       <button
                         data-active={homeSheet === 'keys'}
@@ -406,7 +406,7 @@ export const CityMapView: React.FC = () => {
                       装潢与管理
                     </button>
                   </div>
-                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
+                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#7A7E8E] hover:text-white">
                     <X className="w-5 h-5" />
                   </button>
                 </div>
@@ -414,14 +414,14 @@ export const CityMapView: React.FC = () => {
                 {homeSheet === 'manage' && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between">
-                      <span className="font-editorial text-[15px] font-black text-[#FBF1D8]">{prop.displayName}</span>
+                      <span className="font-editorial text-[15px] font-black text-[#ECE6DA]">{prop.displayName}</span>
                       {prop.canRename && (
                         <button
                           onClick={() => {
                             setRenameText(prop.displayName);
                             setShowRename(!showRename);
                           }}
-                          className="text-xs text-[#E2BD72] flex items-center gap-1 px-2 py-1 rounded bg-white/[0.04]"
+                          className="text-xs text-[#D9C49A] flex items-center gap-1 px-2 py-1 rounded bg-white/[0.04]"
                         >
                           <Pencil className="w-3 h-3" /> 冠名
                         </button>
@@ -472,10 +472,10 @@ export const CityMapView: React.FC = () => {
                 {homeSheet === 'keys' && prop.maxResidents > 0 && (
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-[#F6DDA4]">
+                      <span className="font-medium text-[#E2D3B0]">
                         {prop.displayName}（入住 {residentObjs.length}/{prop.maxResidents}）
                       </span>
-                      <span className="text-[10.5px] text-[#8B93AD]">入住后每日增进好感</span>
+                      <span className="text-[10.5px] text-[#7A7E8E]">入住后每日增进好感</span>
                     </div>
                     {unlockedHeroines.length > 0 ? (
                       <div className="grid grid-cols-2 gap-2">
@@ -487,20 +487,20 @@ export const CityMapView: React.FC = () => {
                               disabled={here}
                               onClick={() => handleAssignHeroine(h.id)}
                               className={`rounded-[4px] p-2.5 flex items-center gap-2 text-left border transition ${
-                                here ? 'bg-[#F0789A]/12 border-[#F0789A]/40' : 'panel-arch hover:border-[#E2BD72]/40'
+                                here ? 'bg-[#F0789A]/12 border-[#F0789A]/40' : 'panel-arch hover:border-[#D9C49A]/40'
                               }`}
                             >
                               <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
                               <div className="min-w-0">
                                 <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
-                                <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
+                                <div className="text-[10px] text-[#D9C49A]">{here ? '已入住' : '赠予钥匙'}</div>
                               </div>
                             </button>
                           );
                         })}
                       </div>
                     ) : (
-                      <div className="text-xs text-[#8B93AD]">推进主线结识联系人后即可赠予钥匙。</div>
+                      <div className="text-xs text-[#7A7E8E]">推进主线结识联系人后即可赠予钥匙。</div>
                     )}
                   </div>
                 )}
@@ -653,10 +653,10 @@ export const CityMapView: React.FC = () => {
     };
 
     return (
-      <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] flex flex-col justify-between">
+      <div className="relative h-full w-full overflow-hidden bg-[#05070D] flex flex-col justify-between">
         <img src={d.bg} alt={d.name} className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 vignette-stage pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#0A0F1F]/94 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#05070D]/94 pointer-events-none" />
 
         {streetHeroineFull && (
           <div
@@ -680,17 +680,17 @@ export const CityMapView: React.FC = () => {
             }}
             className="text-xs text-[#F3F0E8] flex items-center gap-1 text-shadow-stage active:opacity-75"
           >
-            <ArrowLeft className="w-4 h-4 text-[#E2BD72]" /> 海城
+            <ArrowLeft className="w-4 h-4 text-[#D9C49A]" /> 海城
           </button>
 
           <div className="text-right text-shadow-stage">
             <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">{d.name}</div>
-            <div className="text-[10px] text-[#E2BD72]">{d.tag}</div>
+            <div className="text-[10px] text-[#D9C49A]">{d.tag}</div>
           </div>
         </div>
 
         {/* Bottom Spatial Dock */}
-        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/90 to-transparent space-y-3">
+        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#05070D] via-[#05070D]/90 to-transparent space-y-3">
           {streetHeroineFull ? (
             <div className="flex justify-center">
               <button
@@ -769,11 +769,11 @@ export const CityMapView: React.FC = () => {
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[82%] flex flex-col"
+              className="panel-elevated w-full rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 max-h-[82%] flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
                 <span className="font-editorial text-[16px] font-black gold-gradient-text">{d.name} · 赴约与闲逛</span>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#8B93AD]">
+                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#7A7E8E]">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -803,23 +803,23 @@ export const CityMapView: React.FC = () => {
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0E1529]/80" />
                             <span
                               className={`absolute top-1.5 left-1.5 px-1.5 py-[1px] rounded-sm text-[9.5px] font-bold ${
-                                isDate ? 'bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-white' : 'bg-[#0A0F1F]/80 text-[#B9F6FB] border border-[#63E6F2]/40'
+                                isDate ? 'bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-white' : 'bg-[#05070D]/80 text-[#B9F6FB] border border-[#63E6F2]/40'
                               }`}
                             >
                               {isDate ? '邀约' : '闲逛'}
                             </span>
                           </div>
                           <div className="min-w-0 flex-1 py-2.5">
-                            <div className="text-[14px] font-editorial font-black text-[#FBF1D8] truncate">{inter.name}</div>
-                            <div className="text-[11px] text-[#929AB4] mt-0.5 leading-snug line-clamp-2">{inter.desc}</div>
+                            <div className="text-[14px] font-editorial font-black text-[#ECE6DA] truncate">{inter.name}</div>
+                            <div className="text-[11px] text-[#858999] mt-0.5 leading-snug line-clamp-2">{inter.desc}</div>
                           </div>
                           <div className="shrink-0 pr-3 py-2.5 flex flex-col items-end justify-center gap-0.5 font-num text-[12px]">
-                            <span className="flex items-center gap-0.5 text-[#F4EFE4]">
+                            <span className="flex items-center gap-0.5 text-[#ECE6DA]">
                               <GameIcon name="energy" size={15} shadow={false} />
                               {inter.energy}
                             </span>
                             {inter.cashCost > 0 && (
-                              <span className="flex items-center gap-0.5 text-[#FFE7B0]">
+                              <span className="flex items-center gap-0.5 text-[#EADBB8]">
                                 <GameIcon name="cash" size={15} shadow={false} />
                                 {formatMoney(inter.cashCost)}
                               </span>
@@ -839,7 +839,7 @@ export const CityMapView: React.FC = () => {
                               <div className="px-2.5 pb-2.5 pt-1">
                                 <div className="text-[10.5px] tracking-[0.25em] text-[#FFB3C6] mb-1.5">邀请谁同去？</div>
                                 {unlockedHeroines.length === 0 ? (
-                                  <div className="text-xs text-[#8B93AD] py-2">先推进主线结识联系人再来邀约。</div>
+                                  <div className="text-xs text-[#7A7E8E] py-2">先推进主线结识联系人再来邀约。</div>
                                 ) : (
                                   <div className="grid grid-cols-2 gap-2">
                                     {unlockedHeroines.map((h: any) => (
@@ -875,8 +875,8 @@ export const CityMapView: React.FC = () => {
                 {strollEvent && (
                   <div className="relative panel-brass rounded-[10px] px-3.5 pt-4 pb-3 space-y-2.5">
                     <OrnateCorners size={16} inset={-4} />
-                    <div className="absolute -top-2.5 left-3 px-2 bg-[#141C38] text-[10.5px] font-black tracking-[0.3em] text-[#E2BD72]">街头奇遇</div>
-                    <div className="text-[15px] font-editorial font-black text-[#FBF1D8]">{strollEvent.title}</div>
+                    <div className="absolute -top-2.5 left-3 px-2 bg-[#0E1119] text-[10.5px] font-black tracking-[0.3em] text-[#D9C49A]">街头奇遇</div>
+                    <div className="text-[15px] font-editorial font-black text-[#ECE6DA]">{strollEvent.title}</div>
                     <p className="text-[12px] text-[#C8CBD6] leading-relaxed">{strollEvent.desc}</p>
                     <div className="space-y-2">
                       {strollEvent.choices.map((c: any, idx: number) => (
@@ -920,13 +920,13 @@ export const CityMapView: React.FC = () => {
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full h-[78%] rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 flex flex-col"
+              className="panel-elevated w-full h-[78%] rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
                 <span className="font-editorial text-[16px] font-black gold-gradient-text">
                   {d.name} · 地产 ({districtProps.length})
                 </span>
-                <button onClick={() => setDistrictSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
+                <button onClick={() => setDistrictSheet(null)} aria-label="关闭" className="p-1 text-[#7A7E8E] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -945,7 +945,7 @@ export const CityMapView: React.FC = () => {
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="font-editorial text-[16px] font-black gold-gradient-text">{p.displayName}</div>
-                        <div className="text-[11px] text-[#E2BD72] tabular-nums mt-0.5">
+                        <div className="text-[11px] text-[#D9C49A] tabular-nums mt-0.5">
                           估值 {formatMoney(p.currentValuation)}
                           {earnsRent ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : p.isMain && p.type === 'residence' ? ' · 自住主宅' : ''}
                         </div>
@@ -985,7 +985,7 @@ export const CityMapView: React.FC = () => {
                         </div>
                       )}
                     </div>
-                    <p className="text-xs text-[#A3AAC2] leading-snug">{p.description}</p>
+                    <p className="text-xs text-[#8C90A0] leading-snug">{p.description}</p>
                   </div>
                   );
                 })}
@@ -1002,7 +1002,7 @@ export const CityMapView: React.FC = () => {
   const previewDistrict = map.districts.find((d: any) => d.id === previewDistrictId) || null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F]">
+    <div className="relative h-full w-full overflow-hidden bg-[#05070D]">
       <img
         src={map.mapImage}
         alt="海城地图"
@@ -1016,11 +1016,11 @@ export const CityMapView: React.FC = () => {
       <div className="relative z-20 px-3 pt-3 flex items-center justify-between gap-2 pointer-events-none">
         <div className="pointer-events-auto relative pl-3 pr-5 py-1.5 rounded-r-full"
           style={{ background: 'linear-gradient(90deg, rgba(8,12,26,0.9), rgba(8,12,26,0.4) 85%, transparent)' }}>
-          <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E]" />
+          <span className="absolute left-0 top-1 bottom-1 w-[3px] bg-gradient-to-b from-[#EADBB8] to-[#8A7650]" />
           <div className="font-editorial text-[20px] font-black gold-gradient-text tracking-[0.3em] leading-none">
             {map.cityName}
           </div>
-          <div className="text-[10.5px] text-[#C3C9DC] mt-1 font-num tracking-wider">{state.timeLabel}</div>
+          <div className="text-[10.5px] text-[#B3B6C2] mt-1 font-num tracking-wider">{state.timeLabel}</div>
         </div>
 
         <button
@@ -1072,7 +1072,7 @@ export const CityMapView: React.FC = () => {
 
               <div className="relative">
                 {hot && (
-                  <span className="absolute -inset-1.5 rounded-full border-2 border-[#FFE7B0]/80 pulse-ring pointer-events-none" />
+                  <span className="absolute -inset-1.5 rounded-full border-2 border-[#EADBB8]/80 pulse-ring pointer-events-none" />
                 )}
                 <div
                   className={`relative pl-0.5 pr-2.5 h-[30px] rounded-full flex items-center gap-1 whitespace-nowrap transition active:scale-95 ${
@@ -1080,32 +1080,32 @@ export const CityMapView: React.FC = () => {
                   }`}
                   style={{
                     background: hot
-                      ? 'linear-gradient(180deg,#FFF0C8 0%,#E8C27A 55%,#B7843A 100%)'
-                      : 'linear-gradient(180deg, rgba(30,40,78,0.95) 0%, rgba(10,15,31,0.95) 100%)',
-                    border: hot ? '1px solid #FFF3D2' : '1px solid rgba(226,189,114,0.65)',
+                      ? 'linear-gradient(180deg,#EEE2C6 0%,#E8C27A 55%,#9C8660 100%)'
+                      : 'linear-gradient(180deg, rgba(30,40,78,0.95) 0%, rgba(5,7,13,0.95) 100%)',
+                    border: hot ? '1px solid #FFF3D2' : '1px solid rgba(217,196,154,0.65)',
                     boxShadow: hot
                       ? '0 0 18px rgba(255,220,150,0.6), 0 6px 14px rgba(0,0,0,0.6)'
-                      : 'inset 0 1px 0 rgba(255,231,176,0.25), 0 6px 14px rgba(0,0,0,0.65)',
+                      : 'inset 0 1px 0 rgba(234,219,184,0.25), 0 6px 14px rgba(0,0,0,0.65)',
                   }}
                 >
                   <GameIcon name={d.unlocked ? icon : 'lock'} size={28} className="-my-1" />
                   <span
                     className={`font-editorial text-[12px] font-black tracking-wider ${
-                      hot ? 'text-[#2A1C06]' : d.unlocked ? 'text-[#FBF1D8]' : 'text-[#A3AAC2]'
+                      hot ? 'text-[#2A1C06]' : d.unlocked ? 'text-[#ECE6DA]' : 'text-[#8C90A0]'
                     }`}
                   >
                     {d.name}
                   </span>
-                  {hasCruise && <Sparkles className="w-3 h-3 text-[#FFE7B0]" />}
+                  {hasCruise && <Sparkles className="w-3 h-3 text-[#EADBB8]" />}
                   {d.hasNextStory && <span className="red-dot -top-1 -right-1" />}
                 </div>
               </div>
 
-              <div className={`w-px h-3 ${hot ? 'bg-[#FFE7B0]' : 'bg-[#E2BD72]/60'}`} />
-              <div className={`w-2 h-2 rotate-45 border ${d.unlocked ? 'bg-[#FFE7B0] border-white/80 shadow-[0_0_8px_rgba(255,231,176,0.9)]' : 'bg-white/30 border-white/30'}`} />
+              <div className={`w-px h-3 ${hot ? 'bg-[#EADBB8]' : 'bg-[#D9C49A]/60'}`} />
+              <div className={`w-2 h-2 rotate-45 border ${d.unlocked ? 'bg-[#EADBB8] border-white/80 shadow-[0_0_8px_rgba(234,219,184,0.9)]' : 'bg-white/30 border-white/30'}`} />
 
               {d.ownedProperties?.length > 0 && (
-                <div className="mt-1 pl-0.5 pr-2 py-[1px] rounded-full bg-[#0A0F1F]/92 border border-[#E2BD72]/50 text-[9.5px] text-[#F1DDA9] flex items-center gap-0.5 whitespace-nowrap shadow-md">
+                <div className="mt-1 pl-0.5 pr-2 py-[1px] rounded-full bg-[#05070D]/92 border border-[#D9C49A]/50 text-[9.5px] text-[#F1DDA9] flex items-center gap-0.5 whitespace-nowrap shadow-md">
                   <GameIcon name="crown" size={14} shadow={false} />
                   {namedProp ? namedProp.name : `${d.ownedProperties.length}处物业`}
                 </div>
@@ -1118,7 +1118,7 @@ export const CityMapView: React.FC = () => {
       {/* Quiet Whisper when no pin selected */}
       {!previewDistrict && (
         <div className="absolute bottom-4 inset-x-0 z-10 flex justify-center pointer-events-none">
-          <span className="px-3.5 py-1 rounded-full bg-[#070B18]/78 backdrop-blur-sm border border-[#E2BD72]/30 text-[11px] text-[#EFE7D6] tracking-wider shadow-[0_4px_14px_rgba(0,0,0,0.6)]">
+          <span className="px-3.5 py-1 rounded-full bg-[#06080E]/78 backdrop-blur-sm border border-[#D9C49A]/30 text-[11px] text-[#EFE7D6] tracking-wider shadow-[0_4px_14px_rgba(0,0,0,0.6)]">
             点选海城片区查看并前往
           </span>
         </div>
@@ -1143,7 +1143,7 @@ export const CityMapView: React.FC = () => {
                   className={`w-full h-full object-cover ${!previewDistrict.unlocked ? 'grayscale opacity-55' : ''}`}
                 />
                 {player.currentDistrict === previewDistrict.id && (
-                  <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-black/80 text-[9px] text-[#F6DDA4]">
+                  <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 bg-black/80 text-[9px] text-[#E2D3B0]">
                     当前所在
                   </span>
                 )}
@@ -1155,9 +1155,9 @@ export const CityMapView: React.FC = () => {
                       <span className="font-editorial text-[17px] font-black gold-gradient-text truncate">
                         {previewDistrict.name}
                       </span>
-                      <span className="text-[10px] text-[#E2BD72] shrink-0">{previewDistrict.tag}</span>
+                      <span className="text-[10px] text-[#D9C49A] shrink-0">{previewDistrict.tag}</span>
                     </div>
-                    <button onClick={() => setPreviewDistrictId(null)} className="text-[#8B93AD] hover:text-white">
+                    <button onClick={() => setPreviewDistrictId(null)} className="text-[#7A7E8E] hover:text-white">
                       <X className="w-4 h-4" />
                     </button>
                   </div>

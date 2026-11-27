@@ -23,7 +23,8 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
   // story gates now need investment: reinvest until 阶层 3 so every district (云顶海岸 etc.) is open
   for (let k = 0; k < 400; k++) {
     const st = (await api('/state')).state;
-    if (st.player.tier.tier >= 3) break;
+    // only the cruise needs 阶层 3 (云顶海岸); higher tiers also scale stakes ×30, so stay at 2 otherwise
+    if (st.player.tier.tier >= (only.includes('cruise') ? 3 : 2)) break;
     const own = st.businesses.filter((x) => x.owned);
     const buy = st.businesses.find((x) => !x.owned && x.unlockTier <= st.player.tier.tier && x.buyCost <= st.player.cash);
     if (buy) { await api('/business/buy', { businessId: buy.id }); continue; }

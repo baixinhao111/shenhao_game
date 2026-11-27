@@ -143,7 +143,7 @@ export const StockGame: React.FC = () => {
         <div className="flex-1 flex flex-col justify-between px-4 pb-4 pt-1 gap-2 min-h-0">
           <div className="space-y-1.5 shrink-0">
             {headline && (
-              <div className="rounded-[8px] px-3 py-1.5 bg-[#080E20]/84 border border-[#E2BD72]/35 text-[11px] leading-snug text-[#F6DDA4]">
+              <div className="rounded-[8px] px-3 py-1.5 bg-[#080E20]/84 border border-[#D9C49A]/35 text-[11px] leading-snug text-[#E2D3B0]">
                 {headline}
               </div>
             )}
@@ -170,12 +170,12 @@ export const StockGame: React.FC = () => {
                     setPick(q.id);
                   }}
                   className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-[10px] transition ${
-                    sel ? 'bg-[#E2BD72]/18 border border-[#FFE7B0]/80' : 'bg-[#05070F]/55 border border-white/10'
+                    sel ? 'bg-[#D9C49A]/18 border border-[#EADBB8]/80' : 'bg-[#04050A]/55 border border-white/10'
                   }`}
                 >
                   <div className="min-w-0 flex-1 text-left">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-editorial font-black text-[13.5px] text-[#FBF1D8] truncate">{q.name}</span>
+                      <span className="font-editorial font-black text-[13.5px] text-[#ECE6DA] truncate">{q.name}</span>
                       {q.storyTag && (
                         <span
                           className={`px-1.5 py-[0.5px] rounded-sm text-[9px] font-bold shrink-0 border ${
@@ -188,9 +188,9 @@ export const StockGame: React.FC = () => {
                         </span>
                       )}
                     </div>
-                    <div className="font-num text-[10.5px] text-[#8B93AD]">{q.code}</div>
+                    <div className="font-num text-[10.5px] text-[#7A7E8E]">{q.code}</div>
                   </div>
-                  <div className="font-num text-[15px] text-[#F4EFE4] shrink-0">¥{q.price}</div>
+                  <div className="font-num text-[15px] text-[#ECE6DA] shrink-0">¥{q.price}</div>
                   <div className={`font-num text-[12.5px] w-[62px] text-right shrink-0 ${up ? 'text-[#FF5C7A]' : 'text-[#3FD69A]'}`}>
                     {up ? '+' : ''}
                     {q.changePct}%
@@ -212,7 +212,7 @@ export const StockGame: React.FC = () => {
                     ? d === 'long'
                       ? 'bg-gradient-to-b from-[#FF6B86] to-[#C8264B] text-white border-[#FFB3C2]'
                       : 'bg-gradient-to-b from-[#3FD69A] to-[#17845A] text-white border-[#A8F0CF]'
-                    : 'bg-[#05070F]/55 text-[#A3AAC2] border-white/12'
+                    : 'bg-[#04050A]/55 text-[#8C90A0] border-white/12'
                 }`}
               >
                 {d === 'long' ? '做多 · 看涨' : '做空 · 看跌'}
@@ -237,18 +237,18 @@ export const StockGame: React.FC = () => {
         <div className="flex-1 flex flex-col">
           <div className="px-4 pt-2 flex items-end justify-between">
             <div>
-              <div className="font-editorial text-[16px] font-black text-[#FBF1D8] text-stroke-dark">
-                {session.name} <span className="font-num text-[12px] text-[#8B93AD]">{session.code}</span>
+              <div className="font-editorial text-[16px] font-black text-[#ECE6DA] text-stroke-dark">
+                {session.name} <span className="font-num text-[12px] text-[#7A7E8E]">{session.code}</span>
               </div>
               <div className="text-[11px] text-stroke-dark">
                 <span className={session.direction === 'long' ? 'text-[#FF8FA6]' : 'text-[#6FE3B4]'}>
                   {session.direction === 'long' ? '做多' : '做空'} ×{session.leverage}
                 </span>
-                <span className="text-[#A3AAC2]"> · 本金 {formatMoney(session.stake)}</span>
+                <span className="text-[#8C90A0]"> · 本金 {formatMoney(session.stake)}</span>
               </div>
             </div>
             <div ref={pnlRef} className="text-right">
-              <div className="font-num text-[11px] text-[#A3AAC2]">¥{session.path[tick]}</div>
+              <div className="font-num text-[11px] text-[#8C90A0]">¥{session.path[tick]}</div>
               <motion.div
                 key={Math.round(pnl / 1000)}
                 initial={{ scale: 1.08 }}
@@ -266,14 +266,14 @@ export const StockGame: React.FC = () => {
           </div>
 
           <div className="relative flex-1 flex items-center justify-center">
-            <div className="relative w-[94%] max-w-[390px] rounded-[8px] border border-[#E2BD72]/25 bg-[#05080F]/85 backdrop-blur-sm shadow-[0_14px_30px_rgba(0,0,0,0.6)] overflow-hidden">
+            <div className="relative w-[94%] max-w-[390px] rounded-[8px] border border-[#D9C49A]/25 bg-[#05080F]/85 backdrop-blur-sm shadow-[0_14px_30px_rgba(0,0,0,0.6)] overflow-hidden">
               {/* terminal header */}
               <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06] text-[10px] tracking-wider">
-                <span className="flex items-center gap-1.5 text-[#A3AAC2]">
-                  <span className={`w-1.5 h-1.5 rounded-full ${result ? 'bg-[#6B7392]' : 'bg-[#FF5C7A] animate-pulse'}`} />
+                <span className="flex items-center gap-1.5 text-[#8C90A0]">
+                  <span className={`w-1.5 h-1.5 rounded-full ${result ? 'bg-[#5E6273]' : 'bg-[#FF5C7A] animate-pulse'}`} />
                   {result ? '已收盘' : '实时 · 秒级 K 线'}
                 </span>
-                <span className="font-num text-[#C3C9DC]">
+                <span className="font-num text-[#B3B6C2]">
                   {result ? '' : `剩余 ${Math.max(0, Math.ceil(((session.path.length - 1 - tick) * session.tickMs) / 1000))}s`}
                 </span>
               </div>
@@ -288,7 +288,7 @@ export const StockGame: React.FC = () => {
                 {chart.ticks.map((v, i) => (
                   <g key={i}>
                     <line x1={0} x2={CHART_W} y1={4 + (CHART_H * i) / 4} y2={4 + (CHART_H * i) / 4} stroke="rgba(160,178,230,0.08)" />
-                    <text x={CHART_W + 6} y={4 + (CHART_H * i) / 4 + 3} fill="#6B7392" fontSize="9" fontFamily="Oswald, sans-serif">
+                    <text x={CHART_W + 6} y={4 + (CHART_H * i) / 4 + 3} fill="#5E6273" fontSize="9" fontFamily="Oswald, sans-serif">
                       {v.toFixed(2)}
                     </text>
                   </g>
@@ -305,8 +305,8 @@ export const StockGame: React.FC = () => {
                       .join(' ')} L ${(tick + 0.5) * chart.cw} ${CHART_H} L ${0.5 * chart.cw} ${CHART_H} Z`}
                     fill="url(#stkArea)"
                   />
-                  <line x1={0} x2={CHART_W} y1={chart.entryY} y2={chart.entryY} stroke="#E2BD72" strokeDasharray="4 4" strokeWidth={1} />
-                  <text x={4} y={chart.entryY - 4} fill="#E2BD72" fontSize="9.5">
+                  <line x1={0} x2={CHART_W} y1={chart.entryY} y2={chart.entryY} stroke="#D9C49A" strokeDasharray="4 4" strokeWidth={1} />
+                  <text x={4} y={chart.entryY - 4} fill="#D9C49A" fontSize="9.5">
                     开仓 {session.path[0].toFixed(2)}
                   </text>
                   {chart.liqY > 0 && chart.liqY < CHART_H && (
@@ -351,7 +351,7 @@ export const StockGame: React.FC = () => {
                   <text x={CHART_W + 5} y={chart.y(session.path[tick]) + 3.5} fill="#fff" fontSize="9.5" fontFamily="Oswald, sans-serif">
                     {session.path[tick].toFixed(2)}
                   </text>
-                  <circle cx={(tick + 0.5) * chart.cw} cy={chart.y(session.path[tick])} r={3.5} fill="#FFE7B0">
+                  <circle cx={(tick + 0.5) * chart.cw} cy={chart.y(session.path[tick])} r={3.5} fill="#EADBB8">
                     {!result && <animate attributeName="r" values="3;6;3" dur="0.8s" repeatCount="indefinite" />}
                   </circle>
                   {result && (
@@ -359,7 +359,7 @@ export const StockGame: React.FC = () => {
                       x={Math.max(76, Math.min(CHART_W - 22, (tick + 1) * chart.cw))}
                       y={Math.max(16, chart.y(session.path[tick]) - 10)}
                       textAnchor="middle"
-                      fill="#FFE7B0"
+                      fill="#EADBB8"
                       fontSize="12"
                       fontWeight="700"
                     >
@@ -387,7 +387,7 @@ export const StockGame: React.FC = () => {
           {!result ? (
             <div className="px-4 pb-5 space-y-2.5">
               <div className="h-1.5 rounded-full bg-white/10 overflow-hidden">
-                <div className="h-full bg-gradient-to-r from-[#B7843A] to-[#FFE7B0]" style={{ width: `${(tick / (session.path.length - 1)) * 100}%` }} />
+                <div className="h-full bg-gradient-to-r from-[#9C8660] to-[#EADBB8]" style={{ width: `${(tick / (session.path.length - 1)) * 100}%` }} />
               </div>
               <Speech
                 who="天枢"

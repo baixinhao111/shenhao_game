@@ -545,7 +545,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           setPickerOpen(false);
         }
       }}
-      className="relative h-full w-full overflow-hidden bg-[#0A0F1F] select-none"
+      className="relative h-full w-full overflow-hidden bg-[#05070D] select-none"
     >
       {/* LAYER 0: FULL-BLEED LIVING RESIDENCE STAGE */}
       <AmbientBackdrop
@@ -562,7 +562,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
         }`}
       />
       <div
-        className={`absolute inset-x-0 bottom-0 h-[250px] bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/78 to-transparent pointer-events-none transition-opacity duration-500 ${
+        className={`absolute inset-x-0 bottom-0 h-[250px] bg-gradient-to-t from-[#05070D] via-[#05070D]/78 to-transparent pointer-events-none transition-opacity duration-500 ${
           pureArtMode ? 'opacity-20' : 'opacity-100'
         }`}
       />
@@ -617,7 +617,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               exit={{ opacity: 0 }}
               transition={{ duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
               className={`absolute font-bold text-sm tracking-wide text-shadow-stage ${
-                p.kind === 'heart' ? 'text-[#EEA0B8]' : 'text-[#F6DDA4]'
+                p.kind === 'heart' ? 'text-[#EEA0B8]' : 'text-[#E2D3B0]'
               }`}
             >
               {p.label}
@@ -646,12 +646,12 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
         >
           <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={50} dot={hasProfileDot} />
           <div className="min-w-0 space-y-[3px]">
-            <div className="font-editorial text-[16px] font-black text-[#FBF1D8] leading-none truncate text-stroke-dark">
+            <div className="font-editorial text-[16px] font-black text-[#ECE6DA] leading-none truncate text-stroke-dark">
               {user.nickname}
             </div>
             <div className="flex items-center gap-1 text-[10px] leading-none">
               <GameIcon name="crown" size={13} shadow={false} />
-              <span className="text-[#F6DDA4] font-bold tracking-wider truncate">{player.tier.name}</span>
+              <span className="text-[#E2D3B0] font-bold tracking-wider truncate">{player.tier.name}</span>
               {user.equippedTitle?.titleBadge && (
                 <span
                   className={`px-1 py-[1px] rounded-sm text-[8.5px] font-bold shrink-0 border ${
@@ -659,7 +659,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                       ? 'bg-[#072330]/85 border-[#63E6F2]/55 text-[#B9F6FB]'
                       : user.equippedTitle.titleTone === 'rose'
                         ? 'bg-[#361124]/85 border-[#F0789A]/55 text-[#FFC4D3]'
-                        : 'bg-[#2B1F0B]/85 border-[#E2BD72]/55 text-[#FFE7B0]'
+                        : 'bg-[#2B1F0B]/85 border-[#D9C49A]/55 text-[#EADBB8]'
                   }`}
                 >
                   {user.equippedTitle.titleBadge}
@@ -670,7 +670,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               <div className="bar-track w-[56px] shrink-0 !h-[5px]">
                 <div className="bar-fill" style={{ width: `${tierProgressPct}%` }} />
               </div>
-              <span className="font-num text-[10px] text-[#C3C9DC] leading-none whitespace-nowrap">
+              <span className="font-num text-[10px] text-[#B3B6C2] leading-none whitespace-nowrap">
                 <AnimatedNumber value={player.netWorth} />
               </span>
             </div>
@@ -806,8 +806,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           }}
           className="icon-entry"
         >
-          <div className="w-[40px] h-[40px] rounded-full p-[2px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E] shadow-[0_3px_6px_rgba(0,0,0,0.6)]">
-            <div className="w-full h-full rounded-full overflow-hidden bg-[#1A2344]">
+          <div className="w-[40px] h-[40px] rounded-full p-[2px] bg-gradient-to-b from-[#EADBB8] to-[#8A7650] shadow-[0_3px_6px_rgba(0,0,0,0.6)]">
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#10131C]">
               <img
                 src={activeCompanion.avatar}
                 alt=""
@@ -826,7 +826,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           className="icon-entry"
           aria-label="隐藏界面"
         >
-          <div className="w-[34px] h-[34px] my-[3px] rounded-full flex items-center justify-center bg-[#0B1122]/70 border border-[#E2BD72]/45 text-[#F6DDA4] shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
+          <div className="w-[34px] h-[34px] my-[3px] rounded-full flex items-center justify-center bg-[#05070D]/70 border border-[#D9C49A]/45 text-[#E2D3B0] shadow-[0_3px_6px_rgba(0,0,0,0.5)]">
             <EyeOff className="w-4 h-4" strokeWidth={2} />
           </div>
           <span className="lbl">赏图</span>
@@ -842,7 +842,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             className="icon-entry mt-1"
           >
             <img src={iconSrc('income')} alt="" className="animate-float-slow !w-[46px] !h-[46px]" />
-            <span className="lbl !text-[#FFE7B0] font-num !tracking-normal">
+            <span className="lbl !text-[#EADBB8] font-num !tracking-normal">
               <AnimatedNumber value={livePendingIncome} duration={360} />
             </span>
             <span className="absolute -top-1 -right-1 px-1 rounded-sm bg-[#FF4F72] text-[9px] font-bold text-white leading-[14px] shadow">
@@ -863,8 +863,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             className="absolute top-[150px] right-[62px] z-40 w-[228px] panel-elevated rounded-[6px] p-2 space-y-1"
           >
             <div className="flex items-center justify-between px-2 py-1.5 border-b border-white/[0.08]">
-              <span className="text-[11px] font-medium tracking-wider text-[#E2BD72]">切换驻留人物</span>
-              <button onClick={() => setPickerOpen(false)} className="text-[#8B93AD] hover:text-white">
+              <span className="text-[11px] font-medium tracking-wider text-[#D9C49A]">切换驻留人物</span>
+              <button onClick={() => setPickerOpen(false)} className="text-[#7A7E8E] hover:text-white">
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -883,7 +883,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     }}
                     className={`w-full rounded-[4px] px-2 py-1.5 flex items-center gap-2.5 text-left transition ${
                       isSelected
-                        ? 'bg-[#E2BD72]/16 border-l-2 border-l-[#E2BD72]'
+                        ? 'bg-[#D9C49A]/16 border-l-2 border-l-[#D9C49A]'
                         : c.unlocked
                           ? 'hover:bg-white/[0.05]'
                           : 'opacity-40 cursor-not-allowed'
@@ -893,14 +893,14 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-1.5">
                         <span className="text-xs font-semibold text-[#F3F0E8] truncate">{c.name}</span>
-                        {c.isResident && <span className="text-[9px] text-[#E2BD72]">同住</span>}
+                        {c.isResident && <span className="text-[9px] text-[#D9C49A]">同住</span>}
                       </div>
                       <div className="text-[10px] text-[#8A8E9B] truncate">
                         {c.unlocked ? c.title : '待结识'}
                       </div>
                     </div>
                     {isSelected ? (
-                      <Check className="w-3.5 h-3.5 text-[#E2BD72] shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-[#D9C49A] shrink-0" />
                     ) : !c.unlocked ? (
                       <Lock className="w-3 h-3 text-[#6F7896] shrink-0" />
                     ) : null}
@@ -924,9 +924,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             onClick={(e) => e.stopPropagation()}
             className="absolute inset-x-4 bottom-[150px] z-30"
           >
-            <div className="bg-[#0D1326]/86 backdrop-blur-xl border-l-2 border-l-[#E2BD72] border-y border-r border-white/[0.08] px-3.5 py-2.5 space-y-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.72)]">
+            <div className="bg-[#0D1326]/86 backdrop-blur-xl border-l-2 border-l-[#D9C49A] border-y border-r border-white/[0.08] px-3.5 py-2.5 space-y-1.5 shadow-[0_12px_32px_rgba(0,0,0,0.72)]">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[11px] font-semibold text-[#F6DDA4] tracking-wider">{pokeBubble.name}</span>
+                <span className="text-[11px] font-semibold text-[#E2D3B0] tracking-wider">{pokeBubble.name}</span>
                 <div className="flex items-center gap-2.5">
                   {pokeBubble.innerThought && (
                     <button
@@ -946,7 +946,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                       setPokeBubble(null);
                       setThoughtOpen(false);
                     }}
-                    className="text-[#8B93AD] hover:text-white"
+                    className="text-[#7A7E8E] hover:text-white"
                     aria-label="关闭"
                   >
                     <X className="w-3.5 h-3.5" />
@@ -981,7 +981,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       >
         {/* Nameplate */}
         <div className="min-w-0 pl-1">
-          <div className="text-[10px] tracking-[0.3em] text-[#E2BD72]/90 font-bold mb-1 text-stroke-dark">
+          <div className="text-[10px] tracking-[0.3em] text-[#D9C49A]/90 font-bold mb-1 text-stroke-dark">
             {activeCompanion.kind === 'heroine' ? 'COMPANION' : activeCompanion.kind === 'ally' ? 'BUTLER' : 'MASTER'}
           </div>
           <h1 className="font-editorial text-[30px] font-black leading-none gold-gradient-text drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">
@@ -993,7 +993,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                 {activeCompanion.stage.name}
               </span>
             )}
-            <span className="text-[11px] text-[#D3D8E8] text-stroke-dark truncate">
+            <span className="text-[11px] text-[#C2C5CF] text-stroke-dark truncate">
               {mainResidence?.displayName || '海城居所'} · {shortTime}
             </span>
           </div>
@@ -1032,20 +1032,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           }}
           className="relative shrink-0 w-[150px] h-[96px] rounded-[8px] overflow-visible text-left active:scale-[0.97] transition"
         >
-          <div className="absolute inset-0 rounded-[8px] overflow-hidden border border-[#E2BD72]/80 shadow-[0_10px_28px_rgba(0,0,0,0.6),0_0_18px_rgba(226,189,114,0.25)]">
+          <div className="absolute inset-0 rounded-[8px] overflow-hidden border border-[#D9C49A]/80 shadow-[0_10px_28px_rgba(0,0,0,0.6),0_0_18px_rgba(217,196,154,0.25)]">
             <img
               src={nextEpisodeCover}
               alt=""
               className="absolute inset-0 w-full h-full object-cover scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/55 to-[#0A0F1F]/10" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#05070D] via-[#05070D]/55 to-[#05070D]/10" />
           </div>
           <OrnateCorners size={18} inset={-4} />
-          <div className="absolute -top-2.5 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow">
+          <div className="absolute -top-2.5 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#19130A] bg-gradient-to-b from-[#EEE2C6] to-[#C4AE80] shadow">
             {nextEpisode ? (nextEpisodeLocked ? '待解锁' : '主线') : '出行'}
           </div>
           <div className="absolute inset-x-2.5 bottom-2">
-            <div className="text-[10px] text-[#F6DDA4] tracking-wider truncate text-stroke-dark">
+            <div className="text-[10px] text-[#E2D3B0] tracking-wider truncate text-stroke-dark">
               {nextEpisode
                 ? nextEpisodeLocked
                   ? `身价需 ${formatMoney(nextEpisode.requireNetWorth)}`
@@ -1053,7 +1053,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                 : '海城出行'}
             </div>
             <div className="flex items-center justify-between gap-1 mt-0.5">
-              <div className="font-editorial text-[15px] font-black text-[#FBF1D8] truncate text-stroke-dark">
+              <div className="font-editorial text-[15px] font-black text-[#ECE6DA] truncate text-stroke-dark">
                 {nextEpisode ? nextEpisode.title : equippedCar?.name || '前往海城'}
               </div>
               <GameIcon name={nextEpisodeLocked ? 'lock' : 'play'} size={nextEpisodeLocked ? 22 : 26} />
@@ -1077,10 +1077,10 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
               onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full max-h-[72%] rounded-t-[16px] border-t border-[#E2BD72]/50 flex flex-col overflow-hidden"
+              className="panel-elevated w-full max-h-[72%] rounded-t-[16px] border-t border-[#D9C49A]/50 flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
+                <div className="flex items-center gap-1 p-1 rounded-full bg-[#06080E]/90 border border-[#D9C49A]/25">
                   <button
                     data-active={residenceSheet === 'interact'}
                     onClick={() => setResidenceSheet('interact')}
@@ -1098,7 +1098,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                     居所与钥匙
                   </button>
                 </div>
-                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#8B93AD] hover:text-white">
+                <button onClick={() => setResidenceSheet(null)} className="p-1 text-[#7A7E8E] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
@@ -1108,7 +1108,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                   <>
                     {residentHeroineObjs.length === 0 ? (
                       <div className="py-6 text-center space-y-3">
-                        <p className="text-xs text-[#A3AAC2]">
+                        <p className="text-xs text-[#8C90A0]">
                           {mainResidence.displayName} 暂未留宿红颜，赠予钥匙后可在此共度居家时光。
                         </p>
                         <button
@@ -1135,9 +1135,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                               >
                                 <div className="min-w-0">
                                   <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
-                                  <div className="text-[11px] text-[#929AB4] mt-0.5 line-clamp-1">{inter.desc}</div>
+                                  <div className="text-[11px] text-[#858999] mt-0.5 line-clamp-1">{inter.desc}</div>
                                 </div>
-                                <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 font-num">
+                                <span className="text-xs text-[#D9C49A] flex items-center gap-0.5 shrink-0 font-num">
                                   <GameIcon name="energy" size={14} shadow={false} /> {inter.energy}
                                 </span>
                               </button>
@@ -1152,13 +1152,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                 {residenceSheet === 'keys' && (
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="text-[#F6DDA4] font-medium">
+                      <span className="text-[#E2D3B0] font-medium">
                         {mainResidence.displayName}（入住 {residentHeroineObjs.length}/{mainResidence.maxResidents}）
                       </span>
-                      <span className="text-[11px] text-[#8B93AD]">同住每日提升好感</span>
+                      <span className="text-[11px] text-[#7A7E8E]">同住每日提升好感</span>
                     </div>
                     {unlockedHeroines.length === 0 ? (
-                      <div className="text-xs text-[#929AB4] py-4 text-center">
+                      <div className="text-xs text-[#858999] py-4 text-center">
                         推进主线结识红颜后，可在此赠予居所钥匙。
                       </div>
                     ) : (
@@ -1173,13 +1173,13 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                               className={`p-2.5 rounded-[4px] flex items-center gap-2.5 text-left border transition ${
                                 here
                                   ? 'bg-[#F0789A]/12 border-[#F0789A]/40'
-                                  : 'bg-white/[0.03] border-white/[0.08] hover:border-[#E2BD72]/40'
+                                  : 'bg-white/[0.03] border-white/[0.08] hover:border-[#D9C49A]/40'
                               }`}
                             >
                               <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
                               <div className="min-w-0">
                                 <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
-                                <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
+                                <div className="text-[10px] text-[#D9C49A]">{here ? '已入住' : '赠予钥匙'}</div>
                               </div>
                             </button>
                           );
@@ -1205,7 +1205,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             className="absolute bottom-6 inset-x-0 z-30 flex justify-center pointer-events-none"
           >
             <div className="game-pill px-3.5 py-1.5 rounded-[4px] text-[11px] text-[#E6E3DC] flex items-center gap-1.5">
-              <Eye className="w-3.5 h-3.5 text-[#E2BD72]" />
+              <Eye className="w-3.5 h-3.5 text-[#D9C49A]" />
               <span>轻触屏幕恢复界面</span>
             </div>
           </motion.div>

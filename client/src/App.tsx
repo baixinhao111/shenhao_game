@@ -18,7 +18,7 @@ const StoryView = lazy(() => import('./views/StoryView').then((m) => ({ default:
 const SystemView = lazy(() => import('./views/SystemView').then((m) => ({ default: m.SystemView })));
 
 const ViewFallback: React.FC = () => (
-  <div className="h-full w-full bg-[#0B1122] flex items-center justify-center">
+  <div className="h-full w-full bg-[#05070D] flex items-center justify-center">
     <div className="w-24 bar-track">
       <div className="bar-fill w-1/3 animate-[loadSlide_1.2s_ease-in-out_infinite]" />
     </div>
@@ -84,16 +84,16 @@ export function App() {
   const isHome = activeTab === 'home';
 
   return (
-    <div className="min-h-[100dvh] w-full bg-[#05070F] flex items-center justify-center sm:py-4" style={{ background: "radial-gradient(60% 50% at 50% 30%, #141C38 0%, #05070F 100%)" }}>
+    <div className="min-h-[100dvh] w-full bg-[#04050A] flex items-center justify-center sm:py-4" style={{ background: "radial-gradient(60% 50% at 50% 30%, #0E1119 0%, #04050A 100%)" }}>
       {/* 9:16 Mobile-First Viewport Shell */}
-      <div data-app-shell className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#E2BD72]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#0B1122] overflow-hidden flex flex-col">
+      <div data-app-shell className="relative w-full h-[100dvh] sm:h-[852px] sm:max-h-[94dvh] sm:w-[412px] sm:rounded-[30px] sm:border sm:border-[#D9C49A]/22 sm:shadow-[0_0_90px_rgba(0,0,0,0.94)] bg-[#05070D] overflow-hidden flex flex-col">
         {loading ? (
           <div className="flex-1 flex flex-col items-center justify-center gap-5 deco-texture">
             <img src="/assets/ui/logo.webp" alt="天枢神豪" className="w-[72%] max-w-[300px] animate-float-slow drop-shadow-[0_6px_18px_rgba(0,0,0,0.75)]" />
             <div className="w-40 bar-track">
               <div className="bar-fill w-1/3 animate-[loadSlide_1.4s_ease-in-out_infinite]" />
             </div>
-            <div className="font-editorial text-[12px] text-[#F6DDA4] tracking-[0.4em]">海城载入中</div>
+            <div className="font-editorial text-[12px] text-[#E2D3B0] tracking-[0.4em]">海城载入中</div>
           </div>
         ) : !token || !state ? (
           <AuthScreen />
@@ -131,7 +131,7 @@ export function App() {
                     animate={{ x: 0 }}
                     exit={{ x: '100%' }}
                     transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                    className="absolute inset-0 z-30 bg-[#0B1122]"
+                    className="absolute inset-0 z-30 bg-[#05070D]"
                   >
                     <Suspense fallback={<ViewFallback />}>
                       <SystemView />

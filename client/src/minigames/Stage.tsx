@@ -20,12 +20,12 @@ export const Stage: React.FC<{
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.25 }}
-    className="absolute inset-0 z-40 overflow-hidden bg-[#05070F] flex flex-col select-none"
+    className="absolute inset-0 z-40 overflow-hidden bg-[#04050A] flex flex-col select-none"
   >
     <img src={bg} alt="" className="absolute inset-0 w-full h-full object-cover" draggable={false} />
     <div className="absolute inset-0 pointer-events-none" style={{ background: `rgba(5,7,15,${dim})` }} />
-    <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#05070F]/85 to-transparent pointer-events-none" />
-    <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#05070F]/95 via-[#05070F]/60 to-transparent pointer-events-none" />
+    <div className="absolute inset-x-0 top-0 h-28 bg-gradient-to-b from-[#04050A]/85 to-transparent pointer-events-none" />
+    <div className="absolute inset-x-0 bottom-0 h-64 bg-gradient-to-t from-[#04050A]/95 via-[#04050A]/60 to-transparent pointer-events-none" />
 
     <header className="relative z-10 shrink-0 flex items-center justify-between gap-2 px-3 pt-3 pb-1">
       <div className="flex items-center gap-1.5 min-w-0">
@@ -34,7 +34,7 @@ export const Stage: React.FC<{
             playTap();
             onBack();
           }}
-          className="w-9 h-9 rounded-full flex items-center justify-center bg-[#05070F]/60 border border-[#E2BD72]/40 text-[#F6DDA4] active:scale-90 transition shrink-0"
+          className="w-9 h-9 rounded-full flex items-center justify-center bg-[#04050A]/60 border border-[#D9C49A]/40 text-[#E2D3B0] active:scale-90 transition shrink-0"
           aria-label="返回"
         >
           <ChevronLeft className="w-5 h-5" />
@@ -43,7 +43,7 @@ export const Stage: React.FC<{
           <div className="font-editorial text-[18px] font-black gold-gradient-text leading-tight truncate drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
             {title}
           </div>
-          {subtitle && <div className="text-[10.5px] text-[#C3C9DC] truncate text-stroke-dark">{subtitle}</div>}
+          {subtitle && <div className="text-[10.5px] text-[#B3B6C2] truncate text-stroke-dark">{subtitle}</div>}
         </div>
       </div>
       <ResourceCapsules compact />
@@ -68,12 +68,12 @@ export const Speech: React.FC<{ who: string; text: string; tone?: 'gold' | 'rose
   >
     <span
       className={`font-editorial font-black mr-1.5 ${
-        tone === 'rose' ? 'text-[#FFB3C6]' : tone === 'cyan' ? 'text-[#9BF5FF]' : tone === 'plain' ? 'text-[#C3C9DC]' : 'text-[#FFE7B0]'
+        tone === 'rose' ? 'text-[#FFB3C6]' : tone === 'cyan' ? 'text-[#9BF5FF]' : tone === 'plain' ? 'text-[#B3B6C2]' : 'text-[#EADBB8]'
       }`}
     >
       {who}
     </span>
-    <span className="text-[#F4EFE4]">{text}</span>
+    <span className="text-[#ECE6DA]">{text}</span>
   </motion.div>
 );
 
@@ -118,13 +118,13 @@ export const ResultStrip: React.FC<{
   >
     <div className="flex items-end justify-between gap-3">
       <div className="min-w-0">
-        <div className={`font-editorial text-[22px] font-black ${win ? 'gold-gradient-text' : 'text-[#A3AAC2]'} drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]`}>
+        <div className={`font-editorial text-[22px] font-black ${win ? 'gold-gradient-text' : 'text-[#8C90A0]'} drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]`}>
           {title}
         </div>
-        {line && <div className="text-[12px] text-[#D3D8E8] leading-relaxed text-stroke-dark mt-0.5">{line}</div>}
+        {line && <div className="text-[12px] text-[#C2C5CF] leading-relaxed text-stroke-dark mt-0.5">{line}</div>}
       </div>
       {typeof amount === 'number' && (
-        <div className={`font-num text-[28px] font-semibold shrink-0 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] ${amount >= 0 ? 'text-[#FFE7B0]' : 'text-[#8B93AD]'}`}>
+        <div className={`font-num text-[28px] font-semibold shrink-0 drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] ${amount >= 0 ? 'text-[#EADBB8]' : 'text-[#7A7E8E]'}`}>
           {amount >= 0 ? '+' : '−'}
           {formatAmount(Math.abs(amount))}
         </div>

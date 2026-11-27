@@ -4,6 +4,7 @@ import { DecoHeading, GameIcon, OrnateCorners, type GameIconName } from '../comp
 import { AnimatePresence, motion } from 'framer-motion';
 import { AnimatedNumber } from '../components/AnimatedNumber';
 import { BusinessCard } from './assets/BusinessCard';
+import { Atmosphere } from '../components/Atmosphere';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playCoinBurst, playTap } from '../lib/sound';
@@ -170,7 +171,7 @@ export const AssetsView: React.FC = () => {
   return (
     <div
       ref={scrollRef}
-      className="h-full overflow-y-auto overflow-x-hidden no-scrollbar deco-texture"
+      className="relative h-full overflow-y-auto overflow-x-hidden no-scrollbar deco-texture"
       onTouchStart={(e) => {
         const t = e.touches[0];
         swipeRef.current = { x: t.clientX, y: t.clientY, t: Date.now() };
@@ -189,18 +190,19 @@ export const AssetsView: React.FC = () => {
         if (next) switchTab(next);
       }}
     >
+      <Atmosphere />
       {/* Vault header */}
       <div className="px-3 pt-3">
         <div className="relative panel-brass rounded-[10px] px-3 py-3 flex items-center gap-3">
           <OrnateCorners size={18} inset={-4} />
           <GameIcon name="income" size={52} />
           <div className="min-w-0 flex-1">
-            <div className="text-[10.5px] text-[#C3C9DC] tracking-[0.2em]">产业分红 · 物业租金</div>
+            <div className="text-[10.5px] text-[#B3B6C2] tracking-[0.2em]">产业分红 · 物业租金</div>
             <div className="flex items-baseline gap-1 mt-0.5">
-              <span className="font-num text-[24px] font-semibold text-[#FFE7B0] leading-none">
+              <span className="font-num text-[24px] font-semibold text-[#EADBB8] leading-none">
                 +<AnimatedNumber value={player.incomePerHour} />
               </span>
-              <span className="text-[11px] text-[#A3AAC2]">/ 时</span>
+              <span className="text-[11px] text-[#8C90A0]">/ 时</span>
             </div>
             <div className="text-[11px] text-[#7BE0A8] mt-1 font-num tracking-wide">
               待收 <AnimatedNumber value={player.pendingIncome} highlightOnIncrease />
@@ -224,16 +226,15 @@ export const AssetsView: React.FC = () => {
       {/* Segmented tabs */}
       {/* sticky elements report their stuck offset, so measure from this marker instead */}
       <div ref={tabsRef} aria-hidden />
-      <div className="sticky top-0 z-20 px-3 pt-2.5 pb-2.5 mt-0.5 bg-[#0A0F1F]/95 backdrop-blur-md border-b border-[#E2BD72]/12 shadow-[0_6px_14px_rgba(0,0,0,0.35)]">
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
-          {SUBTABS.map(({ id, label, icon }) => (
+      <div className="sticky top-0 z-20 px-3 pt-1 mt-0.5 bg-[#04050A]/92 backdrop-blur-md border-b border-white/[0.05]">
+        <div className="grid grid-cols-3">
+          {SUBTABS.map(({ id, label }) => (
             <button
               key={id}
               data-active={subTab === id}
               onClick={() => switchTab(id)}
-              className="relative tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
+              className="relative route-tab v2 font-editorial"
             >
-              <GameIcon name={icon} size={20} shadow={false} />
               {label}
               {id === 'biz' && businesses.some((b: any) => b.owned && b.activeEvent) && (
                 <span className="red-dot top-0.5 right-1.5" />
@@ -261,10 +262,10 @@ export const AssetsView: React.FC = () => {
       {/* TAB 1: SHOWROOM */}
       {subTab === 'garage' && featuredAsset && (
         <div className="pb-8">
-          <div className="relative h-[230px] mx-3 rounded-[12px] overflow-hidden border border-[#E2BD72]/30"
+          <div className="relative h-[230px] mx-3 rounded-[12px] overflow-hidden border border-[#D9C49A]/30"
             style={{
               background:
-                'radial-gradient(70% 55% at 50% 30%, rgba(120,140,220,0.25) 0%, transparent 70%), radial-gradient(60% 30% at 50% 88%, rgba(226,189,114,0.35) 0%, transparent 70%), linear-gradient(180deg,#141C38 0%,#0A0F1F 100%)',
+                'radial-gradient(70% 55% at 50% 30%, rgba(120,140,220,0.25) 0%, transparent 70%), radial-gradient(60% 30% at 50% 88%, rgba(217,196,154,0.35) 0%, transparent 70%), linear-gradient(180deg,#0E1119 0%,#05070D 100%)',
             }}
           >
             {/* spotlight beams */}
@@ -274,7 +275,7 @@ export const AssetsView: React.FC = () => {
             <div className="absolute left-1/2 -translate-x-1/2 bottom-6 w-[78%] h-[38px] rounded-[50%] pointer-events-none"
               style={{
                 background: 'radial-gradient(50% 50% at 50% 50%, rgba(30,40,80,0.95) 0%, rgba(14,20,42,0.95) 70%)',
-                boxShadow: '0 0 0 2px rgba(226,189,114,0.55), 0 0 28px rgba(226,189,114,0.35), inset 0 4px 10px rgba(0,0,0,0.6)',
+                boxShadow: '0 0 0 2px rgba(217,196,154,0.55), 0 0 28px rgba(217,196,154,0.35), inset 0 4px 10px rgba(0,0,0,0.6)',
               }} />
             <div className="absolute inset-x-0 bottom-9 z-10 flex justify-center pointer-events-none">
             <AnimatePresence mode="wait">
@@ -293,11 +294,11 @@ export const AssetsView: React.FC = () => {
 
             <div className="absolute top-3 left-3 z-20">
               {featuredAsset.equipped ? (
-                <span className="px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">当前座驾</span>
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#19130A] bg-gradient-to-b from-[#EEE2C6] to-[#C4AE80]">当前座驾</span>
               ) : featuredAsset.owned ? (
                 <span className="px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-white bg-emerald-600/90">已收藏</span>
               ) : (
-                <span className="px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-[#C3C9DC] bg-black/50 border border-white/15">未拥有</span>
+                <span className="px-2 py-[2px] rounded-sm text-[10px] font-bold tracking-[0.2em] text-[#B3B6C2] bg-black/50 border border-white/15">未拥有</span>
               )}
             </div>
           </div>
@@ -305,9 +306,9 @@ export const AssetsView: React.FC = () => {
           <div className="relative mx-3 -mt-2 z-10 px-2 pt-1 pb-2 space-y-2">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
-                <h3 className="font-editorial text-[20px] font-black text-[#FBF1D8] truncate">{featuredAsset.name}</h3>
+                <h3 className="font-editorial text-[20px] font-black text-[#ECE6DA] truncate">{featuredAsset.name}</h3>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="flex items-center gap-1 font-num text-[13px] text-[#FFE7B0]">
+                  <span className="flex items-center gap-1 font-num text-[13px] text-[#EADBB8]">
                     <GameIcon name="cash" size={18} /> {formatMoney(featuredAsset.valuation)}
                   </span>
                   {featuredAsset.racePower > 0 && (
@@ -329,7 +330,7 @@ export const AssetsView: React.FC = () => {
                   </span>
                 )
               ) : featuredAsset.dropOnly ? (
-                <span className="text-[11px] text-[#929AB4] pt-1 shrink-0">赌石 / 活动获取</span>
+                <span className="text-[11px] text-[#858999] pt-1 shrink-0">赌石 / 活动获取</span>
               ) : (
                 <button
                   disabled={busy}
@@ -340,7 +341,7 @@ export const AssetsView: React.FC = () => {
                 </button>
               )}
             </div>
-            <p className="text-[12px] text-[#A3AAC2] leading-relaxed">{featuredAsset.description}</p>
+            <p className="text-[12px] text-[#8C90A0] leading-relaxed">{featuredAsset.description}</p>
           </div>
 
           <div className="px-3 pt-5 space-y-2.5">
@@ -375,10 +376,10 @@ export const AssetsView: React.FC = () => {
                             />
                             {!a.owned && <GameIcon name="lock" size={16} className="absolute top-1 right-[18%] opacity-70" />}
                           </span>
-                          <span className={`mt-3 text-[11px] font-bold truncate max-w-[92%] ${selected ? 'text-[#FFE7B0]' : a.owned ? 'text-[#F4EFE4]' : 'text-[#8B93AD]'}`}>
+                          <span className={`mt-3 text-[11px] font-bold truncate max-w-[92%] ${selected ? 'text-[#EADBB8]' : a.owned ? 'text-[#ECE6DA]' : 'text-[#7A7E8E]'}`}>
                             {a.name}
                           </span>
-                          <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[#6B7392]'}`}>
+                          <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[#5E6273]'}`}>
                             {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
                           </span>
                         </button>
@@ -386,8 +387,8 @@ export const AssetsView: React.FC = () => {
                     })}
                   </div>
                   {/* the ledge */}
-                  <span className="absolute left-2 right-2 top-[70px] h-[6px] rounded-[50%] bg-[radial-gradient(closest-side,rgba(226,189,114,0.35),transparent)] pointer-events-none" />
-                  <span className="absolute left-4 right-4 top-[72px] h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent pointer-events-none" />
+                  <span className="absolute left-2 right-2 top-[70px] h-[6px] rounded-[50%] bg-[radial-gradient(closest-side,rgba(217,196,154,0.35),transparent)] pointer-events-none" />
+                  <span className="absolute left-4 right-4 top-[72px] h-px bg-gradient-to-r from-transparent via-[#D9C49A]/55 to-transparent pointer-events-none" />
                 </div>
               ))}
             </div>
@@ -399,12 +400,12 @@ export const AssetsView: React.FC = () => {
               <div key={s.id} className="relative px-1 py-2.5 flex items-center gap-3 border-b border-white/[0.06] last:border-b-0">
                 <GameIcon name="crown" size={30} className={s.completed ? '' : 'grayscale opacity-60'} />
                 <div className="min-w-0 flex-1">
-                  <div className="text-[13px] font-editorial font-black text-[#FBF1D8]">{s.name}</div>
-                  <div className="text-[11px] text-[#929AB4] mt-0.5">{s.bonusDesc}</div>
+                  <div className="text-[13px] font-editorial font-black text-[#ECE6DA]">{s.name}</div>
+                  <div className="text-[11px] text-[#858999] mt-0.5">{s.bonusDesc}</div>
                 </div>
                 <span
                   className={`text-[10.5px] shrink-0 px-2 py-[2px] rounded-full border ${
-                    s.completed ? 'text-[#1E1506] bg-[#E2BD72] border-[#FFE7B0]' : 'text-[#8B93AD] border-white/15'
+                    s.completed ? 'text-[#19130A] bg-[#D9C49A] border-[#EADBB8]' : 'text-[#7A7E8E] border-white/15'
                   }`}
                 >
                   {s.completed ? '已激活' : '收集中'}
@@ -432,8 +433,8 @@ export const AssetsView: React.FC = () => {
               },
             ].map((it) => (
               <div key={it.label} className="panel-arch rounded-[8px] px-2.5 py-2">
-                <div className="text-[9.5px] tracking-[0.2em] text-[#8B93AD]">{it.label}</div>
-                <div className="font-num text-[14px] text-[#FFE7B0] mt-0.5 truncate">{it.value}</div>
+                <div className="text-[9.5px] tracking-[0.2em] text-[#7A7E8E]">{it.label}</div>
+                <div className="font-num text-[14px] text-[#EADBB8] mt-0.5 truncate">{it.value}</div>
               </div>
             ))}
           </div>
@@ -477,9 +478,9 @@ export const AssetsView: React.FC = () => {
                   alt={p.displayName}
                   className={`w-full h-full object-cover ${propLocked ? 'grayscale brightness-50' : !p.owned ? 'brightness-75' : ''}`}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/25 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#05070D] via-[#05070D]/25 to-transparent" />
                 {p.isMain && (
-                  <span className="absolute top-2 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">
+                  <span className="absolute top-2 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#19130A] bg-gradient-to-b from-[#EEE2C6] to-[#C4AE80]">
                     主居所
                   </span>
                 )}
@@ -491,16 +492,16 @@ export const AssetsView: React.FC = () => {
                 {propLocked && (
                   <span className="absolute inset-0 flex flex-col items-center justify-center gap-1">
                     <GameIcon name="lock" size={32} />
-                    <span className="text-[11px] text-[#C3C9DC] text-stroke-dark">晋升「{reqTierName}」解锁</span>
+                    <span className="text-[11px] text-[#B3B6C2] text-stroke-dark">晋升「{reqTierName}」解锁</span>
                   </span>
                 )}
                 <div className="absolute left-3 right-3 bottom-2">
-                  <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{p.displayName}</h3>
+                  <h3 className="font-editorial text-[18px] font-black text-[#ECE6DA] text-stroke-dark truncate">{p.displayName}</h3>
                 </div>
               </div>
               <div className="px-3 py-2.5 space-y-2">
                 <div className="flex items-center gap-3 flex-wrap font-num text-[12px]">
-                  <span className="flex items-center gap-1 text-[#FFE7B0]">
+                  <span className="flex items-center gap-1 text-[#EADBB8]">
                     <GameIcon name="cash" size={16} /> 估值 {formatMoney(p.currentValuation)}
                   </span>
                   {earnsRent ? (
@@ -508,7 +509,7 @@ export const AssetsView: React.FC = () => {
                       <GameIcon name="income" size={16} /> {formatMoney(p.currentRentPerHour)}/时
                     </span>
                   ) : p.isMain && p.type === 'residence' ? (
-                    <span className="text-[11px] text-[#A3AAC2]">自住主宅</span>
+                    <span className="text-[11px] text-[#8C90A0]">自住主宅</span>
                   ) : null}
                   {p.energyBonus > 0 && (
                     <span className="flex items-center gap-1 text-[#B9F6FB]">
@@ -517,7 +518,7 @@ export const AssetsView: React.FC = () => {
                   )}
                 </div>
                 <div className="flex items-end justify-between gap-3">
-                  <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{p.description}</p>
+                  <p className="text-[11.5px] text-[#8C90A0] leading-relaxed line-clamp-2">{p.description}</p>
                   <button
                     disabled={propLocked}
                     onClick={() => {

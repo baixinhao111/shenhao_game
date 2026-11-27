@@ -90,7 +90,7 @@ export const AngelGame: React.FC = () => {
           <Speech who="陆知微" tone="rose" text="今天孵化器有三个团队来路演。数据我都看过了……真真假假，你自己判断。" />
           <button disabled={busy} onClick={start} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1.5">
             <span>听路演</span>
-            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1E1506]/85 text-[#FFE7B0] font-num text-[11.5px]">
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#19130A]/85 text-[#EADBB8] font-num text-[11.5px]">
               <GameIcon name="energy" size={14} shadow={false} />6
             </span>
           </button>
@@ -107,7 +107,7 @@ export const AngelGame: React.FC = () => {
                   scrollRef.current?.scrollTo({ left: (scrollRef.current.scrollWidth / 3) * i, behavior: 'smooth' });
                 }}
                 className={`px-2.5 py-0.5 rounded-full text-[11.5px] font-editorial font-bold transition ${
-                  active === i ? 'bg-[#FFE7B0] text-[#2A1C06]' : 'bg-black/40 text-[#C3C9DC] border border-white/15'
+                  active === i ? 'bg-[#EADBB8] text-[#2A1C06]' : 'bg-black/40 text-[#B3B6C2] border border-white/15'
                 }`}
               >
                 {p.founder}
@@ -187,8 +187,8 @@ export const AngelGame: React.FC = () => {
                   天枢判定 · {session.hintCost}积分
                 </button>
               )}
-              <div className="text-[12px] text-[#D3D8E8] text-stroke-dark">
-                投给 <span className="font-editorial font-black text-[#FFE7B0]">{session.pitches[active].founder}</span>：
+              <div className="text-[12px] text-[#C2C5CF] text-stroke-dark">
+                投给 <span className="font-editorial font-black text-[#EADBB8]">{session.pitches[active].founder}</span>：
               </div>
               <StakePicker
                 options={session.amounts as unknown as readonly number[]}

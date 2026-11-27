@@ -212,7 +212,7 @@ export const SystemView: React.FC = () => {
               playTap();
               setShowSettings((v) => !v);
             }}
-            className={`p-1.5 transition ${showSettings ? 'text-[#FFE7B0]' : 'text-[#A3AAC2] hover:text-[#F6DDA4]'}`}
+            className={`p-1.5 transition ${showSettings ? 'text-[#EADBB8]' : 'text-[#8C90A0] hover:text-[#E2D3B0]'}`}
             title="视听与账号设置"
             aria-label="视听与账号设置"
           >
@@ -220,11 +220,11 @@ export const SystemView: React.FC = () => {
           </button>
           <button
             onClick={() => setMuted(toggleSoundMute())}
-            className="p-1.5 text-[#A3AAC2] hover:text-[#F6DDA4]"
+            className="p-1.5 text-[#8C90A0] hover:text-[#E2D3B0]"
             title={muted ? '开启音效' : '静音'}
             aria-label={muted ? '开启音效' : '静音'}
           >
-            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#E2BD72]" />}
+            {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#D9C49A]" />}
           </button>
           {Boolean(user.is_admin) && (
             <button
@@ -232,7 +232,7 @@ export const SystemView: React.FC = () => {
                 playTap();
                 setShowAdmin(true);
               }}
-              className="p-1.5 text-[#E2BD72] hover:text-[#F6DDA4]"
+              className="p-1.5 text-[#D9C49A] hover:text-[#E2D3B0]"
               title="服主控制台"
               aria-label="服主控制台"
             >
@@ -241,7 +241,7 @@ export const SystemView: React.FC = () => {
           )}
           <button
             onClick={logout}
-            className="p-1.5 text-[#8B93AD] hover:text-[#E88CA1]"
+            className="p-1.5 text-[#7A7E8E] hover:text-[#E88CA1]"
             title="退出账号"
             aria-label="退出账号"
           >
@@ -255,16 +255,16 @@ export const SystemView: React.FC = () => {
       <div className="relative flex-1 overflow-y-auto no-scrollbar px-4 py-4 space-y-5">
         {/* Audio & Account Security Settings Panel */}
         {showSettings && (
-          <section className="panel-elevated rounded-[12px] p-3.5 space-y-3.5 border border-[#E2BD72]/40">
+          <section className="panel-elevated rounded-[12px] p-3.5 space-y-3.5 border border-[#D9C49A]/40">
             <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
               <span className="font-editorial text-[15px] font-black gold-gradient-text">视听与账号设置</span>
-              <button onClick={() => setShowSettings(false)} className="text-[#8B93AD] hover:text-white">
+              <button onClick={() => setShowSettings(false)} className="text-[#7A7E8E] hover:text-white">
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="space-y-2">
-              <div className="text-[11px] tracking-[0.2em] text-[#8B93AD]">声音氛围</div>
+              <div className="text-[11px] tracking-[0.2em] text-[#7A7E8E]">声音氛围</div>
               <div className="grid grid-cols-3 gap-2">
                 <button
                   onClick={() => {
@@ -273,8 +273,8 @@ export const SystemView: React.FC = () => {
                   }}
                   className={`rounded-[8px] px-2 py-2 border text-center transition ${
                     bgmOn
-                      ? 'bg-[#251C0C]/90 border-[#E2BD72]/60 text-[#FFE7B0]'
-                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                      ? 'bg-[#251C0C]/90 border-[#D9C49A]/60 text-[#EADBB8]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#6D7183]'
                   }`}
                 >
                   <Music className="w-4 h-4 mx-auto mb-1" />
@@ -289,7 +289,7 @@ export const SystemView: React.FC = () => {
                   className={`rounded-[8px] px-2 py-2 border text-center transition ${
                     ambOn && bgmOn
                       ? 'bg-[#08222E]/90 border-[#63E6F2]/55 text-[#B9F6FB]'
-                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#6D7183]'
                   }`}
                 >
                   <Wind className="w-4 h-4 mx-auto mb-1" />
@@ -300,8 +300,8 @@ export const SystemView: React.FC = () => {
                   onClick={() => setMuted(toggleSoundMute())}
                   className={`rounded-[8px] px-2 py-2 border text-center transition ${
                     !muted
-                      ? 'bg-[#251C0C]/90 border-[#E2BD72]/60 text-[#FFE7B0]'
-                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                      ? 'bg-[#251C0C]/90 border-[#D9C49A]/60 text-[#EADBB8]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#6D7183]'
                   }`}
                 >
                   {muted ? <VolumeX className="w-4 h-4 mx-auto mb-1" /> : <Volume2 className="w-4 h-4 mx-auto mb-1" />}
@@ -312,8 +312,8 @@ export const SystemView: React.FC = () => {
             </div>
 
             <form onSubmit={handleChangePassword} className="space-y-2 pt-1 border-t border-white/[0.07]">
-              <div className="text-[11px] tracking-[0.2em] text-[#8B93AD] flex items-center gap-1">
-                <KeyRound className="w-3.5 h-3.5 text-[#E2BD72]" /> 修改登录密码
+              <div className="text-[11px] tracking-[0.2em] text-[#7A7E8E] flex items-center gap-1">
+                <KeyRound className="w-3.5 h-3.5 text-[#D9C49A]" /> 修改登录密码
               </div>
               <div className="grid grid-cols-2 gap-2">
                 <input
@@ -321,14 +321,14 @@ export const SystemView: React.FC = () => {
                   value={oldPwd}
                   onChange={(e) => setOldPwd(e.target.value)}
                   placeholder="输入原密码"
-                  className="rounded-[6px] bg-[#070B18] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/60"
+                  className="rounded-[6px] bg-[#06080E] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#D9C49A]/60"
                 />
                 <input
                   type="password"
                   value={newPwd}
                   onChange={(e) => setNewPwd(e.target.value)}
                   placeholder="新密码（4位以上）"
-                  className="rounded-[6px] bg-[#070B18] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/60"
+                  className="rounded-[6px] bg-[#06080E] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#D9C49A]/60"
                 />
               </div>
               <div className="flex gap-2">
@@ -345,7 +345,7 @@ export const SystemView: React.FC = () => {
                   onClick={() => void handleExportSave()}
                   className="btn-navy px-3 py-1.5 text-xs font-editorial flex items-center gap-1"
                 >
-                  <Download className="w-3.5 h-3.5 text-[#E2BD72]" /> 导出存档
+                  <Download className="w-3.5 h-3.5 text-[#D9C49A]" /> 导出存档
                 </button>
               </div>
             </form>
@@ -372,7 +372,7 @@ export const SystemView: React.FC = () => {
                         ? 'text-[#B9F6FB]'
                         : user.equippedTitle.titleTone === 'rose'
                           ? 'text-[#FFC4D3]'
-                          : 'text-[#FFE7B0]'
+                          : 'text-[#EADBB8]'
                     }`}
                   >
                     「{user.equippedTitle.titleBadge}」
@@ -386,7 +386,7 @@ export const SystemView: React.FC = () => {
               className={`shrink-0 flex flex-col items-center ${player.signedInToday ? 'opacity-50 grayscale' : ''}`}
             >
               <GameIcon name="signin" size={42} className={player.signedInToday ? '' : 'animate-float-slow'} />
-              <span className="text-[10.5px] font-bold text-[#FBF1D8] -mt-0.5 text-stroke-dark">{player.signedInToday ? '已签到' : '签到'}</span>
+              <span className="text-[10.5px] font-bold text-[#ECE6DA] -mt-0.5 text-stroke-dark">{player.signedInToday ? '已签到' : '签到'}</span>
             </button>
           </div>
 
@@ -471,7 +471,7 @@ export const SystemView: React.FC = () => {
                   <div className="min-w-0 flex-1">
                     <div className="flex items-baseline gap-2">
                       <span className="text-[14px] font-editorial font-bold text-[#D9D4C9] truncate">{t.title}</span>
-                      <span className="font-num text-[11px] text-[#8B93AD] shrink-0">
+                      <span className="font-num text-[11px] text-[#7A7E8E] shrink-0">
                         {Math.min(t.progress, t.target)}/{t.target}
                       </span>
                     </div>
@@ -511,15 +511,15 @@ export const SystemView: React.FC = () => {
         {subTab === 'achievements' && (
           <div className="space-y-3">
             <div className="flex items-center justify-between text-[11px] px-1">
-              <span className="text-[#A3AAC2] tracking-wider">
-                已达成 <span className="font-num text-[#FFE7B0] text-[14px]">{achievements.filter((a) => a.unlocked).length}</span> / {achievements.length}
+              <span className="text-[#8C90A0] tracking-wider">
+                已达成 <span className="font-num text-[#EADBB8] text-[14px]">{achievements.filter((a) => a.unlocked).length}</span> / {achievements.length}
               </span>
               {user.equippedTitle?.titleBadge ? (
-                <button disabled={busy} onClick={() => void equipTitle('')} className="text-[#F6DDA4]">
-                  佩戴「{user.equippedTitle.titleBadge}」<span className="text-[#7F88A6] ml-1">卸下</span>
+                <button disabled={busy} onClick={() => void equipTitle('')} className="text-[#E2D3B0]">
+                  佩戴「{user.equippedTitle.titleBadge}」<span className="text-[#6D7183] ml-1">卸下</span>
                 </button>
               ) : (
-                <span className="text-[#7F88A6]">点亮勋章可佩戴称号</span>
+                <span className="text-[#6D7183]">点亮勋章可佩戴称号</span>
               )}
             </div>
             <div className="grid grid-cols-3 gap-x-2 gap-y-5">
@@ -565,24 +565,24 @@ export const SystemView: React.FC = () => {
                         </svg>
                         <GameIcon name={(ach.icon || 'medal') as GameIconName} size={44} className={!ach.unlocked ? 'grayscale opacity-55' : ''} />
                         {ach.equipped && (
-                          <span className="absolute -bottom-1 px-1.5 rounded-sm bg-[#E2BD72] text-[#1E1506] text-[9px] font-black">佩戴</span>
+                          <span className="absolute -bottom-1 px-1.5 rounded-sm bg-[#D9C49A] text-[#19130A] text-[9px] font-black">佩戴</span>
                         )}
                       </span>
                       <span className={`mt-1.5 text-[12px] font-editorial font-black ${ach.unlocked ? 'text-[var(--ivory-2)]' : 'text-[#7C8092]'}`}>{ach.name}</span>
                       {ach.titleBadge && (
                         <span
                           className={`text-[9.5px] ${
-                            ach.titleTone === 'cyan' ? 'text-[#9AF4FB]' : ach.titleTone === 'rose' ? 'text-[#FFB3C6]' : 'text-[#E2BD72]'
+                            ach.titleTone === 'cyan' ? 'text-[#9AF4FB]' : ach.titleTone === 'rose' ? 'text-[#FFB3C6]' : 'text-[#D9C49A]'
                           }`}
                         >
                           「{ach.titleBadge}」
                         </span>
                       )}
-                      <span className="text-[10px] text-[#7F88A6] leading-snug mt-0.5 line-clamp-2 px-1">{ach.desc}</span>
+                      <span className="text-[10px] text-[#6D7183] leading-snug mt-0.5 line-clamp-2 px-1">{ach.desc}</span>
                       {ready ? (
                         <span className="mt-1 px-3 py-[2px] text-[10.5px] btn-champagne">领取</span>
                       ) : !ach.unlocked ? (
-                        <span className="mt-1 font-num text-[10px] text-[#8B93AD]">
+                        <span className="mt-1 font-num text-[10px] text-[#7A7E8E]">
                           {fmtVal(ach.progress)}/{fmtVal(ach.target)}
                         </span>
                       ) : null}
@@ -617,7 +617,7 @@ export const SystemView: React.FC = () => {
                   </span>
                   <div className="min-w-0 flex-1 pl-1">
                     <div className="text-[14px] font-editorial font-bold text-[#D9D4C9]">{sk.name}</div>
-                    <p className="text-[11px] text-[#929AB4] mt-0.5 leading-relaxed">{sk.desc}</p>
+                    <p className="text-[11px] text-[#858999] mt-0.5 leading-relaxed">{sk.desc}</p>
                     <div className="flex gap-[3px] mt-1.5">
                       {Array.from({ length: sk.maxLevel }).map((_, i) => (
                         <span key={i} className={`w-[10px] h-[3px] ${i < sk.level ? 'bg-[#9BF5FF] shadow-[0_0_5px_rgba(99,230,242,0.8)]' : 'bg-white/[0.1]'}`} />
@@ -629,10 +629,10 @@ export const SystemView: React.FC = () => {
                     onClick={() => upgradeSkill(sk.id)}
                     className={`shrink-0 flex items-center gap-0.5 font-num text-[12px] px-2.5 py-1 rounded-full border ${
                       maxed
-                        ? 'border-transparent text-[#6B7392]'
+                        ? 'border-transparent text-[#5E6273]'
                         : canAfford
                           ? 'border-[#63E6F2]/70 text-[#B9F6FB] bg-[#04121F] shadow-[0_0_10px_rgba(99,230,242,0.3)]'
-                          : 'border-white/10 text-[#6B7392]'
+                          : 'border-white/10 text-[#5E6273]'
                     }`}
                   >
                     {maxed ? '已满级' : (
@@ -662,7 +662,7 @@ export const SystemView: React.FC = () => {
                     <GameIcon name={icon as GameIconName} size={66} className="relative animate-float-slow mb-3" />
                   </div>
                   <div className="text-[14px] font-editorial font-black text-[#D9D4C9] mt-1">{item.name}</div>
-                  <div className="text-[10.5px] text-[#8B93AD] leading-snug mt-0.5 min-h-[28px] px-1">{item.desc}</div>
+                  <div className="text-[10.5px] text-[#7A7E8E] leading-snug mt-0.5 min-h-[28px] px-1">{item.desc}</div>
                   <button
                     disabled={!can}
                     onClick={() => buyMall(item.id)}

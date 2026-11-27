@@ -461,7 +461,7 @@ export const JadeGame: React.FC = () => {
             className="absolute left-[-10%] bottom-[170px] h-[40%] object-contain object-bottom sprite-fade-bottom pointer-events-none drop-shadow-[0_12px_24px_rgba(0,0,0,0.7)]"
           />
           <div className="relative px-4 pb-3">
-            <div className="mb-3 w-[60%] ml-auto rounded-[10px] bg-[#070B18]/72 backdrop-blur-sm border border-[#E2BD72]/25 px-3 py-2">
+            <div className="mb-3 w-[60%] ml-auto rounded-[10px] bg-[#06080E]/72 backdrop-blur-sm border border-[#D9C49A]/25 px-3 py-2">
               <Speech who="周老" text="今天新到一批缅料。挑一块，擦开了，是金是石当场见分晓。" />
             </div>
             <div className="grid grid-cols-3 gap-2.5">
@@ -475,12 +475,12 @@ export const JadeGame: React.FC = () => {
                       backgroundBlendMode: 'multiply',
                     }}
                   />
-                  <div className="mt-2 font-editorial text-[13.5px] font-black text-[#FBF1D8] text-stroke-dark">{t.name}</div>
-                  <div className="font-num text-[13px] text-[#FFE7B0] flex items-center gap-0.5 text-stroke-dark">
+                  <div className="mt-2 font-editorial text-[13.5px] font-black text-[#ECE6DA] text-stroke-dark">{t.name}</div>
+                  <div className="font-num text-[13px] text-[#EADBB8] flex items-center gap-0.5 text-stroke-dark">
                     <GameIcon name="cash" size={14} shadow={false} />
                     {formatMoney(t.cost * stakeScale)}
                   </div>
-                  <div className="text-[10px] text-[#A3AAC2] flex items-center gap-0.5">
+                  <div className="text-[10px] text-[#8C90A0] flex items-center gap-0.5">
                     <GameIcon name="energy" size={11} shadow={false} />6 · {t.note}
                   </div>
                 </button>
@@ -514,19 +514,19 @@ export const JadeGame: React.FC = () => {
                 >
                   <div
                     className={`relative w-[64px] h-[64px] rounded-full overflow-hidden p-[2px] transition ${
-                      isSel ? 'bg-gradient-to-b from-[#FFF0C8] to-[#D6A85A] scale-110 shadow-[0_0_16px_rgba(255,220,150,0.7)]' : 'bg-white/20'
+                      isSel ? 'bg-gradient-to-b from-[#EEE2C6] to-[#C4AE80] scale-110 shadow-[0_0_16px_rgba(255,220,150,0.7)]' : 'bg-white/20'
                     }`}
                   >
-                    <div className="w-full h-full rounded-full overflow-hidden bg-[#1A2344]">
+                    <div className="w-full h-full rounded-full overflow-hidden bg-[#10131C]">
                       <img src={BUYER_IMG[o.id]} alt="" className="w-full h-full object-cover object-top scale-[1.5] origin-top" />
                     </div>
                   </div>
-                  <div className="text-[11px] font-editorial font-black text-[#FBF1D8] mt-1 text-stroke-dark">{o.name}</div>
+                  <div className="text-[11px] font-editorial font-black text-[#ECE6DA] mt-1 text-stroke-dark">{o.name}</div>
                   <motion.div
                     key={o.offer}
                     initial={{ scale: 1.25 }}
                     animate={{ scale: 1 }}
-                    className={`font-num text-[15px] leading-none text-stroke-dark ${isTop ? 'text-[#FFE7B0]' : 'text-[#D3D8E8]'}`}
+                    className={`font-num text-[15px] leading-none text-stroke-dark ${isTop ? 'text-[#EADBB8]' : 'text-[#C2C5CF]'}`}
                   >
                     {formatMoney(o.offer)}
                   </motion.div>
@@ -548,12 +548,12 @@ export const JadeGame: React.FC = () => {
                     ? 'bg-gradient-to-r from-[#3FD69A] to-[#14805A] text-white'
                     : verdict.tone === 'cold'
                       ? 'bg-[#3A1C24] text-[#FF9AAE] border border-[#FF5C7A]/50'
-                      : 'bg-black/50 text-[#C3C9DC] border border-white/15'
+                      : 'bg-black/50 text-[#B3B6C2] border border-white/15'
                 }`}
               >
                 {phase === 'done' ? `开出：${result?.gradeName || GRADE_NAME[session.grade]}` : verdict.label}
               </span>
-              <span className="font-num text-[12px] text-[#C3C9DC]">已擦开 {phase === 'done' ? 100 : revealed}%</span>
+              <span className="font-num text-[12px] text-[#B3B6C2]">已擦开 {phase === 'done' ? 100 : revealed}%</span>
             </div>
             {/* contact shadow on the table */}
             <div className="absolute bottom-[8%] w-[78%] h-[34px] rounded-[50%] bg-black/70 blur-[14px] pointer-events-none" />
@@ -631,7 +631,7 @@ export const JadeGame: React.FC = () => {
               </div>
             </div>
             {phase === 'scratch' && revealed === 0 && (
-              <div className="mt-2 text-[11.5px] text-[#C3C9DC] tracking-wider text-stroke-dark">手指在石面上来回擦动</div>
+              <div className="mt-2 text-[11.5px] text-[#B3B6C2] tracking-wider text-stroke-dark">手指在石面上来回擦动</div>
             )}
           </div>
 

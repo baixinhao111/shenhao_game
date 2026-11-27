@@ -39,12 +39,12 @@ const VaultMeter: React.FC<{ hours: number; pending: number }> = ({ hours, pendi
   return (
     <div>
       <div className="flex items-center justify-between text-[10.5px] mb-1">
-        <span className={full ? 'text-[#FF8FA6] font-bold animate-pulse' : 'text-[#A3AAC2]'}>
+        <span className={full ? 'text-[#FF8FA6] font-bold animate-pulse' : 'text-[#8C90A0]'}>
           {full ? '金库已满 · 停止累计' : `金库 ${hours.toFixed(1)} / 12 时`}
         </span>
         <span className="font-num text-[#7BE0A8]">+{formatMoney(pending)}</span>
       </div>
-      <div className="h-[6px] rounded-full bg-[#0A0F1F] border border-white/[0.06] overflow-hidden">
+      <div className="h-[6px] rounded-full bg-[#05070D] border border-white/[0.06] overflow-hidden">
         <motion.div
           initial={false}
           animate={{ width: `${Math.max(2, pct)}%` }}
@@ -94,7 +94,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
           transition={{ duration: 0.6 }}
           className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : !b.owned ? 'brightness-[0.8]' : ''}`}
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#05070D] via-[#05070D]/25 to-transparent" />
 
         {b.owned && (
           <motion.span
@@ -102,10 +102,10 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
             initial={pulse ? { scale: 1.8, rotate: -10 } : false}
             animate={{ scale: 1, rotate: 0 }}
             transition={{ type: 'spring', stiffness: 420, damping: 14 }}
-            className="absolute top-2 left-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/65 border border-[#E2BD72]/70"
+            className="absolute top-2 left-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/65 border border-[#D9C49A]/70"
           >
             <GameIcon name="medal" size={18} shadow={false} />
-            <span className="font-num text-[12px] text-[#FFE7B0]">Lv.{b.level}</span>
+            <span className="font-num text-[12px] text-[#EADBB8]">Lv.{b.level}</span>
           </motion.span>
         )}
         {assigned && (
@@ -117,13 +117,13 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
         {locked && (
           <span className="absolute inset-0 flex flex-col items-center justify-center gap-1">
             <GameIcon name="lock" size={36} />
-            <span className="text-[11px] text-[#C3C9DC] text-stroke-dark">晋升「{tierName(b.unlockTier)}」解锁</span>
+            <span className="text-[11px] text-[#B3B6C2] text-stroke-dark">晋升「{tierName(b.unlockTier)}」解锁</span>
           </span>
         )}
 
         <div className="absolute left-3 right-3 bottom-2 flex items-end justify-between gap-2">
-          <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{b.name}</h3>
-          <span className="font-num text-[13px] text-[#FFE7B0] text-stroke-dark shrink-0 flex items-center gap-1">
+          <h3 className="font-editorial text-[18px] font-black text-[#ECE6DA] text-stroke-dark truncate">{b.name}</h3>
+          <span className="font-num text-[13px] text-[#EADBB8] text-stroke-dark shrink-0 flex items-center gap-1">
             <GameIcon name="income" size={18} /> {formatMoney(b.currentIncomePerHour)}/时
           </span>
         </div>
@@ -137,7 +137,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
               animate={{ opacity: [0, 1, 1, 0], scale: [2.4, 1, 1, 1], rotate: -12 }}
               transition={{ duration: 2.2, times: [0, 0.15, 0.8, 1] }}
               onAnimationComplete={() => setSealed(0)}
-              className="absolute right-6 top-6 px-3 py-1 border-[3px] border-[#E2BD72] rounded-[6px] font-editorial font-black text-[22px] tracking-[0.2em] text-[#FFE7B0] bg-black/40 shadow-[0_0_24px_rgba(226,189,114,0.6)] pointer-events-none"
+              className="absolute right-6 top-6 px-3 py-1 border-[3px] border-[#D9C49A] rounded-[6px] font-editorial font-black text-[22px] tracking-[0.2em] text-[#EADBB8] bg-black/40 shadow-[0_0_24px_rgba(217,196,154,0.6)] pointer-events-none"
             >
               已收购
             </motion.div>
@@ -169,7 +169,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
 
             {/* Business Operating Event */}
             {b.activeEvent && onResolveEvent && (
-              <div className="rounded-[8px] border border-[#E2BD72]/45 bg-[#121933]/90 overflow-hidden">
+              <div className="rounded-[8px] border border-[#D9C49A]/45 bg-[#121933]/90 overflow-hidden">
                 <button
                   type="button"
                   onClick={() => {
@@ -179,12 +179,12 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                   className="w-full px-2.5 py-2 flex items-center justify-between gap-2 text-left"
                 >
                   <div className="flex items-center gap-1.5 min-w-0">
-                    <span className="w-2 h-2 rounded-full bg-[#FFE7B0] animate-pulse shrink-0" />
-                    <span className="text-[11.5px] font-editorial font-black text-[#FFE7B0] truncate">
+                    <span className="w-2 h-2 rounded-full bg-[#EADBB8] animate-pulse shrink-0" />
+                    <span className="text-[11.5px] font-editorial font-black text-[#EADBB8] truncate">
                       突发经营事件 · {b.activeEvent.title}
                     </span>
                   </div>
-                  <span className="text-[10.5px] text-[#C3C9DC] shrink-0">{eventOpen ? '收起 ▴' : '决策 ▾'}</span>
+                  <span className="text-[10.5px] text-[#B3B6C2] shrink-0">{eventOpen ? '收起 ▴' : '决策 ▾'}</span>
                 </button>
                 <AnimatePresence>
                   {eventOpen && (
@@ -222,17 +222,17 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                                   ? 'bg-[#07202D]/85 border-[#63E6F2]/45 hover:border-[#63E6F2]'
                                   : isHeroineChoice
                                     ? 'bg-[#2C1020]/85 border-[#F0789A]/45 hover:border-[#F0789A]'
-                                    : 'bg-[#0A1024]/85 border-white/12 hover:border-[#E2BD72]/50'
+                                    : 'bg-[#0A1024]/85 border-white/12 hover:border-[#D9C49A]/50'
                               }`}
                             >
                               <div className="flex items-center justify-between gap-2">
-                                <span className={`text-[12px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#FBF1D8]'}`}>
+                                <span className={`text-[12px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#ECE6DA]'}`}>
                                   {c.label}
                                 </span>
                                 <span className="font-num text-[11px] text-[#7BE0A8] shrink-0">+{formatMoney(estCash)}</span>
                               </div>
                               <div className="flex items-center justify-between gap-2 mt-1 text-[10px]">
-                                <span className="text-[#929AB4]">
+                                <span className="text-[#858999]">
                                   {c.costEnergy > 0 ? `精力 -${c.costEnergy}` : ''}
                                   {c.costSysPoints > 0 ? `${c.costEnergy > 0 ? ' · ' : ''}积分 -${c.costSysPoints}` : ''}
                                   {isHeroineChoice && !heroineReady
@@ -241,7 +241,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
                                       ? ' · 红颜坐镇加成'
                                       : ''}
                                 </span>
-                                <span className="text-[#FFE7B0]">
+                                <span className="text-[#EADBB8]">
                                   {c.affectionGain ? `好感 +${c.affectionGain}` : ''}
                                   {c.sysPoints ? `${c.affectionGain ? ' · ' : ''}积分 +${c.sysPoints}` : ''}
                                 </span>
@@ -269,7 +269,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
 
             {heroines.length > 0 && (
               <div className="flex items-center gap-2">
-                <span className="text-[10.5px] text-[#8B93AD] shrink-0">委派</span>
+                <span className="text-[10.5px] text-[#7A7E8E] shrink-0">委派</span>
                 <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-2">
                   {heroines.map((h) => {
                     const on = h.id === b.assignedHeroineId;
@@ -305,7 +305,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
 
             <div className="flex items-center justify-between gap-2 pt-0.5">
               <div className="min-w-0 text-[10.5px] leading-snug">
-                <div className="text-[#8B93AD]">升至 Lv.{b.level + 1}</div>
+                <div className="text-[#7A7E8E]">升至 Lv.{b.level + 1}</div>
                 <div className="font-num text-[#7BE0A8]">
                   +{formatMoney(gainPerHour)}/时 · 估值 +{formatMoney((b.nextValuation || 0) - (b.currentValuation || 0))}
                 </div>
@@ -321,10 +321,10 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierNa
           </>
         ) : (
           <>
-            <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{b.description}</p>
+            <p className="text-[11.5px] text-[#8C90A0] leading-relaxed line-clamp-2">{b.description}</p>
             <div className="flex items-center justify-between gap-2">
               <div className="text-[10.5px] leading-snug min-w-0">
-                <div className="text-[#8B93AD]">收购后</div>
+                <div className="text-[#7A7E8E]">收购后</div>
                 <div className="font-num text-[#7BE0A8]">
                   {formatMoney(b.currentIncomePerHour)}/时 · 估值 {formatMoney(b.baseValuation)}
                 </div>
