@@ -328,6 +328,8 @@ export function computePortfolioAndTier(userId: number) {
   let bizValuation = 0;
   let bizIncomePerHourTotal = 0;
   let pendingBizIncome = 0;
+  /** per-business numbers for the 产业 page (same math as the totals) */
+  const bizDetails: Record<string, { incomePerHour: number; pending: number; hours: number; assignMult: number; incomeMult: number }> = {};
 
   for (const b of ownedBiz) {
     const def = content.businesses.find((x) => x.id === b.business_id);
@@ -346,6 +348,13 @@ export function computePortfolioAndTier(userId: number) {
     bizIncomePerHourTotal += hr;
     const hrs = Math.min(12, Math.max(0, (now - b.last_collected_at) / 3600000));
     pendingBizIncome += hr * hrs;
+    bizDetails[b.business_id] = {
+      incomePerHour: Math.round(hr),
+      pending: Math.round(hr * hrs),
+      hours: hrs,
+      assignMult,
+      incomeMult: 1 + skills.incomePct + setIncomeBonus,
+    };
   }
 
   let assetValuation = 0;
@@ -374,6 +383,7 @@ export function computePortfolioAndTier(userId: number) {
     netWorth,
     tierInfo,
     incomePerHour: Math.round(rentPerHourTotal + bizIncomePerHourTotal),
+    bizDetails,
     pendingIncome: Math.round(pendingRent + pendingBizIncome),
     critBonusPct: skills.critRatePct + setCritBonus + heroineCritBonus,
     critMultBonus: skills.critMultBonus,
@@ -585,12 +595,20 @@ export function buildFullGameState(userId: number) {
     const assignedId = owned?.assigned_heroine_id || '';
     const lvMult = lv > 0 ? 1 + (lv - 1) * 0.45 : 1;
     const upgradeCost = Math.round(b.upgradeBaseCost * Math.pow(1.45, Math.max(0, lv - 1)) * (1 - skills.upgradeDiscountPct));
+    const det = portfolio.bizDetails[b.id];
+    const mult = det ? det.assignMult * det.incomeMult : 1;
     return {
       ...b,
       owned: Boolean(owned),
       level: lv,
       assignedHeroineId: assignedId,
-      currentIncomePerHour: Math.round(b.baseIncomePerHour * lvMult),
+      // effective numbers (heroine assignment, skills, set bonuses included)
+      currentIncomePerHour: det ? det.incomePerHour : Math.round(b.baseIncomePerHour * lvMult),
+      nextIncomePerHour: Math.round(b.baseIncomePerHour * (lv > 0 ? 1 + lv * 0.45 : 1) * mult),
+      currentValuation: Math.round(b.baseValuation * lvMult),
+      nextValuation: Math.round(b.baseValuation * (lv > 0 ? 1 + lv * 0.45 : 1)),
+      pendingIncome: det?.pending || 0,
+      pendingHours: det ? Math.round(det.hours * 10) / 10 : 0,
       upgradeCost,
     };
   });

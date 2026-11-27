@@ -1,9 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Check, UserCheck } from 'lucide-react';
+import { Check } from 'lucide-react';
 import { DecoHeading, GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AnimatedNumber } from '../components/AnimatedNumber';
-import { PortraitAvatar } from '../components/PortraitAvatar';
+import { BusinessCard } from './assets/BusinessCard';
 import { apiRequest } from '../lib/api';
 import { formatMoney } from '../lib/format';
 import { playCoinBurst, playTap } from '../lib/sound';
@@ -89,14 +89,16 @@ export const AssetsView: React.FC = () => {
     }
   };
 
-  const upgradeBiz = async (businessId: string) => {
+  const upgradeBiz = async (businessId: string): Promise<boolean> => {
     setBusy(true);
     try {
       const res = await apiRequest('/business/upgrade', { body: { businessId } });
       applyServerState(res.state, res.critResult);
       playCoinBurst();
+      return true;
     } catch (e: any) {
       showError(e.message);
+      return false;
     } finally {
       setBusy(false);
     }
@@ -179,6 +181,9 @@ export const AssetsView: React.FC = () => {
             </div>
             <div className="text-[11px] text-[#7BE0A8] mt-1 font-num tracking-wide">
               待收 <AnimatedNumber value={player.pendingIncome} highlightOnIncrease />
+              {businesses.some((x: any) => x.owned && x.pendingHours >= 11.95) && (
+                <span className="ml-2 text-[#FF8FA6] animate-pulse">金库已满，快收取</span>
+              )}
             </div>
           </div>
           <button
@@ -383,95 +388,43 @@ export const AssetsView: React.FC = () => {
       {/* TAB 2: BUSINESSES */}
       {subTab === 'biz' && (
         <div className="px-3 pt-1 pb-8 space-y-3">
-          {businesses.map((b: any) => {
-            const assignedObj = unlockedHeroines.find((h: any) => h.id === b.assignedHeroineId);
-            const locked = !b.owned && player.tier.tier < b.unlockTier;
-            return (
-              <div key={b.id} className={`relative rounded-[10px] overflow-hidden ${b.owned ? 'panel-brass' : 'panel-arch'}`}>
-                <div className="relative h-[128px] w-full overflow-hidden">
-                  <img
-                    src={b.image}
-                    alt={b.name}
-                    className={`w-full h-full object-cover ${locked ? 'grayscale brightness-50' : ''}`}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/30 to-transparent" />
-                  {b.owned && (
-                    <span className="absolute top-2 left-2 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full bg-black/60 border border-[#E2BD72]/60">
-                      <GameIcon name="medal" size={18} shadow={false} />
-                      <span className="font-num text-[12px] text-[#FFE7B0]">Lv.{b.level}</span>
-                    </span>
-                  )}
-                  {locked && (
-                    <span className="absolute inset-0 flex items-center justify-center">
-                      <GameIcon name="lock" size={40} />
-                    </span>
-                  )}
-                  <div className="absolute left-3 right-3 bottom-2 flex items-end justify-between gap-2">
-                    <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{b.name}</h3>
-                    <span className="font-num text-[13px] text-[#FFE7B0] text-stroke-dark shrink-0 flex items-center gap-1">
-                      <GameIcon name="cash" size={16} /> {formatMoney(b.currentIncomePerHour)}/时
-                    </span>
-                  </div>
-                </div>
-
-                <div className="px-3 py-2.5 space-y-2.5">
-                  <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{b.description}</p>
-                  <div className="flex items-center justify-between gap-2">
-                    {b.owned ? (
-                      <div className="flex items-center gap-2 min-w-0">
-                        {assignedObj ? (
-                          <PortraitAvatar src={assignedObj.avatar} alt="" className="w-7 h-7" rounded="full" />
-                        ) : (
-                          <UserCheck className="w-4 h-4 text-[#8B93AD]" />
-                        )}
-                        <select
-                          value={b.assignedHeroineId || ''}
-                          onChange={(e) => assignHeroine(b.id, e.target.value)}
-                          className="min-w-0 max-w-[150px] bg-[#070B18] border border-[#E2BD72]/30 rounded-full px-2.5 py-1 text-[11px] text-[#F6DDA4] outline-none"
-                        >
-                          <option value="">委派顾问</option>
-                          {unlockedHeroines.map((h: any) => (
-                            <option key={h.id} value={h.id}>
-                              {h.name} {b.preferredHeroine === h.id ? '(契合 +35%)' : '(+15%)'}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    ) : (
-                      <span className="text-[11px] text-[#8B93AD]">{locked ? `需晋升至阶层 Lv.${b.unlockTier}` : '可收购'}</span>
-                    )}
-                    {b.owned ? (
-                      <button disabled={busy} onClick={() => upgradeBiz(b.id)} className="btn-brass px-3 py-1.5 text-[12px] shrink-0 font-num">
-                        升级 {formatMoney(b.upgradeCost)}
-                      </button>
-                    ) : (
-                      <div className="flex gap-1.5 shrink-0">
-                        {!locked && (
-                          <button
-                            disabled={busy}
-                            onClick={() => {
-                              playTap();
-                              openDeal({ kind: 'business', id: b.id });
-                            }}
-                            className="btn-navy px-3 py-1.5 text-[12px] font-editorial"
-                          >
-                            谈判
-                          </button>
-                        )}
-                        <button
-                          disabled={busy || locked}
-                          onClick={() => buyBiz(b.id)}
-                          className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-num"
-                        >
-                          {locked ? '未解锁' : `全款 ${formatMoney(b.buyCost)}`}
-                        </button>
-                      </div>
-                    )}
-                  </div>
-                </div>
+          {/* portfolio strip */}
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { label: '名下产业', value: `${businesses.filter((x: any) => x.owned).length} / ${businesses.length}` },
+              {
+                label: '产业时薪',
+                value: formatMoney(businesses.filter((x: any) => x.owned).reduce((t: number, x: any) => t + (x.currentIncomePerHour || 0), 0)),
+              },
+              {
+                label: '产业估值',
+                value: formatMoney(businesses.filter((x: any) => x.owned).reduce((t: number, x: any) => t + (x.currentValuation || 0), 0)),
+              },
+            ].map((it) => (
+              <div key={it.label} className="panel-arch rounded-[8px] px-2.5 py-2">
+                <div className="text-[9.5px] tracking-[0.2em] text-[#8B93AD]">{it.label}</div>
+                <div className="font-num text-[14px] text-[#FFE7B0] mt-0.5 truncate">{it.value}</div>
               </div>
-            );
-          })}
+            ))}
+          </div>
+
+          {businesses.map((b: any) => (
+            <BusinessCard
+              key={b.id}
+              b={b}
+              heroines={unlockedHeroines}
+              tierName={(t) => (state.map?.tiers || []).find((x: any) => x.tier === t)?.name || `阶层 ${t}`}
+              locked={!b.owned && player.tier.tier < b.unlockTier}
+              busy={busy}
+              onUpgrade={() => upgradeBiz(b.id)}
+              onBuy={() => buyBiz(b.id)}
+              onDeal={() => {
+                playTap();
+                openDeal({ kind: 'business', id: b.id });
+              }}
+              onAssign={(hid) => assignHeroine(b.id, hid)}
+            />
+          ))}
         </div>
       )}
 
