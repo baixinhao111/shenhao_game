@@ -7,6 +7,7 @@ import { execute, getGmSetting, getLastInsertId, queryAll, queryOne, setGmSettin
 import { chatWithHeroine } from './deepseekService.js';
 import { assertCashSufficient, assertEnergySufficient, spendCashOrThrow, spendEnergyOrThrow } from './economy.js';
 import { getCurrentStockQuotes, registerMinigameRoutes } from './minigames.js';
+import { registerMapSpotRoutes } from './mapSpots.js';
 import { registerNegotiationRoutes } from './negotiation.js';
 import { registerBondRoutes, resolveHeroineActivePortrait } from './bonds.js';
 import { getEquippedTitleInfo, getStoryLinkedStockExtras, registerEmpireRoutes } from './empire.js';
@@ -1608,7 +1609,12 @@ export function createApiRouter(): Router {
       execute('INSERT INTO player_assets (user_id, asset_id, acquired_at) VALUES (?, ?, ?)', [userId, assetId, Date.now()]);
 
       if (asset.type === 'car') {
-        execute('UPDATE player_state SET equipped_car_id = ? WHERE user_id = ?', [assetId, userId]);
+        // drive the new car only if it's faster than the current one (a used runabout shouldn't replace a supercar)
+        const cur = queryOne<any>('SELECT equipped_car_id FROM player_state WHERE user_id = ?', [userId]);
+        const curCar = content.assetsCatalog.assets.find((a) => a.id === cur?.equipped_car_id);
+        if (!curCar || Number(asset.racePower || 0) > Number(curCar.racePower || 0)) {
+          execute('UPDATE player_state SET equipped_car_id = ? WHERE user_id = ?', [assetId, userId]);
+        }
       }
       res.json({ success: true, critResult, state: buildFullGameState(userId) });
     } catch (err: any) {
@@ -2015,6 +2021,7 @@ export function createApiRouter(): Router {
   registerNegotiationRoutes(router, authMiddleware);
   registerBondRoutes(router, authMiddleware);
   registerEmpireRoutes(router, authMiddleware);
+  registerMapSpotRoutes(router, authMiddleware);
 
   return router;
 }

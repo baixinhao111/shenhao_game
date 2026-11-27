@@ -1,3 +1,4 @@
+import { getVisitedSpotsToday } from './mapSpots.js';
 import { getContent } from './contentLoader.js';
 import { execute, getDb, getGmSetting, persistDb, queryAll, queryOne } from './db.js';
 import {
@@ -743,6 +744,7 @@ export function buildFullGameState(userId: number) {
     todayHeadline = `${mainResidence.displayName} · 每小时收益 +${formatMoney(portfolio.incomePerHour)}`;
   }
 
+  const visitedSpots = getVisitedSpotsToday(userId);
   return {
     user: { ...user, equippedTitle },
     timePeriod: period,
@@ -789,6 +791,7 @@ export function buildFullGameState(userId: number) {
         presentHeroines: heroines
           .filter((h) => h.unlocked && h.location.districtId === d.id)
           .map((h) => ({ id: h.id, name: h.name, avatar: h.avatar, label: h.location.label })),
+        spots: (d.spots || []).map((sp: any) => (sp.kind === 'visit' ? { ...sp, visited: visitedSpots.includes(sp.id) } : sp)),
         ownedProperties: properties
           .filter((p) => p.districtId === d.id && p.owned)
           .map((p) => ({ id: p.id, name: p.displayName, isMain: p.isMain, type: p.type })),

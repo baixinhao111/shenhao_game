@@ -149,13 +149,107 @@
       "valuation": 68000000,
       "image": "/assets/items/col_ocean_diamond.png",
       "description": "《公海星耀号》限时活动绝版典藏，深海星辉般的稀世蓝钻。"
+    },
+    {
+      "id": "car_used_ev",
+      "name": "晨星 S3 二手电轿",
+      "type": "car",
+      "price": 68000,
+      "valuation": 60000,
+      "racePower": 22,
+      "image": "/assets/items/car_used_ev.png",
+      "description": "老码头车行收来的二手电轿，表显里程不低，但开起来安静稳当。"
+    },
+    {
+      "id": "car_retro_roadster",
+      "name": "海城 1962 复古敞篷",
+      "type": "car",
+      "price": 680000,
+      "valuation": 820000,
+      "racePower": 38,
+      "image": "/assets/items/car_retro_roadster.png",
+      "description": "老藏家割爱的复古敞篷，镀铬饰条擦得锃亮，越放越值钱。"
+    },
+    {
+      "id": "car_mini_retro",
+      "name": "银杏 mini 复古小车",
+      "type": "car",
+      "price": 180000,
+      "valuation": 190000,
+      "racePower": 18,
+      "image": "/assets/items/car_mini_retro.png",
+      "description": "薄荷绿的圆润小车，停在银杏大道上像一颗糖。"
+    },
+    {
+      "id": "moto_v4",
+      "name": "黑曜 V4 重型机车",
+      "type": "car",
+      "price": 420000,
+      "valuation": 450000,
+      "racePower": 48,
+      "image": "/assets/items/moto_v4.png",
+      "description": "霓虹改装厂调校的重型街车，金色前叉，油门一拧整条街回头。"
+    },
+    {
+      "id": "car_drift_gt",
+      "name": "夜枭 GT 改装漂移版",
+      "type": "car",
+      "price": 1280000,
+      "valuation": 1400000,
+      "racePower": 62,
+      "image": "/assets/items/car_drift_gt.png",
+      "description": "宽体套件配洋红底灯，专为不夜城的弯道而生。"
+    },
+    {
+      "id": "car_ev_hyper",
+      "name": "星曜 E-Hyper 电动超跑",
+      "type": "car",
+      "price": 3200000,
+      "valuation": 3550000,
+      "racePower": 72,
+      "image": "/assets/items/car_ev_hyper.png",
+      "description": "四电机电动超跑，零百加速快到让人屏住呼吸。"
+    },
+    {
+      "id": "car_offroad_6x6",
+      "name": "沙暴 6×6 豪华越野",
+      "type": "car",
+      "price": 4600000,
+      "valuation": 5100000,
+      "racePower": 52,
+      "image": "/assets/items/car_offroad_6x6.png",
+      "description": "六轮驱动的移动堡垒，半山没有它上不去的路。"
+    },
+    {
+      "id": "car_armored_limo",
+      "name": "铂金防弹礼宾车",
+      "type": "car",
+      "price": 12800000,
+      "valuation": 14200000,
+      "racePower": 45,
+      "image": "/assets/items/car_armored_limo.png",
+      "description": "定制车坊手工打造的行政礼宾车，防弹车身配香槟内饰。"
+    },
+    {
+      "id": "boat_speed42",
+      "name": "破浪 42 尺运动快艇",
+      "type": "vehicle",
+      "price": 9800000,
+      "valuation": 10900000,
+      "racePower": 0,
+      "image": "/assets/items/boat_speed42.png",
+      "description": "白蓝涂装的运动快艇，出海兜风比游艇灵活得多。"
     }
   ],
   "sets": [
     {
       "id": "set_speed",
       "name": "海城速度传奇",
-      "requiredIds": ["car_porsche_911", "car_ferrari_sf90", "car_bugatti_chiron"],
+      "requiredIds": [
+        "car_porsche_911",
+        "car_ferrari_sf90",
+        "car_bugatti_chiron"
+      ],
       "bonusDesc": "全局身价估值 +12%，消费暴击概率 +5%",
       "netWorthPct": 0.12,
       "critBonusPct": 0.05
@@ -163,7 +257,11 @@
     {
       "id": "set_antique",
       "name": "鬼市传世奇珍",
-      "requiredIds": ["col_jade_emperor", "col_blue_vase", "col_blood_agate"],
+      "requiredIds": [
+        "col_jade_emperor",
+        "col_blue_vase",
+        "col_blood_agate"
+      ],
       "bonusDesc": "全局身价估值 +15%，产业离线收益 +15%",
       "netWorthPct": 0.15,
       "incomeBonusPct": 0.15
@@ -171,7 +269,11 @@
     {
       "id": "set_tycoon",
       "name": "海城云端图腾",
-      "requiredIds": ["yacht_poseidon", "jet_g700", "island_private"],
+      "requiredIds": [
+        "yacht_poseidon",
+        "jet_g700",
+        "island_private"
+      ],
       "bonusDesc": "全局身价估值 +18%，产业离线收益 +20%",
       "netWorthPct": 0.18,
       "incomeBonusPct": 0.2

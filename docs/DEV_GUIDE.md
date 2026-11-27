@@ -195,6 +195,7 @@ scripts/demo/             试玩版录制与打包
 | UI 彩绘图标 | `client/public/assets/ui/icons/*.webp` | 透明底，256×256，quality 90 |
 | Logo / 底纹 | `client/public/assets/ui/` | logo.webp、deco_tile.webp |
 | 场景背景（主线/区域） | `assets/bg/*.jpg` | 1024×1536（2:3 竖版） |
+| 区域小地图 | `assets/maps/map_<districtId>.jpg` | 1080×1920（9:16），quality 80，俯瞰夜景、无文字无地图钉 |
 | 小玩法场景 | `assets/scene/*.jpg` | 1024×1536，quality 82 |
 | 卷封面 | `assets/story/vol{n}.webp` | 1280×720，在 `stories.json` 卷上写 `"cover"` |
 | 角色立绘 | `assets/characters/*.png` | 透明底半身/全身 |
@@ -258,8 +259,8 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 2. 服务端 `minigames.ts`：在 `Kind` 加类型；写 start/act/finish 路由；在 `autoSettle` 加默认结算；有本金就 `ledgerOpen`（加注用 `ledgerAdd`）；结算里 `grant` + `finishCommon`。
 3. 用 `scripts/qa/balance_*.mjs` 的方式写蒙特卡洛模拟，**期望回报控制在 0.9–1.1×**，并保证「会玩」明显优于「乱玩」。
 4. 前端 `client/src/minigames/XxxGame.tsx`：用 `<Stage bg title subtitle onBack>` 做外壳，`useMgApi()` 调接口，选档用 `StakePicker`，结果用 `ResultStrip`，收钱 `flyReward`，输了 `playLose()`。
-5. `MinigameHost.tsx`：注册到 `GAMES`，并在 `MINIGAME_OF` 映射 coreMinigame → kind；`CityMapView` 的区域按钮会自动打开。
-6. 图标：在 `CityMapView` 的 `DISTRICT_ICON` 指定地图牌子的图标；需要新图标就整表出图（§6.2）。
+5. `MinigameHost.tsx`：注册到 `GAMES`，并在 `MINIGAME_OF` 映射 coreMinigame → kind；区域小地图里 `kind: "venue"` 的地点会自动打开它（§9.1）。
+6. 图标：在 `CityMapView` 的 `DISTRICT_ICON`（大地图牌子）和 `views/map/DistrictMap.tsx` 的 `VENUE_ICON`（小地图玩法点）指定图标；需要新图标就整表出图（§6.2）。
 7. 场景背景出图到 `assets/scene/`。
 8. **返回键**：中途离开时要么自动结算（股票按当前价平仓、21 点自动停牌），要么拦截并提示（赌石要求先卖、PK 不能中途退、竞速二次确认），不能让本金悬空。
 
@@ -291,10 +292,27 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 ## 9. 内容扩展
 
 - **主线**：`content/stories/stories.json`，卷对象可带 `"cover"`（卷封面）。节点类型见 `useGameStore.ts` 的 `VNNode`。剧情选项奖励走 `reward` 字段，由服务端结算。
-- **区域**：`content/maps/haicheng.json`（坐标 x/y 为地图百分比、`unlockTier`、`bg`、`interactions` 赴约/闲逛）。
+- **区域**：`content/maps/haicheng.json`（坐标 x/y 为大地图百分比、`unlockTier`、`bg`、`interactions` 赴约/闲逛、`localMap` 小地图插画、`spots` 小地图地点，见 §9.1）。
 - **红颜**：`content/heroines/heroines.json` + 立绘 + 首页戳一戳兜底台词（`HomeView.tsx` 的 `LOCAL_POKE_FALLBACKS`）+ 谈判助攻（§8）+ 剧情页 `HEROINE_CARD_BG`（`HeroinesView.tsx`）。
 - **资产/套装**：`content/assets_catalog.json`。注意每个资产都要有获取途径（商店、剧情 `unlockAsset`、赌石收藏、活动兑换），否则套装永远集不齐。
 - 改完内容：GM 后台「热重载剧本配置」即可，无需重启。
+
+### 9.1 区域小地图（大地图 → 点区域 → 小地图 → 点地点）
+
+- 每个区域一张 9:16 俯瞰插画 `client/public/assets/maps/map_<districtId>.jpg`（1080×1920，Seedream 出图，prompt 在 `scripts/assets/district_maps_prompts.py`，每个地标都写死在画面的某个区域，方便放点）。新出图后用 10% 网格叠图读坐标再填 `spots`。
+- `districts[].spots[]`：`{ id, kind, name, en, x, y, ... }`，x/y 是**插画上的百分比**，指的是地标底部那个点（标记会立在它上方）。种类：
+  | kind | 额外字段 | 点开后 |
+  |---|---|---|
+  | `venue` | — | 打开本区 `coreMinigame` |
+  | `date` | `ref` = interactions 里的约会 id | 选红颜 → `/map/date/start` |
+  | `stroll` | `ref` = interactions 里的闲逛 id | `/map/stroll` 随机奇遇 |
+  | `showroom` | `stock`: 资产 id 列表，`desc` | 车行/拍卖行陈列，`/asset/buy` 提货 |
+  | `property` | `ref` = 物业 id | 看房（全款/谈判）或进入私宅 |
+  | `business` | `ref` = 产业 id | 收购/谈判，已持有则跳到产业页并选中它 |
+  | `visit` | `desc`, `lines[]`, `energy`, `sysPoints`, `affinity?` | `/map/visit`：每天一次，花精力换天枢积分 + 一句见闻，`affinity` 红颜已解锁再 +3 好感（`server/src/mapSpots.ts`） |
+- **每件可购买资产都要出现在某个 `showroom` 的 `stock` 里**（产业页的「座驾藏品」不再直接卖，只引导去对应车行）；每个物业、产业也都要在地图上有一个点。改完跑一次 §12 里的引用校验。
+- 红颜当前在本区时，头像会站在本区第一个 `date` 点旁边，点头像进私聊。
+- 买车只在新车性能更高时才自动设为座驾（`/asset/buy`）。
 
 ## 10. 离线试玩版（demo）
 
@@ -326,6 +344,8 @@ node scripts/qa/balance_jade.mjs                # 赌石期望回报（需先 bu
 node scripts/qa/balance_live.mjs                # 打榜各打法胜率
 node scripts/qa/balance_progress.mjs --suggest  # 身价成长曲线 + 每幕门槛建议（改经济/剧情奖励/门槛后必跑）
 node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,live   # 浏览器实玩并截图
+node scripts/qa/map_assets.playwright.cjs out_dir   # 各区小地图、地点抽屉、产业三页截图
+node scripts/qa/check_content.mjs                   # 小地图地点引用、每件资产/物业/产业都有出处
 ```
 
 - 截图检查（412×852）：文字是否压在人物脸上/看不清、按钮是否被底栏挡住、金币是否飞向资金栏、结果条是否完整。
@@ -336,6 +356,7 @@ node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,
 
 - 股票价格路径整段下发给客户端（为了流畅渲染），懂开发者工具的玩家可以提前看到；如需防作弊改为分段下发。赌石石头内部布局同理。
 - 会话在内存中，只能单进程运行（§4.7）。
-- demo 版缺新玩法 mock（§10）。
+- demo 版缺新玩法 mock（§10），也没有小地图打卡 `/map/visit`。
+- 早期资产里有真实品牌名与车标（保时捷/法拉利/布加迪/湾流，911 图上有车标），与 §6.2「不用真实品牌」冲突，需要改名并重出图。
 - 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 13 天读完第三卷。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
 - `docs/01~05` 为早期设计稿，数值与玩法以代码和本规范为准。

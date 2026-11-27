@@ -145,6 +145,13 @@ interface GameStore {
   showProfile: boolean;
   profileTab: ProfileSubTab;
   selectedDistrictId: string | null;
+  /** open this spot's sheet once its district map mounts (jump from 产业 → 车行 etc.) */
+  focusSpotId: string | null;
+  /** preselect this business on the 产业 skyline */
+  focusBizId: string | null;
+  openSpot: (districtId: string, spotId: string) => void;
+  focusBusiness: (bizId: string | null) => void;
+  clearFocusSpot: () => void;
   activePropertyId: string | null;
   activeChatHeroineId: string | null;
   chatLocationOverride: string | null;
@@ -216,10 +223,12 @@ export const useGameStore = create<GameStore>((set, get) => ({
   state: null,
   loading: Boolean(getStoredToken()),
   activeTab: 'home',
-  assetsSubTab: 'garage',
+  assetsSubTab: 'biz',
   showProfile: false,
   profileTab: 'tasks',
   selectedDistrictId: null,
+  focusSpotId: null,
+  focusBizId: null,
   activePropertyId: null,
   activeChatHeroineId: null,
   chatLocationOverride: null,
@@ -281,7 +290,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       loading: false,
       showProfile: false,
       activeTab: isBrandNew ? 'story' : 'home',
-      assetsSubTab: 'garage',
+      assetsSubTab: 'biz',
       selectedDistrictId: null,
       activePropertyId: null,
       activeChatHeroineId: null,
@@ -316,7 +325,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       token: '',
       state: null,
       activeTab: 'home',
-      assetsSubTab: 'garage',
+      assetsSubTab: 'biz',
       showProfile: false,
       selectedDistrictId: null,
       activePropertyId: null,
@@ -404,6 +413,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   closeProfile: () => set({ showProfile: false }),
 
   setSelectedDistrictId: (id) => set({ selectedDistrictId: id, activePropertyId: null }),
+  openSpot: (districtId, spotId) =>
+    set({ activeTab: 'map', selectedDistrictId: districtId, focusSpotId: spotId, activePropertyId: null, showProfile: false }),
+  focusBusiness: (bizId) => set({ focusBizId: bizId, ...(bizId ? { activeTab: 'assets' as const, assetsSubTab: 'biz' as const, showProfile: false } : {}) }),
+  clearFocusSpot: () => set({ focusSpotId: null }),
   setActivePropertyId: (id) => set({ activePropertyId: id }),
 
   openHeroineChat: (heroineId, locationOverride = null) => {

@@ -23,7 +23,7 @@ import { formatMoney } from '../lib/format';
 import { playCoinBurst, playStoneCrack, playSystemPing, playTap } from '../lib/sound';
 import { useGameStore, type VNNode } from '../store/useGameStore';
 import { GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
-import { MINIGAME_OF } from '../minigames/MinigameHost';
+import { DistrictMap } from './map/DistrictMap';
 
 const DISTRICT_ICON: Record<string, GameIconName> = {
   jade_gambling: 'jade',
@@ -36,16 +36,6 @@ const DISTRICT_ICON: Record<string, GameIconName> = {
 };
 
 
-const DISTRICT_AMBIENT: Record<string, string> = {
-  old_street: '青石巷口灯笼微晃，老茶馆与古玩摊掩在晚风里。',
-  university: '夕阳穿过银杏枝桠落在琴房窗台，风里飘着烘焙咖啡味。',
-  bund: '江面碎金摇晃，落地窗展厅与江岸大道连成一片灯火。',
-  cbd: '玻璃幕墙映着蓝调夜色，整座海城的资金在此流转。',
-  night_city: '巨幕霓虹永不熄灭，晚间的酒廊与演播厅正热闹。',
-  peak_coast: '海风微凉，游艇码头的灯光映在平静海面上。',
-};
-
-type DistrictSheet = null | 'explore' | 'properties';
 type HomeSheet = null | 'interact' | 'keys' | 'manage';
 
 export const CityMapView: React.FC = () => {
@@ -67,21 +57,13 @@ export const CityMapView: React.FC = () => {
   } = useGameStore();
 
   const [previewDistrictId, setPreviewDistrictId] = useState<string | null>(null);
-  const [districtSheet, setDistrictSheet] = useState<DistrictSheet>(null);
   const [homeSheet, setHomeSheet] = useState<HomeSheet>(null);
-  const [expandedDateSpotId, setExpandedDateSpotId] = useState<string | null>(null);
 
   const [busy, setBusy] = useState(false);
-  const [strollEvent, setStrollEvent] = useState<any | null>(null);
-  const [strollResult, setStrollResult] = useState<string | null>(null);
   const [renameText, setRenameText] = useState('');
   const [showRename, setShowRename] = useState(false);
 
   useEffect(() => {
-    setDistrictSheet(null);
-    setExpandedDateSpotId(null);
-    setStrollEvent(null);
-    setStrollResult(null);
     if (selectedDistrictId && state?.map?.districts) {
       const target = state.map.districts.find((x: any) => x.id === selectedDistrictId);
       if (target && !target.unlocked) {
@@ -516,489 +498,8 @@ export const CityMapView: React.FC = () => {
   const activeDistrict = selectedDistrictId
     ? map.districts.find((x: any) => x.id === selectedDistrictId && x.unlocked) || null
     : null;
-  if (activeDistrict) {
-    const d = activeDistrict;
-    const districtProps = properties.filter((p: any) => p.districtId === d.id);
-    const streetHeroine = d.presentHeroines?.[0] || null;
-    const streetHeroineFull = streetHeroine ? heroines.find((h: any) => h.id === streetHeroine.id) : null;
+  if (activeDistrict) return <DistrictMap key={activeDistrict.id} d={activeDistrict} />;
 
-    const runStroll = async () => {
-      setBusy(true);
-      setStrollResult(null);
-      try {
-        const res = await apiRequest('/map/stroll', { body: { districtId: d.id } });
-        applyServerState(res.state);
-        playSystemPing();
-        const ev = res.event;
-
-        if (Array.isArray(ev?.introNodes) && ev.introNodes.length > 0) {
-          const introNodes: VNNode[] = ev.introNodes.map((n: VNNode, i: number) => {
-            if (i === 0 && !n.sprite && !n.leftSprite && !n.rightSprite && ev.npcSprite) {
-              return { ...n, sprite: ev.npcSprite };
-            }
-            return n;
-          });
-
-          // Spoiler-free choice node: NO outcome tags attached!
-          const choiceNode: VNNode = {
-            type: 'system_choice',
-            id: `stroll_choice_${ev.id}`,
-            title: ev.title || '',
-            sprite: ev.npcSprite || undefined,
-            options: (ev.choices || []).map((c: any, idx: number) => ({
-              id: String(idx),
-              choiceIndex: idx,
-              label: c.label,
-              cashCost: c.cashCost || 0,
-              cashGain: c.cashGain || 0,
-              sysPoints: c.sysPoints || 0,
-              affectionGain: c.affectionGain || 0,
-              unlockHeroine: c.unlockHeroine,
-              resultText: c.resultText,
-              branchNodes: Array.isArray(c.branchNodes) ? c.branchNodes : undefined,
-            })),
-          };
-
-          setDistrictSheet(null);
-          openMiniStory({
-            mode: 'stroll',
-            title: ev.title,
-            subtitle: ev.desc || '',
-            sceneLabel: `${d.name} · 偶遇`,
-            bg: ev.bg || d.bg,
-            nodes: [...introNodes, choiceNode],
-            districtId: d.id,
-            eventId: ev.id,
-            strollChoices: ev.choices || [],
-            locationLabel: d.name,
-          });
-        } else {
-          setStrollEvent(ev);
-        }
-      } catch (e: any) {
-        showError(e.message);
-      } finally {
-        setBusy(false);
-      }
-    };
-
-    const resolveStroll = async (choiceIndex: number) => {
-      if (!strollEvent) return;
-      setBusy(true);
-      try {
-        const res = await apiRequest('/map/stroll/resolve', {
-          body: { districtId: d.id, eventId: strollEvent.id, choiceIndex },
-        });
-        applyServerState(res.state, res.critResult);
-        playCoinBurst();
-        setStrollResult(res.resultText);
-        setStrollEvent(null);
-        if (res.unlockedHeroine) {
-          notifyTop('wechat', '新增联系人', '可在「联系」中随时发消息');
-        }
-      } catch (e: any) {
-        showError(e.message);
-      } finally {
-        setBusy(false);
-      }
-    };
-
-    const buyProperty = async (propertyId: string) => {
-      setBusy(true);
-      try {
-        const res = await apiRequest('/property/buy', { body: { propertyId } });
-        applyServerState(res.state, res.critResult);
-        playCoinBurst();
-        notifyTop('bank', '过户完成', '可在私宅中升级装潢或赠予钥匙');
-      } catch (e: any) {
-        showError(e.message);
-      } finally {
-        setBusy(false);
-      }
-    };
-
-    // Launches interactive Date VN Mini-Chapter directly from inline heroine selector!
-    const triggerDate = async (spot: any, heroineObj: any) => {
-      setBusy(true);
-      try {
-        const res = await apiRequest('/map/date/start', {
-          body: { districtId: d.id, interactionId: spot.id, heroineId: heroineObj.id },
-        });
-        const script = res.script;
-        playSystemPing();
-        setExpandedDateSpotId(null);
-        setDistrictSheet(null);
-        openMiniStory({
-          mode: 'date',
-          title: script?.title || spot.name,
-          subtitle: script?.subtitle || `${d.name} · ${spot.name}`,
-          sceneLabel: `${d.name} · ${spot.name}`,
-          bg: script?.bg || d.bg,
-          nodes: script?.nodes || [],
-          districtId: d.id,
-          interactionId: spot.id,
-          heroineId: heroineObj.id,
-          heroineName: heroineObj.name,
-          heroineAvatar: heroineObj.avatar,
-          heroinePortrait: heroineObj.portrait,
-          locationLabel: `${d.name} · ${spot.name}`,
-          costEnergy: script?.costEnergy ?? spot.energy,
-          costCash: script?.costCash ?? spot.cashCost,
-        });
-      } catch (e: any) {
-        showError(e.message);
-      } finally {
-        setBusy(false);
-      }
-    };
-
-    return (
-      <div className="relative h-full w-full overflow-hidden bg-[#05070D] flex flex-col justify-between">
-        <img src={d.bg} alt={d.name} className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 vignette-stage pointer-events-none" />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/55 via-transparent to-[#05070D]/94 pointer-events-none" />
-
-        {streetHeroineFull && (
-          <div
-            onClick={() => openHeroineChat(streetHeroineFull.id, d.name)}
-            className="absolute inset-x-0 top-14 bottom-4 z-10 flex items-end justify-center cursor-pointer px-4"
-          >
-            <img
-              src={streetHeroineFull.portrait}
-              alt={streetHeroineFull.name}
-              className="h-full max-h-[88%] w-auto object-contain object-bottom sprite-fade-bottom animate-breathe drop-shadow-[0_16px_36px_rgba(0,0,0,0.84)]"
-            />
-          </div>
-        )}
-
-        {/* Top Bar */}
-        <div className="relative z-20 px-4 pt-3.5 flex items-center justify-between gap-2">
-          <button
-            onClick={() => {
-              playTap();
-              setSelectedDistrictId(null);
-            }}
-            className="text-xs text-[#F3F0E8] flex items-center gap-1 text-shadow-stage active:opacity-75"
-          >
-            <ArrowLeft className="w-4 h-4 text-[#D9C49A]" /> 海城
-          </button>
-
-          <div className="text-right text-shadow-stage">
-            <div className="font-editorial text-[16px] font-black gold-gradient-text tracking-wider">{d.name}</div>
-            <div className="text-[10px] text-[#D9C49A]">{d.tag}</div>
-          </div>
-        </div>
-
-        {/* Bottom Spatial Dock */}
-        <div className="relative z-20 px-4 pt-12 pb-5 bg-gradient-to-t from-[#05070D] via-[#05070D]/90 to-transparent space-y-3">
-          {streetHeroineFull ? (
-            <div className="flex justify-center">
-              <button
-                onClick={() => openHeroineChat(streetHeroineFull.id, d.name)}
-                className="pl-1 pr-3.5 py-1 rounded-full bg-[#2A0F1E]/85 backdrop-blur-md border border-[#F0789A]/60 text-xs text-[#FBE3EA] flex items-center gap-1.5 shadow-[0_0_14px_rgba(240,120,154,0.3)]"
-              >
-                <GameIcon name="heart" size={24} />
-                <span>偶遇 {streetHeroineFull.name} · 搭话</span>
-              </button>
-            </div>
-          ) : (
-            <p className="text-xs text-[#DDDAD2] text-center leading-relaxed px-4 text-shadow-stage">
-              {DISTRICT_AMBIENT[d.id] || d.description}
-            </p>
-          )}
-
-          <div className="grid grid-cols-3 gap-2">
-            <button
-              onClick={() => {
-                playTap();
-                const kind = MINIGAME_OF[d.coreMinigame];
-                if (!kind) {
-                  showError(d.coreMinigameDesc || '敬请期待');
-                  return;
-                }
-                if (kind === 'cruise' && !cruiseEvent?.active) {
-                  showError('星耀号暂未靠港');
-                  return;
-                }
-                openMinigame(kind);
-              }}
-              className="gold-btn-shimmer py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
-            >
-              <GameIcon name={DISTRICT_ICON[d.coreMinigame] || 'nav_map'} size={34} />
-              <span className="truncate max-w-full">{d.coreMinigameLabel}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                playTap();
-                setExpandedDateSpotId(null);
-                setDistrictSheet('explore');
-              }}
-              className="btn-navy py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
-            >
-              <GameIcon name="champagne" size={34} />
-              <span>赴约 · 闲逛</span>
-            </button>
-
-            <button
-              onClick={() => {
-                playTap();
-                setDistrictSheet('properties');
-              }}
-              className="btn-navy py-1.5 px-1 text-[12.5px] font-editorial flex flex-col items-center gap-0"
-            >
-              <GameIcon name="key" size={34} />
-              <span>地产 ({districtProps.length})</span>
-            </button>
-          </div>
-        </div>
-
-        {/* SHEET 2: STREAMLINED DATES (INLINE HEROINE EXPANSION) & STROLLS */}
-        <AnimatePresence>
-          {districtSheet === 'explore' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setDistrictSheet(null)}
-              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
-            >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 max-h-[82%] flex flex-col"
-            >
-              <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
-                <span className="font-editorial text-[16px] font-black gold-gradient-text">{d.name} · 赴约与闲逛</span>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#7A7E8E]">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto no-scrollbar pt-2 space-y-3">
-                <div className="space-y-2">
-                  {d.interactions?.map((inter: any) => {
-                    const isDate = inter.type !== 'stroll';
-                    const isExpanded = isDate && expandedDateSpotId === inter.id;
-
-                    return (
-                      <div key={inter.id} className={`rounded-[10px] overflow-hidden ${isExpanded ? 'panel-brass' : 'panel-arch'}`}>
-                        <button
-                          disabled={busy}
-                          onClick={() => {
-                            playTap();
-                            if (!isDate) {
-                              void runStroll();
-                            } else {
-                              setExpandedDateSpotId(isExpanded ? null : inter.id);
-                            }
-                          }}
-                          className="w-full text-left flex items-stretch gap-3 group active:scale-[0.99] transition"
-                        >
-                          <div className="relative w-[92px] shrink-0 min-h-[70px] overflow-hidden">
-                            <img src={inter.image || d.bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0E1529]/80" />
-                            <span
-                              className={`absolute top-1.5 left-1.5 px-1.5 py-[1px] rounded-sm text-[9.5px] font-bold ${
-                                isDate ? 'bg-gradient-to-r from-[#F0789A] to-[#C24E74] text-white' : 'bg-[#05070D]/80 text-[#B9F6FB] border border-[#63E6F2]/40'
-                              }`}
-                            >
-                              {isDate ? '邀约' : '闲逛'}
-                            </span>
-                          </div>
-                          <div className="min-w-0 flex-1 py-2.5">
-                            <div className="text-[14px] font-editorial font-black text-[#ECE6DA] truncate">{inter.name}</div>
-                            <div className="text-[11px] text-[#858999] mt-0.5 leading-snug line-clamp-2">{inter.desc}</div>
-                          </div>
-                          <div className="shrink-0 pr-3 py-2.5 flex flex-col items-end justify-center gap-0.5 font-num text-[12px]">
-                            <span className="flex items-center gap-0.5 text-[#ECE6DA]">
-                              <GameIcon name="energy" size={15} shadow={false} />
-                              {inter.energy}
-                            </span>
-                            {inter.cashCost > 0 && (
-                              <span className="flex items-center gap-0.5 text-[#EADBB8]">
-                                <GameIcon name="cash" size={15} shadow={false} />
-                                {formatMoney(inter.cashCost)}
-                              </span>
-                            )}
-                          </div>
-                        </button>
-
-                        {/* Inline Heroine Picker — No Stacked Modal! */}
-                        <AnimatePresence>
-                          {isExpanded && (
-                            <motion.div
-                              initial={{ opacity: 0, height: 0 }}
-                              animate={{ opacity: 1, height: 'auto' }}
-                              exit={{ opacity: 0, height: 0 }}
-                              className="overflow-hidden"
-                            >
-                              <div className="px-2.5 pb-2.5 pt-1">
-                                <div className="text-[10.5px] tracking-[0.25em] text-[#FFB3C6] mb-1.5">邀请谁同去？</div>
-                                {unlockedHeroines.length === 0 ? (
-                                  <div className="text-xs text-[#7A7E8E] py-2">先推进主线结识联系人再来邀约。</div>
-                                ) : (
-                                  <div className="grid grid-cols-2 gap-2">
-                                    {unlockedHeroines.map((h: any) => (
-                                      <button
-                                        key={h.id}
-                                        disabled={busy}
-                                        onClick={() => triggerDate(inter, h)}
-                                        className="rounded-full pl-1 pr-3 py-1 flex items-center gap-2 text-left bg-[#2A0F1E]/70 border border-[#F0789A]/45 hover:border-[#F0789A] transition active:scale-[0.97]"
-                                      >
-                                        <div className="w-9 h-9 rounded-full p-[1.5px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74] shrink-0">
-                                          <PortraitAvatar src={h.avatar} alt={h.name} className="w-full h-full !border-0" rounded="full" />
-                                        </div>
-                                        <div className="min-w-0">
-                                          <div className="text-[12.5px] font-editorial font-black text-[#FBE3EA] truncate">{h.name}</div>
-                                          <div className="text-[10px] text-[#FFB3C6] font-num flex items-center gap-0.5">
-                                            <GameIcon name="heart" size={12} shadow={false} />
-                                            {h.affection}
-                                          </div>
-                                        </div>
-                                      </button>
-                                    ))}
-                                  </div>
-                                )}
-                              </div>
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {strollEvent && (
-                  <div className="relative panel-brass rounded-[10px] px-3.5 pt-4 pb-3 space-y-2.5">
-                    <OrnateCorners size={16} inset={-4} />
-                    <div className="absolute -top-2.5 left-3 px-2 bg-[#0E1119] text-[10.5px] font-black tracking-[0.3em] text-[#D9C49A]">街头奇遇</div>
-                    <div className="text-[15px] font-editorial font-black text-[#ECE6DA]">{strollEvent.title}</div>
-                    <p className="text-[12px] text-[#C8CBD6] leading-relaxed">{strollEvent.desc}</p>
-                    <div className="space-y-2">
-                      {strollEvent.choices.map((c: any, idx: number) => (
-                        <button
-                          key={idx}
-                          disabled={busy}
-                          onClick={() => resolveStroll(idx)}
-                          className="btn-navy w-full text-center px-3.5 py-2.5 text-[13px] font-editorial"
-                        >
-                          {c.label}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {strollResult && (
-                  <div className="rounded-[10px] border border-emerald-400/50 bg-[#0E2A22]/80 px-3.5 py-2.5 text-[12px] text-emerald-100 leading-relaxed">
-                    {strollResult}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
-        {/* SHEET 3: DISTRICT PROPERTIES */}
-        <AnimatePresence>
-          {districtSheet === 'properties' && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setDistrictSheet(null)}
-              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
-            >
-            <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              onClick={(e) => e.stopPropagation()}
-              className="panel-elevated w-full h-[78%] rounded-t-[16px] border-t border-[#D9C49A]/50 p-4 flex flex-col"
-            >
-              <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
-                <span className="font-editorial text-[16px] font-black gold-gradient-text">
-                  {d.name} · 地产 ({districtProps.length})
-                </span>
-                <button onClick={() => setDistrictSheet(null)} aria-label="关闭" className="p-1 text-[#7A7E8E] hover:text-white">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto no-scrollbar pt-3 divide-y divide-white/[0.08]">
-                {districtProps.map((p: any) => {
-                  const reqTierName =
-                    (map.tiers || []).find((x: any) => x.tier === p.unlockTier)?.name || `阶层 ${p.unlockTier}`;
-                  const earnsRent = p.currentRentPerHour > 0 && !(p.isMain && p.type === 'residence');
-                  const canAffordProp = player.cash >= (p.price || 0);
-                  return (
-                  <div key={p.id} className="py-3.5 first:pt-0 space-y-2.5">
-                    <div className="aspect-[16/9] w-full bg-black overflow-hidden border border-white/[0.08]">
-                      <img src={p.image || p.bg} alt={p.displayName} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <div className="font-editorial text-[16px] font-black gold-gradient-text">{p.displayName}</div>
-                        <div className="text-[11px] text-[#D9C49A] tabular-nums mt-0.5">
-                          估值 {formatMoney(p.currentValuation)}
-                          {earnsRent ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : p.isMain && p.type === 'residence' ? ' · 自住主宅' : ''}
-                        </div>
-                      </div>
-                      {p.owned ? (
-                        <button
-                          onClick={() => {
-                            setDistrictSheet(null);
-                            setActivePropertyId(p.id);
-                          }}
-                          className="btn-brass px-3 py-1.5 rounded-[4px] text-xs flex items-center gap-0.5 shrink-0"
-                        >
-                          进入 <ChevronRight className="w-3.5 h-3.5" />
-                        </button>
-                      ) : (
-                        <div className="flex gap-1.5 shrink-0">
-                          {player.tier.tier >= p.unlockTier && p.price > 0 && (
-                            <button
-                              disabled={busy}
-                              onClick={() => {
-                                playTap();
-                                setDistrictSheet(null);
-                                openDeal({ kind: 'property', id: p.id });
-                              }}
-                              className="btn-navy px-3 py-1.5 text-[12px] font-editorial"
-                            >
-                              谈判
-                            </button>
-                          )}
-                          <button
-                            disabled={busy || player.tier.tier < p.unlockTier}
-                            onClick={() => buyProperty(p.id)}
-                            className={`${player.tier.tier < p.unlockTier || !canAffordProp ? 'btn-navy opacity-70' : 'gold-btn-shimmer'} px-3 py-1.5 text-[12px] font-num disabled:opacity-45`}
-                          >
-                            {player.tier.tier < p.unlockTier ? `需「${reqTierName}」` : `全款 ${formatMoney(p.price)}`}
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-xs text-[#8C90A0] leading-snug">{p.description}</p>
-                  </div>
-                  );
-                })}
-              </div>
-            </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
-    );
-  }
-
-  // ==================== LEVEL 1: CLEAN UNCLUTTERED HAICHENG MAP ====================
   const previewDistrict = map.districts.find((d: any) => d.id === previewDistrictId) || null;
 
   return (
@@ -1164,13 +665,22 @@ export const CityMapView: React.FC = () => {
                   <p className="text-[11px] text-[#A9ACB8] mt-1 leading-relaxed line-clamp-2">
                     {previewDistrict.coreMinigameLabel} · {previewDistrict.description}
                   </p>
+                  {(previewDistrict.spots || []).length > 0 && (
+                    <div className="mt-1.5 flex items-center gap-1.5 overflow-hidden">
+                      {(previewDistrict.spots || []).slice(0, 6).map((sp: any) => (
+                        <span key={sp.id} className="text-[10px] text-[#8C90A0] whitespace-nowrap">
+                          {sp.name}
+                        </span>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex items-center justify-between gap-2">
                   <span className="text-[10.5px] text-[#B4BBD0] truncate">
                     {previewDistrict.presentHeroines?.length > 0
                       ? `在场：${previewDistrict.presentHeroines.map((h: any) => h.name).join('、')}`
-                      : `地产 ${properties.filter((p: any) => p.districtId === previewDistrict.id).length} 处`}
+                      : `${(previewDistrict.spots || []).length || properties.filter((p: any) => p.districtId === previewDistrict.id).length} 处可去`}
                   </span>
                   <button
                     onClick={() => handleTravelIntoDistrict(previewDistrict)}

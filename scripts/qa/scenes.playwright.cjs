@@ -43,7 +43,8 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
   const nav = async (l) => { await p.locator('nav button', { hasText: l }).first().click(); await p.waitForTimeout(800); };
   const tap = async (txt, wait = 700) => { await p.locator('button', { hasText: txt }).first().click(); await p.waitForTimeout(wait); };
   const home = async () => { await p.goto('http://localhost:3080'); await p.waitForTimeout(1500); };
-  const enter = async (district, label) => { await home(); await nav('海城'); await tap(district, 400); await tap('前往', 1200); await tap(label, 1000); };
+  // district small map: the venue is the first spot in the bottom index dock (kind label 玩法); its sheet button reads 进入<label>
+  const enter = async (district, label) => { await home(); await nav('海城'); await tap(district, 400); await tap('前往', 1200); await tap('玩法', 600); await tap(label, 1000); };
 
   if (only.includes('jade')) {
     await enter('城南旧街', '古玩赌石');

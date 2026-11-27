@@ -4,14 +4,70 @@
   "subtitle": "江岸霓虹与旧巷烟火交织之城",
   "mapImage": "/assets/bg/haicheng_map.jpg",
   "tiers": [
-    { "tier": 1, "name": "初入海城", "minNetWorth": 0, "stakeScale": 1, "badge": "初入海城", "color": "#94A3B8" },
-    { "tier": 2, "name": "新锐新贵", "minNetWorth": 1000000, "stakeScale": 3, "badge": "新锐新贵", "color": "#38BDF8" },
-    { "tier": 3, "name": "海城名流", "minNetWorth": 30000000, "stakeScale": 30, "badge": "海城名流", "color": "#A78BFA" },
-    { "tier": 4, "name": "商界巨鳄", "minNetWorth": 500000000, "stakeScale": 300, "badge": "商界巨鳄", "color": "#E6C165" },
-    { "tier": 5, "name": "顶级豪门", "minNetWorth": 5000000000, "stakeScale": 3000, "badge": "顶级豪门", "color": "#F59E0B" },
-    { "tier": 6, "name": "跨国财阀", "minNetWorth": 50000000000, "stakeScale": 30000, "badge": "跨国财阀", "color": "#F43F5E" },
-    { "tier": 7, "name": "全球教父", "minNetWorth": 500000000000, "stakeScale": 300000, "badge": "全球教父", "color": "#EC4899" },
-    { "tier": 8, "name": "幕后苍穹", "minNetWorth": 10000000000000, "stakeScale": 3000000, "badge": "幕后苍穹", "color": "#F9DF8B" }
+    {
+      "tier": 1,
+      "name": "初入海城",
+      "minNetWorth": 0,
+      "stakeScale": 1,
+      "badge": "初入海城",
+      "color": "#94A3B8"
+    },
+    {
+      "tier": 2,
+      "name": "新锐新贵",
+      "minNetWorth": 1000000,
+      "stakeScale": 3,
+      "badge": "新锐新贵",
+      "color": "#38BDF8"
+    },
+    {
+      "tier": 3,
+      "name": "海城名流",
+      "minNetWorth": 30000000,
+      "stakeScale": 30,
+      "badge": "海城名流",
+      "color": "#A78BFA"
+    },
+    {
+      "tier": 4,
+      "name": "商界巨鳄",
+      "minNetWorth": 500000000,
+      "stakeScale": 300,
+      "badge": "商界巨鳄",
+      "color": "#E6C165"
+    },
+    {
+      "tier": 5,
+      "name": "顶级豪门",
+      "minNetWorth": 5000000000,
+      "stakeScale": 3000,
+      "badge": "顶级豪门",
+      "color": "#F59E0B"
+    },
+    {
+      "tier": 6,
+      "name": "跨国财阀",
+      "minNetWorth": 50000000000,
+      "stakeScale": 30000,
+      "badge": "跨国财阀",
+      "color": "#F43F5E"
+    },
+    {
+      "tier": 7,
+      "name": "全球教父",
+      "minNetWorth": 500000000000,
+      "stakeScale": 300000,
+      "badge": "全球教父",
+      "color": "#EC4899"
+    },
+    {
+      "tier": 8,
+      "name": "幕后苍穹",
+      "minNetWorth": 10000000000000,
+      "stakeScale": 3000000,
+      "badge": "幕后苍穹",
+      "color": "#F9DF8B"
+    }
   ],
   "districts": [
     {
@@ -28,9 +84,119 @@
       "coreMinigameLabel": "古玩赌石",
       "coreMinigameDesc": "挑选原石切料，考验眼力与运气",
       "interactions": [
-        { "id": "night_noodles", "name": "深夜大排档", "energy": 6, "cashCost": 200, "desc": "点两碗热汤面配烧烤，坐在巷口聊聊天", "type": "date_spot", "image": "/assets/bg/bg_old_street.jpg" },
-        { "id": "stroll_old_street", "name": "老街闲逛", "energy": 5, "cashCost": 0, "desc": "沿青石巷转转，偶遇意想不到的奇闻与捡漏", "type": "stroll", "image": "/assets/items/prop_old_shop.jpg" }
-      ]
+        {
+          "id": "night_noodles",
+          "name": "深夜大排档",
+          "energy": 6,
+          "cashCost": 200,
+          "desc": "点两碗热汤面配烧烤，坐在巷口聊聊天",
+          "type": "date_spot",
+          "image": "/assets/bg/bg_old_street.jpg"
+        },
+        {
+          "id": "stroll_old_street",
+          "name": "老街闲逛",
+          "energy": 5,
+          "cashCost": 0,
+          "desc": "沿青石巷转转，偶遇意想不到的奇闻与捡漏",
+          "type": "stroll",
+          "image": "/assets/items/prop_old_shop.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "os_jade",
+          "kind": "venue",
+          "name": "聚宝原石坊",
+          "en": "JADE MARKET",
+          "x": 47,
+          "y": 45
+        },
+        {
+          "id": "os_noodles",
+          "kind": "date",
+          "ref": "night_noodles",
+          "name": "深夜大排档",
+          "en": "NIGHT STALLS",
+          "x": 27,
+          "y": 63
+        },
+        {
+          "id": "os_lanes",
+          "kind": "stroll",
+          "ref": "stroll_old_street",
+          "name": "青石巷",
+          "en": "COBBLE LANES",
+          "x": 58,
+          "y": 59
+        },
+        {
+          "id": "os_antique",
+          "kind": "business",
+          "ref": "biz_antique",
+          "name": "云起古玩轩",
+          "en": "ANTIQUES",
+          "x": 11,
+          "y": 42
+        },
+        {
+          "id": "os_esports",
+          "kind": "business",
+          "ref": "biz_esports",
+          "name": "黑曜电竞会所",
+          "en": "E-SPORTS",
+          "x": 86,
+          "y": 47
+        },
+        {
+          "id": "os_room",
+          "kind": "property",
+          "ref": "prop_old_room",
+          "name": "老巷单间",
+          "en": "TENEMENT",
+          "x": 22,
+          "y": 21
+        },
+        {
+          "id": "os_shop",
+          "kind": "property",
+          "ref": "prop_old_shop",
+          "name": "临街旺铺",
+          "en": "STOREFRONT",
+          "x": 47,
+          "y": 83
+        },
+        {
+          "id": "os_carlot",
+          "kind": "showroom",
+          "name": "老码头车行",
+          "en": "USED CARS",
+          "x": 79,
+          "y": 72,
+          "stock": [
+            "car_used_ev",
+            "car_retro_roadster"
+          ],
+          "desc": "码头边的二手车行，老板只认现金和眼缘。偶尔能淘到老藏家割爱的好车。"
+        },
+        {
+          "id": "os_teahouse",
+          "name": "老茶馆",
+          "en": "TEAHOUSE",
+          "kind": "visit",
+          "x": 67,
+          "y": 22,
+          "desc": "茶馆二楼说书人每天下午开讲，楼下坐满了消息灵通的老街坊。",
+          "lines": [
+            "说书人讲到海城旧事，邻桌老板压低声音聊起城东要拆迁。",
+            "跑堂的递来一壶陈年普洱，顺口提了句古玩轩最近收了批好货。",
+            "两位老藏家在角落争一只碗的真伪，你听出了门道。"
+          ],
+          "energy": 4,
+          "sysPoints": 20
+        }
+      ],
+      "localMap": "/assets/maps/map_old_street.jpg"
     },
     {
       "id": "university",
@@ -46,9 +212,116 @@
       "coreMinigameLabel": "天使投资",
       "coreMinigameDesc": "物色校园早期创业项目，以小博大",
       "interactions": [
-        { "id": "ginkgo_walk", "name": "银杏大道漫步", "energy": 6, "cashCost": 500, "desc": "买杯热拿铁，在傍晚落叶里慢慢走一段路", "type": "date_spot", "image": "/assets/bg/bg_campus_ginkgo.jpg" },
-        { "id": "stroll_university", "name": "校园漫步", "energy": 5, "cashCost": 0, "desc": "去旧书店与音乐厅转转，看看今天会遇上什么事", "type": "stroll", "image": "/assets/items/prop_campus_apt.jpg" }
-      ]
+        {
+          "id": "ginkgo_walk",
+          "name": "银杏大道漫步",
+          "energy": 6,
+          "cashCost": 500,
+          "desc": "买杯热拿铁，在傍晚落叶里慢慢走一段路",
+          "type": "date_spot",
+          "image": "/assets/bg/bg_campus_ginkgo.jpg"
+        },
+        {
+          "id": "stroll_university",
+          "name": "校园漫步",
+          "energy": 5,
+          "cashCost": 0,
+          "desc": "去旧书店与音乐厅转转，看看今天会遇上什么事",
+          "type": "stroll",
+          "image": "/assets/items/prop_campus_apt.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "un_pitch",
+          "kind": "venue",
+          "name": "创投路演厅",
+          "en": "PITCH HALL",
+          "x": 73,
+          "y": 23
+        },
+        {
+          "id": "un_ginkgo",
+          "kind": "date",
+          "ref": "ginkgo_walk",
+          "name": "银杏大道",
+          "en": "GINKGO AVENUE",
+          "x": 50,
+          "y": 44
+        },
+        {
+          "id": "un_books",
+          "kind": "stroll",
+          "ref": "stroll_university",
+          "name": "旧书店",
+          "en": "OLD BOOKSTORE",
+          "x": 17,
+          "y": 42
+        },
+        {
+          "id": "un_milktea",
+          "kind": "business",
+          "ref": "biz_milktea",
+          "name": "素白茶集",
+          "en": "TEA HOUSE",
+          "x": 21,
+          "y": 62
+        },
+        {
+          "id": "un_apt",
+          "kind": "property",
+          "ref": "prop_campus_apt",
+          "name": "学区江景公寓",
+          "en": "RIVERSIDE APT",
+          "x": 84,
+          "y": 58
+        },
+        {
+          "id": "un_cars",
+          "kind": "showroom",
+          "name": "银杏潮车铺",
+          "en": "CITY CARS",
+          "x": 55,
+          "y": 77,
+          "stock": [
+            "car_mini_retro"
+          ],
+          "desc": "学生们最爱逛的玻璃小车铺，代步小车和复古潮车一应俱全。"
+        },
+        {
+          "id": "un_library",
+          "name": "海大图书馆",
+          "en": "LIBRARY",
+          "kind": "visit",
+          "x": 28,
+          "y": 13,
+          "desc": "通宵开放的自习区，窗外是整片银杏。",
+          "lines": [
+            "你翻完一本商业史，天枢标记了三条可用的经营思路。",
+            "邻座学生在做行业报告，你顺手帮他改了模型，他眼睛都亮了。",
+            "闭馆铃响前，你在旧期刊里找到了一条被遗忘的地块信息。"
+          ],
+          "energy": 4,
+          "sysPoints": 18,
+          "affinity": "lin_wanxing"
+        },
+        {
+          "id": "un_concert",
+          "name": "音乐厅",
+          "en": "CONCERT HALL",
+          "kind": "visit",
+          "x": 13,
+          "y": 28,
+          "desc": "穹顶音乐厅今晚有学生乐团的公益演出。",
+          "lines": [
+            "终曲的大提琴声让你难得放空了十分钟。",
+            "散场时乐团指挥认出了你，想请你赞助下季演出。"
+          ],
+          "energy": 3,
+          "sysPoints": 15
+        }
+      ],
+      "localMap": "/assets/maps/map_university.jpg"
     },
     {
       "id": "bund",
@@ -64,9 +337,102 @@
       "coreMinigameLabel": "江畔竞速",
       "coreMinigameDesc": "驾驶你的座驾参与午夜江岸竞速",
       "interactions": [
-        { "id": "michelin_dinner", "name": "米其林江景包厢", "energy": 8, "cashCost": 28000, "desc": "预订靠窗江景位，共进一顿安静讲究的晚餐", "type": "date_spot", "image": "/assets/items/prop_bund_flat.jpg" },
-        { "id": "stroll_bund", "name": "外滩夜游", "energy": 5, "cashCost": 0, "desc": "沿外滩大道开一圈，总能碰上形形色色的人", "type": "stroll", "image": "/assets/bg/bg_luxury_4s.jpg" }
-      ]
+        {
+          "id": "michelin_dinner",
+          "name": "米其林江景包厢",
+          "energy": 8,
+          "cashCost": 28000,
+          "desc": "预订靠窗江景位，共进一顿安静讲究的晚餐",
+          "type": "date_spot",
+          "image": "/assets/items/prop_bund_flat.jpg"
+        },
+        {
+          "id": "stroll_bund",
+          "name": "外滩夜游",
+          "energy": 5,
+          "cashCost": 0,
+          "desc": "沿外滩大道开一圈，总能碰上形形色色的人",
+          "type": "stroll",
+          "image": "/assets/bg/bg_luxury_4s.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "bd_race",
+          "kind": "venue",
+          "name": "江岸发车区",
+          "en": "RACE GRID",
+          "x": 76,
+          "y": 62
+        },
+        {
+          "id": "bd_michelin",
+          "kind": "date",
+          "ref": "michelin_dinner",
+          "name": "江景餐厅",
+          "en": "ROOFTOP DINING",
+          "x": 60,
+          "y": 21
+        },
+        {
+          "id": "bd_promenade",
+          "kind": "stroll",
+          "ref": "stroll_bund",
+          "name": "外滩大道",
+          "en": "PROMENADE",
+          "x": 50,
+          "y": 51
+        },
+        {
+          "id": "bd_hotel",
+          "kind": "business",
+          "ref": "biz_hotel",
+          "name": "外滩瑰丽酒店",
+          "en": "GRAND HOTEL",
+          "x": 20,
+          "y": 14
+        },
+        {
+          "id": "bd_flat",
+          "kind": "property",
+          "ref": "prop_bund_flat",
+          "name": "江景大平层",
+          "en": "PENTHOUSE",
+          "x": 15,
+          "y": 49
+        },
+        {
+          "id": "bd_super",
+          "kind": "showroom",
+          "name": "外滩超跑中心",
+          "en": "SUPERCARS",
+          "x": 68,
+          "y": 37,
+          "stock": [
+            "car_porsche_911",
+            "car_ev_hyper",
+            "car_ferrari_sf90"
+          ],
+          "desc": "落地窗展厅正对江面，每台车都停在一束追光下。销售顾问认得每一位常客。"
+        },
+        {
+          "id": "bd_deck",
+          "name": "江畔观景台",
+          "en": "RIVER DECK",
+          "kind": "visit",
+          "x": 33,
+          "y": 78,
+          "desc": "江风很大，对岸的天际线一整排亮着。",
+          "lines": [
+            "游船驶过，船上有人认出了你，举杯致意。",
+            "你在观景台上接了个电话，一笔谈了很久的合作落定了。",
+            "晚风里，天枢提示你：对岸的陆家湾今晚有大资金异动。"
+          ],
+          "energy": 4,
+          "sysPoints": 20
+        }
+      ],
+      "localMap": "/assets/maps/map_bund.jpg"
     },
     {
       "id": "cbd",
@@ -82,9 +448,115 @@
       "coreMinigameLabel": "海城股市",
       "coreMinigameDesc": "结合盘面与消息研判做多或做空",
       "interactions": [
-        { "id": "tower_lightshow", "name": "摩天楼灯光秀", "energy": 8, "cashCost": 100000, "desc": "包下地标幕墙，在江风里为她点亮整面夜空", "type": "date_spot", "image": "/assets/items/prop_cbd_tower.jpg" },
-        { "id": "stroll_cbd", "name": "金融圈走访", "energy": 6, "cashCost": 0, "desc": "出入顶层酒廊与董事会走廊，留意商界暗流", "type": "stroll", "image": "/assets/items/biz_quant.jpg" }
-      ]
+        {
+          "id": "tower_lightshow",
+          "name": "摩天楼灯光秀",
+          "energy": 8,
+          "cashCost": 100000,
+          "desc": "包下地标幕墙，在江风里为她点亮整面夜空",
+          "type": "date_spot",
+          "image": "/assets/items/prop_cbd_tower.jpg"
+        },
+        {
+          "id": "stroll_cbd",
+          "name": "金融圈走访",
+          "energy": 6,
+          "cashCost": 0,
+          "desc": "出入顶层酒廊与董事会走廊，留意商界暗流",
+          "type": "stroll",
+          "image": "/assets/items/biz_quant.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "cb_exchange",
+          "kind": "venue",
+          "name": "证券交易大厅",
+          "en": "EXCHANGE",
+          "x": 25,
+          "y": 29
+        },
+        {
+          "id": "cb_lights",
+          "kind": "date",
+          "ref": "tower_lightshow",
+          "name": "幕墙灯光秀",
+          "en": "LIGHT SHOW",
+          "x": 81,
+          "y": 30
+        },
+        {
+          "id": "cb_plaza",
+          "kind": "stroll",
+          "ref": "stroll_cbd",
+          "name": "金融广场",
+          "en": "PLAZA",
+          "x": 52,
+          "y": 47
+        },
+        {
+          "id": "cb_quant",
+          "kind": "business",
+          "ref": "biz_quant",
+          "name": "天枢量化",
+          "en": "QUANT TOWER",
+          "x": 80,
+          "y": 56
+        },
+        {
+          "id": "cb_tower",
+          "kind": "property",
+          "ref": "prop_cbd_tower",
+          "name": "甲级金融大厦",
+          "en": "LANDMARK",
+          "x": 55,
+          "y": 14
+        },
+        {
+          "id": "cb_auction",
+          "kind": "showroom",
+          "name": "云端拍卖行",
+          "en": "AUCTION HOUSE",
+          "x": 16,
+          "y": 48,
+          "stock": [
+            "watch_tourbillon",
+            "art_ink_scroll"
+          ],
+          "desc": "大理石柱后的私人拍卖行，只对熟客开放预展。"
+        },
+        {
+          "id": "cb_atelier",
+          "kind": "showroom",
+          "name": "陆家湾定制车坊",
+          "en": "BESPOKE CARS",
+          "x": 25,
+          "y": 67,
+          "stock": [
+            "car_rolls_spectre",
+            "car_armored_limo",
+            "car_bugatti_chiron"
+          ],
+          "desc": "按客户要求手工定制的车坊，内饰皮料要提前半年预订。"
+        },
+        {
+          "id": "cb_lounge",
+          "name": "顶层酒廊",
+          "en": "SKY LOUNGE",
+          "kind": "visit",
+          "x": 80,
+          "y": 87,
+          "desc": "董事们下班后的去处，酒单比菜单厚。",
+          "lines": [
+            "一位基金合伙人和你碰杯，聊起下周的并购案。",
+            "你听见邻桌在议论某家上市公司的利空，暗暗记下。",
+            "酒保替你留了靠窗的位置，说今晚整层都是做并购的人。"
+          ],
+          "energy": 5,
+          "sysPoints": 26
+        }
+      ],
+      "localMap": "/assets/maps/map_cbd.jpg"
     },
     {
       "id": "night_city",
@@ -100,9 +572,102 @@
       "coreMinigameLabel": "星耀打榜",
       "coreMinigameDesc": "进入星耀直播间为沈琉璃撑起排面",
       "interactions": [
-        { "id": "vinyl_lounge", "name": "黑胶爵士酒廊", "energy": 7, "cashCost": 18000, "desc": "微醺灯光与老唱片，适合在霓虹夜色里小酌", "type": "date_spot", "image": "/assets/items/prop_night_loft.jpg" },
-        { "id": "stroll_night", "name": "不夜城探班", "energy": 6, "cashCost": 0, "desc": "在演播厅与霓虹街逛逛，偶遇圈内风波", "type": "stroll", "image": "/assets/items/biz_mcn.jpg" }
-      ]
+        {
+          "id": "vinyl_lounge",
+          "name": "黑胶爵士酒廊",
+          "energy": 7,
+          "cashCost": 18000,
+          "desc": "微醺灯光与老唱片，适合在霓虹夜色里小酌",
+          "type": "date_spot",
+          "image": "/assets/items/prop_night_loft.jpg"
+        },
+        {
+          "id": "stroll_night",
+          "name": "不夜城探班",
+          "energy": 6,
+          "cashCost": 0,
+          "desc": "在演播厅与霓虹街逛逛，偶遇圈内风波",
+          "type": "stroll",
+          "image": "/assets/items/biz_mcn.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "nc_live",
+          "kind": "venue",
+          "name": "星耀直播基地",
+          "en": "LIVE STUDIO",
+          "x": 30,
+          "y": 24
+        },
+        {
+          "id": "nc_lounge",
+          "kind": "date",
+          "ref": "vinyl_lounge",
+          "name": "黑胶爵士酒廊",
+          "en": "JAZZ LOUNGE",
+          "x": 20,
+          "y": 42
+        },
+        {
+          "id": "nc_street",
+          "kind": "stroll",
+          "ref": "stroll_night",
+          "name": "霓虹步行街",
+          "en": "NEON STREET",
+          "x": 50,
+          "y": 53
+        },
+        {
+          "id": "nc_mcn",
+          "kind": "business",
+          "ref": "biz_mcn",
+          "name": "星耀娱乐传媒",
+          "en": "MEDIA TOWER",
+          "x": 75,
+          "y": 24
+        },
+        {
+          "id": "nc_loft",
+          "kind": "property",
+          "ref": "prop_night_loft",
+          "name": "天际复式 Loft",
+          "en": "SKY LOFT",
+          "x": 24,
+          "y": 70
+        },
+        {
+          "id": "nc_garage",
+          "kind": "showroom",
+          "name": "霓虹改装厂",
+          "en": "TUNING GARAGE",
+          "x": 76,
+          "y": 67,
+          "stock": [
+            "moto_v4",
+            "car_drift_gt"
+          ],
+          "desc": "洋红灯管下的改装厂，地下车手的据点。这里的车不讲排面，只讲圈速。"
+        },
+        {
+          "id": "nc_livehouse",
+          "kind": "visit",
+          "name": "地下 Livehouse",
+          "en": "LIVEHOUSE",
+          "x": 83,
+          "y": 50,
+          "desc": "三百人的小场子，今晚的乐队据说要签约了。",
+          "lines": [
+            "鼓点震得胸口发麻，你在人群里难得像个普通人。",
+            "乐队主唱下台后找到你，问你对他们的新歌有没有兴趣投资。",
+            "散场后你在后门遇到了正在探班的星探，交换了联系方式。"
+          ],
+          "energy": 4,
+          "sysPoints": 22,
+          "affinity": "shen_liuli"
+        }
+      ],
+      "localMap": "/assets/maps/map_night_city.jpg"
     },
     {
       "id": "peak_coast",
@@ -118,9 +683,104 @@
       "coreMinigameLabel": "星耀号码头",
       "coreMinigameDesc": "登上公海星耀号参与限时夜宴与典藏兑换",
       "interactions": [
-        { "id": "yacht_party", "name": "私人游艇出海", "energy": 10, "cashCost": 80000, "desc": "吹着海风开香槟看落日，远离岸上喧嚣", "type": "date_spot", "image": "/assets/bg/bg_peak_coast.jpg" },
-        { "id": "stroll_coast", "name": "半山球会", "energy": 8, "cashCost": 0, "desc": "在果岭与游艇会结交顶层人脉", "type": "stroll", "image": "/assets/items/prop_peak_manor.jpg" }
-      ]
+        {
+          "id": "yacht_party",
+          "name": "私人游艇出海",
+          "energy": 10,
+          "cashCost": 80000,
+          "desc": "吹着海风开香槟看落日，远离岸上喧嚣",
+          "type": "date_spot",
+          "image": "/assets/bg/bg_peak_coast.jpg"
+        },
+        {
+          "id": "stroll_coast",
+          "name": "半山球会",
+          "energy": 8,
+          "cashCost": 0,
+          "desc": "在果岭与游艇会结交顶层人脉",
+          "type": "stroll",
+          "image": "/assets/items/prop_peak_manor.jpg"
+        }
+      ],
+      "spots": [
+        {
+          "id": "pk_cruise",
+          "kind": "venue",
+          "name": "邮轮私宴",
+          "en": "CRUISE GALA",
+          "x": 22,
+          "y": 62
+        },
+        {
+          "id": "pk_yacht",
+          "kind": "date",
+          "ref": "yacht_party",
+          "name": "落日出海",
+          "en": "SUNSET SAIL",
+          "x": 34,
+          "y": 92
+        },
+        {
+          "id": "pk_golf",
+          "kind": "stroll",
+          "ref": "stroll_coast",
+          "name": "半山球会",
+          "en": "GOLF CLUB",
+          "x": 22,
+          "y": 30
+        },
+        {
+          "id": "pk_manor",
+          "kind": "property",
+          "ref": "prop_peak_manor",
+          "name": "半山独栋庄园",
+          "en": "MANOR",
+          "x": 50,
+          "y": 12
+        },
+        {
+          "id": "pk_marina",
+          "kind": "showroom",
+          "name": "云顶游艇会",
+          "en": "MARINA",
+          "x": 80,
+          "y": 67,
+          "stock": [
+            "boat_speed42",
+            "yacht_poseidon"
+          ],
+          "desc": "私人码头的销售会所，可以直接登船试航。"
+        },
+        {
+          "id": "pk_offroad",
+          "kind": "showroom",
+          "name": "半山越野营地",
+          "en": "OFF-ROAD",
+          "x": 74,
+          "y": 45,
+          "stock": [
+            "car_offroad_6x6"
+          ],
+          "desc": "山腰的越野俱乐部，试驾路线一路通到海边悬崖。"
+        },
+        {
+          "id": "pk_lighthouse",
+          "name": "崖顶灯塔",
+          "en": "LIGHTHOUSE",
+          "kind": "visit",
+          "x": 82,
+          "y": 24,
+          "desc": "灯塔的光一圈圈扫过海面。",
+          "lines": [
+            "你在灯塔下看完了整场日落，心里那点焦躁也散了。",
+            "守塔老人说，三十年前这片海岸还是渔村。",
+            "远处的游艇会正在办派对，天枢提醒你：有人在等你出现。"
+          ],
+          "energy": 5,
+          "sysPoints": 26
+        }
+      ],
+      "localMap": "/assets/maps/map_peak_coast.jpg"
     },
     {
       "id": "airport",
@@ -135,7 +795,61 @@
       "coreMinigame": "future_expansion",
       "coreMinigameLabel": "航线调度",
       "coreMinigameDesc": "晋升顶级豪门后开放更多城市版图",
-      "interactions": []
+      "interactions": [],
+      "spots": [
+        {
+          "id": "ap_route",
+          "kind": "venue",
+          "name": "远航航线",
+          "en": "ROUTES",
+          "x": 68,
+          "y": 27
+        },
+        {
+          "id": "ap_jets",
+          "kind": "showroom",
+          "name": "公务机销售中心",
+          "en": "JET SALES",
+          "x": 20,
+          "y": 65,
+          "stock": [
+            "jet_g700",
+            "island_private"
+          ],
+          "desc": "公务机与私属海岛的顶级经纪中心，看一眼都要预约。"
+        },
+        {
+          "id": "ap_vip",
+          "name": "VIP 贵宾厅",
+          "en": "VIP LOUNGE",
+          "kind": "visit",
+          "x": 50,
+          "y": 40,
+          "desc": "安静得只听得见咖啡机的声音。",
+          "lines": [
+            "你遇到了一位刚落地的海外投资人，交换了名片。",
+            "贵宾厅经理认出了你，悄悄把你升级成了终身会员。"
+          ],
+          "energy": 5,
+          "sysPoints": 30
+        },
+        {
+          "id": "ap_heli",
+          "name": "直升机巡航",
+          "en": "HELI TOUR",
+          "kind": "visit",
+          "x": 82,
+          "y": 74,
+          "desc": "从空中看海城，整座城都在脚下。",
+          "lines": [
+            "直升机掠过外滩，你把整座海城的版图记在了心里。",
+            "驾驶员指着远处的岛说：那片地，没人敢买。"
+          ],
+          "energy": 6,
+          "sysPoints": 34
+        }
+      ],
+      "localMap": "/assets/maps/map_airport.jpg"
     }
   ]
 }
