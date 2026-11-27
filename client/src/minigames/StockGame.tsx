@@ -8,8 +8,9 @@ import { useGameStore } from '../store/useGameStore';
 import { ResultStrip, Speech, Stage, StakePicker, useMgApi } from './Stage';
 
 const AMOUNTS = [100000, 300000, 1000000] as const;
-const CHART_W = 360;
-const CHART_H = 230;
+const CHART_W = 320; // plot area; the right gutter (AXIS_W) holds the price axis
+const CHART_H = 220;
+const AXIS_W = 46;
 
 interface Quote {
   id: string;
@@ -107,17 +108,22 @@ export const StockGame: React.FC = () => {
     setSession(res.session);
   };
 
+  // y-range fitted to what is already on screen (never the future), always keeping the entry price in view
   const chart = useMemo(() => {
     if (!session) return null;
     const p = session.path;
-    const lo = Math.min(...p) * 0.995;
-    const hi = Math.max(...p) * 1.005;
+    const seen = p.slice(0, tick + 1);
+    const span = Math.max(...seen, p[0]) - Math.min(...seen, p[0]);
+    const pad = Math.max(span * 0.18, p[0] * 0.01);
+    const lo = Math.min(...seen, p[0]) - pad;
+    const hi = Math.max(...seen, p[0]) + pad;
     const y = (v: number) => CHART_H - ((v - lo) / (hi - lo)) * CHART_H;
     const cw = CHART_W / p.length;
     const d = session.direction === 'long' ? 1 : -1;
     const liqPrice = p[0] * (1 - (0.8 / session.leverage) * d);
-    return { y, cw, lo, hi, liqY: y(liqPrice), entryY: y(p[0]) };
-  }, [session]);
+    const ticks = [0, 0.25, 0.5, 0.75, 1].map((f) => lo + (hi - lo) * (1 - f));
+    return { y, cw, lo, hi, liqY: y(liqPrice), entryY: y(p[0]), ticks };
+  }, [session, tick]);
 
   const value = session ? valueAt(session, tick) : 0;
   const pnl = session ? value - session.stake : 0;
@@ -236,45 +242,109 @@ export const StockGame: React.FC = () => {
           </div>
 
           <div className="relative flex-1 flex items-center justify-center">
-            <svg viewBox={`0 0 ${CHART_W} ${CHART_H}`} className="w-[92%] max-w-[380px]" style={{ overflow: 'visible' }}>
-              {[0.25, 0.5, 0.75].map((f) => (
-                <line key={f} x1={0} x2={CHART_W} y1={CHART_H * f} y2={CHART_H * f} stroke="rgba(160,178,230,0.1)" />
-              ))}
-              <line x1={0} x2={CHART_W} y1={chart.entryY} y2={chart.entryY} stroke="#E2BD72" strokeDasharray="4 4" strokeWidth={1} />
-              <text x={CHART_W - 2} y={chart.entryY - 4} textAnchor="end" fill="#E2BD72" fontSize="10">
-                开仓价
-              </text>
-              {chart.liqY > 0 && chart.liqY < CHART_H && (
-                <>
-                  <line x1={0} x2={CHART_W} y1={chart.liqY} y2={chart.liqY} stroke="#FF5C7A" strokeDasharray="2 4" strokeWidth={1} />
-                  <text x={CHART_W - 2} y={chart.liqY - 4} textAnchor="end" fill="#FF5C7A" fontSize="10">
-                    爆仓线
-                  </text>
-                </>
-              )}
-              {session.path.slice(1, tick + 1).map((v, i) => {
-                const o = session.path[i];
-                const up = v >= o;
-                const x = (i + 1) * chart.cw;
-                const top = chart.y(Math.max(o, v));
-                const bot = chart.y(Math.min(o, v));
-                const wick = Math.abs(v - o) * 0.6 + o * 0.002;
-                return (
+            <div className="relative w-[94%] max-w-[390px] rounded-[8px] border border-[#E2BD72]/25 bg-[#05080F]/85 backdrop-blur-sm shadow-[0_14px_30px_rgba(0,0,0,0.6)] overflow-hidden">
+              {/* terminal header */}
+              <div className="flex items-center justify-between px-3 py-1.5 border-b border-white/[0.06] text-[10px] tracking-wider">
+                <span className="flex items-center gap-1.5 text-[#A3AAC2]">
+                  <span className={`w-1.5 h-1.5 rounded-full ${result ? 'bg-[#6B7392]' : 'bg-[#FF5C7A] animate-pulse'}`} />
+                  {result ? '已收盘' : '实时 · 秒级 K 线'}
+                </span>
+                <span className="font-num text-[#C3C9DC]">
+                  {result ? '' : `剩余 ${Math.max(0, Math.ceil(((session.path.length - 1 - tick) * session.tickMs) / 1000))}s`}
+                </span>
+              </div>
+              <svg viewBox={`0 0 ${CHART_W + AXIS_W} ${CHART_H + 8}`} className="block w-full">
+                <defs>
+                  <linearGradient id="stkArea" x1="0" x2="0" y1="0" y2="1">
+                    <stop offset="0%" stopColor={pnl >= 0 ? 'rgba(255,92,122,0.22)' : 'rgba(63,214,154,0.22)'} />
+                    <stop offset="100%" stopColor="rgba(0,0,0,0)" />
+                  </linearGradient>
+                </defs>
+                {/* grid + price axis */}
+                {chart.ticks.map((v, i) => (
                   <g key={i}>
-                    <line x1={x} x2={x} y1={chart.y(Math.max(o, v) + wick)} y2={chart.y(Math.min(o, v) - wick)} stroke={up ? '#FF5C7A' : '#3FD69A'} strokeWidth={1} />
-                    <rect x={x - chart.cw * 0.32} y={top} width={chart.cw * 0.64} height={Math.max(1.2, bot - top)} fill={up ? '#FF5C7A' : '#3FD69A'} rx={1} />
+                    <line x1={0} x2={CHART_W} y1={4 + (CHART_H * i) / 4} y2={4 + (CHART_H * i) / 4} stroke="rgba(160,178,230,0.08)" />
+                    <text x={CHART_W + 6} y={4 + (CHART_H * i) / 4 + 3} fill="#6B7392" fontSize="9" fontFamily="Oswald, sans-serif">
+                      {v.toFixed(2)}
+                    </text>
                   </g>
-                );
-              })}
-              <circle cx={(tick + 0.5) * chart.cw} cy={chart.y(session.path[tick])} r={4} fill="#FFE7B0">
-                {!result && <animate attributeName="r" values="3;6;3" dur="0.8s" repeatCount="indefinite" />}
-              </circle>
-              {result && (
-                <text x={(tick + 0.5) * chart.cw} y={chart.y(session.path[tick]) - 10} textAnchor="middle" fill="#FFE7B0" fontSize="12" fontWeight="700">
-                  {result.liquidated ? '爆仓' : '平仓'}
-                </text>
-              )}
-            </svg>
+                ))}
+                {[0.25, 0.5, 0.75].map((f) => (
+                  <line key={f} x1={CHART_W * f} x2={CHART_W * f} y1={4} y2={CHART_H + 4} stroke="rgba(160,178,230,0.05)" />
+                ))}
+                <g transform="translate(0,4)">
+                  {/* close-price area */}
+                  <path
+                    d={`M ${0.5 * chart.cw} ${chart.y(session.path[0])} ${session.path
+                      .slice(1, tick + 1)
+                      .map((v, i) => `L ${(i + 1.5) * chart.cw} ${chart.y(v)}`)
+                      .join(' ')} L ${(tick + 0.5) * chart.cw} ${CHART_H} L ${0.5 * chart.cw} ${CHART_H} Z`}
+                    fill="url(#stkArea)"
+                  />
+                  <line x1={0} x2={CHART_W} y1={chart.entryY} y2={chart.entryY} stroke="#E2BD72" strokeDasharray="4 4" strokeWidth={1} />
+                  <text x={4} y={chart.entryY - 4} fill="#E2BD72" fontSize="9.5">
+                    开仓 {session.path[0].toFixed(2)}
+                  </text>
+                  {chart.liqY > 0 && chart.liqY < CHART_H && (
+                    <>
+                      <line x1={0} x2={CHART_W} y1={chart.liqY} y2={chart.liqY} stroke="#FF5C7A" strokeDasharray="2 4" strokeWidth={1} />
+                      <text x={4} y={chart.liqY - 4} fill="#FF5C7A" fontSize="9.5">
+                        爆仓线
+                      </text>
+                    </>
+                  )}
+                  {session.path.slice(1, tick + 1).map((v, i) => {
+                    const o = session.path[i];
+                    const up = v >= o;
+                    const x = (i + 1.5) * chart.cw;
+                    const top = chart.y(Math.max(o, v));
+                    const bot = chart.y(Math.min(o, v));
+                    const wick = Math.abs(v - o) * 0.6 + o * 0.002;
+                    return (
+                      <g key={i}>
+                        <line x1={x} x2={x} y1={chart.y(Math.max(o, v) + wick)} y2={chart.y(Math.min(o, v) - wick)} stroke={up ? '#FF5C7A' : '#3FD69A'} strokeWidth={1} />
+                        <rect x={x - chart.cw * 0.34} y={top} width={chart.cw * 0.68} height={Math.max(1.2, bot - top)} fill={up ? '#FF5C7A' : '#3FD69A'} rx={0.8} />
+                      </g>
+                    );
+                  })}
+                  {/* last price line + tag on the axis */}
+                  <line
+                    x1={0}
+                    x2={CHART_W}
+                    y1={chart.y(session.path[tick])}
+                    y2={chart.y(session.path[tick])}
+                    stroke={session.path[tick] >= session.path[0] ? 'rgba(255,92,122,0.55)' : 'rgba(63,214,154,0.55)'}
+                    strokeWidth={0.8}
+                  />
+                  <rect
+                    x={CHART_W + 1}
+                    y={chart.y(session.path[tick]) - 7}
+                    width={AXIS_W - 3}
+                    height={14}
+                    rx={2}
+                    fill={session.path[tick] >= session.path[0] ? '#FF5C7A' : '#20A774'}
+                  />
+                  <text x={CHART_W + 5} y={chart.y(session.path[tick]) + 3.5} fill="#fff" fontSize="9.5" fontFamily="Oswald, sans-serif">
+                    {session.path[tick].toFixed(2)}
+                  </text>
+                  <circle cx={(tick + 0.5) * chart.cw} cy={chart.y(session.path[tick])} r={3.5} fill="#FFE7B0">
+                    {!result && <animate attributeName="r" values="3;6;3" dur="0.8s" repeatCount="indefinite" />}
+                  </circle>
+                  {result && (
+                    <text
+                      x={Math.min(CHART_W - 20, (tick + 1) * chart.cw)}
+                      y={chart.y(session.path[tick]) - 10}
+                      textAnchor="middle"
+                      fill="#FFE7B0"
+                      fontSize="12"
+                      fontWeight="700"
+                    >
+                      {result.liquidated ? '爆仓' : '平仓'}
+                    </text>
+                  )}
+                </g>
+              </svg>
+            </div>
 
             <AnimatePresence>
               {!result && tick >= session.newsAt && tick < session.newsAt + 4 && (

@@ -8,6 +8,13 @@ import { ResultStrip, Speech, Stage, StakePicker, useMgApi } from './Stage';
 const STAKES = [100000, 500000, 2000000] as const;
 const STAKE_NAME = ['切磋赛', '对决', '豪赌'];
 const SEG_TIMEOUT = 3200;
+/** Speed streaks rushing past while the race runs (fixed so they don't reshuffle on every render). */
+const STREAKS = Array.from({ length: 14 }, (_, i) => ({
+  top: 30 + ((i * 37) % 62),
+  w: 60 + ((i * 53) % 110),
+  d: 0.45 + ((i * 7) % 5) * 0.08,
+  delay: ((i * 13) % 10) * 0.05,
+}));
 
 interface RaceSession {
   id: string;
@@ -177,28 +184,70 @@ export const RaceGame: React.FC = () => {
 
       {session && (
         <div className="flex-1 flex flex-col" onPointerDown={tapGauge}>
-          {/* track */}
-          <div className="px-4 pt-3 space-y-3">
-            {[
-              { label: '你', img: session.car.image, pos: mePos, color: '#FFE7B0' },
-              { label: session.opponent.name, img: '/assets/items/car_ferrari_sf90.png', pos: oppPos, color: '#FF8FA6' },
-            ].map((lane) => (
-              <div key={lane.label} className="relative h-12">
-                <div className="absolute inset-x-0 bottom-1 h-px bg-gradient-to-r from-white/40 via-white/20 to-[#FFE7B0]" />
-                <div className="absolute right-0 bottom-0 w-1 h-6 bg-[repeating-linear-gradient(0deg,#fff_0_4px,#111_4px_8px)]" />
-                <motion.div
-                  className="absolute bottom-0 flex items-end gap-1"
-                  animate={{ left: `calc(${Math.min(1, lane.pos) * 82}% )` }}
-                  transition={{ type: 'spring', stiffness: 60, damping: 14 }}
-                >
-                  <img src={lane.img} alt="" className="h-11 w-[78px] object-contain drop-shadow-[0_6px_6px_rgba(0,0,0,0.8)]" />
-                  <span className="text-[10px] font-bold mb-1 text-stroke-dark" style={{ color: lane.color }}>
-                    {lane.label}
-                  </span>
-                </motion.div>
-              </div>
-            ))}
+          {/* track: asphalt strip, two lanes, checkpoints for each segment, checkered finish */}
+          <div className="px-3 pt-3">
+            <div
+              className="relative rounded-[8px] overflow-hidden border border-white/15 shadow-[0_10px_24px_rgba(0,0,0,0.6)]"
+              style={{
+                background:
+                  'repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 2px, transparent 2px 9px), linear-gradient(180deg, #1A1E28 0%, #0E1118 100%)',
+              }}
+            >
+              {/* checkpoints */}
+              {session.segments.map((sg, i) => (
+                <div key={i} className="absolute top-0 bottom-0" style={{ left: `${6 + ((i + 1) / total) * 80}%` }}>
+                  <div className={`w-px h-full ${i < hits.length ? 'bg-[#FFE7B0]/40' : 'bg-white/12'}`} />
+                  <span className="absolute top-0.5 -translate-x-1/2 text-[8.5px] text-[#8B93AD] whitespace-nowrap">{sg.name}</span>
+                </div>
+              ))}
+              <div className="absolute top-0 bottom-0 left-[6%] w-[3px] bg-white/50" />
+              <div className="absolute top-0 bottom-0 right-0 w-[14px] bg-[repeating-conic-gradient(#fff_0_25%,#111_0_50%)] bg-[length:7px_7px] opacity-90" />
+              <div className="absolute left-0 right-[14px] top-1/2 border-t border-dashed border-[#E2BD72]/45" />
+              {[
+                { label: '你', img: session.car.image, pos: mePos, color: '#FFE7B0' },
+                { label: session.opponent.name, img: '/assets/items/car_ferrari_sf90.png', pos: oppPos, color: '#FF8FA6' },
+              ].map((lane, li) => (
+                <div key={lane.label} className={`relative h-[46px] ${li === 0 ? 'mt-3' : ''}`}>
+                  <motion.div
+                    className="absolute top-1/2 -translate-y-1/2 flex items-center"
+                    initial={false}
+                    animate={{ left: `calc(${2 + Math.min(1, lane.pos) * 80}%)` }}
+                    transition={{ type: 'spring', stiffness: 60, damping: 14 }}
+                  >
+                    {/* light trail */}
+                    <span
+                      className="absolute right-[62px] top-1/2 -translate-y-1/2 h-[3px] w-[70px] rounded-full"
+                      style={{ background: `linear-gradient(90deg, transparent, ${li === 0 ? 'rgba(255,231,176,0.7)' : 'rgba(255,92,122,0.7)'})` }}
+                    />
+                    <img src={lane.img} alt="" className="relative h-[40px] w-[74px] object-contain drop-shadow-[0_5px_5px_rgba(0,0,0,0.9)]" />
+                    <span className="ml-0.5 text-[10px] font-bold text-stroke-dark" style={{ color: lane.color }}>
+                      {lane.label}
+                    </span>
+                  </motion.div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          {/* rushing speed lines while the race is on */}
+          {!result && !intro && (
+            <div className="absolute inset-0 pointer-events-none overflow-hidden">
+              {STREAKS.map((st, i) => (
+                <motion.span
+                  key={i}
+                  className="absolute h-[2px] rounded-full"
+                  style={{
+                    top: `${st.top}%`,
+                    width: st.w,
+                    background: `linear-gradient(90deg, transparent, ${i % 3 ? 'rgba(255,255,255,0.35)' : 'rgba(255,231,176,0.5)'})`,
+                  }}
+                  initial={{ left: '110%' }}
+                  animate={{ left: '-40%' }}
+                  transition={{ repeat: Infinity, duration: st.d, delay: st.delay, ease: 'linear' }}
+                />
+              ))}
+            </div>
+          )}
 
           {/* segment & gauge */}
           <div ref={bannerRef} className="relative flex-1 flex flex-col items-center justify-center px-6">
@@ -216,7 +265,9 @@ export const RaceGame: React.FC = () => {
                   </motion.div>
                 </AnimatePresence>
                 <div className="relative w-full h-10">
-                  <div className="absolute inset-0 rounded-full bg-[#05070F]/75 border border-white/20 overflow-hidden">
+                  <div className="absolute -inset-[3px] rounded-full bg-gradient-to-b from-[#C9CED8] via-[#5A606C] to-[#2A2E36] shadow-[0_6px_16px_rgba(0,0,0,0.7)]" />
+                  <div className="absolute inset-0 rounded-full bg-[#05070F] overflow-hidden">
+                    <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,rgba(255,255,255,0.12)_0_1px,transparent_1px_10%)]" />
                     <div
                       className="absolute top-0 bottom-0 bg-gradient-to-r from-[#3FD69A]/40 via-[#7BFFC8] to-[#3FD69A]/40 shadow-[0_0_14px_rgba(123,255,200,0.7)]"
                       style={{

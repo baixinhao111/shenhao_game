@@ -228,9 +228,19 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 7. 场景背景出图到 `assets/scene/`。
 8. **返回键**：中途离开时要么自动结算（股票按当前价平仓、21 点自动停牌），要么拦截并提示（赌石要求先卖、PK 不能中途退、竞速二次确认），不能让本金悬空。
 
+### 7.3.1 彩头随阶层放大
+
+代码里的档位（`STOCK_STAKES`、`RACE_STAKES`、`JADE_COST` …）都是**阶层 1 的基础值**，实际金额 = 基础值 × `tiers[].stakeScale`（`content/maps/haicheng.json`，当前 1/3/30/300/…）。服务端 `stakeScaleOf(userId)` 校验，前端 `StakePicker` 自动乘倍率（服务端已下发换算后金额时传 `scale={false}`），其他显示用 `useStakeScale()`。新玩法照此处理，否则后期彩头对身价毫无影响。
+
 ### 7.4 本金账本
 
 `minigames.ts` 的 `ledgerOpen/ledgerAdd/ledgerClose` 把进行中的本金写入 `player_kv`（`mg_open_<kind>`）。`closeSession()` 会自动销账；服务启动时 `refundOrphanedStakes()` 把残留的本金退还（日志「已退还 N 笔…」）。新玩法凡是先扣钱的都必须记账。
+
+### 7.5 经济总则（改数值前必读）
+
+- **身价的增长引擎是「投资 + 返现」**：买/升级产业、物业会按 `rollCritCashback` 掷返现。返现规则：基础 12%（+技能/套装/红颜），未触发时蓄能，蓄能与「这笔消费 ÷ 当前身价」成正比（≥6% 记满 25 点，最少 2 点），满 100 必出 3/5/10 倍。常量在 `gameEngine.ts` 的 `CRIT`，模拟器里有一份必须同步。
+- 之前的规则（28% + 每笔固定 +25 蓄能）会让玩家一次上线就靠刷小升级把身价翻 5–10 倍，门槛形同虚设，不要改回去。
+- 小玩法期望 ~1.0×，不是身价来源；它们提供的是参与感、天枢积分、好感、收藏与每日任务奖励。
 
 ## 8. 商战谈判（`server/src/negotiation.ts` + `NegotiationScene.tsx`）
 
@@ -279,6 +289,7 @@ npm start                  # 启动后另开终端：
 node scripts/qa/api_minigames.test.mjs          # 小玩法+谈判接口测试（约 1 分钟，含 26s PK 等待）
 node scripts/qa/balance_jade.mjs                # 赌石期望回报（需先 build server）
 node scripts/qa/balance_live.mjs                # 打榜各打法胜率
+node scripts/qa/balance_progress.mjs --suggest  # 身价成长曲线 + 每幕门槛建议（改经济/剧情奖励/门槛后必跑）
 node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,live   # 浏览器实玩并截图
 ```
 
@@ -291,5 +302,5 @@ node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,
 - 股票价格路径整段下发给客户端（为了流畅渲染），懂开发者工具的玩家可以提前看到；如需防作弊改为分段下发。赌石石头内部布局同理。
 - 会话在内存中，只能单进程运行（§4.7）。
 - demo 版缺新玩法 mock（§10）。
-- 新版 28 幕主线的身价门槛只靠剧情奖励就全部满足（实测只选免费选项，每幕开始时身价都高于门槛 20%+），门槛目前不构成节奏卡点；若希望玩家去玩产业/小玩法，需要提高门槛或降低剧情奖励。
+- 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 13 天读完第三卷。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
 - `docs/01~05` 为早期设计稿，数值与玩法以代码和本规范为准。

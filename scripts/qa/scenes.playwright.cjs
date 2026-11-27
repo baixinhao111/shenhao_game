@@ -20,6 +20,18 @@ function firstChoices(nodes, o = []) { for (const n of nodes || []) if (n.type =
     if (r.error) break;
   }
   for (let k = 0; k < 8; k++) await api('/system/mall/buy', { itemId: 'item_energy_drink' });
+  // story gates now need investment: reinvest until 阶层 3 so every district (云顶海岸 etc.) is open
+  for (let k = 0; k < 400; k++) {
+    const st = (await api('/state')).state;
+    if (st.player.tier.tier >= 3) break;
+    const own = st.businesses.filter((x) => x.owned);
+    const buy = st.businesses.find((x) => !x.owned && x.unlockTier <= st.player.tier.tier && x.buyCost <= st.player.cash);
+    if (buy) { await api('/business/buy', { businessId: buy.id }); continue; }
+    const up = own.filter((x) => x.upgradeCost <= st.player.cash).sort((a, b) => a.upgradeCost - b.upgradeCost)[0];
+    if (!up) break;
+    await api('/business/upgrade', { businessId: up.id });
+  }
+  console.log('tier after investing:', (await api('/state')).state.player.tier.tier);
   const b = await chromium.launch();
   const p = await b.newPage({ viewport: { width: 412, height: 852 }, deviceScaleFactor: 1 });
   const errs = [];

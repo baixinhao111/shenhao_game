@@ -32,6 +32,12 @@ const GRADE_TEX: Record<string, string> = {
   waxy: '/assets/tex/waxy.webp',
   rock: '/assets/tex/waxy.webp',
 };
+/** Irregular boulder outline shared by the rind, the scratch surface and the shading overlay. */
+const STONE_CLIP =
+  'polygon(7% 16%, 16% 6%, 31% 2%, 47% 4%, 63% 1%, 79% 3%, 92% 10%, 98% 26%, 100% 45%, 97% 63%, 99% 79%, 91% 93%, 75% 99%, 56% 97%, 39% 100%, 21% 97%, 8% 90%, 2% 74%, 0% 54%, 3% 34%)';
+const RIND_CLIP =
+  'polygon(6% 13%, 15% 3%, 31% 0%, 47% 2%, 63% 0%, 80% 1%, 94% 8%, 100% 25%, 100% 46%, 99% 64%, 100% 81%, 93% 96%, 75% 100%, 56% 99%, 39% 100%, 20% 100%, 6% 92%, 0% 75%, 0% 53%, 1% 33%)';
+
 const GRADE_NAME: Record<string, string> = { rock: '垮料', waxy: '糯种', ice: '冰种', imperial: '帝王绿' };
 
 interface Offer {
@@ -144,9 +150,20 @@ function drawSkin(canvas: HTMLCanvasElement, skin: HTMLImageElement) {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.globalCompositeOperation = 'source-over';
   ctx.drawImage(skin, 0, 0, CW, CW);
-  const g = ctx.createRadialGradient(CW * 0.4, CH * 0.3, 10, CW / 2, CH / 2, CW * 0.7);
-  g.addColorStop(0, 'rgba(255,240,210,0.16)');
-  g.addColorStop(1, 'rgba(0,0,0,0.35)');
+  // weathered speckles and pits so the rind reads as stone, not a flat texture
+  for (let i = 0; i < 260; i++) {
+    const x = (Math.sin(i * 12.9898) * 43758.5453) % 1;
+    const y = (Math.sin(i * 78.233) * 12543.123) % 1;
+    const r = 0.6 + ((i * 7) % 5) * 0.35;
+    ctx.fillStyle = i % 3 ? 'rgba(40,28,16,0.35)' : 'rgba(255,236,200,0.18)';
+    ctx.beginPath();
+    ctx.arc(Math.abs(x) * CW, Math.abs(y) * CH, r, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const g = ctx.createRadialGradient(CW * 0.38, CH * 0.28, 10, CW / 2, CH / 2, CW * 0.68);
+  g.addColorStop(0, 'rgba(255,240,210,0.2)');
+  g.addColorStop(0.6, 'rgba(0,0,0,0.05)');
+  g.addColorStop(1, 'rgba(0,0,0,0.5)');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, CW, CH);
 }
@@ -169,6 +186,8 @@ export const JadeGame: React.FC = () => {
   const [verdict, setVerdict] = useState<{ label: string; tone: string }>({ label: '原石未开', tone: 'neutral' });
   const [revealed, setRevealed] = useState(0);
   const [heat, setHeat] = useState<number[] | null>(null);
+  const [dust, setDust] = useState<Array<{ id: number; x: number; y: number; dx: number }>>([]);
+  const dustAtRef = useRef(0);
   const [selected, setSelected] = useState<string | null>(null);
   const [result, setResult] = useState<any>(null);
   const [lineIdx, setLineIdx] = useState(0);
@@ -316,6 +335,13 @@ export const JadeGame: React.FC = () => {
       }
     }
     playScrape();
+    // a few grains of rind fall away from the finger (throttled)
+    const now = Date.now();
+    if (now - dustAtRef.current > 70) {
+      dustAtRef.current = now;
+      const grains = Array.from({ length: 3 }, (_, k) => ({ id: now + k, x: (x / CW) * 100, y: (y / CH) * 100, dx: (Math.random() - 0.5) * 30 }));
+      setDust((d) => [...d.slice(-24), ...grains]);
+    }
   };
 
   const pointerPos = (e: React.PointerEvent) => {
@@ -515,13 +541,21 @@ export const JadeGame: React.FC = () => {
               </span>
               <span className="font-num text-[12px] text-[#C3C9DC]">已擦开 {phase === 'done' ? 100 : revealed}%</span>
             </div>
-            <div
-              className="relative p-[9px] rounded-[26px] shadow-[0_24px_40px_rgba(0,0,0,0.7)]"
-              style={{ background: 'url(/assets/tex/skin.webp) center/200px', boxShadow: 'inset 0 -10px 18px rgba(0,0,0,0.55), 0 24px 40px rgba(0,0,0,0.7)' }}
-            >
+            {/* contact shadow on the table */}
+            <div className="absolute bottom-[8%] w-[78%] h-[34px] rounded-[50%] bg-black/70 blur-[14px] pointer-events-none" />
+            <div className="relative" style={{ filter: 'drop-shadow(0 18px 22px rgba(0,0,0,0.75))' }}>
+              {/* rind: the uncut skin around the window */}
               <div
-                className="relative rounded-[18px] overflow-hidden touch-none"
-                style={{ width: `min(${CW}px, 84vw)`, aspectRatio: `${CW} / ${CH}` }}
+                className="absolute -inset-[10px]"
+                style={{
+                  clipPath: RIND_CLIP,
+                  background:
+                    'radial-gradient(120% 90% at 35% 25%, rgba(255,230,190,0.25), transparent 55%), radial-gradient(90% 80% at 70% 85%, rgba(0,0,0,0.55), transparent 70%), url(/assets/tex/skin.webp) center/220px',
+                }}
+              />
+              <div
+                className="relative overflow-hidden touch-none"
+                style={{ width: `min(${CW}px, 84vw)`, aspectRatio: `${CW} / ${CH}`, clipPath: STONE_CLIP }}
                 onPointerDown={onDown}
                 onPointerMove={onMove}
                 onPointerUp={onUp}
@@ -535,6 +569,37 @@ export const JadeGame: React.FC = () => {
                   className="absolute inset-0 w-full h-full transition-opacity duration-[1200ms]"
                   style={{ opacity: phase === 'done' ? 0 : 1 }}
                 />
+                {/* 3D shading: light from top-left, bevel at the edge */}
+                <div
+                  className="absolute inset-0 pointer-events-none"
+                  style={{
+                    background:
+                      'radial-gradient(90% 70% at 30% 22%, rgba(255,250,235,0.22), transparent 60%), radial-gradient(120% 100% at 50% 50%, transparent 58%, rgba(0,0,0,0.45) 100%)',
+                    mixBlendMode: 'soft-light',
+                  }}
+                />
+                {/* light sweep once real green shows */}
+                {(verdict.tone === 'hot' || (phase === 'done' && (result?.grade === 'imperial' || result?.grade === 'ice'))) && (
+                  <motion.div
+                    className="absolute inset-y-0 w-[40%] pointer-events-none"
+                    style={{ background: 'linear-gradient(100deg, transparent, rgba(220,255,235,0.45), transparent)', mixBlendMode: 'screen' }}
+                    initial={{ left: '-45%' }}
+                    animate={{ left: '120%' }}
+                    transition={{ repeat: Infinity, duration: 2.4, repeatDelay: 1.2, ease: 'easeInOut' }}
+                  />
+                )}
+                {/* falling rind grains */}
+                {dust.map((d) => (
+                  <motion.span
+                    key={d.id}
+                    className="absolute w-[3px] h-[3px] rounded-[1px] bg-[#7A6040] pointer-events-none"
+                    style={{ left: `${d.x}%`, top: `${d.y}%` }}
+                    initial={{ opacity: 1, x: 0, y: 0 }}
+                    animate={{ opacity: 0, x: d.dx, y: 36 }}
+                    transition={{ duration: 0.6, ease: 'easeIn' }}
+                    onAnimationComplete={() => setDust((arr) => arr.filter((z) => z.id !== d.id))}
+                  />
+                ))}
                 {heat && phase === 'scratch' && (
                   <div className="absolute inset-0 grid grid-cols-6 grid-rows-4 pointer-events-none">
                     {heat.map((h, i) => (
