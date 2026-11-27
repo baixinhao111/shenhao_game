@@ -215,6 +215,7 @@ python3 scripts/assets/cut_sheet.py out.png client/public/assets/ui/icons name1,
 - 图标风格句 v2（2026-11 起，配合「更暗少金」；固定附在 prompt 末尾，完整模板见 `scripts/assets/icons_v2_prompts.py`）：
   `consistent style across all nine icons: minimalist luxury emblem icons for a dark, elegant modern Chinese urban mobile game; each object rendered as a refined small sculpture of matte brushed champagne-gold metal (soft pale gold, low saturation, NOT bright yellow, NOT glossy) with smoky black obsidian glass inlays and fine engraved hairline details; restrained soft rim light, gentle shadows, quiet and premium, Art Deco geometry, clean readable silhouette, generous negative space inside each icon; only tiny accents of color where specified; no cartoon shine, no candy gloss, no bright saturated colors; nine icons arranged in a 3x3 grid, each object fully separated with large empty spacing between them, centered in its cell, same scale, plain pure white background, no text, no letters, no numbers, no labels, no frames, no grid lines, no drop shadow boxes`
 - 颜色点缀只给有语义的：红颜相关（心）用柔和玫瑰粉，天枢/积分/技能用一点冷青光，翡翠用低饱和玉绿；货币符号写明 `¥`（模型默认会画 `$`）。
+- `syspoint`（天枢积分）是在 v2 整表出的水晶上做了冷青色映射 + 外发光（不是单独重出），保证小尺寸下一眼可辨；以后重出 sheet1 时在描述里写明「vivid cold cyan crystal」。
 - 新增图标时把新物件加进一张 3×3 表**整表重出**，并保留其余 8 个旧物件作参照；或者至少把新表和现有图标并排肉眼比对。
 - 场景背景风格句：
   `anime background art for a Chinese urban otome mobile game, painterly cinematic lighting, high detail, vertical composition, no people, no text, no letters`（比例 2:3）
