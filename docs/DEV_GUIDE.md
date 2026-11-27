@@ -127,7 +127,13 @@ scripts/demo/             试玩版录制与打包
 3. **全屏演出只留给大时刻**：暴击 ≥5 倍、帝王绿、章节通关。2–3 倍暴击只飞金币（`applyServerState` 已自动处理）。
 4. **顶部通知 `notifyTop`** 只用于状态变化（新联系人、收购完成、兑换成功），不用于「钱到账」。
 5. **NPC 说话用 `<Speech who text tone/>`**，直接压在场景上，不加对话框（剧情 VN 除外）。
-6. 底部抽屉（`panel-elevated rounded-t-[16px]`）只用于列表选择（赴约地点、地产列表、居家互动），不承载玩法本身。
+6. **大时刻是分段演出**（`components/Ceremonies.tsx`）：
+   - `CritShow`（≥5 倍暴击）：叮 → 倍率老虎机式滚动 → 印章砸下震屏 → 金额从 0 滚到到账数 + 金币雨，轻触可跳段。
+   - `TierUpShow`（阶层晋升）：`applyServerState` 发现 `player.tier.tier` 变大时自动触发，排在暴击演出之后；会列出该阶层新开放的区域/产业。新增阶层或解锁内容只需改 `content/`，不需要动演出代码。
+   - 剧情 `effect: "impact"` 自带集中线（`.fx-speedlines`）+ 镜头推近，适合打脸/反转那一句；不要每句都用。
+   - 弹幕（`barrage` 节点）是直播式飘字：无底框、白字描边、`gold` 样式发金光，自动分 7 条轨道。
+7. 主 Tab 切换有 0.18s 淡入上浮（`App.tsx`），不要在页面里再叠一层入场动画。
+8. 底部抽屉（`panel-elevated rounded-t-[16px]`）只用于列表选择（赴约地点、地产列表、居家互动），不承载玩法本身。
 
 ### 5.6 剧情 VN（`VisualNovelTheater.tsx` + `components/vn/SystemPanels.tsx`）
 

@@ -126,7 +126,18 @@
 }
 
 .animate-barrage {
-  animation: barrageFly 7s linear forwards;
+  /* starts just past the right edge (left:100%) and exits fully on the left */
+  left: 100%;
+  animation: danmakuFly 7s linear both;
+}
+
+@keyframes danmakuFly {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 460px));
+  }
 }
 
 @keyframes pulseRing {

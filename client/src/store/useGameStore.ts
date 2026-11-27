@@ -17,6 +17,18 @@ export interface RewardFx {
   y: number;
 }
 
+/** 阶层晋升演出 */
+export interface TierUpFx {
+  id: number;
+  fromName: string;
+  toTier: number;
+  toName: string;
+  netWorth: number;
+  nextName?: string;
+  nextAt?: number;
+  unlocks: string[];
+}
+
 export interface TopNotification {
   id: number;
   kind: 'bank' | 'wechat' | 'system';
@@ -138,6 +150,8 @@ interface GameStore {
   showAdmin: boolean;
   topToast: TopNotification | null;
   critBanner: CritBanner | null;
+  tierUp: TierUpFx | null;
+  dismissTierUp: () => void;
   barrage: BarragePayload | null;
   errorToast: string | null;
   activeMinigame: MinigameKind | null;
@@ -206,6 +220,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
   showAdmin: false,
   topToast: null,
   critBanner: null,
+  tierUp: null,
+  dismissTierUp: () => set({ tierUp: null }),
   barrage: null,
   errorToast: null,
   activeMinigame: null,
@@ -270,12 +286,37 @@ export const useGameStore = create<GameStore>((set, get) => ({
   refreshState: async () => {
     try {
       const res = await apiRequest('/state');
-      set({ state: res.state });
+      // through applyServerState so a tier crossed by idle income still gets its ceremony
+      if (get().state) get().applyServerState(res.state);
+      else set({ state: res.state });
     } catch {}
   },
 
   applyServerState: (newState, critResult, options) => {
+    const prevTier = get().state?.player?.tier?.tier;
+    const prevTierName: string = get().state?.player?.tier?.name || '';
     if (newState) set({ state: newState });
+    const nextTier = newState?.player?.tier;
+    if (prevTier && nextTier && nextTier.tier > prevTier) {
+      // 身价突破阶层：全屏晋升演出，并列出这一阶层新开放的内容
+      const t = nextTier.tier;
+      const unlocks = [
+        ...(newState.map?.districts || []).filter((d: any) => d.unlockTier === t).map((d: any) => `新区域 · ${d.name}`),
+        ...(newState.businesses || []).filter((b: any) => b.unlockTier === t).map((b: any) => `可收购 · ${b.name}`),
+      ];
+      set({
+        tierUp: {
+          id: Date.now(),
+          fromName: prevTierName,
+          toTier: t,
+          toName: nextTier.name,
+          netWorth: newState.player.netWorth,
+          nextName: newState.player.nextTier?.name,
+          nextAt: newState.player.nextTier?.minNetWorth,
+          unlocks: unlocks.slice(0, 4),
+        },
+      });
+    }
     if (critResult?.triggered && critResult?.cashback > 0) {
       // Small cashbacks just fly into the wallet; only big multipliers earn the full-screen moment.
       if (critResult.multiplier >= 5 || critResult.leveledUp) {
@@ -356,13 +397,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   triggerCrit: (multiplier, amount, subtitle, _silentToast = false) => {
-    playCritExplosion();
+    playSystemPing(); // the staged CritShow plays the roll / stamp / fanfare itself
     clearTimeout(critTimer);
     const id = Date.now();
     set({ critBanner: { id, multiplier, amount, subtitle } });
     critTimer = setTimeout(() => {
       if (get().critBanner?.id === id) set({ critBanner: null });
-    }, 3200);
+    }, 6500);
   },
 
   triggerBarrage: (style, lines) => {

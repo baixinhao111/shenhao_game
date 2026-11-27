@@ -25,6 +25,7 @@ import {
   playTap,
 } from '../lib/sound';
 import { useGameStore, type VNChoiceOption, type VNNode } from '../store/useGameStore';
+import { AnimatedNumber } from './AnimatedNumber';
 import { PortraitAvatar } from './PortraitAvatar';
 import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 import { renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
@@ -661,10 +662,10 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
 
   const cameraAnimate =
     effectTick?.kind === 'impact'
-      ? { x: [0, -10, 9, -6, 5, -2, 0], y: [0, -3, 3, -2, 0] }
+      ? { x: [0, -10, 9, -6, 5, -2, 0], y: [0, -3, 3, -2, 0], scale: [1, 1.06, 1.03, 1] }
       : effectTick?.kind === 'shake'
         ? { x: [0, -8, 7, -5, 4, -2, 0], y: 0 }
-        : { x: 0, y: 0 };
+        : { x: 0, y: 0, scale: 1 };
 
   return (
     <div className="relative h-full w-full overflow-hidden bg-[#0A0F1F] select-none">
@@ -703,6 +704,15 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               exit={{ opacity: 0 }}
               transition={{ duration: 0.36, ease: 'easeOut' }}
               className="absolute inset-0 z-30 pointer-events-none bg-[radial-gradient(circle_at_50%_42%,rgba(255,248,230,0.9),rgba(207,176,115,0.3)_65%,transparent)]"
+            />
+          )}
+          {effectTick?.kind === 'impact' && (
+            <motion.div
+              key={`speed-${effectTick.id}`}
+              initial={{ opacity: 0, scale: 1.25 }}
+              animate={{ opacity: [0, 1, 0], scale: 1 }}
+              transition={{ duration: 0.55, ease: 'easeOut' }}
+              className="absolute inset-0 z-30 pointer-events-none fx-speedlines"
             />
           )}
           {effectTick?.kind === 'impact' && (
@@ -1378,20 +1388,21 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   !settlement.alreadyCompleted &&
                   (() => {
                     const r = settlement.rewards;
-                    const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string }[] = [];
+                    const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string; num?: number }[] = [];
                     if (r.critCashback && r.critCashback > 0) {
                       items.push({
                         icon: 'income',
                         label: '暴击返现',
                         value: `+${formatMoney(r.critCashback)}`,
+                        num: r.critCashback,
                         tone: 'text-[#FFE7B0]',
                         ribbon: `×${r.critMultiplier || 10}`,
                       });
                       if (r.cash && r.cash > r.critCashback) {
-                        items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash - r.critCashback)}`, tone: 'text-[#FFE7B0]' });
+                        items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash - r.critCashback)}`, tone: 'text-[#FFE7B0]', num: r.cash - r.critCashback });
                       }
                     } else if (r.cash && r.cash > 0) {
-                      items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash)}`, tone: 'text-[#FFE7B0]' });
+                      items.push({ icon: 'cash', label: '资金', value: `+${formatMoney(r.cash)}`, tone: 'text-[#FFE7B0]', num: r.cash });
                     }
                     if (r.affectionGain && r.affectionGain > 0) {
                       items.push({
@@ -1435,7 +1446,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                                 </span>
                               )}
                               <GameIcon name={it.icon} size={42} />
-                              <div className={`font-num text-[13px] font-semibold mt-1 max-w-full truncate ${it.tone}`}>{it.value}</div>
+                              <div className={`font-num text-[13px] font-semibold mt-1 max-w-full truncate ${it.tone}`}>
+                                {it.num != null ? <AnimatedNumber from={0} value={it.num} prefix="+" duration={900 + i * 150} /> : it.value}
+                              </div>
                               <div className="text-[9.5px] text-[#A3AAC2] max-w-full truncate">{it.label}</div>
                             </motion.div>
                           ))}

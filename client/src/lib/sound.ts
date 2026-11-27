@@ -208,3 +208,24 @@ export function playCard(): void {
   playTone(900, 0, 0.04, 'square', 0.04);
   playTone(600, 0.03, 0.05, 'triangle', 0.05);
 }
+
+// Slot-roll tick for multiplier counters
+export function playRollTick(step = 0): void {
+  playTone(1200 + step * 90, 0, 0.05, 'square', 0.05);
+}
+
+// Heavy stamp landing (暴击 ×N / 阶层印章)
+export function playStamp(): void {
+  playTone(98, 0, 0.32, 'sawtooth', 0.16);
+  playTone(196, 0.01, 0.24, 'triangle', 0.14);
+  playTone(1567.98, 0.06, 0.4, 'sine', 0.1);
+  vibrate([60, 30, 40]);
+}
+
+// Rising fanfare for tier promotion
+export function playFanfare(): void {
+  const notes = [392, 523.25, 659.25, 783.99, 1046.5];
+  notes.forEach((f, i) => playTone(f, i * 0.11, 0.42, 'triangle', 0.14));
+  [523.25, 659.25, 783.99, 1046.5, 1567.98].forEach((f) => playTone(f, 0.62, 1.1, 'sine', 0.09));
+  vibrate([40, 40, 40, 40, 120]);
+}

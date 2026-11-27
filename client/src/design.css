@@ -609,3 +609,10 @@
   height: 1px;
   background: linear-gradient(90deg, rgba(226, 189, 114, 0.85), rgba(226, 189, 114, 0.25) 45%, transparent 85%);
 }
+
+/* 打脸/反转瞬间的集中线 */
+.fx-speedlines {
+  background: repeating-conic-gradient(from 0deg at 50% 45%, rgba(255, 244, 214, 0.55) 0deg 0.8deg, transparent 0.8deg 7deg);
+  -webkit-mask-image: radial-gradient(circle at 50% 45%, transparent 0 32%, #000 70%);
+  mask-image: radial-gradient(circle at 50% 45%, transparent 0 32%, #000 70%);
+}

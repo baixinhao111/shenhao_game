@@ -76,11 +76,23 @@ export function App() {
             {!hideChrome && !isHome && !showProfile && <TopBar />}
 
             <main className="flex-1 min-h-0 overflow-hidden relative">
-              {activeTab === 'home' && <HomeView pureArtMode={pureArtMode} onTogglePureArt={setPureArtMode} />}
-              {activeTab === 'map' && <CityMapView />}
-              {activeTab === 'story' && <StoryView />}
-              {activeTab === 'assets' && <AssetsView />}
-              {activeTab === 'heroines' && <HeroinesView />}
+              {/* tab switch: quick cross-fade with a slight rise, so pages feel like they slide into place */}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 10, scale: 0.995 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                  className="absolute inset-0"
+                >
+                  {activeTab === 'home' && <HomeView pureArtMode={pureArtMode} onTogglePureArt={setPureArtMode} />}
+                  {activeTab === 'map' && <CityMapView />}
+                  {activeTab === 'story' && <StoryView />}
+                  {activeTab === 'assets' && <AssetsView />}
+                  {activeTab === 'heroines' && <HeroinesView />}
+                </motion.div>
+              </AnimatePresence>
 
               {/* Personal Profile & TianShu Slide-Over (Reversible via Back button, never strands BottomNav!) */}
               <AnimatePresence>

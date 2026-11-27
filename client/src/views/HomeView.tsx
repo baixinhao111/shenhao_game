@@ -294,6 +294,36 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   const livePendingIncome = Math.floor(basePending + liveDriftCash);
   const hasProfileDot =
     !player.signedInToday || dailyTasks?.some((t: any) => !t.claimed && t.progress >= t.target);
+  // 天枢指引：首页永远只给一条「下一步最值得做的事」（模拟经营的目标引导）
+  const guide: { id: string; text: string; go: () => void } | null = (() => {
+    if (livePendingIncome >= 10000)
+      return {
+        id: 'income',
+        text: `产业分红 ${formatMoney(livePendingIncome)} 待收取`,
+        go: () => useGameStore.getState().setActiveTab('assets'),
+      };
+    if (nextEpisode && !(stories?.completedEpisodes || []).includes(nextEpisode.episodeId)) {
+      const nwOk = !nextEpisode.requireNetWorth || player.netWorth >= nextEpisode.requireNetWorth;
+      if (nwOk)
+        return {
+          id: 'story',
+          text: `主线《${nextEpisode.title}》等待宿主推进`,
+          go: () => useGameStore.getState().setActiveTab('story'),
+        };
+      return {
+        id: 'gate',
+        text: `身价再涨 ${formatMoney(nextEpisode.requireNetWorth - player.netWorth)} 解锁下一幕`,
+        go: () => useGameStore.getState().setActiveTab('map'),
+      };
+    }
+    if (player.nextTier)
+      return {
+        id: 'tier',
+        text: `距「${player.nextTier.name}」还差 ${formatMoney(Math.max(0, player.nextTier.minNetWorth - player.netWorth))}`,
+        go: () => useGameStore.getState().setActiveTab('assets'),
+      };
+    return null;
+  })();
   const tierProgressPct = player.nextTier
     ? Math.min(100, Math.max(4, Math.round((player.netWorth / player.nextTier.minNetWorth) * 100)))
     : 100;
@@ -594,6 +624,31 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
         <div className="pointer-events-auto pt-2.5 pr-0.5 shrink-0">
           <ResourceCapsules compact />
         </div>
+      </div>
+
+      {/* 天枢指引 ticker (static wrapper centres it between the two rails; motion owns the transform) */}
+      <div className="absolute z-20 top-[80px] inset-x-[66px] flex justify-center pointer-events-none">
+      <AnimatePresence mode="wait">
+        {guide && !pureArtMode && (
+          <motion.button
+            key={guide.id}
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 6 }}
+            transition={{ duration: 0.25 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              playTap();
+              guide.go();
+            }}
+            className="pointer-events-auto max-w-full flex items-center gap-1.5 pl-1 pr-3 py-1 rounded-full bg-[#04121F]/80 border border-[#63E6F2]/45 shadow-[0_0_14px_rgba(99,230,242,0.25)] backdrop-blur-md active:scale-95"
+          >
+            <GameIcon name="tianshu" size={20} shadow={false} />
+            <span className="text-[11px] text-[#CFF8FC] truncate">{guide.text}</span>
+            <span className="text-[#63E6F2] text-[11px] shrink-0">›</span>
+          </motion.button>
+        )}
+      </AnimatePresence>
       </div>
 
       {/* LEFT RAIL: painted feature entries */}

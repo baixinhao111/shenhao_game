@@ -17,6 +17,7 @@ import { formatMoney, formatShortTime } from '../lib/format';
 import { playCoinBurst, playSystemPing, playTap } from '../lib/sound';
 import { useGameStore } from '../store/useGameStore';
 import { AnimatedNumber } from './AnimatedNumber';
+import { CritShow, TierUpShow } from './Ceremonies';
 import { GameIcon } from './GameIcon';
 
 export const Overlays: React.FC = () => {
@@ -25,6 +26,8 @@ export const Overlays: React.FC = () => {
     topToast,
     dismissToast,
     critBanner,
+    tierUp,
+    dismissTierUp,
     barrage,
     errorToast,
     showLeaderboard,
@@ -192,77 +195,50 @@ export const Overlays: React.FC = () => {
         )}
       </AnimatePresence>
 
-      {/* 3. Crit cashback */}
+      {/* 3. Big moments: crit cashback, then tier promotion (queued behind the crit) */}
       <AnimatePresence>
         {critBanner && critBanner.id !== dismissedCritId && (
-          <motion.div
+          <CritShow
             key={critBanner.id}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => {
-              playTap();
-              setDismissedCritId(critBanner.id);
-            }}
-            className="absolute inset-0 z-[70] bg-[#05070F]/80 backdrop-blur-[5px] flex items-center justify-center px-8 cursor-pointer overflow-hidden"
-          >
-            <motion.div
-              aria-hidden
-              className="absolute left-1/2 top-1/2 w-[820px] h-[820px] -ml-[410px] -mt-[410px] pointer-events-none opacity-60"
-              style={{
-                background: 'repeating-conic-gradient(rgba(255,226,160,0.3) 0deg 7deg, transparent 7deg 20deg)',
-                maskImage: 'radial-gradient(circle, #000, transparent 58%)',
-                WebkitMaskImage: 'radial-gradient(circle, #000, transparent 58%)',
-              }}
-              animate={{ rotate: 360 }}
-              transition={{ repeat: Infinity, duration: 24, ease: 'linear' }}
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.6 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 1.05 }}
-              transition={{ type: 'spring', stiffness: 360, damping: 18 }}
-              className="relative w-full text-center"
-            >
-              <div className="cyan-glow-text text-[11px] font-black tracking-[0.5em]">天枢 · 消费返现</div>
-              <motion.div
-                initial={{ scale: 2.6, rotate: -14, opacity: 0 }}
-                animate={{ scale: 1, rotate: -6, opacity: 1 }}
-                transition={{ delay: 0.1, type: 'spring', stiffness: 520, damping: 14 }}
-                className="inline-block mt-2 px-4 border-[3px] border-[#FF5C7A] rounded-[8px] font-num text-[46px] font-semibold text-[#FF5C7A] leading-tight shadow-[0_0_26px_rgba(255,92,122,0.55)]"
-              >
-                暴击 ×{critBanner.multiplier}
-              </motion.div>
-              <div className="flex justify-center mt-3">
-                <GameIcon name="income" size={86} />
-              </div>
-              <div className="font-num text-[40px] font-semibold gold-gradient-text leading-none mt-1 drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
-                +<AnimatedNumber value={critBanner.amount} duration={650} />
-              </div>
-              {critBanner.subtitle && <div className="text-[12.5px] text-[#D3D8E8] mt-2">{critBanner.subtitle}</div>}
-              <div className="pt-5 text-[11px] text-[#8B93AD] tracking-[0.3em]">轻触继续</div>
-            </motion.div>
-          </motion.div>
+            multiplier={critBanner.multiplier}
+            amount={critBanner.amount}
+            subtitle={critBanner.subtitle}
+            onClose={() => setDismissedCritId(critBanner.id)}
+          />
+        )}
+      </AnimatePresence>
+      <AnimatePresence>
+        {tierUp && !(critBanner && critBanner.id !== dismissedCritId) && (
+          <TierUpShow key={tierUp.id} fx={tierUp} onClose={dismissTierUp} />
         )}
       </AnimatePresence>
 
-      {/* 4. Flying Barrage */}
+      {/* 4. Danmaku: crowd reactions fly across the upper half like a live stream (no pills) */}
       {barrage && (
-        <div key={barrage.id} className="absolute inset-x-0 top-16 h-40 z-40 pointer-events-none overflow-hidden">
-          {barrage.lines.map((line, i) => (
-            <div
-              key={`${barrage.id}-${i}`}
-              className={`absolute whitespace-nowrap font-medium text-xs px-3 py-1 rounded-[4px] animate-barrage ${
-                barrage.style === 'gold'
-                  ? 'bg-gradient-to-r from-[#3A2A10]/95 to-[#1A1F33]/90 border border-[#E2BD72]/70 text-[#FFE7B0] !rounded-full font-bold shadow-[0_0_12px_rgba(226,189,114,0.3)]'
-                  : 'bg-[#0A0F1F]/80 border border-white/15 text-[#EBE8E1] !rounded-full'
-              }`}
-              style={{ top: `${(i % 4) * 32 + 6}px`, animationDelay: `${i * 0.65}s` }}
-            >
-              {line}
-            </div>
-          ))}
+        <div key={barrage.id} className="absolute inset-x-0 top-14 h-[44%] z-40 pointer-events-none overflow-hidden">
+          {barrage.lines.map((line, i) => {
+            const big = barrage.style === 'gold' ? i % 3 === 0 : i % 4 === 1;
+            const lane = (i * 3) % 7;
+            return (
+              <div
+                key={`${barrage.id}-${i}`}
+                className={`absolute whitespace-nowrap font-bold animate-barrage ${big ? 'text-[19px]' : 'text-[14px]'} ${
+                  barrage.style === 'gold' ? 'text-[#FFE7B0]' : i % 3 === 2 ? 'text-[#FFD1DC]' : 'text-white'
+                }`}
+                style={{
+                  top: `${lane * 13 + 2}%`,
+                  animationDelay: `${i * 0.42 + (lane % 2) * 0.2}s`,
+                  animationDuration: `${big ? 6.2 : 5 + (i % 3) * 0.7}s`,
+                  textShadow:
+                    barrage.style === 'gold'
+                      ? '0 0 10px rgba(226,189,114,0.75), 0 1px 2px #000, 0 0 2px #000'
+                      : '0 1px 2px #000, 0 0 3px rgba(0,0,0,0.9)',
+                }}
+              >
+                {line}
+              </div>
+            );
+          })}
         </div>
       )}
 

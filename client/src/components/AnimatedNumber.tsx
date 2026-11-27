@@ -9,6 +9,8 @@ interface AnimatedNumberProps {
   prefix?: string;
   suffix?: string;
   highlightOnIncrease?: boolean;
+  /** Start counting from this value on mount (e.g. 0 for a reward reveal). */
+  from?: number;
 }
 
 /**
@@ -23,12 +25,13 @@ export const AnimatedNumber: React.FC<AnimatedNumberProps> = ({
   prefix = '',
   suffix = '',
   highlightOnIncrease = false,
+  from,
 }) => {
   const safeTarget = Number.isFinite(value) ? value : 0;
-  const [display, setDisplay] = useState<number>(safeTarget);
+  const [display, setDisplay] = useState<number>(from ?? safeTarget);
   const [flashing, setFlashing] = useState(false);
 
-  const currentRef = useRef<number>(safeTarget);
+  const currentRef = useRef<number>(from ?? safeTarget);
   const rafRef = useRef<number | null>(null);
   const flashTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
