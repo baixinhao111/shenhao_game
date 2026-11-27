@@ -1,4 +1,5 @@
-import { getContent } from './contentLoader.js';
+import { decorateSpots, getHotVisitSpots, getVisitedSpotsToday, getWeeklyDeal } from './mapSpots.js';
+import { getContent, getContentVersion } from './contentLoader.js';
 import { execute, getDb, getGmSetting, persistDb, queryAll, queryOne } from './db.js';
 import {
   buildHeroineBondsSummary,
@@ -534,7 +535,11 @@ export function resolveHeroineLocations(userId: number): Record<string, { distri
   return map;
 }
 
-export function buildFullGameState(userId: number) {
+/**
+ * withStory: include the full story script (≈0.5MB). Only /state, login and register send it;
+ * write endpoints leave it out and the client keeps its copy (see applyServerState).
+ */
+export function buildFullGameState(userId: number, opts: { withStory?: boolean } = {}) {
   const content = getContent();
   const user = queryOne<any>('SELECT id, username, nickname, is_admin, created_at FROM users WHERE id = ?', [userId]);
   if (!user) return null;
@@ -743,6 +748,9 @@ export function buildFullGameState(userId: number) {
     todayHeadline = `${mainResidence.displayName} · 每小时收益 +${formatMoney(portfolio.incomePerHour)}`;
   }
 
+  const visitedSpots = getVisitedSpotsToday(userId);
+  const completedSet = new Set<string>(completedEpisodes);
+  const spotCtx = { tier: tierInfo.tier, completed: completedSet, hot: getHotVisitSpots(userId, tierInfo.tier, completedSet), visited: visitedSpots };
   return {
     user: { ...user, equippedTitle },
     timePeriod: period,
@@ -782,6 +790,7 @@ export function buildFullGameState(userId: number) {
       subtitle: content.map.subtitle,
       mapImage: content.map.mapImage,
       tiers: content.map.tiers,
+      weeklyDeal: getWeeklyDeal(),
       districts: content.map.districts.map((d: any) => ({
         ...d,
         unlocked: tierInfo.tier >= d.unlockTier,
@@ -789,13 +798,15 @@ export function buildFullGameState(userId: number) {
         presentHeroines: heroines
           .filter((h) => h.unlocked && h.location.districtId === d.id)
           .map((h) => ({ id: h.id, name: h.name, avatar: h.avatar, label: h.location.label })),
+        spots: decorateSpots(userId, d, spotCtx),
         ownedProperties: properties
           .filter((p) => p.districtId === d.id && p.owned)
           .map((p) => ({ id: p.id, name: p.displayName, isMain: p.isMain, type: p.type })),
       })),
     },
     stories: {
-      volumes: content.stories.volumes,
+      ...(opts.withStory ? { volumes: content.stories.volumes } : {}),
+      contentVersion: getContentVersion(),
       completedEpisodes,
       nextEpisodeId: nextEpisode?.episodeId || null,
     },

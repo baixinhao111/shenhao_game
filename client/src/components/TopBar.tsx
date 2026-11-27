@@ -20,11 +20,11 @@ export const PlayerEmblem: React.FC<{ src: string; level: number; size?: number;
     <div
       className="absolute inset-0 rounded-full p-[2px]"
       style={{
-        background: 'conic-gradient(from 200deg, #FFE7B0, #A07C3E, #FFE7B0, #B7843A, #FFE7B0)',
-        boxShadow: '0 0 0 1px rgba(10,15,31,0.9), 0 4px 14px rgba(0,0,0,0.6), 0 0 12px rgba(226,189,114,0.25)',
+        background: 'conic-gradient(from 200deg, #EADBB8, #8A7650, #EADBB8, #9C8660, #EADBB8)',
+        boxShadow: '0 0 0 1px rgba(5,7,13,0.9), 0 4px 14px rgba(0,0,0,0.6), 0 0 12px rgba(217,196,154,0.25)',
       }}
     >
-      <div className="w-full h-full rounded-full overflow-hidden bg-[#1A2344]">
+      <div className="w-full h-full rounded-full overflow-hidden bg-[#10131C]">
         <img
           src={src}
           alt=""
@@ -37,7 +37,7 @@ export const PlayerEmblem: React.FC<{ src: string; level: number; size?: number;
       style={{ width: Math.max(22, size * 0.5), height: Math.max(22, size * 0.5) }}
     >
       <img src={iconSrc('badge')} alt="" className="absolute inset-0 w-full h-full object-contain" />
-      <span className="relative font-num text-[11px] font-semibold text-[#FFE7B0] leading-none mt-[1px]">{level}</span>
+      <span className="relative font-num text-[11px] font-semibold text-[#EADBB8] leading-none mt-[1px]">{level}</span>
     </div>
     {dot && <span className="red-dot -top-0.5 -right-0.5" />}
   </div>
@@ -60,7 +60,7 @@ export const ResourceCapsules: React.FC<{ compact?: boolean }> = ({ compact = fa
         data-fx-anchor="cash"
       >
         <GameIcon name="cash" size={30} className="res-icon" shadow={false} />
-        <span className="font-num text-[13px] font-semibold text-[#FFE7B0] min-w-[44px] text-right whitespace-nowrap">
+        <span className="font-num text-[13px] font-semibold text-[#EADBB8] min-w-[44px] text-right whitespace-nowrap">
           <AnimatedNumber value={player.cash} highlightOnIncrease />
         </span>
       </button>
@@ -74,7 +74,7 @@ export const ResourceCapsules: React.FC<{ compact?: boolean }> = ({ compact = fa
         title="精力"
       >
         <GameIcon name="energy" size={28} className="res-icon" shadow={false} />
-        <span className="font-num text-[13px] font-semibold text-[#F4EFE4] min-w-[22px] text-right">
+        <span className="font-num text-[13px] font-semibold text-[#ECE6DA] min-w-[22px] text-right">
           {player.energy}
         </span>
         <span className="res-plus">
@@ -102,11 +102,11 @@ export const TopBar: React.FC<TopBarProps> = ({ hidden = false }) => {
         hidden ? 'opacity-0 -translate-y-4 pointer-events-none' : 'opacity-100 translate-y-0'
       }`}
       style={{
-        background: 'linear-gradient(180deg, rgba(20,28,56,0.98) 0%, rgba(11,16,33,0.98) 100%)',
-        boxShadow: '0 6px 18px rgba(0,0,0,0.35)',
+        background: 'linear-gradient(180deg, rgba(10,12,20,0.96) 0%, rgba(4,5,10,0.94) 100%)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
       }}
     >
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#D9C49A]/25 to-transparent" />
 
       <button
         onClick={() => {
@@ -117,10 +117,10 @@ export const TopBar: React.FC<TopBarProps> = ({ hidden = false }) => {
       >
         <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={40} />
         <div className="min-w-0 leading-tight">
-          <div className="font-editorial text-[14px] font-black text-[#F8EBCB] truncate max-w-[92px]">
+          <div className="font-editorial text-[14px] font-black text-[#ECE6DA] truncate max-w-[92px]">
             {user.nickname}
           </div>
-          <div className="text-[10px] text-[#E2BD72] truncate max-w-[92px] mt-0.5 tracking-wider">
+          <div className="text-[10px] text-[#D9C49A] truncate max-w-[92px] mt-0.5 tracking-wider">
             {player.tier.name}
           </div>
         </div>

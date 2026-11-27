@@ -30,13 +30,13 @@ export const AuthScreen: React.FC = () => {
   };
 
   return (
-    <div className="relative h-full w-full overflow-hidden flex flex-col justify-between bg-[#0B1122]">
+    <div className="relative h-full w-full overflow-hidden flex flex-col justify-between bg-[#05070D]">
       <img
         src="/assets/bg/bg_bund_penthouse.jpg"
         alt=""
         className="absolute inset-0 h-full w-full object-cover opacity-52"
       />
-      <div className="absolute inset-0 bg-gradient-to-b from-[#0B1122]/72 via-[#0B1122]/20 to-[#0B1122]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[#05070D]/72 via-[#05070D]/20 to-[#05070D]" />
 
       {/* Title logo */}
       <div className="relative z-20 pt-8 px-4 flex flex-col items-center">
@@ -45,10 +45,10 @@ export const AuthScreen: React.FC = () => {
           alt="天枢神豪"
           className="w-[88%] max-w-[360px] drop-shadow-[0_6px_18px_rgba(0,0,0,0.75)]"
         />
-        <div className="mt-1 flex items-center gap-2 text-[11px] tracking-[0.5em] text-[#F6DDA4] font-editorial font-bold text-stroke-dark">
-          <span className="w-6 h-px bg-gradient-to-r from-transparent to-[#E2BD72]" />
+        <div className="mt-1 flex items-center gap-2 text-[11px] tracking-[0.5em] text-[#E2D3B0] font-editorial font-bold text-stroke-dark">
+          <span className="w-6 h-px bg-gradient-to-r from-transparent to-[#D9C49A]" />
           海城夜雨 · 重新开始
-          <span className="w-6 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
+          <span className="w-6 h-px bg-gradient-to-l from-transparent to-[#D9C49A]" />
         </div>
       </div>
 
@@ -64,7 +64,7 @@ export const AuthScreen: React.FC = () => {
           alt="陆沉"
           className="h-[96%] w-auto object-contain object-bottom -ml-10 z-10 sprite-fade-bottom"
         />
-        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#0B1122] to-transparent z-20" />
+        <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#05070D] to-transparent z-20" />
       </div>
 
       {/* Architectural Login / Register Panel */}
@@ -80,8 +80,8 @@ export const AuthScreen: React.FC = () => {
               }}
               className={`pb-2 text-[13px] font-editorial font-bold tracking-[0.2em] border-b-2 transition ${
                 mode === 'register'
-                  ? 'text-[#F6DDA4] border-[#E2BD72] font-semibold'
-                  : 'text-[#7F88A6] border-transparent'
+                  ? 'text-[#E2D3B0] border-[#D9C49A] font-semibold'
+                  : 'text-[#8A8EA0] border-transparent'
               }`}
             >
               新建存档
@@ -94,8 +94,8 @@ export const AuthScreen: React.FC = () => {
               }}
               className={`pb-2 text-[13px] font-editorial font-bold tracking-[0.2em] border-b-2 transition ${
                 mode === 'login'
-                  ? 'text-[#F6DDA4] border-[#E2BD72] font-semibold'
-                  : 'text-[#7F88A6] border-transparent'
+                  ? 'text-[#E2D3B0] border-[#D9C49A] font-semibold'
+                  : 'text-[#8A8EA0] border-transparent'
               }`}
             >
               继续存档
@@ -110,7 +110,7 @@ export const AuthScreen: React.FC = () => {
                 placeholder="账号"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded-[6px] bg-[#070B18]/90 border border-[#E2BD72]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#E2BD72]/60 px-3 py-2.5 text-xs text-white outline-none"
+                className="w-full rounded-[6px] bg-[#06080E]/90 border border-[#D9C49A]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#D9C49A]/60 px-3 py-2.5 text-xs text-white outline-none"
               />
               <input
                 type="password"
@@ -118,7 +118,7 @@ export const AuthScreen: React.FC = () => {
                 placeholder="密码（4位以上）"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded-[6px] bg-[#070B18]/90 border border-[#E2BD72]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#E2BD72]/60 px-3 py-2.5 text-xs text-white outline-none"
+                className="w-full rounded-[6px] bg-[#06080E]/90 border border-[#D9C49A]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#D9C49A]/60 px-3 py-2.5 text-xs text-white outline-none"
               />
             </div>
 
@@ -128,7 +128,7 @@ export const AuthScreen: React.FC = () => {
                 placeholder="你的名字（默认：陆沉）"
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                className="w-full rounded-[6px] bg-[#070B18]/90 border border-[#E2BD72]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#E2BD72]/60 px-3 py-2.5 text-xs text-white outline-none"
+                className="w-full rounded-[6px] bg-[#06080E]/90 border border-[#D9C49A]/25 shadow-[inset_0_2px_6px_rgba(0,0,0,0.6)] focus:border-[#D9C49A]/60 px-3 py-2.5 text-xs text-white outline-none"
               />
             )}
 

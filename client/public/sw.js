@@ -1,6 +1,8 @@
 // Lightweight PWA Service Worker for 《天枢神豪》
-// Network-first for API & HTML, stale-while-revalidate for static images/fonts/bundles.
-const CACHE_NAME = 'tianshu-shell-v2';
+// Network-first for HTML, stale-while-revalidate for static images/fonts/bundles, API never cached.
+// Bump CACHE_NAME when the caching rules change; old caches are dropped on activate.
+const CACHE_NAME = 'tianshu-shell-v7'; // v7: map freshness, v2 big map + home, readable type
+const MAX_ENTRIES = 400; // hashed bundles pile up release after release; keep the cache bounded
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
@@ -18,14 +20,20 @@ self.addEventListener('activate', (event) => {
   );
 });
 
+/** Drop the oldest entries (insertion order) once the cache grows past MAX_ENTRIES. */
+async function trim(cache) {
+  const keys = await cache.keys();
+  const extra = keys.length - MAX_ENTRIES;
+  for (let i = 0; i < extra; i++) await cache.delete(keys[i]);
+}
+
 self.addEventListener('fetch', (event) => {
   const req = event.request;
   if (req.method !== 'GET') return;
   const url = new URL(req.url);
   if (url.origin !== self.location.origin) return;
-  if (url.pathname.startsWith('/api/')) return; // Always live server-authoritative API
+  if (url.pathname.startsWith('/api/')) return; // always live, server-authoritative
 
-  // Stale-while-revalidate for images, icons, fonts, and hashed JS/CSS chunks
   if (
     url.pathname.startsWith('/assets/') ||
     url.pathname.startsWith('/icons/') ||
@@ -34,20 +42,27 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
       caches.open(CACHE_NAME).then(async (cache) => {
         const cached = await cache.match(req);
-        const netPromise = fetch(req)
+        const net = fetch(req)
           .then((res) => {
-            if (res && res.status === 200) cache.put(req, res.clone());
+            if (res && res.status === 200) {
+              cache.put(req, res.clone()).then(() => trim(cache));
+            }
             return res;
           })
-          .catch(() => cached);
-        return cached || netPromise;
+          .catch(() => cached || new Response('', { status: 504, statusText: 'offline' }));
+        if (cached) {
+          event.waitUntil(net.catch(() => {}));
+          return cached;
+        }
+        return net;
       }),
     );
     return;
   }
 
-  // Network-first for HTML navigation
   if (req.mode === 'navigate') {
-    event.respondWith(fetch(req).catch(() => caches.match('/')));
+    event.respondWith(
+      fetch(req).catch(async () => (await caches.match('/')) || new Response('离线中，请联网后重试', { status: 503, headers: { 'Content-Type': 'text/plain; charset=utf-8' } })),
+    );
   }
 });

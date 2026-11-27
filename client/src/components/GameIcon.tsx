@@ -70,23 +70,23 @@ export const OrnateCorners: React.FC<{ size?: number; inset?: number; className?
   inset = -3,
   className = '',
 }) => {
+  // v2: the painted filigree is retired — thin champagne L-ticks mark the corners instead
+  const len = Math.max(8, Math.round(size * 0.5));
   const base: React.CSSProperties = {
     position: 'absolute',
-    width: size,
-    height: size,
-    backgroundImage: `url(${iconSrc('corner')})`,
-    backgroundSize: 'contain',
-    backgroundRepeat: 'no-repeat',
+    width: len,
+    height: len,
     pointerEvents: 'none',
     zIndex: 3,
-    filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.6))',
+    borderColor: 'rgba(217,196,154,0.45)',
+    borderStyle: 'solid',
+    borderWidth: 0,
   };
+  const o = Math.max(-2, inset + 2);
   return (
     <span className={className} aria-hidden>
-      <span style={{ ...base, top: inset, left: inset }} />
-      <span style={{ ...base, top: inset, right: inset, transform: 'scaleX(-1)' }} />
-      <span style={{ ...base, bottom: inset, left: inset, transform: 'scaleY(-1)' }} />
-      <span style={{ ...base, bottom: inset, right: inset, transform: 'rotate(180deg)' }} />
+      <span style={{ ...base, top: o, left: o, borderTopWidth: 1, borderLeftWidth: 1 }} />
+      <span style={{ ...base, bottom: o, right: o, borderBottomWidth: 1, borderRightWidth: 1 }} />
     </span>
   );
 };
@@ -98,11 +98,11 @@ export const DecoHeading: React.FC<{ title: React.ReactNode; aside?: React.React
   className = '',
 }) => (
   <div className={`flex items-center gap-2 ${className}`}>
-    <span className="w-[7px] h-[7px] rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] shadow-[0_0_8px_rgba(226,189,114,0.6)] shrink-0" />
-    <span className="font-editorial font-black text-[16px] text-[#F8EBCB] tracking-[0.12em] whitespace-nowrap">
+    <span className="w-[5px] h-[5px] rotate-45 bg-[#D9C49A]/80 shrink-0" />
+    <span className="font-editorial font-black text-[16px] text-[#ECE6DA] tracking-[0.12em] whitespace-nowrap">
       {title}
     </span>
-    <span className="flex-1 h-px bg-gradient-to-r from-[#E2BD72]/55 to-transparent" />
-    {aside && <span className="text-[11px] text-[#8B93AD] whitespace-nowrap">{aside}</span>}
+    <span className="flex-1 h-px bg-gradient-to-r from-[#D9C49A]/25 to-transparent" />
+    {aside && <span className="text-[11px] text-[#8C90A0] whitespace-nowrap">{aside}</span>}
   </div>
 );

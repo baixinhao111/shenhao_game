@@ -67,6 +67,7 @@ scripts/demo/             试玩版录制与打包
 
 1. **服务端权威**。任何影响钱、积分、好感、资产的结果都由服务端计算；客户端只负责渲染和上报操作，服务端必须校验与钳制（范围、次数、冷却、时间）。
 2. **全量状态快照**。写操作接口统一返回 `{ ..., state: buildFullGameState(userId) }`，前端用 `applyServerState(res.state, critResult?)` 覆盖。不要在前端自行改数值（试玩 mock 除外）。高频只读接口（如赌石估价）可以不带 state。
+   - 主线剧本（`stories.volumes`，约 0.5MB）**只在 `/state`、登录、注册里下发**（`buildFullGameState(userId, { withStory: true })`）；写接口不带它，`applyServerState` 沿用手上那份。GM 热重载会换 `stories.contentVersion`，前端发现版本变了就自动重拉 `/state`。写接口响应因此从约 590KB 降到约 45KB，别再把大块静态内容塞回写接口。
 3. **经济操作只走 `economy.ts`**：`spendCashOrThrow / spendEnergyOrThrow / spendSysPointsOrThrow / grant`。先 `assert*` 全部校验通过再扣，避免扣了一半报错。不要在新代码里手写 `UPDATE player_state SET cash = ...`。
 4. **购买只走 `purchases.ts`**（`purchaseBusiness / purchaseProperty`），它负责阶层校验、扣款、暴击返现、入库、朋友圈。
 5. **内容与代码分离**。剧情、区域、产业、物业、资产、红颜都在 `content/`；新增内容优先改 JSON，不要把文案写死在组件里（UI 提示语除外）。
@@ -114,6 +115,38 @@ scripts/demo/             试玩版录制与打包
 | `holo-panel`（+`holo-gold`）/ `holo-option` | 天枢全息面板 / 系统选项（只给天枢用，见 §5.7） |
 | `vn-dialogue-band` / `vn-name-rule` | 剧情对白区底部渐隐带 / 名字下金线 |
 
+### 5.3.1 少用框，多用线与留白（2026-11 起的方向）
+
+之前的「AI 味」很大一部分来自**什么都装进圆角卡片**。新做或重做界面时按下面的优先级选：
+
+1. **画面出血 + 渐隐**：有图的区块（卷封面、精选主线、展厅）让图铺到屏幕边缘，用渐变溶进底色，文字直接压在图上（`text-stroke-dark`）。
+2. **节点 + 连线**：有先后/成长关系的内容（主线章节 `views/story/StoryRoute.tsx`、进修技能脉络）用徽章节点串在一条线上；已完成的线段是亮金实线，未到的是暗色虚线。
+3. **发丝线分隔**：列表（日程、套装）用 `h-px bg-gradient-to-r from-transparent via-[#E2BD72]/20 to-transparent` 分隔，不给每行套卡片。
+4. **陈列**：物品（藏品、补给）放在「光台/层板」上（底部椭圆光 + 金色发丝线），不放进方格。
+5. **数据用排版而不是框**：几项并列的数字用细竖线分隔（`border-l border-[#E2BD72]/15`），进度条用 2px 细线。
+6. **页签**：`route-tab`（文字 + 金色短下划线）优先于胶囊 `tab-chip`。
+
+仍然可以用面板的地方：浮层/抽屉、天枢全息面板（`holo-panel`）、需要强调「可点击的一整块」的产业海报卡。一屏里面板不要超过两种。
+
+### 5.3.2 质感层 v2：更暗、更少金（样板：剧情目录、个人档案、剧情结算）
+
+| 要素 | 用什么 |
+|---|---|
+| 页面底 | `.night-page`（#04050A + 角落暖光/冷光），不再用 `deco-texture` 花纹底 |
+| 氛围 | `<Atmosphere/>`（漏光、胶片颗粒、稀疏碎光）放在页面最底层 |
+| 面板 | `.smoke-glass`：透出背景的烟熏玻璃 + 顶部 1px 高光；需要标区域时用 `.tick-corners` 角标，不画整框 |
+| 文字四级 | 中文标题 `.ink-title`（象牙白，不用金渐变）/ 英文小标签 `.label-en` / 边缘竖排微标 `<EdgeLabel/>` / 超大描边水印 `<Watermark/>` |
+| 颜色 | 香槟 `var(--champagne)` 代替亮金；正文 `#D9D4C9`、次要 `#8C90A0`；鲜色只给关键数值 |
+| 按钮 | 常规主按钮 `.btn-champagne`，次按钮 `.btn-ghost`；闪光金 `gold-btn-shimmer` 只留给全屏大时刻 |
+| 页签 | `route-tab v2` |
+| 结算 | 日常结算安静：模糊场景 + 引语 + 一张烟熏玻璃奖励单；只有出现暴击才加放射光 |
+
+**全站已迁移到 v2（2026-11）**：做法是在 `design.css` 里把通用类整体换成 v2 外观，所有页面同时生效——
+`panel-arch/panel-brass/panel-elevated` → 烟熏玻璃；`gold-btn-shimmer/btn-brass` → 香槟胶囊；`btn-navy` → 幽灵胶囊；`tab-chip` → 香槟淡底；
+`deco-texture` → 夜色底（花纹已去掉）；`gold-gradient-text` → 象牙→香槟柔和渐变；`bar-track/bar-fill` → 4px 细条；`<OrnateCorners/>` → 两个细角标。
+`--gold*` / `--ink*` 色值已改为香槟与近黑；硬编码的旧金色/藏青也已批量替换。
+**例外**：全屏大时刻（`Ceremonies.tsx`）保留亮金，用 `.gold-flash-text`；天枢面板保持冰蓝。新代码不要再写 `#E2BD72`、`#0A0F1F` 这类旧色。
+
 ### 5.4 图标
 
 - 功能入口、资源、奖励一律用彩绘图标 `<GameIcon name="cash" size={24}/>`，名称见 `GameIcon.tsx` 的 `GameIconName`。
@@ -153,6 +186,9 @@ scripts/demo/             试玩版录制与打包
 - 外壳在 PC 上是 412×852 居中手机框，手机上铺满 `100dvh`。所有截图和自测按 **412×852** 视口。
 - 首页结构：左上玩家徽章、右上资源胶囊、左侧功能图标列、右侧（天枢/换人/赏图/待收分红）、底部人物名牌 + 主线入口卡。新增首页入口加到侧栏，不要加第三层浮层。
 - 主 Tab 内页：`TopBar` + 内容 + `BottomNav`。全屏场景（剧情、聊天、小玩法、谈判）隐藏 TopBar/BottomNav（`App.tsx` 的 `hideChrome`）。
+- **跨 Tab 跳转要能回去**：从别的 Tab 跳进地图（车行、私宅、产业地点）用 store 的 `openSpot(districtId, spotId)` / `openHome(districtId, propertyId)`，它们记下 `returnTo`；地图和私宅的返回键调 `mapBack()`，会回到原来的 Tab（按钮文案「返回产业」）。手动点底栏会清掉 `returnTo`。
+- 入口分工：买车/藏品在地图车行，产业页「座驾藏品」只展示并引导去车行；物业在地图看房、在产业页「全城物业」总览；收取分红以产业页为主，首页的「收」图标是快捷入口。
+- **字号与对比度下限**：正文 ≥ 12px，辅助信息 ≥ 10px（英文装饰标签 `label-en` 为 10.5px），深底上的次要文字颜色不暗于 `#8C90A0`、更次要的不暗于 `#7C8093`。只有纯装饰（`EdgeLabel` 等 aria-hidden）可以更小更暗。
 
 ## 6. 美术资产规范
 
@@ -163,6 +199,7 @@ scripts/demo/             试玩版录制与打包
 | UI 彩绘图标 | `client/public/assets/ui/icons/*.webp` | 透明底，256×256，quality 90 |
 | Logo / 底纹 | `client/public/assets/ui/` | logo.webp、deco_tile.webp |
 | 场景背景（主线/区域） | `assets/bg/*.jpg` | 1024×1536（2:3 竖版） |
+| 区域小地图 | `assets/maps/map_<districtId>.jpg` | 1080×1920（9:16），quality 80，俯瞰夜景、无文字无地图钉 |
 | 小玩法场景 | `assets/scene/*.jpg` | 1024×1536，quality 82 |
 | 卷封面 | `assets/story/vol{n}.webp` | 1280×720，在 `stories.json` 卷上写 `"cover"` |
 | 角色立绘 | `assets/characters/*.png` | 透明底半身/全身 |
@@ -180,8 +217,11 @@ python3 scripts/assets/cut_sheet.py out.png client/public/assets/ui/icons name1,
 ```
 
 - **图标一定要整表生成**（一张图 3×3 九个），风格才统一；单个补图会风格漂移。
-- 图标风格句（固定附在 prompt 末尾）：
-  `consistent style across all icons: glossy 3D rendered game icon, champagne gold polished metal combined with deep midnight-navy enamel, subtle cyan glowing accents, soft studio rim light, crisp clean silhouette, premium luxury modern Chinese urban mobile game UI, each object fully separated with large empty spacing between them, plain pure white background, no text, no letters, no numbers, no labels, no frames, no grid lines`
+- 图标风格句 v2（2026-11 起，配合「更暗少金」；固定附在 prompt 末尾，完整模板见 `scripts/assets/icons_v2_prompts.py`）：
+  `consistent style across all nine icons: minimalist luxury emblem icons for a dark, elegant modern Chinese urban mobile game; each object rendered as a refined small sculpture of matte brushed champagne-gold metal (soft pale gold, low saturation, NOT bright yellow, NOT glossy) with smoky black obsidian glass inlays and fine engraved hairline details; restrained soft rim light, gentle shadows, quiet and premium, Art Deco geometry, clean readable silhouette, generous negative space inside each icon; only tiny accents of color where specified; no cartoon shine, no candy gloss, no bright saturated colors; nine icons arranged in a 3x3 grid, each object fully separated with large empty spacing between them, centered in its cell, same scale, plain pure white background, no text, no letters, no numbers, no labels, no frames, no grid lines, no drop shadow boxes`
+- 颜色点缀只给有语义的：红颜相关（心）用柔和玫瑰粉，天枢/积分/技能用一点冷青光，翡翠用低饱和玉绿；货币符号写明 `¥`（模型默认会画 `$`）。
+- `syspoint`（天枢积分）是在 v2 整表出的水晶上做了冷青色映射 + 外发光（不是单独重出），保证小尺寸下一眼可辨；以后重出 sheet1 时在描述里写明「vivid cold cyan crystal」。
+- 新增图标时把新物件加进一张 3×3 表**整表重出**，并保留其余 8 个旧物件作参照；或者至少把新表和现有图标并排肉眼比对。
 - 场景背景风格句：
   `anime background art for a Chinese urban otome mobile game, painterly cinematic lighting, high detail, vertical composition, no people, no text, no letters`（比例 2:3）
 - 角色/NPC：`Chinese urban otome mobile game anime illustration style, semi-realistic attractive character art, half-body portrait facing viewer, clean lineart, soft cel shading, plain pure white background, no text`，多个角色用 2×2 表一次出，再用 rembg 抠图。
@@ -223,8 +263,8 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 2. 服务端 `minigames.ts`：在 `Kind` 加类型；写 start/act/finish 路由；在 `autoSettle` 加默认结算；有本金就 `ledgerOpen`（加注用 `ledgerAdd`）；结算里 `grant` + `finishCommon`。
 3. 用 `scripts/qa/balance_*.mjs` 的方式写蒙特卡洛模拟，**期望回报控制在 0.9–1.1×**，并保证「会玩」明显优于「乱玩」。
 4. 前端 `client/src/minigames/XxxGame.tsx`：用 `<Stage bg title subtitle onBack>` 做外壳，`useMgApi()` 调接口，选档用 `StakePicker`，结果用 `ResultStrip`，收钱 `flyReward`，输了 `playLose()`。
-5. `MinigameHost.tsx`：注册到 `GAMES`，并在 `MINIGAME_OF` 映射 coreMinigame → kind；`CityMapView` 的区域按钮会自动打开。
-6. 图标：在 `CityMapView` 的 `DISTRICT_ICON` 指定地图牌子的图标；需要新图标就整表出图（§6.2）。
+5. `MinigameHost.tsx`：注册到 `GAMES`，并在 `MINIGAME_OF` 映射 coreMinigame → kind；区域小地图里 `kind: "venue"` 的地点会自动打开它（§9.1）。
+6. 图标：在 `CityMapView` 的 `DISTRICT_ICON`（大地图牌子）和 `views/map/DistrictMap.tsx` 的 `VENUE_ICON`（小地图玩法点）指定图标；需要新图标就整表出图（§6.2）。
 7. 场景背景出图到 `assets/scene/`。
 8. **返回键**：中途离开时要么自动结算（股票按当前价平仓、21 点自动停牌），要么拦截并提示（赌石要求先卖、PK 不能中途退、竞速二次确认），不能让本金悬空。
 
@@ -241,6 +281,8 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 - **身价的增长引擎是「投资 + 返现」**：买/升级产业、物业会按 `rollCritCashback` 掷返现。返现规则：基础 12%（+技能/套装/红颜），未触发时蓄能，蓄能与「这笔消费 ÷ 当前身价」成正比（≥6% 记满 25 点，最少 2 点），满 100 必出 3/5/10 倍。常量在 `gameEngine.ts` 的 `CRIT`，模拟器里有一份必须同步。
 - 之前的规则（28% + 每笔固定 +25 蓄能）会让玩家一次上线就靠刷小升级把身价翻 5–10 倍，门槛形同虚设，不要改回去。
 - 小玩法期望 ~1.0×，不是身价来源；它们提供的是参与感、天枢积分、好感、收藏与每日任务奖励。
+- **可直接购买的资产估值 = 售价 × 0.9**（`assets_catalog.json`）。买东西是花钱，不能是抬身价的捷径；只有赌石、活动这类「凭本事得来」的藏品（`dropOnly`）估值可以高于来源成本。每周特惠 9 折后估值正好等于成交价。
+- **产业经营事件同时最多 2 个**（`empire.ts` 的 `BIZ_EVENT_MAX_ACTIVE`），处理掉的那个占着名额 40 分钟（`BIZ_EVENT_SLOT_MS`），所以一次上线最多处理约 2 个，红点保持有意义。模拟器同步按每次上线 2 个计算。
 
 ## 8. 商战谈判（`server/src/negotiation.ts` + `NegotiationScene.tsx`）
 
@@ -256,10 +298,32 @@ POST /api/mg/<game>/finish  结算：closeSession()（自动销账）→ grant()
 ## 9. 内容扩展
 
 - **主线**：`content/stories/stories.json`，卷对象可带 `"cover"`（卷封面）。节点类型见 `useGameStore.ts` 的 `VNNode`。剧情选项奖励走 `reward` 字段，由服务端结算。
-- **区域**：`content/maps/haicheng.json`（坐标 x/y 为地图百分比、`unlockTier`、`bg`、`interactions` 赴约/闲逛）。
+- **区域**：`content/maps/haicheng.json`（坐标 x/y 为大地图百分比、`unlockTier`、`bg`、`interactions` 赴约/闲逛、`localMap` 小地图插画、`spots` 小地图地点，见 §9.1）。
 - **红颜**：`content/heroines/heroines.json` + 立绘 + 首页戳一戳兜底台词（`HomeView.tsx` 的 `LOCAL_POKE_FALLBACKS`）+ 谈判助攻（§8）+ 剧情页 `HEROINE_CARD_BG`（`HeroinesView.tsx`）。
 - **资产/套装**：`content/assets_catalog.json`。注意每个资产都要有获取途径（商店、剧情 `unlockAsset`、赌石收藏、活动兑换），否则套装永远集不齐。
 - 改完内容：GM 后台「热重载剧本配置」即可，无需重启。
+
+### 9.1 区域小地图（大地图 → 点区域 → 小地图 → 点地点）
+
+- 每个区域一张 9:16 俯瞰插画 `client/public/assets/maps/map_<districtId>.jpg`（1080×1920，Seedream 出图，prompt 在 `scripts/assets/district_maps_prompts.py`，每个地标都写死在画面的某个区域，方便放点）。新出图后用 10% 网格叠图读坐标再填 `spots`。
+- `districts[].spots[]`：`{ id, kind, name, en, x, y, ... }`，x/y 是**插画上的百分比**，指的是地标底部那个点（标记会立在它上方）。种类：
+  | kind | 额外字段 | 点开后 |
+  |---|---|---|
+  | `venue` | — | 打开本区 `coreMinigame` |
+  | `date` | `ref` = interactions 里的约会 id | 选红颜 → `/map/date/start` |
+  | `stroll` | `ref` = interactions 里的闲逛 id | `/map/stroll` 随机奇遇 |
+  | `showroom` | `stock`: 资产 id 列表，`desc` | 车行/拍卖行陈列，`/asset/buy` 提货 |
+  | `property` | `ref` = 物业 id | 看房（全款/谈判）或进入私宅 |
+  | `business` | `ref` = 产业 id | 收购/谈判，已持有则跳到产业页并选中它 |
+  | `visit` | `desc`, `lines[]`, `energy`, `sysPoints`, `affinity?` | `/map/visit`：每天一次，花精力换天枢积分 + 一句见闻，`affinity` 红颜已解锁再 +3 好感（`server/src/mapSpots.ts`） |
+- **每件可购买资产都要出现在某个 `showroom` 的 `stock` 里**（产业页的「座驾藏品」不再直接卖，只引导去对应车行）；每个物业、产业也都要在地图上有一个点。改完跑一次 §12 里的引用校验。
+- 红颜当前在本区时，头像会站在本区第一个 `date` 点旁边，点头像进私聊。
+- **让地图有回访理由**（都在 `server/src/mapSpots.ts`）：
+  - `requireEpisode`：读完这一幕才出现（例：鬼市 ep_015、公海夜航 ep_024）。
+  - `hours: ["evening","night"]`：只在这些时段开放（day 7–18 点、evening 18–22 点、night 22–7 点），约会点的时段在 `/map/date/start` 和结算时都校验。
+  - 打卡点每天约三成「有事发生」（至少 2 个，按玩家 + 日期固定），只有这些能去，标「今日」；其余点是氛围，点开会说今天很安静。
+  - 每周特惠：每周一件车行在售品 9 折（全服一致，`map.weeklyDeal`），地图标「特惠」，`/asset/buy` 按特惠价扣款。
+- 买车只在新车性能更高时才自动设为座驾（`/asset/buy`）。
 
 ## 10. 离线试玩版（demo）
 
@@ -291,6 +355,9 @@ node scripts/qa/balance_jade.mjs                # 赌石期望回报（需先 bu
 node scripts/qa/balance_live.mjs                # 打榜各打法胜率
 node scripts/qa/balance_progress.mjs --suggest  # 身价成长曲线 + 每幕门槛建议（改经济/剧情奖励/门槛后必跑）
 node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,live   # 浏览器实玩并截图
+node scripts/qa/map_assets.playwright.cjs out_dir   # 各区小地图、地点抽屉、产业三页、私宅与「返回产业」截图
+# 两个浏览器脚本都用本地默认 GM 口令注册（ADMIN_SECRET），投资卡住时给自己发邮件补钱，以便到达阶层 3
+node scripts/qa/check_content.mjs                   # 小地图地点引用、每件资产/物业/产业都有出处
 ```
 
 - 截图检查（412×852）：文字是否压在人物脸上/看不清、按钮是否被底栏挡住、金币是否飞向资金栏、结果条是否完整。
@@ -301,6 +368,7 @@ node scripts/qa/scenes.playwright.cjs out_dir jade,stock,race,angel,cruise,deal,
 
 - 股票价格路径整段下发给客户端（为了流畅渲染），懂开发者工具的玩家可以提前看到；如需防作弊改为分段下发。赌石石头内部布局同理。
 - 会话在内存中，只能单进程运行（§4.7）。
-- demo 版缺新玩法 mock（§10）。
-- 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 13 天读完第三卷。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
+- demo 版缺新玩法 mock（§10），也没有小地图打卡 `/map/visit`。
+- 早期资产里有真实品牌名与车标（保时捷/法拉利/布加迪/湾流，911 图上有车标），与 §6.2「不用真实品牌」冲突，需要改名并重出图。
+- 主线身价门槛（ep_006 起）按 `scripts/qa/balance_progress.mjs` 调定（2026-11 按「经营事件最多 2 个」重算）：活跃玩家（一天 4 次上线）约第 12 天、休闲玩家（一天 2 次）约第 14 天读完第三卷。模拟器不含买资产，因为资产估值不高于售价，不会加速成长。改了剧情奖励、产业数值、暴击规则后要重跑 `--suggest` 并同步 `stories.json` 的 `requireNetWorth`。
 - `docs/01~05` 为早期设计稿，数值与玩法以代码和本规范为准。

@@ -166,7 +166,7 @@ export const LiveGame: React.FC = () => {
           />
           <div className="relative space-y-1.5 max-w-[72%]">
             <Speech who="沈琉璃" tone="rose" text="赵氏公会又来砸场子了……今晚能帮我守住榜一吗？" />
-            <div className="text-[11.5px] text-[#C3C9DC] leading-relaxed text-stroke-dark">
+            <div className="text-[11.5px] text-[#B3B6C2] leading-relaxed text-stroke-dark">
               小心心随手点，嘉年华在「双倍时刻」砸，绝杀留给对面的偷塔。
             </div>
           </div>
@@ -195,7 +195,7 @@ export const LiveGame: React.FC = () => {
                 </div>
                 <span className="font-num text-[15px] text-[#FFB3C6] text-stroke-dark">{bar.toFixed(0)}%</span>
               </div>
-              <div className="font-num text-[20px] text-[#FBF1D8] text-stroke-dark">{Math.max(0, Math.ceil(session.duration - now))}s</div>
+              <div className="font-num text-[20px] text-[#ECE6DA] text-stroke-dark">{Math.max(0, Math.ceil(session.duration - now))}s</div>
               <div className="flex items-center gap-1.5">
                 <span className="font-num text-[15px] text-[#AFC0FF] text-stroke-dark">{(100 - bar).toFixed(0)}%</span>
                 <div className="w-8 h-8 rounded-full p-[1.5px] bg-gradient-to-b from-[#9FB4FF] to-[#3B4FBF]">
@@ -270,7 +270,7 @@ export const LiveGame: React.FC = () => {
                 {showOpp && !result && (
                   <motion.div key={'o' + lastOpp!.t} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="text-right text-[12px] text-stroke-dark">
                     <span className="text-[#AFC0FF] font-bold">赵氏公会</span>
-                    <span className="text-[#F4EFE4]"> 送出 {lastOpp!.power > 30 ? '超级火箭 ×10' : '跑车'}</span>
+                    <span className="text-[#ECE6DA]"> 送出 {lastOpp!.power > 30 ? '超级火箭 ×10' : '跑车'}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -280,7 +280,7 @@ export const LiveGame: React.FC = () => {
               <motion.div
                 initial={{ opacity: 0, scale: 1.6 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className={`absolute inset-x-0 top-[30%] text-center font-editorial text-[44px] font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] ${result.win ? 'gold-gradient-text' : 'text-[#A3AAC2]'}`}
+                className={`absolute inset-x-0 top-[30%] text-center font-editorial text-[44px] font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] ${result.win ? 'gold-gradient-text' : 'text-[#8C90A0]'}`}
               >
                 {result.win ? '守住榜一' : '被偷塔了'}
               </motion.div>
@@ -295,10 +295,10 @@ export const LiveGame: React.FC = () => {
             </div>
           ) : !result ? (
             <div className="px-3 pb-5 space-y-2">
-              <div className="flex items-center gap-2 text-[11px] text-[#C3C9DC] text-stroke-dark">
+              <div className="flex items-center gap-2 text-[11px] text-[#B3B6C2] text-stroke-dark">
                 <span>预算</span>
                 <div className="flex-1 h-1.5 rounded-full bg-white/10 overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-[#FF9AB8] to-[#FFE7B0]" style={{ width: `${100 - usedUnits}%` }} />
+                  <div className="h-full bg-gradient-to-r from-[#FF9AB8] to-[#EADBB8]" style={{ width: `${100 - usedUnits}%` }} />
                 </div>
                 <span className="font-num">{formatMoney((session.budget * (100 - usedUnits)) / 100)}</span>
               </div>
@@ -310,7 +310,7 @@ export const LiveGame: React.FC = () => {
                 >
                   <GameIcon name="heart" size={28} />
                   <span className="text-[12px] font-editorial">小心心</span>
-                  <span className="font-num text-[10px] text-[#A3AAC2]">{formatMoney(session.budget / 100)}</span>
+                  <span className="font-num text-[10px] text-[#8C90A0]">{formatMoney(session.budget / 100)}</span>
                 </button>
                 <button
                   onPointerDown={(e) => send('carnival', e)}

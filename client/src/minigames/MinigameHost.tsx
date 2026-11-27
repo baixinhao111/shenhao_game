@@ -13,11 +13,11 @@ const StockGame = lazy(() => import('./StockGame').then((m) => ({ default: m.Sto
 const GAMES = { jade: JadeGame, stock: StockGame, race: RaceGame, live: LiveGame, angel: AngelGame, cruise: CruiseGame } as const;
 
 const MgLoadingFallback: React.FC = () => (
-  <div className="absolute inset-0 z-40 bg-[#0A0F1F]/95 flex flex-col items-center justify-center gap-3">
+  <div className="absolute inset-0 z-40 bg-[#05070D]/95 flex flex-col items-center justify-center gap-3">
     <div className="w-28 bar-track">
       <div className="bar-fill w-1/3 animate-[loadSlide_1.2s_ease-in-out_infinite]" />
     </div>
-    <div className="font-editorial text-[11px] text-[#F6DDA4] tracking-[0.35em]">场景加载中</div>
+    <div className="font-editorial text-[11px] text-[#E2D3B0] tracking-[0.35em]">场景加载中</div>
   </div>
 );
 

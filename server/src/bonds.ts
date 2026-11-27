@@ -21,6 +21,7 @@ const KV_OUTFITS = 'heroine_outfits';
 const KV_BONDS_DONE = 'bonds_completed';
 const KV_SHURA_DONE = 'shura_completed';
 const KV_SHURA_LAST_DAY = 'shura_last_day';
+const KV_SHURA_STARTED = 'shura_started';
 
 function parseJsonKv<T>(userId: number, key: string, fallback: T): T {
   const raw = getPlayerKv(userId, key);
@@ -194,6 +195,15 @@ function sumChoiceBonus(nodes: any[], choiceIds: string[]): { bonus: number; las
   };
   walk(nodes);
   return { bonus, lastResultText };
+}
+
+/** The shura event that is really live for this player right now (same rules the home screen uses). */
+function assertShuraLive(userId: number, eventId: string): void {
+  const heroinesRows = queryAll<any>('SELECT * FROM player_heroines WHERE user_id = ?', [userId]);
+  const playerState = queryOne<any>('SELECT * FROM player_state WHERE user_id = ?', [userId]);
+  const ownedProps = queryAll<any>('SELECT * FROM player_properties WHERE user_id = ?', [userId]);
+  const live = getActiveShuraTrigger(userId, heroinesRows, playerState, ownedProps);
+  if (!live || live.id !== eventId) throw new Error('这场修罗场现在并没有发生');
 }
 
 export function registerBondRoutes(router: Router, auth: Auth): void {
@@ -385,6 +395,9 @@ export function registerBondRoutes(router: Router, auth: Auth): void {
         heroinesRows.some((r) => r.heroine_id === hid && r.unlocked),
       );
       if (!ok) throw new Error('尚未同时结识事件中的两位红颜');
+      assertShuraLive(userId, ev.id);
+      // remember it was live when the player walked in, so a trigger expiring mid-scene doesn't void the ending
+      setPlayerKv(userId, KV_SHURA_STARTED, JSON.stringify({ id: ev.id, day: todayKey() }));
 
       const user = queryOne<any>('SELECT nickname FROM users WHERE id = ?', [userId]);
       const vars = { playerName: user?.nickname || '陆沉' };
@@ -437,6 +450,8 @@ export function registerBondRoutes(router: Router, auth: Auth): void {
         });
         return;
       }
+      const started = parseJsonKv<{ id?: string; day?: string }>(userId, KV_SHURA_STARTED, {});
+      if (!(started.id === ev.id && started.day === today)) assertShuraLive(userId, ev.id);
 
       const { bonus, lastResultText } = sumChoiceBonus(ev.nodes || [], choiceIds);
       const affEach = Number(ev.reward?.affectionEach || 12) + Math.floor(bonus / 2);

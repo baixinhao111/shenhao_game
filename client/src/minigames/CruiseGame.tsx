@@ -37,7 +37,7 @@ const PlayingCard: React.FC<{ card: Card; index: number }> = ({ card, index }) =
       className="relative w-[74px] h-[106px] -ml-4 first:ml-0 rounded-[8px] shadow-[0_10px_18px_rgba(0,0,0,0.6)] overflow-hidden"
       style={
         hidden
-          ? { background: 'url(/assets/ui/deco_tile.webp) center/120px, #141C38', border: '2px solid #E2BD72' }
+          ? { background: 'url(/assets/ui/deco_tile.webp) center/120px, #0E1119', border: '2px solid #D9C49A' }
           : { background: 'linear-gradient(160deg,#FFFDF6,#EDE4CF)', border: '1px solid #C9B37E' }
       }
     >
@@ -119,16 +119,16 @@ export const CruiseGame: React.FC = () => {
         <div className="px-4 pt-1 flex items-center justify-between text-stroke-dark">
           <div className="flex items-center gap-1">
             <GameIcon name="medal" size={22} />
-            <span className="font-num text-[18px] text-[#FFE7B0]">{ev?.tokens ?? 0}</span>
-            <span className="text-[11px] text-[#A3AAC2]">星耀勋章</span>
+            <span className="font-num text-[18px] text-[#EADBB8]">{ev?.tokens ?? 0}</span>
+            <span className="text-[11px] text-[#8C90A0]">星耀勋章</span>
           </div>
-          <div className="text-[11.5px] text-[#C3C9DC]">今日剩余 {playsLeft} 手</div>
+          <div className="text-[11.5px] text-[#B3B6C2]">今日剩余 {playsLeft} 手</div>
         </div>
         {ev?.weeklyTheme?.name && (
           <div className="px-4 mt-1 flex justify-center">
             <div
               title={ev.weeklyTheme.desc}
-              className="px-3 py-0.5 rounded-full bg-[#1C160A]/80 border border-[#E2BD72]/45 text-[10.5px] text-[#FFE7B0] tracking-wider"
+              className="px-3 py-0.5 rounded-full bg-[#1C160A]/80 border border-[#D9C49A]/45 text-[10.5px] text-[#EADBB8] tracking-wider"
             >
               {ev.weeklyTheme.name}
             </div>
@@ -138,12 +138,12 @@ export const CruiseGame: React.FC = () => {
         <div ref={tableRef} className="relative flex-1 flex flex-col items-center justify-between py-3">
           {/* dealer */}
           <div className="flex flex-col items-center">
-            <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-[#FFE7B0] to-[#A07C3E]">
-              <div className="w-full h-full rounded-full overflow-hidden bg-[#1A2344]">
+            <div className="w-14 h-14 rounded-full p-[2px] bg-gradient-to-b from-[#EADBB8] to-[#8A7650]">
+              <div className="w-full h-full rounded-full overflow-hidden bg-[#10131C]">
                 <img src="/assets/npc/akun.webp" alt="" className="w-full h-full object-cover object-top scale-[1.5] origin-top" />
               </div>
             </div>
-            <div className="mt-1 px-2.5 py-0.5 rounded-full bg-[#05070F]/72 backdrop-blur-sm border border-white/12 text-[11px] text-[#EAECEF]">
+            <div className="mt-1 px-2.5 py-0.5 rounded-full bg-[#04050A]/72 backdrop-blur-sm border border-white/12 text-[11px] text-[#EAECEF]">
               财阀代理 · 阿坤 {hand?.dealerTotal != null ? `· ${hand.dealerTotal}点` : ''}
             </div>
             <div className="flex mt-2 h-[106px]">
@@ -157,7 +157,7 @@ export const CruiseGame: React.FC = () => {
                 initial={{ opacity: 0, scale: 1.6 }}
                 animate={{ opacity: 1, scale: 1 }}
                 className={`font-editorial text-[36px] font-black drop-shadow-[0_4px_12px_rgba(0,0,0,0.9)] ${
-                  hand.result.outcome === 'lose' ? 'text-[#A3AAC2]' : 'gold-gradient-text'
+                  hand.result.outcome === 'lose' ? 'text-[#8C90A0]' : 'gold-gradient-text'
                 }`}
               >
                 {OUTCOME[hand.result.outcome]}
@@ -173,7 +173,7 @@ export const CruiseGame: React.FC = () => {
           {/* player */}
           <div className="flex flex-col items-center">
             <div className="flex h-[106px]">{hand?.player.map((c, i) => <PlayingCard key={`p${i}${c.r}${c.s}`} card={c} index={i} />)}</div>
-            {hand && <div className="mt-2 font-num text-[18px] text-[#FFE7B0] text-stroke-dark">{hand.playerTotal} 点</div>}
+            {hand && <div className="mt-2 font-num text-[18px] text-[#EADBB8] text-stroke-dark">{hand.playerTotal} 点</div>}
           </div>
         </div>
 
@@ -202,7 +202,7 @@ export const CruiseGame: React.FC = () => {
               {playsLeft > 0 ? (
                 <>
                   <span>下注 {formatMoney(300000 * stakeScale)} · 发牌</span>
-                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1E1506]/85 text-[#FFE7B0] font-num text-[11.5px]">
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#19130A]/85 text-[#EADBB8] font-num text-[11.5px]">
                     <GameIcon name="energy" size={14} shadow={false} />8
                   </span>
                 </>

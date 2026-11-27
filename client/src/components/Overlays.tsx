@@ -156,9 +156,9 @@ export const Overlays: React.FC = () => {
             <div
               className="relative rounded-[12px] pl-2 pr-3.5 py-2 flex items-center gap-2.5"
               style={{
-                background: 'linear-gradient(180deg, rgba(26,36,72,0.97), rgba(10,15,31,0.97))',
+                background: 'linear-gradient(180deg, rgba(26,36,72,0.97), rgba(5,7,13,0.97))',
                 border: `1px solid ${
-                  topToast.kind === 'wechat' ? 'rgba(240,120,154,0.6)' : topToast.kind === 'system' ? 'rgba(99,230,242,0.55)' : 'rgba(226,189,114,0.6)'
+                  topToast.kind === 'wechat' ? 'rgba(240,120,154,0.6)' : topToast.kind === 'system' ? 'rgba(99,230,242,0.55)' : 'rgba(217,196,154,0.6)'
                 }`,
                 boxShadow: '0 12px 28px rgba(0,0,0,0.55)',
               }}
@@ -169,10 +169,10 @@ export const Overlays: React.FC = () => {
               />
               <div className="min-w-0 flex-1">
                 <div className="flex items-center justify-between gap-2">
-                  <span className="text-[13px] font-editorial font-black text-[#FBF1D8] truncate">{topToast.title}</span>
-                  <span className="text-[10px] text-[#7F88A6] shrink-0">刚刚</span>
+                  <span className="text-[13px] font-editorial font-black text-[#ECE6DA] truncate">{topToast.title}</span>
+                  <span className="text-[10px] text-[#8A8EA0] shrink-0">刚刚</span>
                 </div>
-                <p className="text-[11.5px] text-[#C3C9DC] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
+                <p className="text-[11.5px] text-[#B3B6C2] line-clamp-2 mt-0.5 leading-snug">{topToast.body}</p>
               </div>
             </div>
           </motion.div>
@@ -223,7 +223,7 @@ export const Overlays: React.FC = () => {
               <div
                 key={`${barrage.id}-${i}`}
                 className={`absolute whitespace-nowrap font-bold animate-barrage ${big ? 'text-[19px]' : 'text-[14px]'} ${
-                  barrage.style === 'gold' ? 'text-[#FFE7B0]' : i % 3 === 2 ? 'text-[#FFD1DC]' : 'text-white'
+                  barrage.style === 'gold' ? 'text-[#EADBB8]' : i % 3 === 2 ? 'text-[#FFD1DC]' : 'text-white'
                 }`}
                 style={{
                   top: `${lane * 13 + 2}%`,
@@ -231,7 +231,7 @@ export const Overlays: React.FC = () => {
                   animationDuration: `${big ? 6.2 : 5 + (i % 3) * 0.7}s`,
                   textShadow:
                     barrage.style === 'gold'
-                      ? '0 0 10px rgba(226,189,114,0.75), 0 1px 2px #000, 0 0 2px #000'
+                      ? '0 0 10px rgba(217,196,154,0.75), 0 1px 2px #000, 0 0 2px #000'
                       : '0 1px 2px #000, 0 0 3px rgba(0,0,0,0.9)',
                 }}
               >
@@ -277,39 +277,39 @@ export const Overlays: React.FC = () => {
               </div>
               <div className="overflow-y-auto no-scrollbar p-3 space-y-1.5">
                 {leaderboard.map((row, idx) => {
-                  const medal = ['linear-gradient(180deg,#FFF0C8,#D6A85A)', 'linear-gradient(180deg,#F2F5FF,#9AA6C8)', 'linear-gradient(180deg,#F5C9A0,#A8693A)'][idx];
+                  const medal = ['linear-gradient(180deg,#EEE2C6,#C4AE80)', 'linear-gradient(180deg,#F2F5FF,#9AA6C8)', 'linear-gradient(180deg,#F5C9A0,#A8693A)'][idx];
                   return (
                     <div key={row.userId} className={`rounded-[10px] px-3 py-2.5 flex items-center gap-3 ${idx === 0 ? 'panel-brass' : 'panel-arch'}`}>
                       <div
-                        className={`w-8 h-8 shrink-0 flex items-center justify-center font-num text-[15px] font-semibold ${medal ? 'rotate-45 rounded-[6px] text-[#1E1506] shadow-[0_3px_8px_rgba(0,0,0,0.5)]' : 'text-[#8E96B0]'}`}
+                        className={`w-8 h-8 shrink-0 flex items-center justify-center font-num text-[15px] font-semibold ${medal ? 'rotate-45 rounded-[6px] text-[#19130A] shadow-[0_3px_8px_rgba(0,0,0,0.5)]' : 'text-[#8E96B0]'}`}
                         style={medal ? { background: medal } : undefined}
                       >
                         <span className={medal ? '-rotate-45' : ''}>{idx + 1}</span>
                       </div>
                       <div className="min-w-0 flex-1">
                         <div className="flex items-center gap-1.5 flex-wrap">
-                          <span className="font-editorial font-black text-[14px] text-[#FBF1D8] truncate">{row.nickname}</span>
-                          <span className="px-1.5 rounded-sm text-[9.5px] text-[#F6DDA4] border border-[#E2BD72]/40 shrink-0">{row.tierName}</span>
+                          <span className="font-editorial font-black text-[14px] text-[#ECE6DA] truncate">{row.nickname}</span>
+                          <span className="px-1.5 rounded-sm text-[10.5px] text-[#E2D3B0] border border-[#D9C49A]/40 shrink-0">{row.tierName}</span>
                           {row.equippedTitle?.titleBadge && (
                             <span
-                              className={`px-1.5 rounded-sm text-[9px] font-bold shrink-0 border ${
+                              className={`px-1.5 rounded-sm text-[10px] font-bold shrink-0 border ${
                                 row.equippedTitle.titleTone === 'cyan'
                                   ? 'bg-[#072330]/85 border-[#63E6F2]/50 text-[#B9F6FB]'
                                   : row.equippedTitle.titleTone === 'rose'
                                     ? 'bg-[#361124]/85 border-[#F0789A]/50 text-[#FFC4D3]'
-                                    : 'bg-[#2B1F0B]/85 border-[#E2BD72]/50 text-[#FFE7B0]'
+                                    : 'bg-[#2B1F0B]/85 border-[#D9C49A]/50 text-[#EADBB8]'
                               }`}
                             >
                               {row.equippedTitle.titleBadge}
                             </span>
                           )}
                         </div>
-                        <div className="text-[11px] text-[#8B93AD] mt-0.5 truncate">
+                        <div className="text-[11px] text-[#8C90A0] mt-0.5 truncate">
                           {row.mainResidence} · {row.carName}
                         </div>
                       </div>
                       <div className="text-right shrink-0">
-                        <div className="font-num text-[15px] text-[#FFE7B0]">
+                        <div className="font-num text-[15px] text-[#EADBB8]">
                           <AnimatedNumber value={row.netWorth} />
                         </div>
                         <div className="text-[10px] text-[#6F7896]">身价</div>
@@ -358,7 +358,7 @@ export const Overlays: React.FC = () => {
               </div>
               <div className="overflow-y-auto no-scrollbar p-3 space-y-2">
                 {state.mails?.length === 0 && (
-                  <div className="flex flex-col items-center gap-2 text-xs text-[#8B93AD] py-10">
+                  <div className="flex flex-col items-center gap-2 text-xs text-[#8C90A0] py-10">
                     <GameIcon name="mail" size={56} className="opacity-50 grayscale" />
                     暂无来信
                   </div>
@@ -367,15 +367,15 @@ export const Overlays: React.FC = () => {
                   <div key={m.id} className={`rounded-[10px] px-3 py-3 space-y-2 ${m.claimed ? 'panel-arch opacity-60' : 'panel-brass'}`}>
                     <div className="flex items-center gap-2">
                       <GameIcon name="mail" size={30} className={m.claimed ? 'grayscale' : ''} />
-                      <span className="flex-1 min-w-0 text-[13.5px] font-editorial font-black text-[#FBF1D8] truncate">{m.title}</span>
-                      <span className="text-[10px] text-[#7F88A6] shrink-0">{formatShortTime(m.created_at)}</span>
+                      <span className="flex-1 min-w-0 text-[13.5px] font-editorial font-black text-[#ECE6DA] truncate">{m.title}</span>
+                      <span className="text-[10px] text-[#8A8EA0] shrink-0">{formatShortTime(m.created_at)}</span>
                     </div>
                     <p className="text-[12px] text-[#B4BBD0] leading-relaxed">{m.body}</p>
                     <div className="flex items-center justify-between gap-2 pt-0.5">
                       <div className="flex items-center gap-3 font-num text-[12px]">
-                        {m.cash > 0 && (<span className="flex items-center gap-0.5 text-[#FFE7B0]"><GameIcon name="cash" size={18} shadow={false} />{formatMoney(m.cash)}</span>)}
+                        {m.cash > 0 && (<span className="flex items-center gap-0.5 text-[#EADBB8]"><GameIcon name="cash" size={18} shadow={false} />{formatMoney(m.cash)}</span>)}
                         {m.sys_points > 0 && (<span className="flex items-center gap-0.5 text-[#B9F6FB]"><GameIcon name="syspoint" size={18} shadow={false} />+{m.sys_points}</span>)}
-                        {m.energy > 0 && (<span className="flex items-center gap-0.5 text-[#F4EFE4]"><GameIcon name="energy" size={18} shadow={false} />+{m.energy}</span>)}
+                        {m.energy > 0 && (<span className="flex items-center gap-0.5 text-[#ECE6DA]"><GameIcon name="energy" size={18} shadow={false} />+{m.energy}</span>)}
                       </div>
                       {m.claimed ? (
                         <span className="text-[11px] text-[#6F7896]">已领取</span>
@@ -412,7 +412,7 @@ export const Overlays: React.FC = () => {
               className="panel-elevated w-full max-h-[86%] rounded-[12px] flex flex-col overflow-hidden"
             >
               <div className="flex items-center justify-between px-4 py-3.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2 font-semibold text-sm text-[#F6DDA4]">
+                <div className="flex items-center gap-2 font-semibold text-sm text-[#E2D3B0]">
                   <Shield className="w-4 h-4" /> 服主控制台
                 </div>
                 <button onClick={() => setShowAdmin(false)} className="p-1 text-[#8E96B0] hover:text-white">
@@ -423,11 +423,11 @@ export const Overlays: React.FC = () => {
                 <div className="panel-arch rounded-[6px] p-3.5 space-y-2.5">
                   <div className="flex items-center justify-between">
                     <span className="font-semibold text-[#F3F0E8]">DeepSeek 对话接口</span>
-                    <span className={adminData?.stats?.keyConfigured ? 'text-emerald-400' : 'text-[#E2BD72]'}>
+                    <span className={adminData?.stats?.keyConfigured ? 'text-emerald-400' : 'text-[#D9C49A]'}>
                       {adminData?.stats?.keyConfigured ? '已接入' : '未配置 Key'}
                     </span>
                   </div>
-                  <div className="text-[11px] text-[#8B93AD]">
+                  <div className="text-[11px] text-[#8C90A0]">
                     累计对话 {adminData?.stats?.totalMessages || 0} 条 · Tokens {adminData?.stats?.totalTokensUsed || 0}
                   </div>
                   <input
@@ -435,14 +435,14 @@ export const Overlays: React.FC = () => {
                     placeholder="DeepSeek API Key (sk-...)"
                     value={gmKey}
                     onChange={(e) => setGmKey(e.target.value)}
-                    className="w-full rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-2 text-xs text-white outline-none focus:border-[#E2BD72]/55"
+                    className="w-full rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-2 text-xs text-white outline-none focus:border-[#D9C49A]/55"
                   />
                   <div className="flex gap-2">
                     <input
                       type="text"
                       value={gmModel}
                       onChange={(e) => setGmModel(e.target.value)}
-                      className="flex-1 rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/55"
+                      className="flex-1 rounded-[4px] bg-[#0D1326] border border-white/12 px-3 py-1.5 text-xs text-white outline-none focus:border-[#D9C49A]/55"
                     />
                     <button onClick={saveGmConfig} className="btn-brass px-3.5 py-1.5 rounded-[4px] text-xs">
                       保存
@@ -452,16 +452,16 @@ export const Overlays: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <button onClick={toggleCruiseEvent} className="game-action-tile rounded-[6px] p-3 text-left">
-                    <div className="font-semibold text-[#F6DDA4]">限时游轮活动</div>
-                    <div className="text-[11px] text-[#8B93AD] mt-0.5">
+                    <div className="font-semibold text-[#E2D3B0]">限时游轮活动</div>
+                    <div className="text-[11px] text-[#8C90A0] mt-0.5">
                       {adminData?.stats?.eventActive ? '开启中' : '已关闭'}
                     </div>
                   </button>
                   <button onClick={reloadContent} className="game-action-tile rounded-[6px] p-3 text-left">
                     <div className="font-semibold text-[#F3F0E8] flex items-center gap-1">
-                      <RefreshCw className="w-3.5 h-3.5 text-[#E2BD72]" /> 重载剧本配置
+                      <RefreshCw className="w-3.5 h-3.5 text-[#D9C49A]" /> 重载剧本配置
                     </div>
-                    <div className="text-[11px] text-[#8B93AD] mt-0.5">免重启刷新 content/</div>
+                    <div className="text-[11px] text-[#8C90A0] mt-0.5">免重启刷新 content/</div>
                   </button>
                 </div>
 

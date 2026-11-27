@@ -145,6 +145,19 @@ interface GameStore {
   showProfile: boolean;
   profileTab: ProfileSubTab;
   selectedDistrictId: string | null;
+  /** open this spot's sheet once its district map mounts (jump from 产业 → 车行 etc.) */
+  focusSpotId: string | null;
+  /** preselect this business on the 产业 skyline */
+  focusBizId: string | null;
+  openSpot: (districtId: string, spotId: string) => void;
+  focusBusiness: (bizId: string | null) => void;
+  clearFocusSpot: () => void;
+  /** tab we jumped to the map from (e.g. 产业 → 车行); the map's back button returns there */
+  returnTo: MainTab | null;
+  /** open a property's private home from anywhere */
+  openHome: (districtId: string, propertyId: string) => void;
+  /** back out of a district / home: to the tab we came from, or one level up the map */
+  mapBack: (level: 'district' | 'home') => void;
   activePropertyId: string | null;
   activeChatHeroineId: string | null;
   chatLocationOverride: string | null;
@@ -216,10 +229,13 @@ export const useGameStore = create<GameStore>((set, get) => ({
   state: null,
   loading: Boolean(getStoredToken()),
   activeTab: 'home',
-  assetsSubTab: 'garage',
+  assetsSubTab: 'biz',
   showProfile: false,
   profileTab: 'tasks',
   selectedDistrictId: null,
+  focusSpotId: null,
+  focusBizId: null,
+  returnTo: null,
   activePropertyId: null,
   activeChatHeroineId: null,
   chatLocationOverride: null,
@@ -281,7 +297,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       loading: false,
       showProfile: false,
       activeTab: isBrandNew ? 'story' : 'home',
-      assetsSubTab: 'garage',
+      assetsSubTab: 'biz',
       selectedDistrictId: null,
       activePropertyId: null,
       activeChatHeroineId: null,
@@ -316,7 +332,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
       token: '',
       state: null,
       activeTab: 'home',
-      assetsSubTab: 'garage',
+      assetsSubTab: 'biz',
       showProfile: false,
       selectedDistrictId: null,
       activePropertyId: null,
@@ -352,6 +368,17 @@ export const useGameStore = create<GameStore>((set, get) => ({
   applyServerState: (newState, critResult, options) => {
     const prevTier = get().state?.player?.tier?.tier;
     const prevTierName: string = get().state?.player?.tier?.name || '';
+    // write responses leave out the static story script (~0.5MB); keep the copy we already have,
+    // and refetch the full state if the server's content was hot-reloaded since we got it
+    const prevStories = get().state?.stories;
+    if (newState?.stories && !newState.stories.volumes) {
+      if (prevStories?.volumes && prevStories.contentVersion === newState.stories.contentVersion) {
+        newState.stories.volumes = prevStories.volumes;
+      } else {
+        newState.stories.volumes = prevStories?.volumes || [];
+        setTimeout(() => void get().refreshState(), 0);
+      }
+    }
     if (newState) set({ state: newState });
     const nextTier = newState?.player?.tier;
     if (prevTier && nextTier && nextTier.tier > prevTier) {
@@ -394,7 +421,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
       set({ showProfile: true });
       return;
     }
-    set({ activeTab: tab, showProfile: false, activePropertyId: null });
+    // switching tabs by hand ends any 「jumped here from another tab」 trip
+    set({ activeTab: tab, showProfile: false, activePropertyId: null, returnTo: null });
   },
 
   setAssetsSubTab: (sub) => set({ assetsSubTab: sub }),
@@ -404,6 +432,35 @@ export const useGameStore = create<GameStore>((set, get) => ({
   closeProfile: () => set({ showProfile: false }),
 
   setSelectedDistrictId: (id) => set({ selectedDistrictId: id, activePropertyId: null }),
+  openSpot: (districtId, spotId) =>
+    set((st) => ({
+      returnTo: st.activeTab !== 'map' ? st.activeTab : st.returnTo,
+      activeTab: 'map',
+      selectedDistrictId: districtId,
+      focusSpotId: spotId,
+      activePropertyId: null,
+      showProfile: false,
+    })),
+  openHome: (districtId, propertyId) =>
+    set((st) => ({
+      returnTo: st.activeTab !== 'map' ? st.activeTab : st.returnTo,
+      activeTab: 'map',
+      selectedDistrictId: districtId,
+      activePropertyId: propertyId,
+      showProfile: false,
+    })),
+  mapBack: (level) => {
+    const back = get().returnTo;
+    if (back) {
+      set({ activeTab: back, returnTo: null, selectedDistrictId: null, activePropertyId: null });
+      return;
+    }
+    if (level === 'home') set({ activePropertyId: null });
+    else set({ selectedDistrictId: null, activePropertyId: null });
+  },
+  focusBusiness: (bizId) =>
+    set({ focusBizId: bizId, ...(bizId ? { activeTab: 'assets' as const, assetsSubTab: 'biz' as const, showProfile: false, returnTo: null, selectedDistrictId: null } : {}) }),
+  clearFocusSpot: () => set({ focusSpotId: null }),
   setActivePropertyId: (id) => set({ activePropertyId: id }),
 
   openHeroineChat: (heroineId, locationOverride = null) => {

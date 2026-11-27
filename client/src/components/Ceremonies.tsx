@@ -176,7 +176,7 @@ export const CritShow: React.FC<{ multiplier: number; amount: number; subtitle?:
                   <GameIcon name="income" size={84} />
                 </motion.div>
               </div>
-              <div className="font-num text-[42px] font-semibold gold-gradient-text leading-none mt-1 drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
+              <div className="font-num text-[42px] font-semibold gold-flash-text leading-none mt-1 drop-shadow-[0_3px_10px_rgba(0,0,0,0.8)]">
                 +<AnimatedNumber from={0} value={amount} duration={1100} />
               </div>
               {subtitle && <div className="text-[12.5px] text-[#E9DFC6] mt-2">{subtitle}</div>}
@@ -275,7 +275,7 @@ export const TierUpShow: React.FC<{ fx: TierUpFx; onClose: () => void }> = ({ fx
                 <GameIcon name="crown" size={78} />
               </div>
               <div className="font-num text-[12px] text-[#E2BD72] tracking-[0.4em] mt-1">TIER {fx.toTier}</div>
-              <div className="font-editorial text-[38px] font-black tracking-[0.22em] gold-gradient-text leading-tight drop-shadow-[0_4px_14px_rgba(0,0,0,0.9)]">
+              <div className="font-editorial text-[38px] font-black tracking-[0.22em] gold-flash-text leading-tight drop-shadow-[0_4px_14px_rgba(0,0,0,0.9)]">
                 {fx.toName}
               </div>
             </motion.div>
