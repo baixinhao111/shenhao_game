@@ -342,7 +342,7 @@ export const StoryView: React.FC = () => {
               {/* Volume banner */}
               <div className="relative h-[92px] rounded-[8px] overflow-hidden border border-[#E2BD72]/35">
                 <img src={vol.cover || eps[0]?.bg} alt="" className="absolute inset-0 w-full h-full object-cover" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/95 via-[#0A0F1F]/60 to-[#0A0F1F]/10" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#0A0F1F]/95 via-[#0A0F1F]/60 to-[#0A0F1F]/55" />
                 <div className="relative h-full px-4 flex items-center justify-between gap-3">
                   <div className="min-w-0">
                     {kicker && (
@@ -354,11 +354,11 @@ export const StoryView: React.FC = () => {
                     <div className="text-[10.5px] text-[#C3C9DC] truncate max-w-[220px]">{vol.subtitle}</div>
                   </div>
                   <div className="text-right shrink-0">
-                    <div className="font-num text-[22px] text-[#FFE7B0] leading-none">
+                    <div className="font-num text-[22px] text-[#FFE7B0] leading-none text-stroke-dark">
                       {volDone}
-                      <span className="text-[13px] text-[#8B93AD]">/{eps.length}</span>
+                      <span className="text-[13px] text-[#A3AAC2]">/{eps.length}</span>
                     </div>
-                    <div className="text-[9.5px] text-[#8B93AD] tracking-widest mt-0.5">已阅</div>
+                    <div className="text-[9.5px] text-[#C3C9DC] tracking-widest mt-0.5 text-stroke-dark">已阅</div>
                   </div>
                 </div>
               </div>
@@ -414,7 +414,7 @@ export const StoryView: React.FC = () => {
                           <div className="text-[10px] text-[#E2BD72] tracking-wider">{ep.chapterTitle}</div>
                           <div className="font-editorial text-[15px] font-black text-[#FBF1D8] truncate">{ep.title}</div>
                           <p className="text-[11px] text-[#929AB4] line-clamp-1 leading-snug mt-0.5">{ep.summary}</p>
-                          {ep.requireNetWorth && !done && !nwMet && (
+                          {Number(ep.requireNetWorth) > 0 && !done && !nwMet && (
                             <div className="text-[10.5px] text-[#FF8FA6] mt-0.5">需身价 {formatMoney(ep.requireNetWorth)}</div>
                           )}
                         </div>

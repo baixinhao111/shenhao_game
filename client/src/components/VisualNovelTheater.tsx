@@ -94,7 +94,61 @@ const SPEAKER_FALLBACK_SPRITE: Record<string, string> = {
   zhao_tianyu: '/assets/characters/zhao_tianyu.png',
   wang_qiang: '/assets/characters/wang_qiang.png',
   chen_mo: '/assets/characters/chen_mo.png',
+  zhou: '/assets/npc/zhou.webp',
+  qian: '/assets/npc/qian.webp',
+  lin_jie: '/assets/npc/lin_jie.webp',
+  akun: '/assets/npc/akun.webp',
 };
+
+interface VNBookmark {
+  scriptId: string;
+  baseLen: number;
+  nodeIdx: number;
+  queue: VNNode[];
+  chosenIds: string[];
+  chosenOptions: VNChoiceOption[];
+  resolvedChoices: Record<number, VNChoiceOption>;
+}
+
+const BOOKMARK_PREFIX = 'tianshu_vn_bm_';
+
+function loadVNBookmark(scriptId: string, baseLen: number): VNBookmark | null {
+  try {
+    if (typeof window === 'undefined') return null;
+    const raw = localStorage.getItem(BOOKMARK_PREFIX + scriptId);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as VNBookmark;
+    if (
+      parsed &&
+      parsed.scriptId === scriptId &&
+      parsed.baseLen === baseLen &&
+      Array.isArray(parsed.queue) &&
+      parsed.nodeIdx > 0 &&
+      parsed.nodeIdx < parsed.queue.length
+    ) {
+      return parsed;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function saveVNBookmark(bm: VNBookmark): void {
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(BOOKMARK_PREFIX + bm.scriptId, JSON.stringify(bm));
+    }
+  } catch {}
+}
+
+function clearVNBookmark(scriptId: string): void {
+  try {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(BOOKMARK_PREFIX + scriptId);
+    }
+  } catch {}
+}
 
 const MODE_LABELS: Record<VisualNovelScript['mode'], string> = {
   main: '主线',
@@ -209,17 +263,36 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   const skipTypewriterRef = useRef(false);
 
   useEffect(() => {
-    setQueue(script.nodes || []);
-    setNodeIdx(0);
-    setTypedCount(0);
-    setShowOpeningCard(true);
+    const baseNodes = script.nodes || [];
+    const saved =
+      script.mode === 'main' && !script.alreadyCompleted
+        ? loadVNBookmark(script.id, baseNodes.length)
+        : null;
+
+    if (saved) {
+      setQueue(saved.queue);
+      setNodeIdx(saved.nodeIdx);
+      setTypedCount(0);
+      setShowOpeningCard(false);
+      setChosenIds(saved.chosenIds || []);
+      setChosenOptions(saved.chosenOptions || []);
+      setResolvedChoices(saved.resolvedChoices || {});
+      skipTypewriterRef.current = true;
+    } else {
+      setQueue(baseNodes);
+      setNodeIdx(0);
+      setTypedCount(0);
+      setShowOpeningCard(true);
+      setChosenIds([]);
+      setChosenOptions([]);
+      setResolvedChoices({});
+      skipTypewriterRef.current = false;
+    }
+
     setAutoPlay(false);
     setFastForward(false);
     setHideUi(false);
     setShowLog(false);
-    setChosenIds([]);
-    setChosenOptions([]);
-    setResolvedChoices({});
     setPeekOpen(false);
     setRevealedThoughts({});
     setActiveBanner(null);
@@ -228,11 +301,28 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     setSettlement(null);
     lastEffectKeyRef.current = '';
     lastBannerKeyRef.current = '';
-    skipTypewriterRef.current = false;
 
-    const timer = setTimeout(() => setShowOpeningCard(false), 1250);
-    return () => clearTimeout(timer);
+    if (!saved) {
+      const timer = setTimeout(() => setShowOpeningCard(false), 1250);
+      return () => clearTimeout(timer);
+    }
   }, [script.id]);
+
+  // Persist reading position for long novel-grade main chapters
+  useEffect(() => {
+    if (script.mode !== 'main' || script.alreadyCompleted || settlement) return;
+    if (nodeIdx > 0 && nodeIdx < queue.length) {
+      saveVNBookmark({
+        scriptId: script.id,
+        baseLen: (script.nodes || []).length,
+        nodeIdx,
+        queue,
+        chosenIds,
+        chosenOptions,
+        resolvedChoices,
+      });
+    }
+  }, [script.id, script.mode, script.alreadyCompleted, script.nodes, settlement, nodeIdx, queue, chosenIds, chosenOptions, resolvedChoices]);
 
   const currentNode = queue[nodeIdx] || null;
   const fullText = useMemo(() => {
@@ -340,6 +430,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
       setSubmitting(true);
       try {
         const result = await onComplete({ chosenIds: finalIds, chosenOptions: finalOpts });
+        if (script.mode === 'main') clearVNBookmark(script.id);
         if (result) {
           setShowLog(false);
           setHideUi(false);
@@ -1087,9 +1178,29 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   {script.chapterTitle} · {script.title}
                 </div>
               </div>
-              <button onClick={() => setShowLog(false)} className="p-1.5 text-[#929AB4] hover:text-white">
-                <X className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-2">
+                {script.mode === 'main' && nodeIdx > 0 && (
+                  <button
+                    onClick={() => {
+                      playTap();
+                      clearVNBookmark(script.id);
+                      setQueue(script.nodes || []);
+                      setNodeIdx(0);
+                      setChosenIds([]);
+                      setChosenOptions([]);
+                      setResolvedChoices({});
+                      setRevealedThoughts({});
+                      setShowLog(false);
+                    }}
+                    className="px-2.5 py-1 rounded-full text-[11px] text-[#E2BD72] border border-[#E2BD72]/40 bg-[#0F1630]/80 active:opacity-75"
+                  >
+                    重读本章
+                  </button>
+                )}
+                <button onClick={() => setShowLog(false)} className="p-1.5 text-[#929AB4] hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </div>
             <div className="flex-1 overflow-y-auto no-scrollbar px-5 py-4 space-y-4">
               {queue.slice(0, nodeIdx + 1).map((n, idx) => {

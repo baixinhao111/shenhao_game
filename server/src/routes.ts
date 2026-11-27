@@ -972,99 +972,25 @@ export function createApiRouter(): Router {
 
       const user = queryOne<any>('SELECT nickname FROM users WHERE id = ?', [userId]);
       const nick = user?.nickname || '陆沉';
-      if (episodeId === 'ep_002') {
+      if (ep.moment && ep.moment.text) {
+        const vars = { playerName: nick };
+        const comments = Array.isArray(ep.moment.comments)
+          ? ep.moment.comments.map((c: any) => ({
+              author: interpolateText(String(c?.author || ''), vars),
+              text: interpolateText(String(c?.text || ''), vars),
+            }))
+          : [];
+        const likes = Array.isArray(ep.moment.likes)
+          ? ep.moment.likes.map((l: any) => interpolateText(String(l || ''), vars))
+          : [];
         postMoment(
           userId,
-          nick,
-          '刚提了辆曜石黑 911 Turbo S，外滩的风挺舒服。某些人刚才脸色怎么那么难看？',
-          '海城 · 外滩超跑中心',
-          [
-            { author: '白梦瑶', text: '陆沉！！你把微信拉黑干嘛？你那张黑卡到底哪来的，你接我电话！' },
-            { author: '陈默（私人管家）', text: '恭喜少爷首战告捷，这仅仅只是开始。' },
-          ],
-          ['陈默（私人管家）', '4S店实习顾问'],
-        );
-      } else if (episodeId === 'ep_005') {
-        postMoment(
-          userId,
-          nick,
-          '江景酒会落幕。海城的天，从今晚起要换种颜色了。',
-          '海城 · 外滩顶层酒会',
-          [
-            { author: '苏清婉', text: '陆先生今晚表现不错，下周的资本局，别让我失望。' },
-            { author: '林晚星', text: '陆沉哥太厉害啦！早点回去休息哦～' },
-          ],
-          ['苏清婉', '林晚星', '盛世集团董事'],
-        );
-      } else if (episodeId === 'ep_006') {
-        postMoment(
-          userId,
-          nick,
-          '百座星海嘉年华清屏的感觉还不错。星耀之夜，规则该换人写了。',
-          '海城 · 星耀盛典现场',
-          [
-            { author: '沈琉璃', text: '哥哥今晚实在太帅了，全场镜头都在找你的包厢呢～' },
-            { author: '陈默（私人管家）', text: '星耀传媒股权收购意向书已起草完毕，随时待命。' },
-          ],
-          ['沈琉璃', '星耀盛典主办方', '陈默（私人管家）'],
-        );
-      } else if (episodeId === 'ep_007') {
-        postMoment(
-          userId,
-          nick,
-          '城南鬼市水很深，但真品和假账一样，都藏不住。',
-          '海城 · 城南午夜鬼市',
-          [
-            { author: '陆知微', text: '啧，算你眼光跟得上我的节奏。那帮做局的假货商今晚怕是睡不着了。' },
-            { author: '陈默（私人管家）', text: '拍品已完成恒温入库，估值报告明日呈报少爷。' },
-          ],
-          ['陆知微', '陈默（私人管家）', '海城古玩协会'],
-        );
-      } else if (episodeId === 'ep_008') {
-        postMoment(
-          userId,
-          nick,
-          '陆家湾的凌晨两点，空头全线爆仓。动盛世的人，总得先掂量一下自己的筹码。',
-          '海城 · 陆家湾金融中心',
-          [
-            { author: '苏清婉', text: '今晚辛苦了，陆沉。庆功酒我记在账上。' },
-            { author: '陆知微', text: '数据回溯完美收官！下回再敢偷袭，直接把他们底裤扒干净。' },
-          ],
-          ['苏清婉', '陆知微', '盛世资本投研部'],
-        );
-      } else if (episodeId === 'ep_009') {
-        postMoment(
-          userId,
-          nick,
-          '海大音乐厅的掌声很长。属于你的舞台，没人有资格按下静音键。',
-          '海城 · 海城大学音乐厅',
-          [{ author: '林晚星', text: '谢谢你一直坐在第一排……今晚这首曲子，其实是弹给你一个人听的。' }],
-          ['林晚星', '海大音乐学院师生'],
-        );
-      } else if (episodeId === 'ep_011') {
-        postMoment(
-          userId,
-          nick,
-          '云顶半山的晚风不错，京城来的客人似乎不太适应海城的价格。',
-          '海城 · 云顶半山海岸',
-          [
-            { author: '苏清婉', text: '海城牌桌上的规矩，今晚算是彻底立住了。' },
-            { author: '沈琉璃', text: '听说某位京城大少连夜改签机票了？真精彩呀哥哥～' },
-            { author: '陈默（私人管家）', text: '二十倍返现已汇入瑞士私人账户，海城各界请柬已排至下月。' },
-          ],
-          ['苏清婉', '林晚星', '沈琉璃', '陆知微', '陈默（私人管家）'],
-        );
-      } else if (episodeId === 'ep_012') {
-        postMoment(
-          userId,
-          nick,
-          '那场暴雨从来不是意外。既然棋盘已经铺开，那我就走到执棋人的位置上去。',
-          '海城 · 云顶天际线',
-          [
-            { author: '陆知微', text: '底层密钥我已经锁死了，不管对面是谁，我站在你这边。' },
-            { author: '陈默（私人管家）', text: '少爷，跨城航线与京城局势简报已就绪，随时启程。' },
-          ],
-          ['苏清婉', '林晚星', '沈琉璃', '陆知微', '陈默（私人管家）'],
+          ep.moment.author ? interpolateText(String(ep.moment.author), vars) : nick,
+          interpolateText(String(ep.moment.text), vars),
+          ep.moment.location || '海城',
+          comments,
+          likes,
+          ep.moment.avatar || '',
         );
       }
 

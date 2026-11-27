@@ -309,6 +309,474 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ev_old_4",
+      "title": "周老的残瓷课",
+      "desc": "城南老街雨歇，古玩茶院里茶烟袅袅。古玩行会长周老摆出一只疑真疑假的宋代影青盏考校眼力，话匣子一开，顺带抖出陆知微小时候在巷口捣蛋的旧事。",
+      "bg": "/assets/items/prop_old_shop.jpg",
+      "npcSprite": "/assets/npc/zhou.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "bg": "/assets/bg/bg_old_street.jpg",
+          "sceneBanner": "城南旧街 · 青石古玩巷",
+          "text": "午后的细雨刚停，青石板泛着一层暗沉的水光。巷尾周明轩面馆飘出几缕清淡的骨汤热气，拐过半扇朱漆褪色的木门，便听见古玩茶院里传来瓷盖轻磕茶壶的脆响。"
+        },
+        {
+          "type": "narration",
+          "bg": "/assets/items/prop_old_shop.jpg",
+          "sceneBanner": "城南古玩茶院 · 后堂",
+          "sprite": "/assets/npc/zhou.webp",
+          "text": "周老坐在旧酸枝木桌后，手里捏着一只手掌大的素面瓷盏，正凑在一盏暖黄鹅颈台灯下慢慢转着看。听见脚步声，他头也没抬，顺手往对面推过一只刚烫好的白瓷小杯。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "雨天没人逛街，正好清净。陆小子，坐。前两天刚收进一只湖田窑影青斗笠盏，帮老头子掌掌眼，值不值六个零？",
+          "innerThought": "这小子前阵子在海城动静不小，倒要看看他手里除了钱，到底有几分沉得住气的真眼力。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "both",
+          "text": "鹅颈灯的光落在盏壁上，青白釉色温润如冰，暗刻的缠枝莲纹若隐若现，初看确实带着宋瓷特有的清雅骨气。一旁紫砂壶嘴吐着白汽，凤凰单丛的蜜兰香漫过桌面。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "left",
+          "text": "周老这壶茶烫得太讲究，我怕喝完这口，您又要笑话我外行看热闹。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "少贫嘴。上回那个不知天高地厚的小丫头——就是知微那鬼灵精，十来岁的时候天天翻墙溜进我院子，拿块河滩鹅卵石换走过二道贩子腰里的假玉佩，气得人家追着她满巷子跑。",
+          "innerThought": "说起来那丫头也有半个月没来蹭饭了，整天窝在机房喝冰咖啡，也不知道胃还顶不顶得住。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "她爷爷在世时总说，看瓷器不能只盯最亮的那一面，得看转折处藏没藏气。今天这只盏，搁给她估摸三秒就敢掀桌子；轮到你，慢慢看，别急。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "left",
+          "text": "你没有伸手去抓盏口，而是先用茶巾拭干指尖，才轻托底足凑近灯下。指腹沿盏沿顺时针滑过半圈，在距离口沿两寸的一道极细弦纹处，触感微微发涩。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 釉层显微校验",
+          "text": "目标器物（宋影青斗笠盏）：底足与下腹为宋代老胎，口沿三分之一系近现代冷修拼接，接缝以核桃油合石粉做旧掩饰，市场实价约 ¥18,000。另检测到博古架最下层压纸的灰釉无款压手杯为南宋民窑真品全器，估价 ¥185,000。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "left",
+          "text": "下真上补的『接底货』，手法极老辣，肉眼几乎与原釉浑然一体。周老浸淫古玩行五十年，不可能看不出来——他摆这只盏在桌上，压根是在考我知不知道进退。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "怎么，看呆了？这单丛凉了可就发涩。说吧，这只影青盏，你给它打几分？",
+          "innerThought": "要是顺着我话头盲目吹捧，那也就是个寻常暴发户；要是直接揭老底还带刺，又少了点城府。看看你怎么开口。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "both",
+          "text": "茶烟在两人之间缓缓散开。你余光瞥见博古架最底层那只沾着几缕灰尘的无款老窑压手杯，心里已有了两套截然不同的应答。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "点破影青盏的老底新口，顺势讨要架底那只灰釉压手杯",
+          "cashCost": 30000,
+          "cashGain": 185000,
+          "sysPoints": 50,
+          "canCrit": true,
+          "resultText": "你既看穿了影青盏的冷修暗接，又识得架底真品老窑杯，周老笑骂着按旧友价让与你，转手被藏家高价请走并触发天枢返现。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "影青盏底足是真宋胎，可惜口沿三分之一用了冷修暗接，核桃油养得再润，指尖也能摸出那一丝涩感。周老拿它当教具，我不敢班门弄斧——倒是您博古架底压宣纸那只灰釉压手杯，我想按老规矩出价请回去喝茶。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "周老正要斟茶的手停在半空，片刻后缓缓搁下紫砂壶，眼角皱纹舒展开来，发出一声极轻却极痛快的笑。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "好小子，连我压箱底的『盲盒』都让你顺眼扫出来了。那只灰釉杯是南宋窑口的全品，沾了灰才没人理会。行，既然你懂规矩不拆台，三万块，算老头子交你这个忘年交。",
+              "innerThought": "不急着显摆，也不贪嘴上便宜，还懂得顺着台阶给主人留颜面……难怪知微那丫头对他态度不一样。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "both",
+              "text": "你利落转去三万元，用锦囊裹好那只温润厚重的老窑压手杯。周老又续了一泡茶，神色温和下来，慢悠悠讲起陆知微当年为了护一只破瓷猫、淋着雨蹲在巷口跟人辩理的旧事。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "那丫头嘴硬心软，家里人逼她走老路她偏不肯，可骨子里最护旧东西。改天碰见她，替我带句话——巷口周明轩家的面不错，别老拿冰咖啡顶晚饭。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "走出茶院不出两日，一名专收南宋民窑的杭城藏家闻风而来，验完胎釉当场出价十八万五千元将压手杯请走。天枢返现与这笔老巷人情，一并落得踏实。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "老街的门道不在喊价多响，而在分寸两字。周老这堂残瓷课，值回十倍茶钱。"
+            }
+          ]
+        },
+        {
+          "label": "如实说出接缝破绽，只安安静静陪周老喝完这壶单丛",
+          "cashCost": 0,
+          "cashGain": 36000,
+          "sysPoints": 55,
+          "resultText": "你分寸得体地拆穿了接底工艺却不争输赢，周老颇为赏识，顺手将一桩老友瓷器鉴估委托转介于你，稳获咨询分成与积分。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "left",
+              "text": "六位数给高了。底足胎土紧致，确是湖田窑宋代老底；但口沿弦纹之上是冷补拼接，打光角度一斜就能看到釉层折光断线。留着当标本教徒弟极好，拿去交易却要砸招牌。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "周老静静端详了你两秒，将那只影青盏轻轻放回锦盒，抬手重新往你杯里续满热茶。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "effect": "impact",
+              "text": "不错。前两周有个自称留洋鉴宝师的年轻人来过，盯着釉面夸了半小时宋代美学，连口沿是补的都没摸出来。老物件最怕遇上浮躁人，你能沉下心摸到那条弦纹，算过了关。",
+              "innerThought": "这年轻人不仅眼毒，连说话都留了余地，没借着揭破仿品卖弄威风。倒真有几分老派人物的气象。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "both",
+              "text": "雨声彻底止息，院墙外的老槐树叶滴下几颗残水。周老兴致颇高，连带着聊了半小时老街行规，还笑着吐槽陆知微小时候总偷拿他镇纸去压漫画书。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "对了，苏城有位老友托我给一批家传晚清官瓷做初筛，我这把老骨头懒得跑两趟。这单鉴估我荐你去挂个名，事成之后的咨询费，照行规全归你。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "三日后初筛交割完毕，三万六千元鉴估佣金准时入账。更重要的是，老城区古玩行那扇平时紧闭的后堂木门，从此对你敞开了一半。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_old_5",
+      "title": "午夜切石局的暗哨",
+      "desc": "子夜鬼市后巷，跨境玉石商阿坤带着两名暗哨堵住一位外地老矿工，企图用两万块强收对方怀里那块不起眼的原生黑乌沙毛料。可天枢洞察眼却穿透厚重皮壳，看见了一抹逼人的阳绿。",
+      "bg": "/assets/scene/jade_stall.jpg",
+      "npcSprite": "/assets/npc/akun.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "城南鬼市 · 后巷切石摊",
+          "text": "深夜一点，鬼市前街的强光手电陆续熄了大半。后巷水磨切割机刚停，空气里混着湿冷的石粉味与廉价烤烟味，一盏发黄的钠灯在墙角滋滋作响。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/npc/akun.webp",
+          "text": "巷口阴影里站着两个抱着胳膊的本地马仔，把通往主街的窄道隐隐堵住。中间那张木板凳前，阿坤手里转着一支铝合金强光玉石筒，正漫不经心地敲着一块裹在粗麻布里的黑褐色原石。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_miner",
+          "name": "老矿工",
+          "role": "滇边寻玉人",
+          "sprite": "/assets/npc/akun.webp",
+          "text": "老板，这块莫西沙老场口的黑乌沙是我背了三天三夜才带到海城的，皮壳翻砂这么细，两万块连我来回路费和场口本钱都不够……您再加点吧，家里娃等着交手术押金。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "akun",
+          "name": "阿坤",
+          "role": "跨境玉石商",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "老师傅，话别说得这么难听。你瞅瞅这皮壳上黑黢黢的一片，全是吃进肉里的死癣，一刀切下去十有八九是砖头料。城南这片地界谁不知道我阿坤最公道？两万块现金，现在拿走，省得明早天亮连一万都没人接。",
+          "innerThought": "刚才趁他倒水我拿湿布抹过背角，那道细如发丝的松花早就透出冰味了。这种外地老实人，唬两句压到两万收了，转手过一遍赵家洗账的公盘，净赚几十万。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "老矿工布满老茧的手指死死攥着麻布边，额角沁出细汗。巷口两名马仔往前挪了半步，皮鞋碾碎地上的石碴，气氛骤然紧绷起来。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "left",
+          "text": "这块石头既然是死癣砖头料，阿坤老板何必大老远叫两位兄弟守着巷口，非要替人接盘？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "阿坤转手电的动作一顿，抬眼打量从暗处走近的你。看清你身上那件剪裁考究的深色风衣，他脸上的市侩瞬间换成了圆滑的假笑。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "akun",
+          "name": "阿坤",
+          "role": "跨境玉石商",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "哟，原来是陆先生，这么晚也有雅兴来鬼市散步？买卖讲究先来后到，我跟老师傅正谈着价呢。赌石这行水深，外行插手容易呛水。",
+          "innerThought": "陆沉怎么会挑这个点摸到后巷来？先拿鬼市规矩压他一头，别让他看清石头背面那条压灯线。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 原石内部透视",
+          "text": "标的：莫西沙老场口原生黑乌沙（重 2.4kg）。表层黑斑并非死癣，实为含铬松花带下沉迹象；去皮 1.5cm 处存在完整高冰飘阳绿玉肉，无贯穿裂，开窗后市场公盘估价 ¥310,000+。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "left",
+          "text": "把活生生的老场口黑乌沙硬说成死癣，再拿暗哨断掉老矿工的退路——阿坤这一手吃干抹净的套路，和他在城南替赵家洗账的风格如出一辙。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_miner",
+          "name": "老矿工",
+          "role": "滇边寻玉人",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "none",
+          "text": "小伙子，你懂料子？这石头……真不是死癣？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "both",
+          "text": "阿坤眯起眼睛，拇指悄无声息按灭了强光手电，巷口几盏摊灯忽明忽暗。不远处已有几个收摊的玉商听见动静停下了脚步。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "按公道底价当场买下这块黑乌沙，架上水锯现在就开窗",
+          "cashCost": 60000,
+          "cashGain": 310000,
+          "sysPoints": 60,
+          "canCrit": true,
+          "resultText": "你出六万公道价从老矿工手里买断原石，当众一刀开出高冰阳绿，行家立价三十一万收走，阿坤哑巴吃黄连灰头土脸离场。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "鬼市规矩，价未落定，价高者得。老师傅，这块黑乌沙我出六万，现在转你卡上，你连夜就能给孩子交押金——不过切开后涨跌归我，成交？"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "akun",
+              "name": "阿坤",
+              "role": "跨境玉石商",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "陆沉，你拿六万买块带癣的废石，存心砸我场子是吧？行，今天我就站在这儿看着你切，切垮了别怪鬼市水深！",
+              "innerThought": "该死，他怎么偏偏挑中了最让我肉痛的价位……只要他没看准开窗位置，切偏两厘米也能把水头毁了。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "left",
+              "text": "老矿工盯着手机里六万元的即时到账短信，眼眶瞬间发红，连鞠两个躬把原石捧到你面前。你没理会阿坤的挑衅，接过铅笔在皮壳背角那条隐晦松花边画下一道短线，交给切石师傅。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "水锯嗡鸣着切入一寸半，清水一冲，昏暗钠灯下骤然透出一片澄澈灵动的高冰阳绿，荧光映得半条后巷鸦雀无声。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "akun",
+              "name": "阿坤",
+              "role": "跨境玉石商",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "text": "……高冰飘阳绿，一刀没伤半丝棉裂。陆先生好眼力，今天这局，我认栽。",
+              "innerThought": "连开窗落笔都分毫不差……这人绝不是碰运气。回头得赶紧跟赵少报一声，陆沉连城南赌石的门道都摸透了。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "围拢过来的几名广粤玉商当场竞价，最终一位老客以三十一万元现金买断切口明料。阿坤挥手撤掉巷口马仔，阴沉着脸隐入夜色；天枢返现随之清脆到账。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "老矿工拿到了救命钱，阿坤吞了闷亏，三十一万稳稳落袋。城南这口深井，该换个人掌灯了。"
+            }
+          ]
+        },
+        {
+          "label": "当众点破松花蟒带门道，替老矿工引荐古玩行公盘验货",
+          "cashCost": 0,
+          "cashGain": 45000,
+          "sysPoints": 55,
+          "resultText": "你当场戳穿阿坤指真为假的算盘，引来鬼市老客围观并将原石送入周老主持的公盘拍出高价，老矿工坚持奉上丰厚谢媒礼。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "老师傅，把石头转过来，让巷口几位收摊的老板借灯瞧瞧背角那道松花。莫西沙老场口的灰黑皮壳，背角松花已经压进砂层，哪门子的死癣？阿坤老板拿湿布擦过背角，心里比谁都清楚。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "话音未落，五六名尚未走远的玉商立刻打亮强光手电围了过来。一道光柱压在背角，淡绿水头果然隐隐呼应，众人顿时低声哗然，看向阿坤的目光带上了几分鄙夷。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "akun",
+              "name": "阿坤",
+              "role": "跨境玉石商",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "text": "哈，是我眼拙看走了眼，行了吧？陆先生既然爱当活菩萨，这块石头我不争了。走！",
+              "innerThought": "满巷子行家都看着，今天硬抢只会把周老那边的公盘规矩全得罪光……陆沉，这笔账我记下了。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "阿坤脸色铁青，甩手带着两名暗哨挤出人群。你替惊魂未定的老矿工写了一张便签，指明周老古玩行明早十点的公开验货公盘，嘱咐他只认当场公开竞价。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "次日下午，老矿工在公盘上将原石顺顺利利拍出了三十多万，执意托周老茶院转交一个四万五千元的红封与一盒云南土茶，字条上歪歪扭扭写着“救命大恩，不肯空手回乡”。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "断了阿坤一条顺手捞偏门的财路，又替一个奔波半生的父亲保住了家底。这笔谢礼，收得心安。"
+            }
+          ]
+        }
+      ]
     }
   ],
   "university": [
@@ -541,6 +1009,235 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ev_uni_3",
+      "title": "银杏茶社的创业对赌",
+      "desc": "海城大学城银杏道拐角，煤老板钱总带着厚厚一叠茶饮加盟合同，被几个精明的经管系大学生拿财务模型问得直挠头。你端着热茶旁听片刻，一眼看穿了双方账本里的盲区。",
+      "bg": "/assets/bg/bg_campus_ginkgo.jpg",
+      "npcSprite": "/assets/npc/qian.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "海城大学城 · 银杏茶社玻璃角",
+          "text": "深秋傍晚，金黄的银杏叶贴在大学城南门的落地窗上。转角那间新装的木质茶社里，几台轻薄笔记本摊成半圈，屏幕上是密密麻麻的折线图和表格。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/npc/qian.webp",
+          "text": "圆桌对面，体格敦实的钱总坐在一把北欧细腿木凳上，怎么挪都不太舒服。他把厚厚一摞鲜红封皮的茶饮加盟合同推在桌沿，右手不停蹭着后颈，脑门微微发亮。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "student_lead",
+          "name": "林哲",
+          "role": "海大经管系创业社长",
+          "sprite": "/assets/npc/qian.webp",
+          "text": "钱总，不是我们不认可您的供应链，可您这份标准加盟合同里，原料抽点固定锁死在 38%，加上大学城每年三个月寒暑假空窗期，按单店 45 平米算，坪效和月度复购率根本跑不平回本周期。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "诶不是，小同学，我这品牌在市中心开一家火一家！你们学生人头密，一杯奶茶卖十八块，一天卖三百杯不就回本了？怎么扯出这么多什么漏斗、什么坪效来……",
+          "innerThought": "老子当年在矿上签几千万运煤单子都没这么费劲，今天倒被三个戴眼镜的毛孩子拿表格问得像个土包子。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "旁边两名女生紧跟着补刀，把客单价敏感度测算和周边六家竞品的补贴曲线一并推过去。钱总听得太阳穴直跳，正想合上合同走人，一转头瞥见靠窗坐着喝乌龙茶的你，顿时像看见了救兵。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "哎哟！陆老弟，你怎么也晃到大学城来了？快过来帮老哥评评理——我想在海大拿个校园标杆点，这帮孩子算盘打得噼啪响，愣说我这买卖要赔钱！"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "left",
+          "text": "路过看看银杏。钱总，这几位同学没坑你，不过他们表里也漏算了两笔账。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "left",
+          "text": "你走过去，目光掠过屏幕上的财务模型，又望向窗外暮色渐沉的林荫道——不远处图书馆和音乐学院琴房楼亮起了一排暖灯，晚间人流正沿着南门小路缓缓汇聚。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 商圈坪效穿透",
+          "text": "模型诊断完成：1）学生团队仅计算校内日间堂食，遗漏了晚间 20:00-23:00 图书馆自习及艺术系晚练的高复购热饮窗口，以及寒暑假 3 公里内周边社区外卖盘；2）钱总传统加盟条款原料溢价过高，改为阶梯分成+前场紧凑档口即可使单店净利率提升 14.2%。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "left",
+          "text": "学生懂算法却没做过真实生意，钱总有真金白银却拿着老一套批发思维套年轻人。两边其实只差一张能把彼此账面扣合的真方案。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "student_lead",
+          "name": "林哲",
+          "role": "海大经管系创业社长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "none",
+          "text": "先生说我们漏算了两笔账？请教一下，哪两笔能让寒暑假不亏房租？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "陆老弟，今天你要是能把这几个小诸葛说服了，老哥绝不白让你动嘴皮子！",
+          "innerThought": "这小子脑子活得很，要是真能把大学城这块敲开，我在海城新消费里就算站稳第一脚了。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "拉钱总合设一笔校园样板店对赌金，现场重构联营分成",
+          "cashCost": 40000,
+          "cashGain": 240000,
+          "sysPoints": 65,
+          "canCrit": true,
+          "resultText": "你出资入股校园样板店并对赌首月复购率，精准切中晚自习热饮与社区外卖增量，门店爆单后分红叠加返现收获颇丰。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "第一，45 平米别全摆网红桌，前半段砍出 12 平做极速自提窗，后半段留长桌插排，专吃晚上八点到十一点图书馆和琴房下课的复购客；第二，寒暑假校园空窗，南门外三公里全是老社区和写字楼，单开一条轻食热茶外卖线就能兜平房租。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "left",
+              "text": "至于钱总的原料抽点，别锁死 38%，改成阶梯联营——我个人出四万块做样板店启动对赌池，首月复购率不到 32%，亏损算我的；达标了，你们拿整条大学城的运营管理权。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "三名大学生盯着你在纸巾背面随手列出的三行敏感度公式，沉默了足足十秒。林哲率先合上笔记本，眼神从防备彻底变成了服气：“这组坪效和时段错峰……教材里没教过这么实操的，我们接这个对赌。”"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "qian",
+              "name": "钱总",
+              "role": "矿业起家的实业老板",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "right",
+              "text": "痛快！我就喜欢陆老弟这种真金白银敢压桌的脾气！合同现在就按你改的条款重打，老哥补齐剩下股本，咱们爷俩带这群大学生干一票漂亮的！",
+              "innerThought": "四万块撬动三个免费高材生外加整条大学城黄金点位，陆沉这账算得比我挖矿还狠。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "半个月后，银杏茶社凭着夜间热饮自习窗与极高的口碑复购率迅速爆红海大校园，连续三周冲上周边饮品榜首。钱总爽快结清首轮联营分红，叠加天枢返现一并入账二十四万元。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "好模型从来不是用来赢辩论的，而是用来让桌上每个人都愿意落笔签字的。"
+            }
+          ]
+        },
+        {
+          "label": "不动本金，直接替双方拆穿账面盲区并重拟安全条款",
+          "cashCost": 0,
+          "cashGain": 58000,
+          "sysPoints": 55,
+          "resultText": "你三言两语打通了坪效、夜间客流与淡季外卖的闭环，双方当场签下新版合作协议，钱总爽快奉上一笔丰厚的智囊分红。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "同学们，你们的模型只算了白天堂食，漏掉了晚自习和艺术楼排练散场后那波高频刚需；也漏掉了寒暑假南门外老社区三公里内的外卖底盘。钱总，你的硬伤是原料固定抽点太死，把新店前三个月现金流卡喘不过气了。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "left",
+              "text": "寒暑假免收品牌管理费，开学季按月销售额阶梯让利两个点；学生团队负责校内社群复购和晚间自习场坪效运营。你们拿计算器重跑一遍，看看回本周期缩了几个月。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "both",
+              "text": "林哲敲击键盘重新代入参数，屏幕上原本一片刺眼的红色现金流缺口迅速转正，回本周期从十一个月直接压进了五个月内。几名学生互相交换了一个眼神，紧绷的肩膀松了下来。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "qian",
+              "name": "钱总",
+              "role": "矿业起家的实业老板",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "right",
+              "text": "哈哈，还是陆老弟嘴皮子顶用！三分钟讲明白老哥憋了一下午的话。小同学，按陆先生改的这个数，现在签，下周我就让装修队进场！",
+              "innerThought": "这笔单子省了我至少两个月扯皮功夫，而且这个阶梯模版还能直接复制到海城另外四所高校去。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "走出银杏茶社时，钱总一路把你送到街口，毫不客气地往你账户转了五万八千元智囊咨询费，还拍胸脯说以后海城新消费盘子只要开局，一定先给你留席位。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "落叶被风吹过银杏道，钱总笑声震得路人纷纷侧目。跟真爽快的人打交道，连风里都少了几分算计味。"
+            }
+          ]
+        }
+      ]
     }
   ],
   "bund": [
@@ -757,6 +1454,434 @@
               "type": "thought",
               "sprite": "/assets/characters/protagonist.png",
               "text": "一分钱没掏，一通电话便落袋四万八千元信息佣金，外滩的每一寸空气里都飘着现金流。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_bund_3",
+      "title": "江岸高定店的无声博弈",
+      "desc": "外滩买手店顶层 VIP 鉴赏室，林氏资本合伙人林姐正与竞争对手同时盯上一件巴黎工坊孤品礼服，以及它背后真正的筹码——华东区独家代理权。",
+      "bg": "/assets/items/prop_bund_flat.jpg",
+      "npcSprite": "/assets/npc/lin_jie.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "外滩 · 江岸高定买手店 VIP 室",
+          "text": "暮色漫过黄浦江，外滩老洋房改建的高定买手店二层只亮着几盏低色温射灯。丝绒幕布中央，一袭手工压褶的午夜真丝孤品礼服静静立在哑光铜架上，像一截凝固的暗潮。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/npc/lin_jie.webp",
+          "text": "长桌一侧，林姐端着一杯浓缩咖啡，指节在瓷碟边缘轻叩了一下，面容沉静得看不出波澜。她对面坐着港资恒睿时尚的沈总监，以及巴黎帕尔梅工坊的亚太代表艾琳。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "rival_exec",
+          "name": "沈总监",
+          "role": "恒睿时尚华东负责人",
+          "sprite": "/assets/npc/lin_jie.webp",
+          "text": "艾琳女士，我们恒睿在华东握有二十二家一线商圈专柜，首年保底采购额可以再往上加一成。至于这件《夜潮》孤品礼服，我今天就带走，下周放进静安旗舰中庭做造势。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "rival_exec",
+          "name": "沈总监",
+          "role": "恒睿时尚华东负责人",
+          "sprite": "/assets/npc/lin_jie.webp",
+          "text": "林氏资本一向做财务投资出身，林姐对二级市场很熟，可高定不是冷冰冰的报表——没有足够的专柜铺货能力，拿了帕尔梅的华东代理也是浪费名额。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lin_jie",
+          "name": "林姐",
+          "role": "林氏资本合伙人",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "right",
+          "text": "沈总监说话真客气。只是专柜多不代表格调稳，帕尔梅工坊一年全球只出四十件真高定，放进人来人往的商场中庭当打卡背景板，艾琳女士确定巴黎总部会喜欢吗？",
+          "innerThought": "沈总监把首年保底金额抬得太狠了，艾琳明显在动摇。今天要是丢了帕尔梅代理权，我在外滩消费基金这季度的牌面就要少掉最亮的一块。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "right",
+          "text": "亚太代表艾琳礼貌微笑着翻动合同，指尖却迟迟停在恒睿那份高额保底条款上。你推开半掩的木门步入鉴赏室，林姐抬眼看见你，眉梢极细微地松动了一寸。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lin_jie",
+          "name": "林姐",
+          "role": "林氏资本合伙人",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "right",
+          "text": "陆沉，你来得正好。陪我喝杯手冲，顺便看看这件刚从巴黎空运过来的《夜潮》。",
+          "innerThought": "他在这个时候进来，未必是巧合。先借他的气场把节奏拖慢两分钟。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "left",
+          "text": "礼服剪裁很克制，倒是刚才听见有人要把孤品放进商场的开放中庭，我以为自己走错了快消品发布会。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 品牌方真实诉求",
+          "text": "情报穿透：帕尔梅巴黎总部上季度因欧洲代理商暗中打折清仓导致核心老客流失，总部已密令亚太区严禁代理商涉足折扣奥莱渠道。恒睿时尚去年曾私自将代理的意式轻奢线尾货导入两家郊区奥莱店，正刻意隐瞒此事。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "left",
+          "text": "原来如此。恒睿看似财大气粗，实则踩在巴黎总部最忌讳的雷区上。高定卖的从来不是走量，而是稀缺感与绝对可控的私密圈层。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "brand_rep",
+          "name": "艾琳",
+          "role": "帕尔梅工坊亚太代表",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "none",
+          "text": "这位先生眼光很犀利。不过总部今年在华东既有品牌形象考核，也有首季私享客户的落地指标，我们需要一个两头都能落地的方案。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "both",
+          "text": "沈总监轻笑一声，修整整齐的手指已经摸向西装内袋的钢笔，显然打算借着保底额度一锤定音。林姐安静望向你，杯底咖啡映着江面碎光。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "当场锁下这件孤品礼服，替林姐打包一场外滩闭门首秀沙龙",
+          "cashCost": 150000,
+          "cashGain": 780000,
+          "sysPoints": 80,
+          "canCrit": true,
+          "resultText": "你亲自买断孤品首秀名额并以顶级私密沙龙击中巴黎总部心防，帮林姐逆转拿下华东代理权，首期联合权益叠加返现大赚一笔。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "艾琳女士，恒睿的二十二家商场柜台或许能跑流水，但保不住帕尔梅『永不打折、绝不进奥莱』的底线。这件《夜潮》孤品我先以个人名义锁下，外滩顶层闭门沙龙的筹办费与核心藏家邀约名单，由我和林姐联合兜底——零折扣，全预约制。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "『绝不进奥莱』五个字一出口，沈总监摸钢笔的手微不可察地一僵。艾琳眼神骤然亮了几分，瞬间合上了恒睿的方案册。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "brand_rep",
+              "name": "艾琳",
+              "role": "帕尔梅工坊亚太代表",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "none",
+              "text": "陆先生说到总部心坎里去了。既然有您和林女士联手担保外滩私享沙龙的首秀品质，华东优先代理意向书，我今天就可以和林氏资本落笔。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "沈总监脸色沉了下来，强撑着体面扣上西装纽扣，冷声丢下一句“祝二位好运”便起身离席。VIP 室重归清静，林姐端起咖啡朝你轻轻举杯。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_jie",
+              "name": "林姐",
+              "role": "林氏资本合伙人",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "出手快，落点毒，还替我把最棘手的品牌背书接住了。陆沉，这件礼服的溢价转藏权连同华东首季分成，我划给你——以后外滩有好局，别忘了带上姐姐。",
+              "innerThought": "难怪连苏清婉那个挑剔性子都肯高看他一眼。跟这种人站在一边，确实比当对手省心太多。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "外滩闭门首秀圆满落幕后，帕尔梅首季预约名额一抢而空。林氏资本划来的联合权益分润叠加天枢高额返现，合计七十八万元稳稳落袋。"
+            }
+          ]
+        },
+        {
+          "label": "两句话挑破对手的奥莱尾货旧账，帮林姐零溢价握死筹码",
+          "cashCost": 0,
+          "cashGain": 92000,
+          "sysPoints": 65,
+          "resultText": "你不动声色揭开了竞争对手私售尾货的隐秘旧账，巴黎代表当场转向林氏资本，林姐干脆利落奉上丰厚顾问分润。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "沈总监刚才说高定看重长期呵护，听起来很诚恳。只是我前阵子在青浦奥莱逛街，怎么好像看见贵司去年签下的那个意大利皮具线，正贴着三折黄签清库存？"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "text": "艾琳女士，如果巴黎总部今年最怕的是渠道串货毁掉格调，林姐手里外滩老建筑独栋展厅的预约制玩法，恐怕比二十二个商场专柜稳妥得多。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "鉴赏室里安静了两秒。沈总监嘴角的职业微笑彻底挂不住了，刚想辩解那是“合作方私下流出的过季样衣”，艾琳却已神色骤冷，将恒睿的保底协议缓缓推回桌心。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "brand_rep",
+              "name": "艾琳",
+              "role": "帕尔梅工坊亚太代表",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "none",
+              "text": "抱歉沈总监，折扣渠道是巴黎总部的绝对红线。林女士，关于外滩独栋展厅的独家代理细则，我们现在就可以进入第二轮。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "沈总监面色阴晴不定地起身告辞。送走艾琳后，林姐靠回丝绒沙发，卸下几分商战锋芒，颇有兴致地上下打量了你一遍。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_jie",
+              "name": "林姐",
+              "role": "林氏资本合伙人",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "一分钱没掏，两句话就替我省下几百万溢价保证金，还顺手把对手的牌桌掀了。这九万二顾问费你拿着，不够的部分，算姐姐欠你一个人情。",
+              "innerThought": "情报准得吓人，出手又不沾半点铜臭气。海城这局棋，我确实押对了人。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "离开外滩老洋房时江风微凉，银行入账的九万二千元提示音恰巧响起，在夜色里显得格外利落。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_bund_4",
+      "title": "外滩雨后的旧琴师",
+      "desc": "暴雨刚歇的外滩百年拱廊下，你偶遇一位独坐避雨的落魄老指挥。几句关于雨声与肖邦夜曲的闲谈，不仅牵出海城古典乐界深藏的人脉，更意外听到了关于林晚星的暗中消息。",
+      "bg": "/assets/bg/bg_rain_street.jpg",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "外滩 · 百年石拱廊 · 雨后黄昏",
+          "text": "骤雨刚过，外滩老海关钟楼敲完六下，厚重的石拱廊下滴着连绵水线。湿润花岗岩映出琥珀色街灯，江风里裹着梧桐叶和微微发凉的水汽。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "廊柱旁的石阶上坐着一位头发花白的老人。他穿着一件洗得发白却刷得极平整的深蓝毛呢大衣，膝头横放着一只磨破边角的旧丝绒木匣，正用一方手帕仔细擦拭一根发黄的苏木琴弓。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "路过拱廊时，你顺手从街角老茶铺多买了一杯热姜茶，安静递到他手边。老人怔了怔，抬头看你时，那双深陷的眼眶里竟还留着一种常年执棒才有的笃定神气。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_conductor",
+          "name": "宋怀安",
+          "role": "前海城交响乐团首席指挥",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "多谢年轻人。现在肯在雨后慢下来看一眼老石头房子的人，不多咯。你听这檐水打在青石上的拍子——三拍弱起，像极了肖邦夜曲里最克制的那一段过门。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "老先生听檐水都能听出弱起拍，以前是在乐团待过？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_conductor",
+          "name": "宋怀安",
+          "role": "前海城交响乐团首席指挥",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "早退啦。以前在海城交响乐团握过二十年指挥棒，五年前一场纪念音乐会，赞助方非要塞自家连节奏都踩不准的侄女上主奏，我没肯签字，就体面卷铺盖喽。",
+          "innerThought": "其实也不算后悔。只是老了才发现，不肯弯腰的人，连给好苗子借一间排练厅都难。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢档案检索 · 隐世名师",
+          "text": "人物确认：宋怀安，国家一级指挥，曾任海城交响乐团首席及亚太室内乐评委。虽退出商业演出圈，但在沪京古典乐坛与学院派评委席仍拥有极高学术威望。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "老人捧着热姜茶暖了暖微微僵硬的指关节，望向雾气朦胧的江面，忽然轻轻叹了口气。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_conductor",
+          "name": "宋怀安",
+          "role": "前海城交响乐团首席指挥",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "前两天去海城大学音乐学院蹭听了一场内部初选，有个穿白衬衫的姑娘弹肖邦，手腕极稳，不炫技、不讨好评委，难得干净。可惜听老同事说，赞助委员会那边又有人想借机挤掉她的独奏排练档期。"
+        },
+        {
+          "type": "thought",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "heartbeat",
+          "text": "海城大学音乐学院、穿白衬衫、弹肖邦不肯讨好评委……除了林晚星，不会有第二个人。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "old_conductor",
+          "name": "宋怀安",
+          "role": "前海城交响乐团首席指挥",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "老头子手头紧，只能托熟人替她多递两句好话，能护几分算几分吧。真想再攒一个不看金主脸色的小室内乐沙龙，让这些真爱琴的孩子有个体面舞台。",
+          "innerThought": "跟一个萍水相逢的年轻人絮叨这么多，倒显得我这老骨头不体面了。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "老人自嘲地笑了笑，小心把琴弓收进旧丝绒匣里，准备趁雨歇起身离开。拱廊外街灯渐亮，倒影在水洼里轻轻晃动。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "以筹办秋季私享室内乐季的名义，匿名出资请宋老出山挑人",
+          "cashCost": 80000,
+          "cashGain": 480000,
+          "sysPoints": 85,
+          "canCrit": true,
+          "resultText": "你以体面的艺术委托形式包下声学排练厅，请宋老担任艺术总监并暗中点名照拂海大好苗子，私享季大获成功并触发丰厚回馈。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "impact",
+              "text": "宋老，正好我名下在筹备一场外滩秋季闭门室内乐季，缺一位不看商业脸色、只认琴声的艺术总监。老洋房声学排练厅半年场租和乐手津贴我来出，唯一条件——选人全由您拍板，刚才您提的那位海大姑娘，不妨也发一张正式试音函。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "老人合匣子的手顿住了。他在拱廊暖黄的光里仔细审视你良久，确定你眼里没有半点施舍或猎奇，才缓缓舒出一口长气。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "old_conductor",
+              "name": "宋怀安",
+              "role": "前海城交响乐团首席指挥",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "只认琴声，不塞关系户？年轻人，你这份委托书，比五年前那帮人捧着支票求我签字有分量得多。好，我这把老骨头，再替海城带一季年轻乐手。",
+              "innerThought": "这世道还没坏透。有了这块清净排练厅，那姑娘以后再也不会被赞助商随便拿捏档期了。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "你没有留自己的全名给学院，只让陈默以文化基金名义走完规范合同。临走前，宋怀安郑重地把一张印着古典乐协会私印的烫金联络卡递到你手中。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "次月闭门室内乐首演一票难求，沪上多位艺术藏家与文化基金慕名跟投配比，叠加天枢返现一举为你带回四十八万元收益。而在海大音乐学院，无人再敢轻动那位白衬衫姑娘的排练档期。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "有些护持不必说出口。她只管安心弹完她的肖邦，风浪挡在琴房门外就够了。"
+            }
+          ]
+        },
+        {
+          "label": "撑伞送宋老去老乐器行修弓，安静听完这段旧日海城乐坛事",
+          "cashCost": 0,
+          "cashGain": 55000,
+          "sysPoints": 70,
+          "resultText": "你以平辈之礼陪老指挥走完雨后长街，不仅结下古典乐界难得的忘年交，更获他托付一桩古董提琴跨城保管转介，收获酬金与声望。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "江边起风了，老先生那根琴弓的马尾毛受了潮，再耽搁怕要变形。前面两条街有家老制琴铺子还亮着灯，我车停在路边，顺道送您过去。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "你没有急着亮身份，也没有谈钱，只是替他撑开黑伞挡住檐角残雨，放慢步子陪他沿着外滩旧石路慢慢走到老乐器行门口。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "old_conductor",
+              "name": "宋怀安",
+              "role": "前海城交响乐团首席指挥",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "你这年轻人懂礼数，也沉得住气。对了，海大音乐学院下周有场欧洲评委团的非公开大师旁听课，我还能说上两句话——我回头就给那个弹肖邦的姑娘递个旁听名额，省得她总闷头自己扛。",
+              "innerThought": "刚才提那个姑娘时，他眼神微不可察地暖了一下。年轻人之间的事，老头子心照不宣就好。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "临别前，宋老手写了一张介绍信交给你：一位旅欧华裔提琴藏家正急寻可靠人士协助完成一把百年古董大提琴的沪港恒温转运与保险托管。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "你交由陈默的专业物流通道办得滴水不漏。事成之后，对方不仅慷慨支付了五万五千元中介托管酬劳，更把你的名字记进了沪港古典艺术圈的私人名录。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "一场雨后偶遇，换来古典乐界一份真正体面的善意，也替林晚星悄悄多推开了一扇窗。"
             }
           ]
         }
@@ -1119,6 +2244,245 @@
               "sprite": "/assets/characters/protagonist.png",
               "effect": "flash",
               "text": "次日创始人专程登门致谢，不仅顺利拿到正规机构过桥资金，还执意奉上二十六万元战略顾问酬劳与长期优先配股权。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_cbd_4",
+      "title": "停机坪上的私募暗箭",
+      "desc": "陆家湾顶层停机坪咖啡廊，林姐与钱总正为一笔十二亿估值的新能源并购案争执不下。你瞥见财报附注里几行反常的应收账款账龄，一眼识破了藏在光鲜营收下的亿元暗雷。",
+      "bg": "/assets/bg/bg_cbd.jpg",
+      "npcSprite": "/assets/npc/lin_jie.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "陆家湾金融大厦 · 顶层停机坪咖啡廊",
+          "text": "七十六层高的钢化玻璃幕墙外，停机坪的红色导航灯在夜雾里明明灭灭。临窗卡座上摊着两本厚如砖头的尽调报告，空气里飘着微苦的蓝山咖啡香气，气氛却比夜风更紧绷。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/npc/lin_jie.webp",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "林姐，别磨蹭了！启源新能源这三年营收翻了三倍，动力电池负极材料正处在风口上。卖方只给四十八小时优先认购窗口，咱们再挑刺，京城那两家私募明早就要截胡了！",
+          "innerThought": "传统矿业利润越来越薄，好不容易撞见一个现成的高增长新能源标的，这趟车要是赶不上，又要被那帮穿西装的甩开十年。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lin_jie",
+          "name": "林姐",
+          "role": "林氏资本合伙人",
+          "leftSprite": "/assets/npc/lin_jie.webp",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "left",
+          "text": "钱总，做实业出身的急脾气收一收。营收翻三倍，可他们去年经营现金流净额却几乎贴着零轴走——财报干净得太刻意，我总觉得哪里不对劲，只是三方审计签了无保留意见，一时揪不出线头。",
+          "innerThought": "要是真错过优质标的，钱总肯定埋怨我瞻前顾后；可盲目跟投一个亿，万一踩雷，林氏资本这半年的募资口碑就全毁了。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/npc/lin_jie.webp",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "both",
+          "text": "你端着一杯美式经过卡座，钱总眼尖立刻起身把你按进中间的沙发，林姐则不声不响把那本摊开的《应收账款及前五大客户明细》往你手边推了半寸。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "陆老弟，来得太巧了！林姐非要按住不签，我俩各打算投五千万组联合份额。你眼睛毒，帮忙看看这启源新能源，到底能不能上车？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "lin_jie",
+          "name": "林姐",
+          "role": "林氏资本合伙人",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "right",
+          "text": "你要是也能看出这份附注里藏着什么猫腻，这笔案子我全听你的。反之，今天我就认栽陪钱总签字。",
+          "innerThought": "连我带了三年的财务总监都没找出硬伤，倒想看看陆沉凭什么一眼定乾坤。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/characters/protagonist.png",
+          "text": "你没有看封面那几页花哨的行业增长曲线，直接翻到尽调报告第一百一十八页的应收账款账龄附注，指尖停在三个陌生的商贸公司名字上。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 股权与应收账款穿透",
+          "text": "高危预警：启源新能源前五大客户中，第 2、3、5 名合计贡献 61% 营收，三家公司工商注册仓储地址完全重叠，实控人皆指向离岸壳公司『恒泰贸易』——系卖方联合海城灰色资金做的体外循环虚增营收，真实坏账窟窿达 ¥1.8 亿。但标的抵押在城商行名下的两项硅碳负极核心专利属真研发资产，具备极高抄底重组价值。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/lin_jie.webp",
+          "activeSide": "left",
+          "text": "拿一个虚增营收的空壳并购案吊着海城两位现金大户，卖方急着在四十八小时内交割，分明是要在下一季银行抽贷前找冤大头接盘。好狠的一支私募暗箭。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "left",
+          "text": "钱总，把签字笔先盖上。这辆车不是风口快车，是刹车片早就磨穿的泥头车。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "qian",
+          "name": "钱总",
+          "role": "矿业起家的实业老板",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "right",
+          "text": "啊？你连一分钟都没看满，怎么就断定它刹车穿了？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/npc/lin_jie.webp",
+          "rightSprite": "/assets/npc/qian.webp",
+          "activeSide": "both",
+          "text": "林姐瞬间坐直身子，目光紧锁你按在第一百一十八页的指尖。停机坪外一阵夜风擦过玻璃，咖啡廊里静得只剩空调低沉的送风声。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "掀开体外循环造假底牌，再反手联合锁下它真正值钱的抵押专利",
+          "cashCost": 300000,
+          "cashGain": 1850000,
+          "sysPoints": 110,
+          "canCrit": true,
+          "resultText": "你帮两人避开亿元财务巨坑，更反客为主出资抢先锁定抵押专利处置权，待标的暴雷后低价摘果转手溢价，收获巨额回报。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "第 118 页，前五大客户里的三家商贸公司合计占了六成营收，账龄全部卡在 355 天临界点，而且三家连保税仓登记地址都是同一排铁皮棚——左手倒右手虚增的假流水，真买下来，你们俩要替卖方填一点八个亿的坏账坑。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/npc/lin_jie.webp",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "林姐立刻用手机调出工商底层登记地图，三家客户果然落在了同一个偏僻码头坐标上。钱总看清屏幕那一刻，后背瞬间洇出一层冷汗，啪地把签字笔摔在尽调报告上。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "text": "不过，公司虽烂，它质押在城商行里的两项硅碳负极核心专利是真的。我先出三十万请律所和不良资产通道签优先受让排他函，等它下个月抽贷暴雷，咱们直接把真肉剥出来，把烂壳留给卖方。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_jie",
+              "name": "林姐",
+              "role": "林氏资本合伙人",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "避坑已经算一流，还能反手把设局人的真家底抄走……陆沉，今天这局让我长见识了。我林氏跟单，钱总，你出不出钱？",
+              "innerThought": "这种嗅觉和狠劲，放在陆家湾顶层也找不出第二个。以后但凡大额并购，必须先过他一遍眼。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "qian",
+              "name": "钱总",
+              "role": "矿业起家的实业老板",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "right",
+              "text": "出！怎么不出！陆老弟刚救了我五千万血汗钱，这回就算只喝汤我也认——不过看陆老弟这架势，咱们分明是要连锅端！"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "三周后启源新能源如期触发银行抽贷违约，你们三人凭着提前锁死的优先处置函低价拿下核心负极专利，转手溢价出让给头部电芯大厂。项目分红叠加天枢返现，一百八十五万元滚烫到账。"
+            }
+          ]
+        },
+        {
+          "label": "只把关联方造假铁证摊在桌上，帮两位及时刹车避开大坑",
+          "cashCost": 0,
+          "cashGain": 290000,
+          "sysPoints": 95,
+          "resultText": "你精准指出三家空壳关联客户与异常账龄，帮林姐和钱总及时撤出亿元并购陷阱，两人联名奉上丰厚风控顾问费。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "林姐刚才怀疑现金流贴零，直觉很准。你看这三个核心客户，注册时间只比启源融资前早两个月，货款账龄全踩在一年计提坏账的红线前一天，实际收货地址还是同一间离岸空壳仓——典型的体外循环做假账。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/npc/lin_jie.webp",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "林姐迅速让团队远程核对工商关联穿透图，三分钟后屏幕跳出密密麻麻的交叉红线。钱总盯着那一串一模一样的联络号码，额角冷汗直冒，长长吐出一口浊气。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "qian",
+              "name": "钱总",
+              "role": "矿业起家的实业老板",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/qian.webp",
+              "activeSide": "right",
+              "text": "好家伙，差点拿真金白银给骗子买单！我刚才还嫌林姐谨慎，要不是陆老弟这一眼，老哥这五千万砸进去连个水花都听不见！",
+              "innerThought": "以后在金融圈玩，光靠胆子大早晚被人啃得骨头都不剩。陆沉这小子，真是我的贵人。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "lin_jie",
+              "name": "林姐",
+              "role": "林氏资本合伙人",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/lin_jie.webp",
+              "activeSide": "right",
+              "text": "我这就通知法务叫停所有尽调流程，顺便查查背后到底是谁牵的线，敢把这种雷往我桌上递。陆沉，这笔避险顾问费我跟钱总各认一半，你绝不许推辞。",
+              "innerThought": "那个离岸空壳的操盘手法，隐约带着赵家和境外空头的影子……回头得提醒陆沉留个心眼。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "次日上午，林氏资本与钱总名下实业联名汇来二十九万元风控咨询费。半月后启源新能源东窗事发被监管立案，陆家湾私募圈里关于你“一眼破局”的名声悄然传开。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "保住盟友的现金弹药，比自己多赚一笔快钱更有分量。陆家湾牌桌上的底气，就是这样一局一局攒出来的。"
             }
           ]
         }
@@ -1492,6 +2856,239 @@
           ]
         }
       ]
+    },
+    {
+      "id": "ev_night_4",
+      "title": "霓虹天台的解约风暴",
+      "desc": "星耀不夜城天台，霓虹光影交错。一位极具才华的新人女唱作人正被阿坤旗下的黑公会堵在护栏边逼签卖身契，拒签便要背上二十四万天价违约金。",
+      "bg": "/assets/bg/bg_night_city.jpg",
+      "npcSprite": "/assets/npc/akun.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "sceneBanner": "星耀不夜城 · 顶层霓虹天台",
+          "text": "凌晨十二点半，楼下夜场的重低音隔着水泥楼板隐隐震动。天台巨幅霓虹招牌泛着紫红与冷蓝的光，把风里细碎的湿气照得格外刺眼。"
+        },
+        {
+          "type": "narration",
+          "sprite": "/assets/npc/akun.webp",
+          "text": "通往消防通道的铁门被两个穿黑夹克的公会运营堵住。阿坤叼着一根没点燃的细烟，手里晃着一份印着『黑曜星工坊』抬头的补充协议，正把一名背着旧吉他包的女孩逼在天台护栏边。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "cheng_wei",
+          "name": "程微",
+          "role": "独立女唱作人",
+          "sprite": "/assets/npc/akun.webp",
+          "text": "我签的是原创音乐人孵化约，不是去凌晨三点的擦边打赏间演剧本！你们一首编曲都没替我录过，凭什么说我欠了二十四万投流违约金？"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "akun",
+          "name": "阿坤",
+          "role": "跨境玉石商 / 黑曜公会幕后资方",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "小妹妹，别拿外行话跟哥哥掰扯。后台每一笔推流账单都挂在公司名下，签了这份十年全约去主力厅播够时长，债就一笔勾销；不签，明天法院传票直接寄到你老家学校去。",
+          "innerThought": "这丫头嗓子清亮、长相有辨识度，包装成深夜情感主播正好接一批大额打赏洗流水，哪能由着她跑去星耀正经厂牌。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "程微背在身后的手指死死扣住吉他包肩带，指节泛白，眼底却倔强地不肯掉一滴泪。风吹乱她额前碎发，她下意识护住怀里那本贴满便签的旧词曲本。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "protagonist",
+          "name": "陆沉",
+          "role": "你",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "left",
+          "text": "阿坤老板生意做得真宽，刚在城南倒腾完石头，转眼又在星耀不夜城天台替人催起直播卖身契了？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "阿坤闻声回头，霓虹紫光映在他骤然收紧的眉峰上。看清缓步走来的你，他把没点的细烟夹回指间，扯出一抹皮笑肉不笑的表情。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "akun",
+          "name": "阿坤",
+          "role": "跨境玉石商 / 黑曜公会幕后资方",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "right",
+          "text": "陆大少，海城这么大，咱们怎么走哪都能撞上？这是我旗下公会内部艺人的履约纠纷，白纸黑字写着违约金，你总不至于连合同法都不讲吧？",
+          "innerThought": "真晦气，怎么又是陆沉。不过违约金条款做得很死，他想保人，总得真金白银出血才行。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 才华与账单穿透",
+          "text": "人才评估：程微（22岁），原创词曲与声线辨识度 S 级，怀中词曲本内《霓虹尽头的慢车》具备年度破圈爆款潜质。合约漏洞检测：黑曜星工坊所列 ¥240,000 投流支出中，92% 系通过关联空壳账户虚开发票、资金当日回流，实际平台投流不足 ¥18,000。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "left",
+          "text": "拿虚假投流账单套牢新人、逼着有才华的年轻人签十年八二抽成——这跟当年沈琉璃在不夜城差点被拖进泥潭的手法如出一辙。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "cheng_wei",
+          "name": "程微",
+          "role": "独立女唱作人",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "none",
+          "text": "先生，我只是想来星耀投试音小样，根本不知道中介把我卖进了这种黑公会……我不会签卖身契，大不了我回去打工慢慢还。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/akun.webp",
+          "activeSide": "both",
+          "text": "阿坤冷哼一声，把那份苛刻的补充协议往前一抖，摆出吃定她赔不起的架势。夜风猎猎作响，天台铁门外隐约传来星耀大厦巡逻安保的对讲声。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "当场结清账面违约金买断自由身，直接把她签进星耀新厂牌",
+          "cashCost": 240000,
+          "cashGain": 1520000,
+          "sysPoints": 100,
+          "canCrit": true,
+          "resultText": "你干脆利落买断黑公会旧约并将程微签入星耀新厂牌，她的新单曲上线即破圈登榜，版权分红叠加天枢返现大赚一笔。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "懒得跟你的黑账扯皮，耽误她写歌。公账账号发过来，二十四万我现在全额结清买断——原合同原件交出来，当场签解约确认函。从今晚起，程微归星耀独立音乐厂牌。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "text": "阿坤明显愣了一下，看着手机里迅速弹出的二十四万银行入账回执，心里暗喜以为狠狠宰了你一刀，当即利落签下解约函递了过来。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "akun",
+              "name": "阿坤",
+              "role": "跨境玉石商 / 黑曜公会幕后资方",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "text": "陆老板果然大方！为了个连单曲都没发过的小透明甩二十四万，行，人归你了，千万别赔本赚吆喝。",
+              "innerThought": "白捡二十四万现金，连本带利翻了十几倍。这帮有钱少爷就爱当冤大头。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "阿坤一行人带着满脸得意钻进电梯厅。天台重新只剩风声与霓虹微鸣，你将签好字的解约函折好，放进程微微微发凉的掌心。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "星耀新厂牌只签三年创作约，版权归你一半，录音棚夜档随时留着。歌写好，别让我看走眼。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "cheng_wei",
+              "name": "程微",
+              "role": "独立女唱作人",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "heartbeat",
+              "text": "陆先生……这二十四万，我一定从第一笔版税里先还清。您放心，我绝不会让您看走眼。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "两周后，程微的原创主打《霓虹尽头的慢车》在星耀矩阵首发，三天冲上全网热歌榜第一，商演与影视插曲邀约蜂拥而至。首轮版权分成叠加天枢暴击返现，净收一百五十二万元——听说阿坤看到榜单那天，气得把茶杯砸了个粉碎。"
+            }
+          ]
+        },
+        {
+          "label": "当众点破虚假投流账单的税务死穴，逼阿坤零违约金放人",
+          "cashCost": 0,
+          "cashGain": 185000,
+          "sysPoints": 85,
+          "resultText": "你精准揪住黑曜公会虚开发票回流洗账的命门，阿坤忌惮牵连背后灰产只得当场撕约放人，程微心悦诚服签入星耀新厂牌并带来丰厚回报。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "谈合同法？那正好核一下账。你们给程微列的二十四万『投流费』，有二十二万流进了一家叫宏帆传媒的空壳户，当天下午又拆成七笔转回黑曜关联账户。明天去法院告她可以，顺便把税务和经侦也请来旁听，怎么样？"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "effect": "shake",
+              "text": "天台霓虹在阿坤瞳孔里剧烈晃了一下。宏帆传媒正是他替赵家暗中走直播洗账的跳板之一，此刻被你轻描淡写报出全名，他背脊瞬间绷得笔直。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "akun",
+              "name": "阿坤",
+              "role": "跨境玉石商 / 黑曜公会幕后资方",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "right",
+              "text": "……财务那边估摸把别家艺人的推流单混进去了。既然是误会，小妹妹，旧约现在作废，你走吧。陆沉，你手伸得够长的。",
+              "innerThought": "他连宏帆的拆账笔数都知道？！绝不能为了一个小歌手把赵家的暗渠炸出来，先放人！"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/akun.webp",
+              "activeSide": "both",
+              "text": "阿坤强压着怒火把旧合同撕成两半丢进铁桶，带着两名运营快步钻进消防通道。程微愣在原地几秒，眼眶发红地向你深深鞠了一躬。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "cheng_wei",
+              "name": "程微",
+              "role": "独立女唱作人",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "谢谢您……我刚才都以为自己走不出这个天台了。如果您真是星耀那边的负责人，我的新歌小样都在包里，我想签给真正守规矩的人。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "你一分违约金未花，便通过星耀法务通道签下了这位稀缺唱作人。半月后她的试水单曲在短视频平台口碑发酵，迅速为新厂牌兑现了十八万五千元首轮净分润。"
+            }
+          ]
+        }
+      ]
     }
   ],
   "peak_coast": [
@@ -1843,6 +3440,250 @@
               "type": "thought",
               "sprite": "/assets/characters/protagonist.png",
               "text": "京城密函入手，陆知微又多了一份默契。海城之外更大的牌桌，正在缓缓浮出水面。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "ev_coast_4",
+      "title": "悬崖灯塔的午夜茶局",
+      "desc": "云顶海岸悬崖茶室，灯塔白光每八秒掠过漆黑海面。你偶遇周老与海城老派航运实业家梁振山对坐品茗，闲谈间隐晦浮出的十年前旧事，竟直指父亲陆渊的昔日风骨。",
+      "bg": "/assets/bg/bg_peak_coast.jpg",
+      "npcSprite": "/assets/npc/zhou.webp",
+      "introNodes": [
+        {
+          "type": "narration",
+          "bg": "/assets/bg/bg_peak_coast.jpg",
+          "sceneBanner": "云顶半山海岸 · 悬崖灯塔外廊",
+          "text": "午夜的云顶海岸退去了白昼的浮华，礁石下海潮闷响。远方灯塔的白色光柱每八秒缓缓扫过黑沉的海面，照亮悬崖边那间半隐在松影里的木结构老茶室。"
+        },
+        {
+          "type": "narration",
+          "bg": "/assets/items/prop_peak_manor.jpg",
+          "sceneBanner": "悬崖灯塔茶室 · 炭炉雅座",
+          "sprite": "/assets/npc/zhou.webp",
+          "text": "推开虚掩的格栅门，炭炉上铁壶正发出松风般的低鸣，三十年老普洱的陈香扑面而来。周老正替对面一位精神矍铄的白发老人续茶——那是海城早年白手起家的航运实业家梁振山，手里拄着一根摩挲发亮的红木手杖。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "怎么，云顶的酒会散得早，也跑来听海风了？坐吧。老梁，这就是我前阵子跟你提过的年轻人，姓陆，叫陆沉。",
+          "innerThought": "海城的风浪又要起了，趁今晚老梁在，也该让这孩子听一听老一辈心里真正记挂的规矩。"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "both",
+          "text": "你依礼弯腰接过梁振山递来的茶杯，两指稳稳托底，眼神清正而不失分寸。灯塔光柱恰好掠过窗棂，在茶烟里停顿了一瞬。白发老人原本随和的神色，忽然静止了半拍。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "liang_bo",
+          "name": "梁振山",
+          "role": "海城老派航运实业家",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "none",
+          "text": "……老周，你没提前告诉我，这孩子端茶的架势和这双眼睛，怎么像极了十年前咱们在码头边送走的那位故人？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "effect": "heartbeat",
+          "text": "周老手里的茶夹极轻微地顿了一下，没有接破那层窗户纸，只把一盏滚烫的茶汤推到你面前。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "liang_bo",
+          "name": "梁振山",
+          "role": "海城老派航运实业家",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "none",
+          "text": "十年前海城老港区重组，京城和海外几路热钱联手想拿杠杆抽空本地深水码头。满城都在看笑话，只有一位姓陆的年轻人，顶着三家财团施压替我们这些老船东签了兜底保函。他说过一句话，我记到现在——『做局的人总想快，可真正站得住的，都是肯替海城留半步活路的人』。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "zhou",
+          "name": "周老",
+          "role": "老城区古玩行会长",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "right",
+          "text": "陈年旧话了，喝茶。如今海城水更深，老梁手里最后一块东港冷链老码头，最近不也被一伙来路不明的离岸基金盯上了，逼着他半价脱手么。",
+          "innerThought": "渊哥啊，你儿子就坐在当年你最常看灯塔的位置上。他现在还没听全真相，可那股不肯低头的骨头，真跟你一模一样。"
+        },
+        {
+          "type": "thought",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "left",
+          "text": "十年前、姓陆、独自顶住三家财团守护海城老港区……那是父亲陆渊。周老带我见梁伯，既是在叙旧，也是在看看我配不配接住当年留下的半盘残局。"
+        },
+        {
+          "type": "system_alert",
+          "sprite": "/assets/characters/protagonist.png",
+          "effect": "flash",
+          "title": "天枢洞察眼 · 东港冷链码头穿透",
+          "text": "标的扫描：梁氏东港 3 号冷链老码头即将纳入下季度保税港区扩线规划，真实潜在估值超当前压价两倍以上。围猎方离岸基金背后查见十年前参与海城港区做空的同一批影子资本通道。"
+        },
+        {
+          "type": "dialogue",
+          "speaker": "liang_bo",
+          "name": "梁振山",
+          "role": "海城老派航运实业家",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "none",
+          "text": "老朽七十岁了，码头上的两百号老工人跟我干了半辈子，我绝不想把水岸交到那帮只会拆骨卖地的秃鹫手里。陆小子，换作是你站在这悬崖边，这盘棋你会怎么下？"
+        },
+        {
+          "type": "narration",
+          "leftSprite": "/assets/characters/protagonist.png",
+          "rightSprite": "/assets/npc/zhou.webp",
+          "activeSide": "both",
+          "text": "窗外灯塔光柱再度扫过漆黑礁石，把茶室里袅袅升起的水汽照得澄亮。周老安静垂眸品茶，把整张桌面交给了你。"
+        }
+      ],
+      "choices": [
+        {
+          "label": "出资接下东港老码头的优先修缮股，替海城守住这块老水岸",
+          "cashCost": 350000,
+          "cashGain": 2350000,
+          "sysPoints": 145,
+          "canCrit": true,
+          "resultText": "你果断出资承接老码头修缮升级优先股，死死卡住离岸秃鹫的收地算盘；保税港区扩线落地后估值翻倍，并正式赢得海城老派实业圈的敬重。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "梁伯，码头不卖，老工人一个不裁。我先出三十五万认购东港 3 号码头的冷链修缮优先股，其余流动性由我这边联合海城本地资金补齐。至于那伙想趁火打劫的离岸秃鹫，告诉他们——海城的水岸，轮不到外人拆骨头。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "both",
+              "effect": "shake",
+              "text": "茶室里静得只剩铁壶轻沸。梁振山握着红木手杖的手微微发颤，片刻后突然重重顿了下地板，端起面前的老普洱一饮而尽。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "liang_bo",
+              "name": "梁振山",
+              "role": "海城老派航运实业家",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "none",
+              "text": "好一句『轮不到外人拆骨头』！老周啊，十年前那位故人的风骨，今天在这海风里又让我撞见一回。陆沉，这优先股协议我明早就让人送去你府上，往后只要海城航运圈说得上话的地方，老朽替你撑到底！"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "这泡三十年陈普，今晚算没白开。陆沉，记住今天这盏茶——将来你若真走到京城那张牌桌前，海城这群老骨头，不会让你孤军深入。",
+              "innerThought": "渊哥，可以放心了。当年你替海城护下的根，如今正反过来托起你的儿子。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "一个多月后，海城保税港区东扩规划正式落纸，东港 3 号冷链码头一跃成为核心枢纽节点，优先股估值成倍攀升。叠加天枢高额返现，二百三十五万元回馈稳稳入账。"
+            },
+            {
+              "type": "thought",
+              "sprite": "/assets/characters/protagonist.png",
+              "text": "走出茶室时海风依旧清冷，可灯塔的光似乎比来时更稳了几分。父亲当年走过的路，我正在一步一步接上。"
+            }
+          ]
+        },
+        {
+          "label": "拆穿离岸影子资金的压价套路，替梁伯递上一套航运协会反制策",
+          "cashCost": 0,
+          "cashGain": 450000,
+          "sysPoints": 125,
+          "resultText": "你精准还原了影子资本压价做空的旧手法，帮梁伯借航运协会信用证反制逼退强敌，获赠丰厚顾问分红与周老留下的珍贵旧线索。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "left",
+              "effect": "impact",
+              "text": "梁伯，逼您半价卖码头的那家离岸基金，用的是十年前海城港区重组一模一样的招数——先卡住冷链结算通道制造短期现金流紧绷，再趁保税区扩线消息公布前低价逼宫。您不必跟他们硬拼现钱。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "left",
+              "text": "只要您明早联合海城航运协会发一纸保税信用联保，把码头的短期过桥账展期九十天，等扩线公示一落，主动权立刻倒回您手里，那帮影子资金反而要为高息杠杆流血。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "both",
+              "text": "梁振山听得双眉一扬，抚掌击节。连一旁向来喜怒不形于色的周老，也忍不住抬头深看了你一眼。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "liang_bo",
+              "name": "梁振山",
+              "role": "海城老派航运实业家",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "none",
+              "text": "一针见血！真没想到你连十年前那帮影子资金的手法都摸得这么透。按你这法子，老码头不仅保得住，还能反咬他们一口。这笔战略顾问酬劳你务必收下，算老朽替码头两百号弟兄谢你！"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "送走梁振山后，周老替你合上半扇茶室木门。灯塔的白色光柱从礁石海面缓慢扫过，映亮他略显深沉的侧脸。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "zhou",
+              "name": "周老",
+              "role": "老城区古玩行会长",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "/assets/npc/zhou.webp",
+              "activeSide": "right",
+              "text": "十年前那场大雾，你那位姓陆的长辈最后一次露面，也是在这座悬崖灯塔底下。时候到了，老头子再把压箱底的旧档案递给你。",
+              "innerThought": "锋芒藏得住，退路看得清。渊哥当年留下的棋，总算等到能接盘的人了。"
+            },
+            {
+              "type": "narration",
+              "sprite": "/assets/characters/protagonist.png",
+              "effect": "flash",
+              "text": "半月后梁氏联保落地，逼宫的离岸基金黯然撤退。梁振山依约奉上四十五万元战略顾问分红，而周老临别那半句关于悬崖灯塔的旧话，也像一枚沉甸甸的钥匙落进你心底。"
             }
           ]
         }
