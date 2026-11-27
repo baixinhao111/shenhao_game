@@ -581,18 +581,18 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               <span className="text-[#F6DDA4] font-bold tracking-wider truncate">{player.tier.name}</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="bar-track w-[72px] !h-[5px]">
+              <div className="bar-track w-[56px] shrink-0 !h-[5px]">
                 <div className="bar-fill" style={{ width: `${tierProgressPct}%` }} />
               </div>
-              <span className="font-num text-[10px] text-[#C3C9DC] leading-none">
+              <span className="font-num text-[10px] text-[#C3C9DC] leading-none whitespace-nowrap">
                 <AnimatedNumber value={player.netWorth} />
               </span>
             </div>
           </div>
         </button>
 
-        <div className="pointer-events-auto pt-2.5 pr-0.5">
-          <ResourceCapsules />
+        <div className="pointer-events-auto pt-2.5 pr-0.5 shrink-0">
+          <ResourceCapsules compact />
         </div>
       </div>
 

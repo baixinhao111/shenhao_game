@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Check, UserCheck } from 'lucide-react';
 import { DecoHeading, GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -25,6 +25,32 @@ export const AssetsView: React.FC = () => {
   const [subTab, setSubTab] = useState<'garage' | 'biz' | 'props'>('garage');
   const [selectedAssetId, setSelectedAssetId] = useState<string>('');
   const [busy, setBusy] = useState(false);
+  const [dir, setDir] = useState(1);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const tabsRef = useRef<HTMLDivElement>(null);
+  const swipeRef = useRef<{ x: number; y: number; t: number } | null>(null);
+
+  /** Bring the top of the current tab's content right under the sticky tab bar (only if we scrolled past it). */
+  const scrollToContentTop = (smooth: boolean) => {
+    const el = scrollRef.current;
+    const tabs = tabsRef.current;
+    if (!el || !tabs) return;
+    const target = tabs.offsetTop;
+    if (el.scrollTop > target) el.scrollTo({ top: target, behavior: smooth ? 'smooth' : 'auto' });
+  };
+
+  const switchTab = (id: 'garage' | 'biz' | 'props') => {
+    if (id === subTab) return;
+    const order = ['garage', 'biz', 'props'];
+    setDir(order.indexOf(id) > order.indexOf(subTab) ? 1 : -1);
+    playTap();
+    setSubTab(id);
+  };
+
+  // every tab starts at its top instead of inheriting the previous tab's scroll offset
+  useEffect(() => {
+    scrollToContentTop(false);
+  }, [subTab]);
 
   if (!state) return null;
   const { player, businesses, properties, assets, assetSets, heroines } = state;
@@ -117,7 +143,27 @@ export const AssetsView: React.FC = () => {
   ];
 
   return (
-    <div className="h-full overflow-y-auto no-scrollbar deco-texture">
+    <div
+      ref={scrollRef}
+      className="h-full overflow-y-auto overflow-x-hidden no-scrollbar deco-texture"
+      onTouchStart={(e) => {
+        const t = e.touches[0];
+        swipeRef.current = { x: t.clientX, y: t.clientY, t: Date.now() };
+      }}
+      onTouchEnd={(e) => {
+        const st = swipeRef.current;
+        swipeRef.current = null;
+        if (!st) return;
+        const t = e.changedTouches[0];
+        const dx = t.clientX - st.x;
+        const dy = t.clientY - st.y;
+        // horizontal flick switches tabs; vertical scrolling is left alone
+        if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 1.8 || Date.now() - st.t > 600) return;
+        const order: Array<'garage' | 'biz' | 'props'> = ['garage', 'biz', 'props'];
+        const next = order[order.indexOf(subTab) + (dx < 0 ? 1 : -1)];
+        if (next) switchTab(next);
+      }}
+    >
       {/* Vault header */}
       <div className="px-3 pt-3">
         <div className="relative panel-brass rounded-[10px] px-3 py-3 flex items-center gap-3">
@@ -148,16 +194,15 @@ export const AssetsView: React.FC = () => {
       </div>
 
       {/* Segmented tabs */}
-      <div className="sticky top-0 z-20 px-3 pt-3 pb-2 bg-gradient-to-b from-[#0A0F1F] via-[#0A0F1F]/95 to-[#0A0F1F]/0">
+      {/* sticky elements report their stuck offset, so measure from this marker instead */}
+      <div ref={tabsRef} aria-hidden />
+      <div className="sticky top-0 z-20 px-3 pt-2.5 pb-2.5 mt-0.5 bg-[#0A0F1F]/95 backdrop-blur-md border-b border-[#E2BD72]/12 shadow-[0_6px_14px_rgba(0,0,0,0.35)]">
         <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
           {SUBTABS.map(({ id, label, icon }) => (
             <button
               key={id}
               data-active={subTab === id}
-              onClick={() => {
-                playTap();
-                setSubTab(id);
-              }}
+              onClick={() => switchTab(id)}
               className="tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
             >
               <GameIcon name={icon} size={20} shadow={false} />
@@ -167,6 +212,21 @@ export const AssetsView: React.FC = () => {
         </div>
       </div>
 
+      <AnimatePresence mode="wait" initial={false} custom={dir}>
+      <motion.div
+        key={subTab}
+        custom={dir}
+        variants={{
+          enter: (d: number) => ({ opacity: 0, x: d * 36 }),
+          center: { opacity: 1, x: 0 },
+          leave: (d: number) => ({ opacity: 0, x: d * -36 }),
+        }}
+        initial="enter"
+        animate="center"
+        exit="leave"
+        transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
+        className="pt-2"
+      >
       {/* TAB 1: SHOWROOM */}
       {subTab === 'garage' && featuredAsset && (
         <div className="pb-8">
@@ -263,6 +323,8 @@ export const AssetsView: React.FC = () => {
                     onClick={() => {
                       playTap();
                       setSelectedAssetId(a.id);
+                      // the showroom is at the top: bring it into view so the tap visibly does something
+                      scrollToContentTop(true);
                     }}
                     className={`relative rounded-[8px] p-1.5 pb-2 text-left transition active:scale-95 ${
                       selected ? 'panel-brass' : 'panel-arch'
@@ -470,6 +532,8 @@ export const AssetsView: React.FC = () => {
           ))}
         </div>
       )}
+      </motion.div>
+      </AnimatePresence>
     </div>
   );
 };

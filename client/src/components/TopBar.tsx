@@ -60,7 +60,7 @@ export const ResourceCapsules: React.FC<{ compact?: boolean }> = ({ compact = fa
         data-fx-anchor="cash"
       >
         <GameIcon name="cash" size={30} className="res-icon" shadow={false} />
-        <span className="font-num text-[13px] font-semibold text-[#FFE7B0] min-w-[44px] text-right">
+        <span className="font-num text-[13px] font-semibold text-[#FFE7B0] min-w-[44px] text-right whitespace-nowrap">
           <AnimatedNumber value={player.cash} highlightOnIncrease />
         </span>
       </button>

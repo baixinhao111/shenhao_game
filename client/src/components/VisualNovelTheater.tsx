@@ -27,6 +27,7 @@ import {
 import { useGameStore, type VNChoiceOption, type VNNode } from '../store/useGameStore';
 import { PortraitAvatar } from './PortraitAvatar';
 import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
+import { renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
 
 export interface VNSettlementData {
   mode: 'main' | 'date' | 'home' | 'stroll';
@@ -245,6 +246,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   const [fastForward, setFastForward] = useState(false);
   const [hideUi, setHideUi] = useState(false);
   const [showLog, setShowLog] = useState(false);
+  const [showStatus, setShowStatus] = useState(false);
 
   const [chosenIds, setChosenIds] = useState<string[]>([]);
   const [chosenOptions, setChosenOptions] = useState<VNChoiceOption[]>([]);
@@ -293,6 +295,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     setFastForward(false);
     setHideUi(false);
     setShowLog(false);
+    setShowStatus(false);
     setPeekOpen(false);
     setRevealedThoughts({});
     setActiveBanner(null);
@@ -494,7 +497,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   ]);
 
   useEffect(() => {
-    if (!autoPlay || showOpeningCard || showLog || hideUi || settlement || submitting) return;
+    if (!autoPlay || showOpeningCard || showLog || showStatus || hideUi || settlement || submitting) return;
     if (currentNode?.type === 'system_choice' && !resolvedChoices[nodeIdx]) return;
     if (isTyping) return;
     if (isLast) {
@@ -508,6 +511,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     autoPlay,
     showOpeningCard,
     showLog,
+    showStatus,
     hideUi,
     settlement,
     submitting,
@@ -521,7 +525,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   ]);
 
   useEffect(() => {
-    if (!fastForward || showOpeningCard || showLog || hideUi || settlement || submitting) return;
+    if (!fastForward || showOpeningCard || showLog || showStatus || hideUi || settlement || submitting) return;
     if (currentNode?.type === 'system_choice' && !resolvedChoices[nodeIdx]) {
       setFastForward(false);
       return;
@@ -544,6 +548,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     fastForward,
     showOpeningCard,
     showLog,
+    showStatus,
     hideUi,
     settlement,
     submitting,
@@ -554,6 +559,24 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     queue,
     stepForward,
   ]);
+
+  // desktop / PWA keyboard: Space or Enter advances, Esc closes the 天枢 panel or the log
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === 'Escape') {
+        setShowStatus(false);
+        setShowLog(false);
+        return;
+      }
+      if ((e.key === ' ' || e.key === 'Enter') && !showStatus && !showLog && !isUnansweredChoice && !settlement) {
+        e.preventDefault();
+        stepForward();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -613,6 +636,28 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
 
   const progressPct = queue.length > 0 ? Math.min(100, ((nodeIdx + 1) / queue.length) * 100) : 100;
   const isUnansweredChoice = currentNode?.type === 'system_choice' && !resolvedChoices[nodeIdx];
+  const isSystemOverlay = !showOpeningCard && (currentNode?.type === 'system_alert' || isUnansweredChoice);
+  const heroineIds = useMemo(() => new Set<string>((state?.heroines || []).map((h: any) => h.id)), [state?.heroines]);
+  const speakerIsHeroine = !!currentNode?.speaker && heroineIds.has(currentNode.speaker);
+
+  /** Who the 天枢 panel "scans": the current speaker, else the last non-protagonist speaker on stage. */
+  const statusFocus = useMemo(() => {
+    for (let i = nodeIdx; i >= Math.max(0, nodeIdx - 8); i -= 1) {
+      const n = queue[i];
+      if (n?.type === 'dialogue' && n.speaker && n.speaker !== 'protagonist' && n.name) {
+        return { name: n.name, role: n.role, speaker: n.speaker, hasThought: i === nodeIdx && !!n.innerThought };
+      }
+    }
+    return null;
+  }, [queue, nodeIdx]);
+  const systemLogs = useMemo(
+    () =>
+      queue
+        .slice(0, nodeIdx + 1)
+        .filter((n) => n.type === 'system_alert' && n.text)
+        .map((n) => ({ title: n.title || '天枢系统', text: n.text || '' })),
+    [queue, nodeIdx],
+  );
 
   const cameraAnimate =
     effectTick?.kind === 'impact'
@@ -864,6 +909,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   </button>
                 </div>
 
+                <div className="flex items-center gap-2">
                 <div className="flex items-center h-8 px-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35 text-[#D8DAE2] divide-x divide-white/10">
                   <button
                     onClick={() => {
@@ -912,6 +958,17 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     <EyeOff className="w-3.5 h-3.5" />
                   </button>
                 </div>
+                <TianshuSummonButton
+                  alert={statusFocus?.hasThought && !revealedThoughts[nodeIdx]}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    playSystemPing();
+                    setAutoPlay(false);
+                    setFastForward(false);
+                    setShowStatus(true);
+                  }}
+                />
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -932,209 +989,167 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           )}
         </AnimatePresence>
 
-        {/* 6. Bottom Interactive Region: SPOILER-FREE Choices OR Clean Cinematic Dialogue Scrim */}
-        <AnimatePresence mode="wait">
-          {!hideUi && !settlement && (
+        {/* 6a. 天枢 takes the centre of the screen: system alerts and choices */}
+        <AnimatePresence>
+          {!hideUi && !settlement && !showOpeningCard && currentNode?.type === 'system_alert' && (
+            <SystemAlertPanel
+              key={`alert-${nodeIdx}`}
+              node={currentNode}
+              typed={fullText.slice(0, typedCount)}
+              isTyping={isTyping}
+              onTap={() => {
+                playTap();
+                stepForward();
+              }}
+            />
+          )}
+          {!hideUi && !settlement && !showOpeningCard && isUnansweredChoice && currentNode && (
+            <SystemChoicePanel
+              key={`choice-${nodeIdx}`}
+              node={currentNode}
+              disabled={submitting}
+              isUnaffordable={(opt) =>
+                script.mode === 'stroll' && (opt.cost?.cash ?? opt.cashCost ?? 0) > (state?.player?.cash ?? 0)
+              }
+              onChoose={handleSelectChoice}
+            />
+          )}
+        </AnimatePresence>
+
+        {/* 6b. Cinematic dialogue band (no card, no frame) */}
+        <AnimatePresence>
+          {!hideUi && !settlement && !isSystemOverlay && (
             <motion.div
-              key={isUnansweredChoice ? `choice-${nodeIdx}` : 'dialogue-box'}
+              key="dialogue-band"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 6 }}
               transition={{ duration: 0.2 }}
               className="relative z-30"
             >
-              {isUnansweredChoice && !showOpeningCard ? (
-                /* Choice plates */
-                <div className="px-5 pb-10 pt-10 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/80 to-transparent space-y-3">
-                  {currentNode?.title && (
-                    <div className="flex justify-center pb-1">
-                      <span className="inline-flex items-center gap-2 px-5 py-1 rounded-full bg-[#070B18]/85 backdrop-blur-md border border-[#63E6F2]/45 text-[12px] tracking-[0.2em] cyan-glow-text font-bold">
-                        <GameIcon name="tianshu" size={18} shadow={false} />
-                        {currentNode.title}
-                      </span>
-                    </div>
-                  )}
-
-                  <div className="space-y-2.5">
-                    {(currentNode?.options || []).map((opt, idx) => {
-                      const cashCost = opt.cost?.cash ?? opt.cashCost ?? 0;
-                      const unaffordable = script.mode === 'stroll' && cashCost > (state?.player?.cash ?? 0);
-                      return (
-                        <motion.button
-                          key={opt.id}
-                          initial={{ opacity: 0, x: idx % 2 ? 24 : -24 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: idx * 0.07, duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-                          disabled={submitting}
-                          onClick={() => handleSelectChoice(opt)}
-                          className={`group relative w-full rounded-[8px] px-6 py-3 text-center transition active:scale-[0.985] ${
-                            unaffordable ? 'opacity-55' : ''
-                          }`}
-                          style={{
-                            background:
-                              'linear-gradient(180deg, rgba(30,40,78,0.92) 0%, rgba(12,18,38,0.94) 100%)',
-                            border: '1px solid rgba(226,189,114,0.6)',
-                            boxShadow:
-                              'inset 0 0 0 1px rgba(10,15,31,0.9), inset 0 0 0 2px rgba(226,189,114,0.18), 0 8px 20px rgba(0,0,0,0.5)',
-                          }}
-                        >
-                          <span className="absolute left-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] group-hover:shadow-[0_0_10px_rgba(255,231,176,0.9)]" />
-                          <span className="absolute right-2.5 top-1/2 -translate-y-1/2 w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E] group-hover:shadow-[0_0_10px_rgba(255,231,176,0.9)]" />
-                          <div className="text-[14px] font-editorial font-bold text-[#FBF1D8] leading-[1.6]">{opt.label}</div>
-                          {unaffordable && <div className="text-[10.5px] text-[#FF8FA6] mt-0.5">资金不足</div>}
-                        </motion.button>
-                      );
-                    })}
-                  </div>
-                </div>
-              ) : (
-                /* Dialogue box */
-                <div
-                  onClick={() => {
-                    playTap();
-                    stepForward();
-                  }}
-                  className="bg-gradient-to-t from-[#05070F]/95 via-[#05070F]/60 to-transparent pt-14 pb-4 px-3 cursor-pointer"
-                >
-                  <AnimatePresence>
-                    {peekOpen && currentNode?.innerThought && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 6, scale: 0.98 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 4 }}
-                        transition={{ duration: 0.18 }}
-                        onClick={(e) => e.stopPropagation()}
-                        className="mb-3 mx-2 rounded-[14px] px-4 py-2.5 border border-[#F0789A]/50"
-                        style={{
-                          background: 'linear-gradient(180deg, rgba(70,24,48,0.88), rgba(30,12,28,0.9))',
-                          boxShadow: '0 0 18px rgba(240,120,154,0.25)',
-                        }}
-                      >
-                        <div className="flex items-center gap-1.5 text-[10.5px] tracking-[0.25em] text-[#FFB3C6] font-bold mb-0.5">
-                          <GameIcon name="heart" size={14} shadow={false} /> 心声
-                        </div>
-                        <p className="text-[13px] italic text-[#FBE3EA] leading-relaxed">「{currentNode.innerThought}」</p>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-
-                  {currentNode?.type === 'system_alert' ? (
-                    <div
-                      className="relative rounded-[10px] px-4 pt-6 pb-4 min-h-[118px]"
-                      style={{
-                        background:
-                          'linear-gradient(180deg, rgba(14,46,70,0.88) 0%, rgba(6,18,36,0.94) 100%)',
-                        border: '1px solid rgba(99,230,242,0.6)',
-                        boxShadow: 'inset 0 0 24px rgba(99,230,242,0.18), 0 0 24px rgba(99,230,242,0.22)',
-                      }}
+              <div
+                onClick={() => {
+                  playTap();
+                  stepForward();
+                }}
+                className="vn-dialogue-band pt-14 pb-6 px-5 cursor-pointer"
+              >
+                <AnimatePresence>
+                  {peekOpen && currentNode?.innerThought && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 6, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 4 }}
+                      transition={{ duration: 0.18 }}
+                      onClick={(e) => e.stopPropagation()}
+                      className="mb-4 relative pl-3.5 pr-2 py-2"
                     >
-                      <div className="absolute inset-0 rounded-[10px] pointer-events-none opacity-30"
-                        style={{ backgroundImage: 'repeating-linear-gradient(0deg, rgba(99,230,242,0.18) 0 1px, transparent 1px 4px)' }} />
-                      <div className="absolute -top-3.5 left-3 flex items-center gap-1.5 pl-1 pr-3 py-0.5 rounded-full bg-[#06121F] border border-[#63E6F2]/70">
-                        <GameIcon name="tianshu" size={22} shadow={false} />
-                        <span className="text-[11.5px] font-black tracking-[0.25em] cyan-glow-text">{currentNode.title || '天枢系统'}</span>
+                      <span className="absolute left-0 top-1 bottom-1 w-[2px] rounded-full bg-gradient-to-b from-[#FFB3C6] to-[#F0789A]/20" />
+                      <div className="text-[10px] tracking-[0.4em] text-[#FFB3C6] font-bold mb-1">
+                        {currentNode.name} · 心声
                       </div>
-                      <p className="relative text-[14px] leading-[1.8] text-[#DDFBFF] whitespace-pre-line">
-                        {fullText.slice(0, typedCount)}
-                      </p>
-                    </div>
-                  ) : (
-                    <div
-                      className="relative rounded-[10px] px-4 pt-5 pb-3 min-h-[128px]"
-                      style={{
-                        background:
-                          'linear-gradient(180deg, rgba(20,28,58,0.9) 0%, rgba(8,12,26,0.94) 100%)',
-                        border: '1px solid rgba(226,189,114,0.5)',
-                        boxShadow:
-                          'inset 0 0 0 1px rgba(10,15,31,0.9), inset 0 0 0 2px rgba(226,189,114,0.14), 0 12px 30px rgba(0,0,0,0.6)',
-                        backdropFilter: 'blur(10px)',
-                      }}
-                    >
-                      <OrnateCorners size={18} inset={-4} />
+                      <p className="text-[13.5px] italic text-[#FBE3EA] leading-[1.8]">{currentNode.innerThought}</p>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
 
-                      {currentNode?.type === 'dialogue' && (
-                        <div className="absolute -top-4 left-3 flex items-end gap-2">
-                          <span
-                            className="font-editorial text-[16px] font-black tracking-[0.12em] text-[#2A1C06] pl-3 pr-5 py-[3px]"
-                            style={{
-                              background: 'linear-gradient(180deg,#FFF0C8 0%,#E8C27A 55%,#B7843A 100%)',
-                              clipPath: 'polygon(0 0, 100% 0, calc(100% - 10px) 100%, 0 100%)',
-                              boxShadow: '0 4px 10px rgba(0,0,0,0.5)',
-                            }}
-                          >
-                            {currentNode.name}
-                          </span>
-                          {currentNode.role && (
-                            <span className="text-[10.5px] text-[#C3C9DC] mb-0.5 text-stroke-dark">{currentNode.role}</span>
-                          )}
-                        </div>
+                {/* speaker row: fixed height so the text never jumps between node types */}
+                <div className="h-[30px] flex items-end gap-2.5">
+                  {currentNode?.type === 'dialogue' && (
+                    <>
+                      <span
+                        className={`font-editorial text-[20px] leading-none font-black tracking-[0.14em] ${
+                          speakerIsHeroine ? 'text-[#FFC9D6]' : 'gold-gradient-text'
+                        }`}
+                        style={speakerIsHeroine ? { textShadow: '0 0 14px rgba(240,120,154,0.45)' } : undefined}
+                      >
+                        {currentNode.name}
+                      </span>
+                      {currentNode.role && (
+                        <span className="text-[10.5px] leading-none text-[#8E97B3] tracking-[0.12em] pb-[2px] truncate">
+                          {currentNode.role}
+                        </span>
                       )}
-                      {currentNode?.type === 'thought' && (
-                        <div className="absolute -top-3 left-3 px-2.5 py-[1px] rounded-full bg-[#0A0F1F] border border-[#E2BD72]/50 text-[10.5px] tracking-[0.3em] text-[#F6DDA4]">
-                          内心
-                        </div>
-                      )}
-
-                      {currentNode?.type === 'dialogue' && currentNode.innerThought && (
+                      <span className="flex-1" />
+                      {currentNode.innerThought && (
                         <button
                           onClick={handleTogglePeek}
-                          className={`absolute -top-3.5 right-3 flex items-center gap-1 pl-1 pr-2.5 py-0.5 rounded-full text-[11px] font-bold border transition ${
+                          className={`shrink-0 -mb-0.5 flex items-center gap-1 pl-0.5 pr-2 py-[2px] rounded-full text-[11px] font-bold border transition ${
                             peekOpen
                               ? 'bg-[#4A1830] border-[#F0789A] text-[#FFC4D3]'
-                              : 'bg-[#0A0F1F] border-[#F0789A]/60 text-[#FFB3C6] animate-pulse'
+                              : 'bg-[#1A0C18]/70 border-[#F0789A]/55 text-[#FFB3C6]'
                           }`}
                         >
-                          <GameIcon name="heart" size={18} shadow={false} />
+                          <GameIcon name="heart" size={18} shadow={false} className={peekOpen ? '' : 'animate-pulse'} />
                           {peekOpen ? '收起' : '心声'}
                         </button>
                       )}
-
-                      <p
-                        className={
-                          currentNode?.type === 'thought'
-                            ? 'text-[14.5px] leading-[1.86] italic text-[#E9DFC9] tracking-[0.015em]'
-                            : currentNode?.type === 'narration' || currentNode?.type === 'barrage'
-                              ? 'text-[14.5px] leading-[1.88] text-[#D7DAE3] tracking-[0.02em]'
-                              : 'text-[15px] leading-[1.84] text-[#FBF6EA] tracking-[0.015em]'
-                        }
-                      >
-                        {fullText.slice(0, typedCount)}
-                        {isTyping && (
-                          <span className="inline-block w-[2px] h-[14px] bg-[#E2BD72]/80 ml-0.5 align-middle animate-pulse" />
-                        )}
-                      </p>
-
-                      <div className="flex items-center justify-between pt-2 text-[10.5px] text-[#6B7392]">
-                        <span className="font-num tracking-wider truncate max-w-[60%]">
-                          {script.chapterTitle} · {nodeIdx + 1}/{queue.length}
-                        </span>
-                        <span className="text-[#E2BD72] flex items-center gap-1 shrink-0">
-                          {submitting ? (
-                            '请稍候…'
-                          ) : isTyping ? (
-                            ''
-                          ) : isLast ? (
-                            <>
-                              <span className="font-editorial font-bold">{script.alreadyCompleted ? '结束' : '继续'}</span>
-                              <ChevronRight className="w-3.5 h-3.5" />
-                            </>
-                          ) : (
-                            <motion.span
-                              animate={{ y: [0, 3, 0] }}
-                              transition={{ repeat: Infinity, duration: 1.1 }}
-                              className="inline-block w-0 h-0 border-l-[5px] border-r-[5px] border-t-[7px] border-l-transparent border-r-transparent border-t-[#FFE7B0] drop-shadow-[0_0_4px_rgba(255,231,176,0.8)]"
-                            />
-                          )}
-                        </span>
-                      </div>
-                    </div>
+                    </>
+                  )}
+                  {currentNode?.type === 'thought' && (
+                    <span className="text-[11px] leading-none tracking-[0.4em] text-[#C9B58A] pb-[3px]">内心独白</span>
                   )}
                 </div>
-              )}
+                <div className={`vn-name-rule mt-2 mb-3 ${currentNode?.type === 'dialogue' || currentNode?.type === 'thought' ? '' : 'opacity-0'}`} />
+
+                <p
+                  className={`min-h-[86px] ${
+                    currentNode?.type === 'thought'
+                      ? 'text-[15px] leading-[1.9] italic text-[#E6DBC2]'
+                      : currentNode?.type === 'dialogue'
+                        ? 'text-[15.5px] leading-[1.88] text-[#FAF6EC]'
+                        : 'text-[15px] leading-[1.9] text-[#D2D6E2]'
+                  }`}
+                  style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+                >
+                  {fullText.slice(0, typedCount)}
+                  {!isTyping && !submitting && (
+                    isLast ? (
+                      <span className="ml-2 inline-flex items-center text-[12px] not-italic font-editorial font-bold text-[#E2BD72] align-middle">
+                        {script.alreadyCompleted ? '结束' : '继续'}
+                        <ChevronRight className="w-3.5 h-3.5" />
+                      </span>
+                    ) : (
+                      <motion.span
+                        animate={{ opacity: [0.3, 1, 0.3] }}
+                        transition={{ repeat: Infinity, duration: 1.2 }}
+                        className="inline-block ml-1.5 w-[7px] h-[7px] rotate-45 align-middle bg-[#E2BD72] shadow-[0_0_6px_rgba(255,231,176,0.9)]"
+                      />
+                    )
+                  )}
+                  {submitting && <span className="ml-2 text-[12px] text-[#E2BD72]">请稍候…</span>}
+                </p>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
+
+      {/* 天枢宿主面板：随时唤出 */}
+      <AnimatePresence>
+        {showStatus && !settlement && (
+          <TianshuStatusPanel
+            state={state}
+            chapterLabel={`${script.chapterTitle} · ${script.title}`}
+            progress={{ at: nodeIdx + 1, total: queue.length }}
+            choicesMade={chosenIds.length}
+            focus={statusFocus}
+            logs={systemLogs}
+            onReadThought={() => {
+              setShowStatus(false);
+              if (currentNode?.innerThought) {
+                playHeartbeat();
+                setRevealedThoughts((prev) => ({ ...prev, [nodeIdx]: true }));
+                setPeekOpen(true);
+              }
+            }}
+            onClose={() => {
+              playTap();
+              setShowStatus(false);
+            }}
+          />
+        )}
+      </AnimatePresence>
 
       {/* 7. Opening Title Curtain */}
       <AnimatePresence>
@@ -1215,6 +1230,16 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   );
                 }
                 if (!n.text) return null;
+                if (n.type === 'system_alert') {
+                  return (
+                    <div key={`log-sys-${idx}`} className="rounded-[4px] px-3 py-2 border border-[#63E6F2]/30 bg-[#041826]/70">
+                      <div className="flex items-center gap-1.5 text-[11px] font-bold cyan-glow-text">
+                        <GameIcon name="tianshu" size={16} shadow={false} /> {n.title || '天枢系统'}
+                      </div>
+                      <p className="text-[12.5px] leading-relaxed text-[#CFEFF3] mt-1">{renderSysText(n.text)}</p>
+                    </div>
+                  );
+                }
                 return (
                   <div key={`log-${idx}`} className="space-y-1">
                     {n.sceneBanner && (

@@ -9,6 +9,7 @@
 - **经济只走 `server/src/economy.ts`**（`spend*OrThrow` / `grant`），购买只走 `server/src/purchases.ts`。不要手写 `UPDATE player_state SET cash`。
 - **小玩法** = `server/src/minigames.ts` 会话（start → act → finish），先扣钱的必须 `ledgerOpen` 记账；前端用 `client/src/minigames/Stage.tsx` 外壳并在 `MinigameHost.tsx` 注册。期望回报 0.9–1.1×，用 `scripts/qa/balance_*.mjs` 模拟验证。
 - **UI 视觉「海城夜金」**：颜色/组件类只用 `client/src/design.css` 里的；入口、资源、奖励用彩绘 `<GameIcon>`，lucide 只用于返回/关闭等微控件；冰蓝只给天枢，玫瑰色只给红颜。
+- **剧情里的天枢居中出场**：`system_alert`/`system_choice` 用 `components/vn/SystemPanels.tsx` 的全息面板，对白区是无边框渐隐带（DEV_GUIDE §5.6），不要退回卡片式对话框。
 - **不弹居中结果卡**：结果在场景内演出 + 底部 `ResultStrip`；收钱用 `flyReward()` 金币飞入；全屏演出只给 ≥5 倍暴击等大时刻；`notifyTop` 不用于「到账」。
 - **美术资产**用 Seedream 5.5（`scripts/assets/gen_image.py`），图标必须 3×3 整表生成保持风格统一，规格与 prompt 模板见 DEV_GUIDE §6。不用真实品牌/真实人物/其他游戏素材。
 - **内容在 `content/*.json`**，新增产业/物业要在 `negotiation.ts` 的 `SELLER_OF` 指定卖家；新增红颜要补 `HEROINE_ASSIST`、首页台词与立绘；每个收藏品都要有获取途径。

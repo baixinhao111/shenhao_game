@@ -516,3 +516,96 @@
     transform: translateX(330%);
   }
 }
+
+/* ───────── 天枢全息面板（剧情内系统弹出 / 宿主面板） ───────── */
+.holo-panel {
+  --holo-line: rgba(99, 230, 242, 0.22);
+  position: relative;
+  border-radius: 4px;
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(99, 230, 242, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(8, 34, 52, 0.94) 0%, rgba(3, 14, 26, 0.96) 100%);
+  border: 1px solid rgba(99, 230, 242, 0.45);
+  box-shadow:
+    0 0 0 1px rgba(2, 8, 16, 0.9),
+    0 0 32px rgba(99, 230, 242, 0.22),
+    inset 0 0 30px rgba(99, 230, 242, 0.1);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+.holo-panel.holo-gold {
+  --holo-line: rgba(226, 189, 114, 0.3);
+  background:
+    radial-gradient(120% 70% at 50% 0%, rgba(255, 220, 150, 0.16), transparent 60%),
+    linear-gradient(180deg, rgba(14, 30, 52, 0.95) 0%, rgba(4, 12, 26, 0.96) 100%);
+  border-color: rgba(226, 189, 114, 0.6);
+  box-shadow:
+    0 0 0 1px rgba(2, 8, 16, 0.9),
+    0 0 36px rgba(226, 189, 114, 0.28),
+    inset 0 0 30px rgba(99, 230, 242, 0.08);
+}
+.holo-panel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(0deg, rgba(99, 230, 242, 0.06) 0 1px, transparent 1px 3px);
+}
+.holo-scan {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 40%;
+  top: -40%;
+  pointer-events: none;
+  background: linear-gradient(180deg, transparent, rgba(99, 230, 242, 0.1), transparent);
+  animation: holoScan 3.2s linear infinite;
+}
+@keyframes holoScan {
+  to {
+    top: 110%;
+  }
+}
+.holo-option {
+  position: relative;
+  padding: 10px 12px;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(99, 230, 242, 0.12), rgba(6, 26, 40, 0.6) 40%);
+  border: 1px solid rgba(99, 230, 242, 0.3);
+  transition: transform 120ms var(--ease-editorial), border-color 160ms, background 160ms;
+}
+.holo-option:active {
+  transform: scale(0.985);
+  border-color: rgba(255, 231, 176, 0.8);
+  background: linear-gradient(90deg, rgba(226, 189, 114, 0.25), rgba(6, 26, 40, 0.6) 50%);
+}
+.holo-option-key {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 12px;
+  color: #04121f;
+  background: linear-gradient(180deg, #b9f6fb, #45c7d6);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+/* ───────── 剧情对白区 ───────── */
+.vn-dialogue-band {
+  background: linear-gradient(
+    0deg,
+    rgba(4, 6, 14, 0.97) 0%,
+    rgba(4, 6, 14, 0.9) 58%,
+    rgba(4, 6, 14, 0.55) 82%,
+    transparent 100%
+  );
+}
+.vn-name-rule {
+  height: 1px;
+  background: linear-gradient(90deg, rgba(226, 189, 114, 0.85), rgba(226, 189, 114, 0.25) 45%, transparent 85%);
+}
