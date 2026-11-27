@@ -90,8 +90,9 @@ export const TopBar: React.FC<TopBarProps> = ({ hidden = false }) => {
 
   if (!state) return null;
   const { player, user, unreadMailCount } = state;
+  const completedEps: string[] = state.stories?.completedEpisodes || [];
   const protagonistSrc =
-    (state.stories?.completedEpisodes?.length || 0) >= 2
+    completedEps.includes('ep_003') || completedEps.length >= 3
       ? '/assets/characters/protagonist.png'
       : '/assets/characters/protagonist_early.png';
 

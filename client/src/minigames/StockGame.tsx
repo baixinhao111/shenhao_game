@@ -19,6 +19,7 @@ interface Quote {
   price: number;
   changePct: number;
   trend: 'up' | 'down';
+  storyTag?: string;
 }
 interface StockSession {
   id: string;
@@ -40,6 +41,7 @@ export const StockGame: React.FC = () => {
   const { busy, call } = useMgApi();
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [tip, setTip] = useState('');
+  const [headline, setHeadline] = useState('');
   const [pick, setPick] = useState<string | null>(null);
   const [dir, setDir] = useState<'long' | 'short'>('long');
   const [session, setSession] = useState<StockSession | null>(null);
@@ -53,6 +55,7 @@ export const StockGame: React.FC = () => {
       .then((r) => {
         setQuotes(r.quotes || []);
         setTip(r.insiderTip || '');
+        setHeadline(r.headline || '');
       })
       .catch(() => {});
   }, []);
@@ -132,25 +135,33 @@ export const StockGame: React.FC = () => {
   const newsText = useMemo(() => (shock >= 0 ? NEWS_UP : NEWS_DOWN)[Math.floor(Math.random() * 2)], [shock]);
 
   return (
-    <Stage bg="/assets/scene/trading.jpg" title="海城股市" subtitle="3 倍杠杆 · 30 秒盯盘，自己决定何时平仓" onBack={async () => {
+    <Stage bg="/assets/scene/trading.jpg" title="海城股市" subtitle="3 倍杠杆 · 30 秒盯盘 · 自主平仓" onBack={async () => {
         if (session && !result) await close(tick);
         closeMinigame();
       }} dim={0.55}>
       {!session && (
-        <div className="flex-1 flex flex-col justify-end px-4 pb-5 gap-3">
-          {tip && (
-            <div className="flex items-start gap-2">
-              <GameIcon name="tianshu" size={30} />
-              <div className="text-[12.5px] leading-relaxed text-stroke-dark">
-                <span className="font-editorial font-black cyan-glow-text mr-1">天枢内参</span>
-                <span className="text-[#DDFBFF]">{tip}</span>
+        <div className="flex-1 flex flex-col justify-between px-4 pb-4 pt-1 gap-2 min-h-0">
+          <div className="space-y-1.5 shrink-0">
+            {headline && (
+              <div className="rounded-[8px] px-3 py-1.5 bg-[#080E20]/84 border border-[#E2BD72]/35 text-[11px] leading-snug text-[#F6DDA4]">
+                {headline}
               </div>
-            </div>
-          )}
-          <div className="space-y-1.5">
+            )}
+            {tip && (
+              <div className="flex items-start gap-2">
+                <GameIcon name="tianshu" size={26} />
+                <div className="text-[11.5px] leading-snug text-stroke-dark">
+                  <span className="font-editorial font-black cyan-glow-text mr-1">天枢内参</span>
+                  <span className="text-[#DDFBFF]">{tip}</span>
+                </div>
+              </div>
+            )}
+          </div>
+          <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar space-y-1.5 pr-0.5">
             {quotes.map((q) => {
               const up = q.changePct >= 0;
               const sel = pick === q.id;
+              const isBearTag = q.storyTag && /空|崩|告急|丑闻/.test(q.storyTag);
               return (
                 <button
                   key={q.id}
@@ -158,16 +169,29 @@ export const StockGame: React.FC = () => {
                     playTap();
                     setPick(q.id);
                   }}
-                  className={`w-full flex items-center gap-3 px-3 py-2 rounded-[10px] transition ${
+                  className={`w-full flex items-center gap-2.5 px-3 py-1.5 rounded-[10px] transition ${
                     sel ? 'bg-[#E2BD72]/18 border border-[#FFE7B0]/80' : 'bg-[#05070F]/55 border border-white/10'
                   }`}
                 >
                   <div className="min-w-0 flex-1 text-left">
-                    <div className="font-editorial font-black text-[14px] text-[#FBF1D8]">{q.name}</div>
-                    <div className="font-num text-[11px] text-[#8B93AD]">{q.code}</div>
+                    <div className="flex items-center gap-1.5">
+                      <span className="font-editorial font-black text-[13.5px] text-[#FBF1D8] truncate">{q.name}</span>
+                      {q.storyTag && (
+                        <span
+                          className={`px-1.5 py-[0.5px] rounded-sm text-[9px] font-bold shrink-0 border ${
+                            isBearTag
+                              ? 'bg-[#2C0E18]/85 border-[#FF5C7A]/45 text-[#FF8FA6]'
+                              : 'bg-[#0C241E]/85 border-[#3FD69A]/45 text-[#7BE0A8]'
+                          }`}
+                        >
+                          {q.storyTag}
+                        </span>
+                      )}
+                    </div>
+                    <div className="font-num text-[10.5px] text-[#8B93AD]">{q.code}</div>
                   </div>
-                  <div className="font-num text-[16px] text-[#F4EFE4]">¥{q.price}</div>
-                  <div className={`font-num text-[13px] w-[68px] text-right ${up ? 'text-[#FF5C7A]' : 'text-[#3FD69A]'}`}>
+                  <div className="font-num text-[15px] text-[#F4EFE4] shrink-0">¥{q.price}</div>
+                  <div className={`font-num text-[12.5px] w-[62px] text-right shrink-0 ${up ? 'text-[#FF5C7A]' : 'text-[#3FD69A]'}`}>
                     {up ? '+' : ''}
                     {q.changePct}%
                   </div>
@@ -332,8 +356,8 @@ export const StockGame: React.FC = () => {
                   </circle>
                   {result && (
                     <text
-                      x={Math.min(CHART_W - 20, (tick + 1) * chart.cw)}
-                      y={chart.y(session.path[tick]) - 10}
+                      x={Math.max(76, Math.min(CHART_W - 22, (tick + 1) * chart.cw))}
+                      y={Math.max(16, chart.y(session.path[tick]) - 10)}
                       textAnchor="middle"
                       fill="#FFE7B0"
                       fontSize="12"

@@ -13,6 +13,7 @@ import { getContent } from './contentLoader.js';
 import { queryOne } from './db.js';
 import { assertCashSufficient, spendEnergyOrThrow, spendSysPointsOrThrow } from './economy.js';
 import { buildFullGameState, computePortfolioAndTier, formatMoney, getPlayerKv, setPlayerKv } from './gameEngine.js';
+import { incrementAchievementStat } from './empire.js';
 import { assertCanBuyBusiness, assertCanBuyProperty, purchaseBusiness, purchaseProperty } from './purchases.js';
 
 type AuthedRequest = Request & { userId?: number };
@@ -234,6 +235,7 @@ function closeWin(d: Deal, price: number) {
   const { critResult } =
     d.kind === 'business' ? purchaseBusiness(d.userId, d.itemId, price) : purchaseProperty(d.userId, d.itemId, price, text);
   sellerSay(d, LINES.accept[d.temper]);
+  incrementAchievementStat(d.userId, 'dealWins', 1);
   closeDeal(d);
   return publicDeal(d, { done: true, result: { success: true, price, saved: d.list - price, savedPct: pct, critResult } });
 }
@@ -317,6 +319,7 @@ export function registerNegotiationRoutes(router: Router, auth: Auth): void {
         if (price < d.list * 0.4) throw new Error('出价太低，对方根本不会坐下来谈');
         if (price >= d.ask) {
           assertCashSufficient(userId, d.ask);
+          d.log.push({ who: 'me', text: `我出 ${formatMoney(d.ask)}。` });
           out = closeWin(d, d.ask);
         } else {
           d.log.push({ who: 'me', text: `我出 ${formatMoney(price)}。` });

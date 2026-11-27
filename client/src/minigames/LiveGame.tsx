@@ -105,7 +105,13 @@ export const LiveGame: React.FC = () => {
     if (prev !== undefined && t - prev < g.cooldown) return;
     actionsRef.current = [...actionsRef.current, { t, type }];
     setActions(actionsRef.current);
-    const x = e ? (e.clientX / window.innerWidth) * 100 : 50;
+    const shellRect = (document.querySelector('[data-app-shell]') as HTMLElement | null)?.getBoundingClientRect();
+    const x =
+      e && shellRect && shellRect.width > 0
+        ? ((e.clientX - shellRect.left) / shellRect.width) * 100
+        : e
+          ? (e.clientX / window.innerWidth) * 100
+          : 50;
     const id = Math.random();
     setFloats((f) => [...f.slice(-14), { id, type, x }]);
     setTimeout(() => setFloats((f) => f.filter((p) => p.id !== id)), 1300);
@@ -156,7 +162,7 @@ export const LiveGame: React.FC = () => {
           <img
             src="/assets/characters/shen_liuli.png"
             alt=""
-            className="absolute right-[-10%] bottom-[150px] h-[58%] object-contain object-bottom pointer-events-none drop-shadow-[0_14px_24px_rgba(0,0,0,0.7)]"
+            className="absolute right-[-10%] bottom-[150px] h-[58%] object-contain object-bottom sprite-fade-bottom pointer-events-none drop-shadow-[0_14px_24px_rgba(0,0,0,0.7)]"
           />
           <div className="relative space-y-1.5 max-w-[72%]">
             <Speech who="沈琉璃" tone="rose" text="赵氏公会又来砸场子了……今晚能帮我守住榜一吗？" />
@@ -209,7 +215,7 @@ export const LiveGame: React.FC = () => {
             <img
               src="/assets/characters/shen_liuli.png"
               alt=""
-              className="absolute left-1/2 -translate-x-1/2 bottom-0 h-[96%] object-contain object-bottom pointer-events-none"
+              className="absolute left-1/2 -translate-x-1/2 bottom-0 h-[96%] object-contain object-bottom sprite-fade-bottom pointer-events-none"
             />
             <div className="absolute inset-0 pointer-events-none">
               <AnimatePresence>

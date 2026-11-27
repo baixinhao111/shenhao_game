@@ -124,6 +124,16 @@ export const CruiseGame: React.FC = () => {
           </div>
           <div className="text-[11.5px] text-[#C3C9DC]">今日剩余 {playsLeft} 手</div>
         </div>
+        {ev?.weeklyTheme?.name && (
+          <div className="px-4 mt-1 flex justify-center">
+            <div
+              title={ev.weeklyTheme.desc}
+              className="px-3 py-0.5 rounded-full bg-[#1C160A]/80 border border-[#E2BD72]/45 text-[10.5px] text-[#FFE7B0] tracking-wider"
+            >
+              {ev.weeklyTheme.name}
+            </div>
+          </div>
+        )}
 
         <div ref={tableRef} className="relative flex-1 flex flex-col items-center justify-between py-3">
           {/* dealer */}
@@ -133,7 +143,9 @@ export const CruiseGame: React.FC = () => {
                 <img src="/assets/npc/akun.webp" alt="" className="w-full h-full object-cover object-top scale-[1.5] origin-top" />
               </div>
             </div>
-            <div className="text-[11px] text-[#C3C9DC] mt-0.5 text-stroke-dark">财阀代理 · 阿坤 {hand?.dealerTotal != null ? `· ${hand.dealerTotal}点` : ''}</div>
+            <div className="mt-1 px-2.5 py-0.5 rounded-full bg-[#05070F]/72 backdrop-blur-sm border border-white/12 text-[11px] text-[#EAECEF]">
+              财阀代理 · 阿坤 {hand?.dealerTotal != null ? `· ${hand.dealerTotal}点` : ''}
+            </div>
             <div className="flex mt-2 h-[106px]">
               {hand?.dealer.map((c, i) => <PlayingCard key={`d${i}${c.r}${c.s}`} card={c} index={i} />)}
             </div>
@@ -168,27 +180,31 @@ export const CruiseGame: React.FC = () => {
         {!hand && (
           <div className="px-4 pb-5 space-y-2.5">
             {ev?.rewards?.length > 0 && (
-              <div className="flex gap-1.5 overflow-x-auto no-scrollbar">
+              <div className="flex gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
                 {ev.rewards.map((rew: any) => {
                   const done = rew.assetId && ev.redeemed?.includes(rew.id);
+                  const shortName = String(rew.name || '').replace(/\s*[（(][^）)]*[）)]/g, '');
                   return (
                     <button
                       key={rew.id}
                       disabled={done || (ev.tokens || 0) < rew.costTokens}
                       onClick={() => redeem(rew.id)}
-                      className="shrink-0 btn-navy !rounded-full pl-1 pr-3 py-1 text-[11.5px] flex items-center gap-1 disabled:opacity-45"
+                      className="shrink-0 btn-navy !rounded-full pl-1 pr-2.5 py-1 text-[11px] flex items-center gap-1 disabled:opacity-45"
                     >
-                      <GameIcon name="medal" size={18} shadow={false} />
-                      {done ? '已兑换' : `${rew.costTokens}`} · {rew.name}
+                      <GameIcon name="medal" size={16} shadow={false} />
+                      {done ? '已兑换' : `${rew.costTokens}`} · {shortName}
                     </button>
                   );
                 })}
               </div>
             )}
-            <button disabled={busy || playsLeft <= 0} onClick={deal} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1">
+            <button disabled={busy || playsLeft <= 0} onClick={deal} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1.5">
               {playsLeft > 0 ? (
                 <>
-                  下注 {formatMoney(300000 * stakeScale)} · 发牌 <GameIcon name="energy" size={16} shadow={false} />8
+                  <span>下注 {formatMoney(300000 * stakeScale)} · 发牌</span>
+                  <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1E1506]/85 text-[#FFE7B0] font-num text-[11.5px]">
+                    <GameIcon name="energy" size={14} shadow={false} />8
+                  </span>
                 </>
               ) : (
                 '今日赌局已结束'

@@ -12,6 +12,8 @@ import { useGameStore } from '../store/useGameStore';
 export const AssetsView: React.FC = () => {
   const {
     state,
+    assetsSubTab,
+    setAssetsSubTab,
     applyServerState,
     notifyTop,
     showError,
@@ -22,7 +24,8 @@ export const AssetsView: React.FC = () => {
     flyReward,
   } = useGameStore();
 
-  const [subTab, setSubTab] = useState<'garage' | 'biz' | 'props'>('garage');
+  const subTab = assetsSubTab;
+  const setSubTab = setAssetsSubTab;
   const [selectedAssetId, setSelectedAssetId] = useState<string>('');
   const [busy, setBusy] = useState(false);
   const [dir, setDir] = useState(1);
@@ -111,6 +114,26 @@ export const AssetsView: React.FC = () => {
       playTap();
     } catch (e: any) {
       showError(e.message);
+    }
+  };
+
+  const resolveBizEvent = async (businessId: string, eventId: string, choiceId: string) => {
+    setBusy(true);
+    try {
+      const res = await apiRequest('/business/event/resolve', { body: { businessId, eventId, choiceId } });
+      applyServerState(res.state);
+      if (res.cashReward > 0) flyReward(res.cashReward);
+      return {
+        resultText: res.resultText || '经营事件已妥善化解',
+        cashReward: Number(res.cashReward || 0),
+        sysPoints: Number(res.sysPoints || 0),
+        affectionGain: Number(res.affectionGain || 0),
+      };
+    } catch (e: any) {
+      showError(e.message);
+      return null;
+    } finally {
+      setBusy(false);
     }
   };
 
@@ -208,10 +231,13 @@ export const AssetsView: React.FC = () => {
               key={id}
               data-active={subTab === id}
               onClick={() => switchTab(id)}
-              className="tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
+              className="relative tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
             >
               <GameIcon name={icon} size={20} shadow={false} />
               {label}
+              {id === 'biz' && businesses.some((b: any) => b.owned && b.activeEvent) && (
+                <span className="red-dot top-0.5 right-1.5" />
+              )}
             </button>
           ))}
         </div>
@@ -348,8 +374,8 @@ export const AssetsView: React.FC = () => {
                       />
                     </div>
                     <div className="mt-1 px-0.5">
-                      <div className="text-[11px] font-bold text-[#F4EFE4] truncate">{a.name}</div>
-                      <div className={`text-[10px] font-num truncate ${a.owned ? 'text-[#7BE0A8]' : 'text-[#929AB4]'}`}>
+                      <div className="text-[11px] font-bold text-[#F4EFE4] leading-[1.25] line-clamp-2 min-h-[27px]">{a.name}</div>
+                      <div className={`text-[10px] font-num truncate mt-0.5 ${a.owned ? 'text-[#7BE0A8]' : 'text-[#929AB4]'}`}>
                         {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
                       </div>
                     </div>
@@ -412,6 +438,7 @@ export const AssetsView: React.FC = () => {
             <BusinessCard
               key={b.id}
               b={b}
+              cash={player.cash}
               heroines={unlockedHeroines}
               tierName={(t) => (state.map?.tiers || []).find((x: any) => x.tier === t)?.name || `阶层 ${t}`}
               locked={!b.owned && player.tier.tier < b.unlockTier}
@@ -423,6 +450,7 @@ export const AssetsView: React.FC = () => {
                 openDeal({ kind: 'business', id: b.id });
               }}
               onAssign={(hid) => assignHeroine(b.id, hid)}
+              onResolveEvent={(evId, chId) => resolveBizEvent(b.id, evId, chId)}
             />
           ))}
         </div>
@@ -431,10 +459,20 @@ export const AssetsView: React.FC = () => {
       {/* TAB 3: PROPERTIES */}
       {subTab === 'props' && (
         <div className="px-3 pt-1 pb-8 space-y-3">
-          {properties.map((p: any) => (
+          {properties.map((p: any) => {
+            const dist = (state.map?.districts || []).find((d: any) => d.id === p.districtId);
+            const reqTier = Math.max(Number(p.unlockTier || 1), Number(dist?.unlockTier || 1));
+            const propLocked = !p.owned && (player.tier.tier < reqTier || (dist && !dist.unlocked));
+            const reqTierName = (state.map?.tiers || []).find((x: any) => x.tier === reqTier)?.name || `阶层 ${reqTier}`;
+            const earnsRent = p.currentRentPerHour > 0 && !(p.isMain && p.type === 'residence');
+            return (
             <div key={p.id} className={`relative rounded-[10px] overflow-hidden ${p.isMain ? 'panel-brass' : 'panel-arch'}`}>
               <div className="relative h-[128px] w-full overflow-hidden">
-                <img src={p.image || p.bg} alt={p.displayName} className={`w-full h-full object-cover ${!p.owned ? 'brightness-75' : ''}`} />
+                <img
+                  src={p.image || p.bg}
+                  alt={p.displayName}
+                  className={`w-full h-full object-cover ${propLocked ? 'grayscale brightness-50' : !p.owned ? 'brightness-75' : ''}`}
+                />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/25 to-transparent" />
                 {p.isMain && (
                   <span className="absolute top-2 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A]">
@@ -446,6 +484,12 @@ export const AssetsView: React.FC = () => {
                     已持有
                   </span>
                 )}
+                {propLocked && (
+                  <span className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+                    <GameIcon name="lock" size={32} />
+                    <span className="text-[11px] text-[#C3C9DC] text-stroke-dark">晋升「{reqTierName}」解锁</span>
+                  </span>
+                )}
                 <div className="absolute left-3 right-3 bottom-2">
                   <h3 className="font-editorial text-[18px] font-black text-[#FBF1D8] text-stroke-dark truncate">{p.displayName}</h3>
                 </div>
@@ -455,11 +499,13 @@ export const AssetsView: React.FC = () => {
                   <span className="flex items-center gap-1 text-[#FFE7B0]">
                     <GameIcon name="cash" size={16} /> 估值 {formatMoney(p.currentValuation)}
                   </span>
-                  {p.currentRentPerHour > 0 && (
+                  {earnsRent ? (
                     <span className="flex items-center gap-1 text-[#7BE0A8]">
                       <GameIcon name="income" size={16} /> {formatMoney(p.currentRentPerHour)}/时
                     </span>
-                  )}
+                  ) : p.isMain && p.type === 'residence' ? (
+                    <span className="text-[11px] text-[#A3AAC2]">自住主宅</span>
+                  ) : null}
                   {p.energyBonus > 0 && (
                     <span className="flex items-center gap-1 text-[#B9F6FB]">
                       <GameIcon name="energy" size={16} /> +{p.energyBonus}
@@ -469,20 +515,23 @@ export const AssetsView: React.FC = () => {
                 <div className="flex items-end justify-between gap-3">
                   <p className="text-[11.5px] text-[#A3AAC2] leading-relaxed line-clamp-2">{p.description}</p>
                   <button
+                    disabled={propLocked}
                     onClick={() => {
+                      if (propLocked) return;
                       playTap();
                       setActiveTab('map');
                       setSelectedDistrictId(p.districtId);
                       if (p.owned) setActivePropertyId(p.id);
                     }}
-                    className={`${p.owned ? 'btn-navy' : 'btn-brass'} px-4 py-1.5 text-[12px] shrink-0 font-editorial`}
+                    className={`${p.owned ? 'btn-navy' : propLocked ? 'btn-navy opacity-45' : 'btn-brass'} px-4 py-1.5 text-[12px] shrink-0 font-editorial`}
                   >
-                    {p.owned ? '前往' : '去置业'}
+                    {p.owned ? '前往' : propLocked ? '未解锁' : '去置业'}
                   </button>
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       )}
       </motion.div>

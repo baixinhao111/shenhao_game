@@ -45,14 +45,45 @@
       "description": "全球限量孤品黑金超跑，停在云顶会所门口即是绝对权势的象征。"
     },
     {
+      "id": "car_rolls_spectre",
+      "name": "星穹曜金双门旗舰轿跑",
+      "type": "car",
+      "price": 8800000,
+      "valuation": 10200000,
+      "racePower": 70,
+      "image": "/assets/items/car_rolls_spectre.png",
+      "description": "曜蓝与香槟金手工双色漆面，静谧电驱滑过外滩长街，低调却自带财阀威压。"
+    },
+    {
+      "id": "watch_tourbillon",
+      "name": "天枢星轨镂空陀飞轮",
+      "type": "collectible",
+      "price": 3600000,
+      "valuation": 4400000,
+      "racePower": 0,
+      "image": "/assets/items/watch_tourbillon.png",
+      "description": "日内瓦独立制表师孤品，冰蓝星轨月相随手腕流转，商务晚宴的无声名片。"
+    },
+    {
       "id": "yacht_poseidon",
       "name": "海神号 88尺豪华游艇",
       "type": "vehicle",
       "price": 46000000,
       "valuation": 55000000,
       "racePower": 0,
+      "setId": "set_tycoon",
       "image": "/assets/items/yacht_poseidon.png",
       "description": "停泊在黄金海岸私人泊位，三层甲板配海上 KTV 与香槟吧。"
+    },
+    {
+      "id": "art_ink_scroll",
+      "name": "《海城夜渡图》传世长卷",
+      "type": "collectible",
+      "price": 120000000,
+      "valuation": 148000000,
+      "racePower": 0,
+      "image": "/assets/items/art_ink_scroll.png",
+      "description": "清代宫廷画师遗珍，泥金水墨勾勒江海夜灯，私人博物馆级镇馆孤品。"
     },
     {
       "id": "jet_g700",
@@ -61,8 +92,20 @@
       "price": 480000000,
       "valuation": 560000000,
       "racePower": 0,
+      "setId": "set_tycoon",
       "image": "/assets/items/jet_g700.png",
       "description": "随时起飞直抵全球任何金融中心与私人海岛，真正的云端座驾。"
+    },
+    {
+      "id": "island_private",
+      "name": "东海星穹私属海岛",
+      "type": "vehicle",
+      "price": 880000000,
+      "valuation": 1080000000,
+      "racePower": 0,
+      "setId": "set_tycoon",
+      "image": "/assets/items/island_private.png",
+      "description": "自带悬崖无边泳池、私人深水码头与停机坪的独立海岛，海城顶级财阀的终极图腾。"
     },
     {
       "id": "col_jade_emperor",
@@ -124,6 +167,14 @@
       "bonusDesc": "全局身价估值 +15%，产业离线收益 +15%",
       "netWorthPct": 0.15,
       "incomeBonusPct": 0.15
+    },
+    {
+      "id": "set_tycoon",
+      "name": "海城云端图腾",
+      "requiredIds": ["yacht_poseidon", "jet_g700", "island_private"],
+      "bonusDesc": "全局身价估值 +18%，产业离线收益 +20%",
+      "netWorthPct": 0.18,
+      "incomeBonusPct": 0.2
     }
   ]
 }

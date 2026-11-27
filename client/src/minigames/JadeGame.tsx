@@ -186,6 +186,7 @@ export const JadeGame: React.FC = () => {
   const [verdict, setVerdict] = useState<{ label: string; tone: string }>({ label: '原石未开', tone: 'neutral' });
   const [revealed, setRevealed] = useState(0);
   const [heat, setHeat] = useState<number[] | null>(null);
+  const [visionNote, setVisionNote] = useState<string | null>(null);
   const [dust, setDust] = useState<Array<{ id: number; x: number; y: number; dx: number }>>([]);
   const dustAtRef = useRef(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -300,6 +301,7 @@ export const JadeGame: React.FC = () => {
     setVerdict(res.verdict);
     setRevealed(0);
     setHeat(null);
+    setVisionNote(null);
     setSelected(null);
     setResult(null);
     setLineIdx(0);
@@ -374,7 +376,17 @@ export const JadeGame: React.FC = () => {
     const res = await call<any>('/mg/jade/vision', { id: session.id });
     if (res) {
       playSystemPing();
-      setHeat(res.heat);
+      const h: number[] = Array.isArray(res.heat) ? res.heat : [];
+      setHeat(h);
+      const maxH = h.length ? Math.max(...h) : 0;
+      const hotCount = h.filter((v) => v >= 2).length;
+      if (maxH >= 3) {
+        setVisionNote(`扫描完成：石内探得浓郁玉脉（${hotCount} 处高能区），沿青光高亮位置擦窗最稳。`);
+      } else if (maxH >= 1) {
+        setVisionNote('扫描完成：石内有零星玉脉反应，可沿淡青光区试擦开窗。');
+      } else {
+        setVisionNote('扫描完成：原石内部未探测到有效玉脉，大概率垮料，建议趁早止损。');
+      }
     }
   };
 
@@ -446,10 +458,12 @@ export const JadeGame: React.FC = () => {
           <img
             src="/assets/npc/zhou.webp"
             alt=""
-            className="absolute left-[-10%] bottom-[170px] h-[40%] object-contain object-bottom pointer-events-none drop-shadow-[0_12px_24px_rgba(0,0,0,0.7)]"
+            className="absolute left-[-10%] bottom-[170px] h-[40%] object-contain object-bottom sprite-fade-bottom pointer-events-none drop-shadow-[0_12px_24px_rgba(0,0,0,0.7)]"
           />
           <div className="relative px-4 pb-3">
-            <Speech who="周老" text="今天新到一批缅料。挑一块，擦开了，是金是石当场见分晓。" className="mb-3 w-[58%] ml-auto" />
+            <div className="mb-3 w-[60%] ml-auto rounded-[10px] bg-[#070B18]/72 backdrop-blur-sm border border-[#E2BD72]/25 px-3 py-2">
+              <Speech who="周老" text="今天新到一批缅料。挑一块，擦开了，是金是石当场见分晓。" />
+            </div>
             <div className="grid grid-cols-3 gap-2.5">
               {TIERS.map((t) => (
                 <button key={t.tier} disabled={busy} onClick={() => start(t.tier)} className="group flex flex-col items-center active:scale-95 transition">
@@ -605,8 +619,11 @@ export const JadeGame: React.FC = () => {
                     {heat.map((h, i) => (
                       <div
                         key={i}
-                        className="border border-[#63E6F2]/10"
-                        style={{ background: `rgba(99,230,242,${[0, 0.12, 0.24, 0.4][h]})`, boxShadow: h >= 2 ? 'inset 0 0 14px rgba(155,245,255,0.6)' : undefined }}
+                        className="border border-[#63E6F2]/25"
+                        style={{
+                          background: `rgba(99,230,242,${[0.03, 0.16, 0.3, 0.48][h] ?? 0.03})`,
+                          boxShadow: h >= 2 ? 'inset 0 0 14px rgba(155,245,255,0.75)' : undefined,
+                        }}
                       />
                     ))}
                   </div>
@@ -622,7 +639,11 @@ export const JadeGame: React.FC = () => {
           <AnimatePresence mode="wait">
             {phase === 'scratch' && (
               <motion.div key="ctl" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="px-4 pb-5 space-y-2.5">
-                <Speech who={line[0]} text={line[1]} tone={verdict.tone === 'cold' ? 'plain' : 'gold'} />
+                {visionNote ? (
+                  <Speech who="天枢" text={visionNote} tone="cyan" />
+                ) : (
+                  <Speech who={line[0]} text={line[1]} tone={verdict.tone === 'cold' ? 'plain' : 'gold'} />
+                )}
                 <div className="flex items-center gap-2">
                   <button
                     disabled={busy || Boolean(heat)}

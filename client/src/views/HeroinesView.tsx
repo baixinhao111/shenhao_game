@@ -39,6 +39,7 @@ export const HeroinesView: React.FC = () => {
     setPinnedCompanionId,
     openHeroineChat,
     closeHeroineChat,
+    openMiniStory,
     applyServerState,
     notifyTop,
     showError,
@@ -51,12 +52,15 @@ export const HeroinesView: React.FC = () => {
   const [input, setInput] = useState('');
   const [sending, setSending] = useState(false);
   const [showGifts, setShowGifts] = useState(false);
+  const [showBonds, setShowBonds] = useState(false);
   const [showMemories, setShowMemories] = useState(false);
   const [revealedThoughts, setRevealedThoughts] = useState<Record<number, boolean>>({});
   const [moments, setMoments] = useState<any[]>([]);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setShowGifts(false);
+    setShowMemories(false);
     if (activeChatHeroineId) {
       apiRequest(`/heroines/${activeChatHeroineId}/chat`)
         .then((r) => {
@@ -81,8 +85,9 @@ export const HeroinesView: React.FC = () => {
 
   if (!state) return null;
   const { heroines, gifts, timePeriod } = state;
+  const completedEps: string[] = state.stories?.completedEpisodes || [];
   const protagonistSrc =
-    (state.stories?.completedEpisodes?.length || 0) >= 2
+    completedEps.includes('ep_003') || completedEps.length >= 3
       ? '/assets/characters/protagonist.png'
       : '/assets/characters/protagonist_early.png';
 
@@ -99,6 +104,82 @@ export const HeroinesView: React.FC = () => {
         const reloaded = await apiRequest(`/heroines/${heroineId}/chat`);
         setMessages(reloaded.messages || []);
       }
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleEquipOutfit = async (heroineId: string, outfit: any) => {
+    if (!outfit.unlocked) {
+      showError(`需完成对应羁绊剧情解锁「${outfit.name}」`);
+      return;
+    }
+    if (sending) return;
+    setSending(true);
+    try {
+      const res = await apiRequest(`/heroines/${heroineId}/outfit`, { body: { outfitId: outfit.id } });
+      applyServerState(res.state);
+      playSystemPing();
+      notifyTop('wechat', '装扮已更换', res.message);
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleStartBond = async (bond: any) => {
+    if (sending) return;
+    setSending(true);
+    try {
+      const res = await apiRequest('/heroines/bond/start', { body: { bondId: bond.id } });
+      const sc = res.script;
+      playSystemPing();
+      setShowBonds(false);
+      openMiniStory({
+        mode: 'bond',
+        bondId: sc.bondId || bond.id,
+        title: sc.title,
+        subtitle: sc.subtitle,
+        sceneLabel: sc.sceneLabel,
+        bg: sc.bg,
+        nodes: sc.nodes || [],
+        heroineId: sc.heroineId,
+        heroineName: sc.heroineName,
+        heroineAvatar: sc.heroineAvatar,
+        heroinePortrait: sc.heroinePortrait,
+        unlockOutfit: sc.unlockOutfit,
+        alreadyCompleted: Boolean(sc.alreadyCompleted),
+      });
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setSending(false);
+    }
+  };
+
+  const handleStartShura = async () => {
+    if (!state.shuraEvent || sending) return;
+    setSending(true);
+    try {
+      const res = await apiRequest('/heroines/shura/start', { body: { eventId: state.shuraEvent.id } });
+      const sc = res.script;
+      playSystemPing();
+      openMiniStory({
+        mode: 'shura',
+        eventId: sc.eventId || state.shuraEvent.id,
+        title: sc.title,
+        subtitle: sc.subtitle,
+        sceneLabel: sc.sceneLabel,
+        bg: sc.bg,
+        nodes: sc.nodes || [],
+        heroineId: sc.heroineId,
+        heroineIds: sc.heroineIds,
+        heroineName: sc.heroineName,
+        heroineAvatar: sc.heroineAvatar,
+      });
     } catch (e: any) {
       showError(e.message);
     } finally {
@@ -142,7 +223,7 @@ export const HeroinesView: React.FC = () => {
         <div className="relative shrink-0 px-3 py-2 flex items-center justify-between gap-2" style={{ background: 'linear-gradient(180deg, rgba(20,28,56,0.98), rgba(11,16,33,0.98))' }}>
           <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent" />
           <div className="flex items-center gap-2.5 min-w-0">
-            <button onClick={closeHeroineChat} className="p-1 text-[#C6C9D2] hover:text-white">
+            <button onClick={closeHeroineChat} aria-label="返回" className="p-1 text-[#C6C9D2] hover:text-white">
               <ArrowLeft className="w-5 h-5" />
             </button>
             <div className="relative w-10 h-10 rounded-full p-[2px] bg-gradient-to-b from-[#FFB3C6] to-[#C24E74] shrink-0">
@@ -164,17 +245,20 @@ export const HeroinesView: React.FC = () => {
             <button
               onClick={() => {
                 playTap();
-                setShowMemories(!showMemories);
+                setShowGifts(false);
+                setShowMemories((v) => !v);
               }}
               className="p-2 text-[#B6B9C4] hover:text-[#F6DDA4] transition"
               title="共同记忆"
+              aria-label="共同记忆"
             >
               <Brain className="w-4 h-4" />
             </button>
             <button
               onClick={() => {
                 playTap();
-                setShowGifts(!showGifts);
+                setShowMemories(false);
+                setShowGifts((v) => !v);
               }}
               className="btn-navy !rounded-full pl-1 pr-3 py-0.5 text-[12px] flex items-center gap-0.5"
             >
@@ -282,10 +366,10 @@ export const HeroinesView: React.FC = () => {
                   onClick={() => sendGiftTo(heroine.id, g.id)}
                   className="text-left panel-arch rounded-[8px] p-2 flex items-center gap-2 hover:border-[#E2BD72]/50 transition active:scale-95"
                 >
-                  <GameIcon name="mall" size={28} />
-                  <div className="min-w-0">
-                    <div className="text-[12px] font-bold text-[#FBF1D8] truncate">{g.name}</div>
-                    <div className="font-num text-[11px] text-[#FFE7B0]">{formatMoney(g.price)}</div>
+                  <GameIcon name="mall" size={26} />
+                  <div className="min-w-0 flex-1">
+                    <div className="text-[11.5px] font-bold text-[#FBF1D8] leading-tight line-clamp-2">{g.name}</div>
+                    <div className="font-num text-[11px] text-[#FFE7B0] mt-0.5">{formatMoney(g.price)}</div>
                   </div>
                 </button>
               ))}
@@ -388,7 +472,7 @@ export const HeroinesView: React.FC = () => {
                   }`}
                 >
                   <GameIcon name="heart" size={20} shadow={false} className={m.likedByPlayer ? '' : 'grayscale opacity-60'} />
-                  {m.likes.length + (m.likedByPlayer ? 1 : 0)}
+                  {(m.likes || []).filter((n: string) => n !== state?.user?.nickname).length + (m.likedByPlayer ? 1 : 0)}
                 </button>
               </div>
               <p className="text-[13.5px] text-[#EAE7E0] leading-relaxed">{m.content}</p>
@@ -449,6 +533,7 @@ export const HeroinesView: React.FC = () => {
                   rounded="full"
                 />
                 {!h.unlocked && <GameIcon name="lock" size={18} className="absolute -bottom-1 -right-1" />}
+                {h.unlocked && h.hasAvailableBond && <span className="red-dot -top-0.5 -right-0.5" />}
               </button>
             );
           })}
@@ -485,7 +570,7 @@ export const HeroinesView: React.FC = () => {
       <div className="absolute inset-x-0 top-14 bottom-12 z-10 flex items-end justify-center px-4 pointer-events-none">
         <AnimatePresence mode="wait">
           <motion.img
-            key={current.id}
+            key={`${current.id}:${current.equippedOutfit || 'default'}`}
             src={current.portrait}
             alt={current.name}
             initial={{ opacity: 0, y: 14 }}
@@ -500,7 +585,25 @@ export const HeroinesView: React.FC = () => {
       </div>
 
       {/* Editorial Bottom Profile & Actions */}
-      <div className="relative z-20 px-4 pb-5 pt-20 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/95 to-transparent space-y-3">
+      <div className="relative z-20 px-4 pb-5 pt-20 bg-gradient-to-t from-[#0A0F1F] via-[#0A0F1F]/95 to-transparent space-y-2.5">
+        {/* Shura-field Crisis Banner (docked cleanly below standing face/shoulders) */}
+        {state.shuraEvent && (
+          <button
+            disabled={sending}
+            onClick={() => void handleStartShura()}
+            className="w-full rounded-full pl-1.5 pr-3 py-1 bg-[#2D0E20]/90 border border-[#F0789A]/65 shadow-[0_0_18px_rgba(240,120,154,0.3)] backdrop-blur-md flex items-center gap-2 text-left active:scale-[0.98] transition"
+          >
+            <GameIcon name="heart" size={22} className="animate-pulse" />
+            <div className="min-w-0 flex-1 flex items-center gap-1.5">
+              <span className="text-[11px] font-bold text-[#FFC4D3] truncate">
+                修罗场 · {state.shuraEvent.title}
+              </span>
+              <span className="text-[10px] text-[#E8A4B8]/85 truncate hidden sm:inline">· {state.shuraEvent.reason}</span>
+            </div>
+            <span className="text-[11px] font-editorial font-bold text-[#FFE7B0] shrink-0">化解 ›</span>
+          </button>
+        )}
+
         <div className="flex items-end justify-between gap-2">
           <div>
             <div className="flex items-baseline gap-2.5">
@@ -540,26 +643,143 @@ export const HeroinesView: React.FC = () => {
           <div className="text-[11px] text-[#8B93AD]">{current.synergyDesc}</div>
         </div>
 
+        {current.unlocked && Array.isArray(current.outfits) && current.outfits.length > 1 && (
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+            {current.outfits.map((o: any) => {
+              const active = o.id === (current.equippedOutfit || 'default');
+              return (
+                <button
+                  key={o.id}
+                  disabled={sending}
+                  onClick={() => void handleEquipOutfit(current.id, o)}
+                  className={`shrink-0 px-2.5 py-1 rounded-full text-[10.5px] font-medium border flex items-center gap-1 transition active:scale-95 ${
+                    active
+                      ? 'bg-[#3B172B]/90 border-[#F0789A] text-[#FFD3DF] shadow-[0_0_10px_rgba(240,120,154,0.3)]'
+                      : o.unlocked
+                        ? 'bg-[#0C1329]/80 border-[#E2BD72]/35 text-[#E5DFD0] hover:border-[#E2BD72]'
+                        : 'bg-[#0A0F1F]/65 border-white/10 text-[#7B839E]'
+                  }`}
+                >
+                  {!o.unlocked && <Lock className="w-2.5 h-2.5 shrink-0" />}
+                  <span>{o.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        )}
+
         {current.unlocked && (
-          <div className="grid grid-cols-2 gap-2.5 pt-1">
+          <div className="grid grid-cols-[1.15fr_0.95fr_0.9fr] gap-2 pt-0.5">
             <button
               onClick={() => openHeroineChat(current.id)}
-              className="gold-btn-shimmer py-2 text-[14px] font-editorial flex items-center justify-center gap-1.5"
+              className="gold-btn-shimmer py-2 text-[13.5px] font-editorial flex items-center justify-center gap-1"
             >
-              <GameIcon name="nav_contact" size={26} shadow={false} /> 发微信
+              <GameIcon name="nav_contact" size={24} shadow={false} /> 发微信
+            </button>
+            <button
+              onClick={() => {
+                playTap();
+                setShowBonds(true);
+              }}
+              className="relative btn-navy py-2 text-[13.5px] font-editorial flex items-center justify-center gap-1"
+            >
+              <GameIcon name="heart" size={22} shadow={false} /> 羁绊
+              {current.hasAvailableBond && <span className="red-dot -top-0.5 -right-0.5" />}
             </button>
             <button
               onClick={() => {
                 playTap();
                 setShowGifts(true);
               }}
-              className="btn-navy py-2 text-[14px] font-editorial flex items-center justify-center gap-1.5"
+              className="btn-navy py-2 text-[13.5px] font-editorial flex items-center justify-center gap-1"
             >
-              <GameIcon name="mall" size={26} shadow={false} /> 送礼物
+              <GameIcon name="mall" size={22} shadow={false} /> 送礼
             </button>
           </div>
         )}
       </div>
+
+      {/* Bond Milestone Drawer */}
+      <AnimatePresence>
+        {showBonds && current.unlocked && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setShowBonds(false)}
+            className="absolute inset-0 z-40 bg-black/75 backdrop-blur-sm flex items-end p-3"
+          >
+            <motion.div
+              initial={{ y: 28, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 20, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative panel-elevated w-full rounded-[12px] p-4 space-y-3 max-h-[72%] overflow-y-auto no-scrollbar"
+            >
+              <div className="flex items-center justify-between border-b border-white/[0.08] pb-2.5">
+                <div>
+                  <span className="font-editorial text-[16px] font-black gold-gradient-text">{current.name} · 专属羁绊</span>
+                  <div className="text-[10.5px] text-[#929AB4] mt-0.5">当前好感 {current.affection} · 突破解锁新装扮与永久身价加成</div>
+                </div>
+                <button onClick={() => setShowBonds(false)} className="text-[#8B93AD] hover:text-white">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="space-y-2">
+                {(current.bonds || []).length === 0 ? (
+                  <div className="text-center text-xs text-[#8B93AD] py-6">专属羁绊剧情筹备中</div>
+                ) : (
+                  (current.bonds || []).map((b: any) => {
+                    const outfitLabel = b.unlockOutfit
+                      ? (current.outfits || []).find((o: any) => o.id === b.unlockOutfit)?.name || b.unlockOutfit
+                      : null;
+                    const locked = !b.completed && !b.available;
+                    return (
+                      <div
+                        key={b.id}
+                        className={`rounded-[10px] p-3 flex items-center gap-3 ${
+                          b.available ? 'panel-brass' : 'panel-arch'
+                        } ${locked ? 'opacity-65' : ''}`}
+                      >
+                        <div className="shrink-0 w-10 h-10 rounded-full bg-[#2A0F1E]/85 border border-[#F0789A]/50 flex flex-col items-center justify-center">
+                          <span className="font-num text-[12px] font-bold text-[#FFB3C6]">Lv.{b.stageLevel}</span>
+                        </div>
+                        <div className="min-w-0 flex-1">
+                          <div className="text-[13.5px] font-editorial font-black text-[#FBF1D8] truncate">{b.title}</div>
+                          <div className="text-[11px] text-[#A3AAC2] line-clamp-1 mt-0.5">{b.subtitle}</div>
+                          <div className="flex flex-wrap items-center gap-1.5 mt-1 text-[10px]">
+                            {outfitLabel && (
+                              <span className="px-1.5 py-[1px] rounded-sm bg-[#3A1428]/80 border border-[#F0789A]/45 text-[#FFC4D3]">
+                                解锁「{outfitLabel}」
+                              </span>
+                            )}
+                            {b.stageLevel >= 6 && (
+                              <span className="px-1.5 py-[1px] rounded-sm bg-[#241B0B]/85 border border-[#E2BD72]/45 text-[#FFE7B0]">
+                                永久身价 +3%
+                              </span>
+                            )}
+                            {locked && <span className="text-[#8B93AD]">需好感 {b.minAffection}</span>}
+                          </div>
+                        </div>
+                        <button
+                          disabled={sending || locked}
+                          onClick={() => void handleStartBond(b)}
+                          className={`shrink-0 px-3 py-1.5 text-[12px] font-editorial ${
+                            b.available ? 'gold-btn-shimmer' : b.completed ? 'btn-navy' : 'btn-navy opacity-45'
+                          }`}
+                        >
+                          {b.available ? '开启' : b.completed ? '重温' : '未解锁'}
+                        </button>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Gift Sheet */}
       <AnimatePresence>

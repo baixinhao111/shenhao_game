@@ -6,7 +6,7 @@ import { iconSrc } from './GameIcon';
 
 /** Coins burst from where a reward happened and stream into the matching resource capsule. */
 const FlyBurst: React.FC<{ fx: RewardFx }> = ({ fx }) => {
-  const [geo, setGeo] = useState<null | { sx: number; sy: number; tx: number; ty: number }>(null);
+  const [geo, setGeo] = useState<null | { sx: number; sy: number; tx: number; ty: number; lx: number; ly: number }>(null);
 
   useLayoutEffect(() => {
     const shell = document.querySelector('[data-app-shell]') as HTMLElement | null;
@@ -14,11 +14,15 @@ const FlyBurst: React.FC<{ fx: RewardFx }> = ({ fx }) => {
     const anchors = Array.from(document.querySelectorAll(`[data-fx-anchor="${fx.kind}"]`)) as HTMLElement[];
     const target = anchors.reverse().find((a) => a.offsetParent !== null);
     const tr = target?.getBoundingClientRect();
+    const sx = fx.x - base.left;
+    const sy = fx.y - base.top;
     setGeo({
-      sx: fx.x - base.left,
-      sy: fx.y - base.top,
+      sx,
+      sy,
       tx: tr ? tr.left + 12 - base.left : base.width - 120,
       ty: tr ? tr.top + tr.height / 2 - base.top : 28,
+      lx: Math.max(88, Math.min(base.width - 88, sx)),
+      ly: Math.max(48, sy - 40),
     });
   }, [fx]);
 
@@ -49,10 +53,10 @@ const FlyBurst: React.FC<{ fx: RewardFx }> = ({ fx }) => {
         />
       ))}
       <motion.div
-        className="absolute -translate-x-1/2 font-num text-[22px] font-semibold gold-gradient-text whitespace-nowrap drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
-        style={{ left: geo.sx, top: geo.sy - 40 }}
-        initial={{ opacity: 0, y: 8, scale: 0.8 }}
-        animate={{ opacity: [0, 1, 1, 0], y: -26, scale: 1 }}
+        className="absolute font-num text-[22px] font-semibold gold-gradient-text whitespace-nowrap drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
+        style={{ left: geo.lx, top: geo.ly }}
+        initial={{ opacity: 0, x: '-50%', y: 8, scale: 0.8 }}
+        animate={{ opacity: [0, 1, 1, 0], x: '-50%', y: -26, scale: 1 }}
         transition={{ duration: 1.25, times: [0, 0.15, 0.7, 1] }}
       >
         +{fx.kind === 'points' ? fx.amount : formatMoney(fx.amount)}

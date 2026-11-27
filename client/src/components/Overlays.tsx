@@ -26,6 +26,7 @@ export const Overlays: React.FC = () => {
     topToast,
     dismissToast,
     critBanner,
+    dismissCrit,
     tierUp,
     dismissTierUp,
     barrage,
@@ -50,7 +51,6 @@ export const Overlays: React.FC = () => {
   const [mailTitle, setMailTitle] = useState('海城周末津贴');
   const [mailCash, setMailCash] = useState('1000000');
   const [mailPts, setMailPts] = useState('100');
-  const [dismissedCritId, setDismissedCritId] = useState<number | null>(null);
 
   useEffect(() => {
     if (showLeaderboard) {
@@ -151,7 +151,7 @@ export const Overlays: React.FC = () => {
             exit={{ y: -72, opacity: 0 }}
             transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
             onClick={dismissToast}
-            className="absolute top-2.5 left-3 right-3 z-50 cursor-pointer"
+            className="absolute top-[58px] left-3 right-3 z-[65] cursor-pointer"
           >
             <div
               className="relative rounded-[12px] pl-2 pr-3.5 py-2 flex items-center gap-2.5"
@@ -186,7 +186,7 @@ export const Overlays: React.FC = () => {
             initial={{ opacity: 0, y: 14 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 14 }}
-            className="absolute bottom-24 left-6 right-6 z-50 flex justify-center pointer-events-none"
+            className="absolute bottom-24 left-6 right-6 z-[65] flex justify-center pointer-events-none"
           >
             <span className="px-4 py-2 rounded-full text-[12.5px] text-[#FFE3EA] text-center leading-snug shadow-[0_10px_24px_rgba(0,0,0,0.55)]" style={{ background: 'linear-gradient(180deg, rgba(70,20,40,0.96), rgba(36,10,22,0.96))', border: '1px solid rgba(255,120,150,0.55)' }}>
               {errorToast}
@@ -197,18 +197,18 @@ export const Overlays: React.FC = () => {
 
       {/* 3. Big moments: crit cashback, then tier promotion (queued behind the crit) */}
       <AnimatePresence>
-        {critBanner && critBanner.id !== dismissedCritId && (
+        {critBanner && (
           <CritShow
             key={critBanner.id}
             multiplier={critBanner.multiplier}
             amount={critBanner.amount}
             subtitle={critBanner.subtitle}
-            onClose={() => setDismissedCritId(critBanner.id)}
+            onClose={dismissCrit}
           />
         )}
       </AnimatePresence>
       <AnimatePresence>
-        {tierUp && !(critBanner && critBanner.id !== dismissedCritId) && (
+        {tierUp && !critBanner && (
           <TierUpShow key={tierUp.id} fx={tierUp} onClose={dismissTierUp} />
         )}
       </AnimatePresence>
@@ -287,9 +287,22 @@ export const Overlays: React.FC = () => {
                         <span className={medal ? '-rotate-45' : ''}>{idx + 1}</span>
                       </div>
                       <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
+                        <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="font-editorial font-black text-[14px] text-[#FBF1D8] truncate">{row.nickname}</span>
                           <span className="px-1.5 rounded-sm text-[9.5px] text-[#F6DDA4] border border-[#E2BD72]/40 shrink-0">{row.tierName}</span>
+                          {row.equippedTitle?.titleBadge && (
+                            <span
+                              className={`px-1.5 rounded-sm text-[9px] font-bold shrink-0 border ${
+                                row.equippedTitle.titleTone === 'cyan'
+                                  ? 'bg-[#072330]/85 border-[#63E6F2]/50 text-[#B9F6FB]'
+                                  : row.equippedTitle.titleTone === 'rose'
+                                    ? 'bg-[#361124]/85 border-[#F0789A]/50 text-[#FFC4D3]'
+                                    : 'bg-[#2B1F0B]/85 border-[#E2BD72]/50 text-[#FFE7B0]'
+                              }`}
+                            >
+                              {row.equippedTitle.titleBadge}
+                            </span>
+                          )}
                         </div>
                         <div className="text-[11px] text-[#8B93AD] mt-0.5 truncate">
                           {row.mainResidence} · {row.carName}

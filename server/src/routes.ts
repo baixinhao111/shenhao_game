@@ -8,6 +8,8 @@ import { chatWithHeroine } from './deepseekService.js';
 import { assertCashSufficient, assertEnergySufficient, spendCashOrThrow, spendEnergyOrThrow } from './economy.js';
 import { getCurrentStockQuotes, registerMinigameRoutes } from './minigames.js';
 import { registerNegotiationRoutes } from './negotiation.js';
+import { registerBondRoutes, resolveHeroineActivePortrait } from './bonds.js';
+import { getEquippedTitleInfo, getStoryLinkedStockExtras, registerEmpireRoutes } from './empire.js';
 import { getBusinessDef, getPropertyDef, purchaseBusiness, purchaseProperty } from './purchases.js';
 import {
   buildFullGameState,
@@ -114,11 +116,12 @@ function buildMiniStoryTemplateVars(
   const st = queryOne<any>('SELECT equipped_car_id FROM player_state WHERE user_id = ?', [userId]);
   const car = content.assetsCatalog.assets.find((a: any) => a.id === st?.equipped_car_id);
   const locationName = opts.inter?.name || opts.propertyName || opts.district?.name || '海城';
+  const activePortrait = hDef ? resolveHeroineActivePortrait(userId, hDef).portrait : '';
   return {
     heroineId: hDef?.id || 'heroine',
     heroineName: hDef?.name || '红颜',
     heroineRole: hDef?.title || hDef?.archetype || '',
-    heroineSprite: hDef?.portrait || hDef?.avatar || '',
+    heroineSprite: activePortrait || hDef?.portrait || hDef?.avatar || '',
     playerName: user?.nickname || '陆沉',
     carName: car?.name || '座驾',
     locationName,
@@ -463,7 +466,7 @@ function postSweetDateMoment(userId: number, hDef: any, district: any, inter: an
     tpl.text,
     `海城 · ${district.name}`,
     [{ author: userNickname, text: '随时奉陪。' }, { author: hDef.name, text: tpl.comment }],
-    [userNickname, '陈默（私人管家）'],
+    ['陈默（私人管家）'],
     hDef.avatar || '',
   );
 }
@@ -628,12 +631,28 @@ function buildHomePokePayload(
   return pool[nextIdx];
 }
 
+// Lightweight sliding-window auth rate limiter (60 req/min per IP)
+const authRateMap = new Map<string, number[]>();
+function checkAuthRateLimit(req: Request, res: Response): boolean {
+  const ip = req.ip || req.socket?.remoteAddress || 'local';
+  const now = Date.now();
+  const recent = (authRateMap.get(ip) || []).filter((t) => now - t < 60_000);
+  if (recent.length >= 60) {
+    res.status(429).json({ error: '请求过于频繁，请稍后再试' });
+    return false;
+  }
+  recent.push(now);
+  authRateMap.set(ip, recent);
+  return true;
+}
+
 // Deterministic time-bucketed virtual stocks for Lujiazui CBD
 export function createApiRouter(): Router {
   const router = Router();
 
   // ================= AUTH =================
   router.post('/auth/register', (req, res) => {
+    if (!checkAuthRateLimit(req, res)) return;
     try {
       const username = String(req.body?.username || '').trim();
       const password = String(req.body?.password || '');
@@ -675,6 +694,7 @@ export function createApiRouter(): Router {
   });
 
   router.post('/auth/login', (req, res) => {
+    if (!checkAuthRateLimit(req, res)) return;
     try {
       const username = String(req.body?.username || '').trim();
       const password = String(req.body?.password || '');
@@ -1041,6 +1061,13 @@ export function createApiRouter(): Router {
       const userId = req.userId!;
       const { districtId } = req.body || {};
       const content = getContent();
+      const district = content.map.districts.find((x: any) => x.id === districtId);
+      if (!district) throw new Error('未知区域');
+      const { tierInfo } = computePortfolioAndTier(userId);
+      if (tierInfo.tier < district.unlockTier) {
+        const reqTier = content.map.tiers.find((t: any) => t.tier === district.unlockTier);
+        throw new Error(`需晋升至【${reqTier?.name || `阶层${district.unlockTier}`}】才能解锁【${district.name}】`);
+      }
       const pool = content.districtEvents[districtId];
       if (!pool || pool.length === 0) throw new Error('该区域暂时没有随机事件');
       spendEnergyOrThrow(userId, 5);
@@ -1108,6 +1135,11 @@ export function createApiRouter(): Router {
       const district = content.map.districts.find((d: any) => d.id === districtId);
       const inter = district?.interactions?.find((i: any) => i.id === interactionId);
       if (!district || !inter) throw new Error('该约会地点不存在');
+      const { tierInfo } = computePortfolioAndTier(userId);
+      if (tierInfo.tier < district.unlockTier) {
+        const reqTier = content.map.tiers.find((t: any) => t.tier === district.unlockTier);
+        throw new Error(`需晋升至【${reqTier?.name || `阶层${district.unlockTier}`}】才能解锁【${district.name}】`);
+      }
 
       const hRow = queryOne<any>('SELECT * FROM player_heroines WHERE user_id = ? AND heroine_id = ?', [
         userId,
@@ -1136,6 +1168,11 @@ export function createApiRouter(): Router {
       const district = content.map.districts.find((d: any) => d.id === districtId);
       const inter = district?.interactions?.find((i: any) => i.id === interactionId);
       if (!district || !inter) throw new Error('该约会地点不存在');
+      const { tierInfo: dateTierInfo } = computePortfolioAndTier(userId);
+      if (dateTierInfo.tier < district.unlockTier) {
+        const reqTier = content.map.tiers.find((t: any) => t.tier === district.unlockTier);
+        throw new Error(`需晋升至【${reqTier?.name || `阶层${district.unlockTier}`}】才能解锁【${district.name}】`);
+      }
 
       const hRow = queryOne<any>('SELECT * FROM player_heroines WHERE user_id = ? AND heroine_id = ?', [
         userId,
@@ -1422,7 +1459,7 @@ export function createApiRouter(): Router {
       } catch {}
       const targetHeroine = heroineId || residents[0];
       if (!targetHeroine) throw new Error('这套房子目前没有红颜入住，先送一把钥匙给她吧！');
-      if (residents.length > 0 && !residents.includes(targetHeroine)) {
+      if (!residents.includes(targetHeroine)) {
         throw new Error('该红颜目前未入住这套私宅');
       }
       const hDef = content.heroines.find((h) => h.id === targetHeroine);
@@ -1701,14 +1738,17 @@ export function createApiRouter(): Router {
 
   // 3. Bund: Midnight Street Race (uses equipped supercar!)
 
-  // 4. CBD: Virtual Stock Market
+  // 4. CBD: Virtual Stock Market (with story-linked stocks & headline)
   router.get('/minigame/stocks', authMiddleware, (req: AuthedRequest, res) => {
-    const quotes = getCurrentStockQuotes();
-    const { skills } = computePortfolioAndTier(req.userId!);
+    const userId = req.userId!;
+    const quotes = getCurrentStockQuotes(userId);
+    const { headline } = getStoryLinkedStockExtras(userId);
+    const { skills } = computePortfolioAndTier(userId);
     const tipIdx = Math.floor(Date.now() / (10 * 60 * 1000)) % quotes.length;
-    const tipStock = quotes[tipIdx];
+    const storyHot = quotes.find((q) => q.storyTag && (q.storyTag.includes('利空') || q.storyTag.includes('看空') || q.storyTag.includes('看多') || q.storyTag.includes('崩跌')));
+    const tipStock = storyHot || quotes[tipIdx];
     const insiderTip = `【天枢内幕洞察（准确度 ${Math.min(98, 72 + skills.insightLevel * 5)}%）】预测【${tipStock.name}】下一波段大概率「${tipStock.trend === 'up' ? '强势拉升（宜做多）' : '高位回调（宜做空）'}」！`;
-    res.json({ quotes, insiderTip });
+    res.json({ quotes, insiderTip, headline });
   });
 
 
@@ -1837,8 +1877,11 @@ export function createApiRouter(): Router {
       const content = getContent();
       const item = content.skillsData.mallItems.find((i) => i.id === itemId);
       if (!item) throw new Error('商品不存在');
-      const st = queryOne<any>('SELECT sys_points FROM player_state WHERE user_id = ?', [userId]);
+      const st = queryOne<any>('SELECT sys_points, crit_charge FROM player_state WHERE user_id = ?', [userId]);
       if (st.sys_points < item.costPoints) throw new Error(`系统积分不足（需要 ${item.costPoints}）`);
+      if (itemId === 'item_crit_charge' && Number(st.crit_charge || 0) >= 100) {
+        throw new Error('返现蓄能已满 100%，先大额消费触发暴击后再兑换');
+      }
 
       execute('UPDATE player_state SET sys_points = sys_points - ? WHERE user_id = ?', [item.costPoints, userId], false);
       let msg = `兑换【${item.name}】成功！`;
@@ -1898,6 +1941,7 @@ export function createApiRouter(): Router {
           namedLandmark: namedTower?.custom_name || '',
           propertyCount: p.ownedProps.length,
           heroineCount: p.heroinesRows.filter((h) => h.unlocked).length,
+          equippedTitle: getEquippedTitleInfo(u.id),
         };
       })
       .sort((a, b) => b.netWorth - a.netWorth)
@@ -1968,6 +2012,8 @@ export function createApiRouter(): Router {
 
   registerMinigameRoutes(router, authMiddleware);
   registerNegotiationRoutes(router, authMiddleware);
+  registerBondRoutes(router, authMiddleware);
+  registerEmpireRoutes(router, authMiddleware);
 
   return router;
 }

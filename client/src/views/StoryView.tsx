@@ -26,6 +26,7 @@ export const StoryView: React.FC = () => {
     notifyTop,
     showError,
     setActiveTab,
+    openAssetsTab,
   } = useGameStore();
 
   const [selectedVolId, setSelectedVolId] = useState<string>('all');
@@ -322,7 +323,7 @@ export const StoryView: React.FC = () => {
                 <button
                   onClick={() => {
                     playTap();
-                    setActiveTab('assets');
+                    openAssetsTab('biz');
                   }}
                   className="btn-brass py-2 text-[12.5px] font-editorial flex items-center justify-center gap-1.5"
                 >

@@ -205,8 +205,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   const timePeriod = state?.timePeriod;
   const timeLabel = state?.timeLabel || '';
 
+  const completedEps: string[] = stories?.completedEpisodes || [];
   const protagonistSrc =
-    (stories?.completedEpisodes?.length || 0) >= 2
+    completedEps.includes('ep_003') || completedEps.length >= 3
       ? '/assets/characters/protagonist.png'
       : '/assets/characters/protagonist_early.png';
 
@@ -293,14 +294,44 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
   const unlockedHeroines = heroines.filter((h: any) => h.unlocked);
   const livePendingIncome = Math.floor(basePending + liveDriftCash);
   const hasProfileDot =
-    !player.signedInToday || dailyTasks?.some((t: any) => !t.claimed && t.progress >= t.target);
+    !player.signedInToday ||
+    dailyTasks?.some((t: any) => !t.claimed && t.progress >= t.target) ||
+    Number(state?.unclaimedAchievementCount || 0) > 0;
   // 天枢指引：首页永远只给一条「下一步最值得做的事」（模拟经营的目标引导）
-  const guide: { id: string; text: string; go: () => void } | null = (() => {
+  const guide: { id: string; tone?: 'rose' | 'cyan'; text: string; go: () => void } | null = (() => {
+    if (state?.shuraEvent)
+      return {
+        id: `shura:${state.shuraEvent.id}`,
+        tone: 'rose',
+        text: `修罗场 · ${state.shuraEvent.title}`,
+        go: async () => {
+          try {
+            const res = await apiRequest('/heroines/shura/start', { body: { eventId: state.shuraEvent.id } });
+            const sc = res.script;
+            playSystemPing();
+            openMiniStory({
+              mode: 'shura',
+              eventId: sc.eventId || state.shuraEvent.id,
+              title: sc.title,
+              subtitle: sc.subtitle,
+              sceneLabel: sc.sceneLabel,
+              bg: sc.bg,
+              nodes: sc.nodes || [],
+              heroineId: sc.heroineId,
+              heroineIds: sc.heroineIds,
+              heroineName: sc.heroineName,
+              heroineAvatar: sc.heroineAvatar,
+            });
+          } catch (e: any) {
+            showError(e.message);
+          }
+        },
+      };
     if (livePendingIncome >= 10000)
       return {
         id: 'income',
         text: `产业分红 ${formatMoney(livePendingIncome)} 待收取`,
-        go: () => useGameStore.getState().setActiveTab('assets'),
+        go: () => useGameStore.getState().openAssetsTab('biz'),
       };
     if (nextEpisode && !(stories?.completedEpisodes || []).includes(nextEpisode.episodeId)) {
       const nwOk = !nextEpisode.requireNetWorth || player.netWorth >= nextEpisode.requireNetWorth;
@@ -313,14 +344,20 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       return {
         id: 'gate',
         text: `身价再涨 ${formatMoney(nextEpisode.requireNetWorth - player.netWorth)} 解锁下一幕`,
-        go: () => useGameStore.getState().setActiveTab('assets'),
+        go: () => useGameStore.getState().openAssetsTab('biz'),
       };
     }
+    if (Number(state?.unclaimedAchievementCount || 0) > 0)
+      return {
+        id: 'ach',
+        text: `有 ${state.unclaimedAchievementCount} 项成就奖励待领取`,
+        go: () => useGameStore.getState().openProfile('achievements'),
+      };
     if (player.nextTier)
       return {
         id: 'tier',
         text: `距「${player.nextTier.name}」还差 ${formatMoney(Math.max(0, player.nextTier.minNetWorth - player.netWorth))}`,
-        go: () => useGameStore.getState().setActiveTab('assets'),
+        go: () => useGameStore.getState().openAssetsTab('biz'),
       };
     return null;
   })();
@@ -477,11 +514,17 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     }
   };
 
+  const nextEpisodeLocked = Boolean(
+    nextEpisode?.requireNetWorth && player.netWorth < nextEpisode.requireNetWorth,
+  );
+
   const handleResumeStory = () => {
     playTap();
     if (nextEpisode?.episodeId) {
       setActiveTab('story');
-      setActiveStoryEpisodeId(nextEpisode.episodeId);
+      if (!nextEpisodeLocked) {
+        setActiveStoryEpisodeId(nextEpisode.episodeId);
+      }
     } else {
       setActiveTab('map');
     }
@@ -532,7 +575,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
       >
         <AnimatePresence mode="wait">
           <motion.div
-            key={activeCompanion.id}
+            key={`${activeCompanion.id}:${activeCompanion.portrait}`}
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 8 }}
@@ -609,6 +652,19 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
             <div className="flex items-center gap-1 text-[10px] leading-none">
               <GameIcon name="crown" size={13} shadow={false} />
               <span className="text-[#F6DDA4] font-bold tracking-wider truncate">{player.tier.name}</span>
+              {user.equippedTitle?.titleBadge && (
+                <span
+                  className={`px-1 py-[1px] rounded-sm text-[8.5px] font-bold shrink-0 border ${
+                    user.equippedTitle.titleTone === 'cyan'
+                      ? 'bg-[#072330]/85 border-[#63E6F2]/55 text-[#B9F6FB]'
+                      : user.equippedTitle.titleTone === 'rose'
+                        ? 'bg-[#361124]/85 border-[#F0789A]/55 text-[#FFC4D3]'
+                        : 'bg-[#2B1F0B]/85 border-[#E2BD72]/55 text-[#FFE7B0]'
+                  }`}
+                >
+                  {user.equippedTitle.titleBadge}
+                </span>
+              )}
             </div>
             <div className="flex items-center gap-1.5">
               <div className="bar-track w-[56px] shrink-0 !h-[5px]">
@@ -641,11 +697,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
               playTap();
               guide.go();
             }}
-            className="pointer-events-auto max-w-full flex items-center gap-1.5 pl-1 pr-3 py-1 rounded-full bg-[#04121F]/80 border border-[#63E6F2]/45 shadow-[0_0_14px_rgba(99,230,242,0.25)] backdrop-blur-md active:scale-95"
+            className={`pointer-events-auto max-w-full flex items-center gap-1.5 pl-1 pr-3 py-1 rounded-full backdrop-blur-md active:scale-95 ${
+              guide.tone === 'rose'
+                ? 'bg-[#2A0E1E]/88 border border-[#F0789A]/60 shadow-[0_0_16px_rgba(240,120,154,0.3)]'
+                : 'bg-[#04121F]/80 border border-[#63E6F2]/45 shadow-[0_0_14px_rgba(99,230,242,0.25)]'
+            }`}
           >
-            <GameIcon name="tianshu" size={20} shadow={false} />
-            <span className="text-[11px] text-[#CFF8FC] truncate">{guide.text}</span>
-            <span className="text-[#63E6F2] text-[11px] shrink-0">›</span>
+            <GameIcon name={guide.tone === 'rose' ? 'heart' : 'tianshu'} size={20} shadow={false} />
+            <span className={`text-[11px] truncate ${guide.tone === 'rose' ? 'text-[#FFD3DF]' : 'text-[#CFF8FC]'}`}>{guide.text}</span>
+            <span className={`text-[11px] shrink-0 ${guide.tone === 'rose' ? 'text-[#F0789A]' : 'text-[#63E6F2]'}`}>›</span>
           </motion.button>
         )}
       </AnimatePresence>
@@ -875,9 +935,9 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                         setThoughtOpen((v) => !v);
                         scheduleBubbleAutoDismiss(11000);
                       }}
-                      className="text-[10.5px] text-[#D8B979] hover:text-[#F4DFA8] flex items-center gap-1"
+                      className="text-[10.5px] text-[#FFB3C6] hover:text-[#FFD6E1] flex items-center gap-0.5"
                     >
-                      <Sparkles className="w-3 h-3" />
+                      <GameIcon name="heart" size={14} shadow={false} />
                       <span>{thoughtOpen ? '收起' : '心声'}</span>
                     </button>
                   )}
@@ -982,17 +1042,21 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           </div>
           <OrnateCorners size={18} inset={-4} />
           <div className="absolute -top-2.5 left-2 px-2 py-[2px] rounded-sm text-[10px] font-black tracking-[0.2em] text-[#1E1506] bg-gradient-to-b from-[#FFE9BB] to-[#D6A85A] shadow">
-            {nextEpisode ? '主线' : '出行'}
+            {nextEpisode ? (nextEpisodeLocked ? '待解锁' : '主线') : '出行'}
           </div>
           <div className="absolute inset-x-2.5 bottom-2">
             <div className="text-[10px] text-[#F6DDA4] tracking-wider truncate text-stroke-dark">
-              {nextEpisode ? nextEpisode.chapterTitle : '海城出行'}
+              {nextEpisode
+                ? nextEpisodeLocked
+                  ? `身价需 ${formatMoney(nextEpisode.requireNetWorth)}`
+                  : nextEpisode.chapterTitle
+                : '海城出行'}
             </div>
             <div className="flex items-center justify-between gap-1 mt-0.5">
               <div className="font-editorial text-[15px] font-black text-[#FBF1D8] truncate text-stroke-dark">
                 {nextEpisode ? nextEpisode.title : equippedCar?.name || '前往海城'}
               </div>
-              <GameIcon name="play" size={26} />
+              <GameIcon name={nextEpisodeLocked ? 'lock' : 'play'} size={nextEpisodeLocked ? 22 : 26} />
             </div>
           </div>
         </button>
@@ -1073,8 +1137,8 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
                                   <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
                                   <div className="text-[11px] text-[#929AB4] mt-0.5 line-clamp-1">{inter.desc}</div>
                                 </div>
-                                <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 tabular-nums">
-                                  <Zap className="w-3 h-3" /> {inter.energy}
+                                <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 font-num">
+                                  <GameIcon name="energy" size={14} shadow={false} /> {inter.energy}
                                 </span>
                               </button>
                             ))}

@@ -46,7 +46,7 @@ const DISTRICT_AMBIENT: Record<string, string> = {
 };
 
 type DistrictSheet = null | 'explore' | 'properties';
-type HomeSheet = null | 'interact' | 'manage';
+type HomeSheet = null | 'interact' | 'keys' | 'manage';
 
 export const CityMapView: React.FC = () => {
   const {
@@ -82,7 +82,13 @@ export const CityMapView: React.FC = () => {
     setExpandedDateSpotId(null);
     setStrollEvent(null);
     setStrollResult(null);
-  }, [selectedDistrictId]);
+    if (selectedDistrictId && state?.map?.districts) {
+      const target = state.map.districts.find((x: any) => x.id === selectedDistrictId);
+      if (target && !target.unlocked) {
+        setSelectedDistrictId(null);
+      }
+    }
+  }, [selectedDistrictId, state?.map?.districts, setSelectedDistrictId]);
 
   useEffect(() => {
     setHomeSheet(null);
@@ -272,10 +278,11 @@ export const CityMapView: React.FC = () => {
             </button>
             <button
               onClick={() => {
+                playTap();
                 if (featuredResident) {
                   openHeroineChat(featuredResident.id, prop.displayName);
                 } else {
-                  setHomeSheet('manage');
+                  setHomeSheet('keys');
                 }
               }}
               className="gold-btn-shimmer py-1.5 text-[12.5px] font-editorial flex flex-col items-center"
@@ -300,158 +307,204 @@ export const CityMapView: React.FC = () => {
         <AnimatePresence>
           {homeSheet === 'interact' && (
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setHomeSheet(null)}
+              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
             >
-              <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
-                <span className="font-editorial text-[16px] font-black gold-gradient-text">居家时光</span>
-                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#8B93AD]">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              {residentObjs.length === 0 ? (
-                <div className="text-xs text-[#A3AAC2] py-6 text-center space-y-3">
-                  <div>这套私宅暂未赠予钥匙</div>
-                  <button onClick={() => setHomeSheet('manage')} className="btn-brass px-4 py-1.5 rounded-[4px] text-xs">
-                    赠予钥匙
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                onClick={(e) => e.stopPropagation()}
+                className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[72%] overflow-y-auto no-scrollbar space-y-3"
+              >
+                <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
+                  <span className="font-editorial text-[16px] font-black gold-gradient-text">居家时光</span>
+                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
+                    <X className="w-5 h-5" />
                   </button>
                 </div>
-              ) : (
-                residentObjs.map((h: any) => (
-                  <div key={h.id} className="space-y-2">
-                    <div className="flex items-center gap-2 text-xs text-[#E6A4B8]">
-                      <PortraitAvatar src={h.avatar} alt={h.name} className="w-6 h-6" rounded="sm" />
-                      <span>{h.name}</span>
-                    </div>
-                    <div className="divide-y divide-white/[0.06] border-y border-white/[0.07]">
-                      {prop.homeInteractions?.map((inter: any) => (
-                        <button
-                          key={inter.id}
-                          disabled={busy}
-                          onClick={() => handleHomeInteract(inter, h)}
-                          className="w-full text-left py-3 flex items-center justify-between gap-3 hover:bg-white/[0.03] transition"
-                        >
-                          <div>
-                            <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
-                            <div className="text-[11px] text-[#929AB4] mt-0.5">{inter.desc}</div>
-                          </div>
-                          <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 tabular-nums">
-                            <Zap className="w-3 h-3" /> {inter.energy}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                {residentObjs.length === 0 ? (
+                  <div className="text-xs text-[#A3AAC2] py-6 text-center space-y-3">
+                    <div>这套私宅暂未赠予钥匙</div>
+                    <button onClick={() => setHomeSheet('keys')} className="btn-brass px-4 py-1.5 rounded-[4px] text-xs">
+                      赠予钥匙
+                    </button>
                   </div>
-                ))
-              )}
+                ) : (
+                  residentObjs.map((h: any) => (
+                    <div key={h.id} className="space-y-2">
+                      <div className="flex items-center gap-2 text-xs text-[#E6A4B8]">
+                        <PortraitAvatar src={h.avatar} alt={h.name} className="w-6 h-6" rounded="sm" />
+                        <span>{h.name}</span>
+                      </div>
+                      <div className="divide-y divide-white/[0.06] border-y border-white/[0.07]">
+                        {prop.homeInteractions?.map((inter: any) => (
+                          <button
+                            key={inter.id}
+                            disabled={busy}
+                            onClick={() => handleHomeInteract(inter, h)}
+                            className="w-full text-left py-3 flex items-center justify-between gap-3 hover:bg-white/[0.03] transition"
+                          >
+                            <div>
+                              <div className="text-[13px] font-semibold text-[#F3F0E8]">{inter.name}</div>
+                              <div className="text-[11px] text-[#929AB4] mt-0.5">{inter.desc}</div>
+                            </div>
+                            <span className="text-xs text-[#E2BD72] flex items-center gap-0.5 shrink-0 font-num">
+                              <GameIcon name="energy" size={14} shadow={false} /> {inter.energy}
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))
+                )}
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
 
-        {/* Sheet: Property Management */}
+        {/* Sheet: Keys / Property Management */}
         <AnimatePresence>
-          {homeSheet === 'manage' && (
+          {(homeSheet === 'keys' || homeSheet === 'manage') && (
             <motion.div
-              initial={{ y: '100%' }}
-              animate={{ y: 0 }}
-              exit={{ y: '100%' }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setHomeSheet(null)}
+              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
             >
-              <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
-                <div className="flex items-center gap-2">
-                  <span className="font-editorial text-[16px] font-black gold-gradient-text">{prop.displayName}</span>
-                  {prop.canRename && (
+              <motion.div
+                initial={{ y: '100%' }}
+                animate={{ y: 0 }}
+                exit={{ y: '100%' }}
+                transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
+                onClick={(e) => e.stopPropagation()}
+                className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[78%] overflow-y-auto no-scrollbar space-y-4"
+              >
+                <div className="flex items-center justify-between pb-2.5 border-b border-white/[0.08]">
+                  <div className="flex items-center gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
+                    {prop.maxResidents > 0 && (
+                      <button
+                        data-active={homeSheet === 'keys'}
+                        onClick={() => setHomeSheet('keys')}
+                        className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
+                      >
+                        <GameIcon name="key" size={18} shadow={false} />
+                        居所钥匙
+                      </button>
+                    )}
                     <button
-                      onClick={() => {
-                        setRenameText(prop.displayName);
-                        setShowRename(!showRename);
-                      }}
-                      className="p-1 text-[#E2BD72]"
+                      data-active={homeSheet === 'manage'}
+                      onClick={() => setHomeSheet('manage')}
+                      className="tab-chip font-editorial flex items-center gap-1 !pl-1.5"
                     >
-                      <Pencil className="w-3.5 h-3.5" />
+                      <GameIcon name="settings" size={18} shadow={false} />
+                      装潢与管理
                     </button>
-                  )}
-                </div>
-                <button onClick={() => setHomeSheet(null)} className="p-1 text-[#8B93AD]">
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              {showRename && (
-                <div className="flex gap-2">
-                  <input
-                    value={renameText}
-                    onChange={(e) => setRenameText(e.target.value)}
-                    placeholder="输入大楼冠名"
-                    className="flex-1 bg-[#0D1326] border border-white/12 rounded-[4px] px-3 py-2 text-xs text-white outline-none"
-                  />
-                  <button onClick={handleRename} className="btn-brass px-3.5 rounded-[4px] text-xs">
-                    保存
-                  </button>
-                </div>
-              )}
-
-              <div className="grid grid-cols-2 gap-2.5">
-                {prop.type === 'residence' && !prop.isMain && (
-                  <button
-                    onClick={handleSetMain}
-                    className="game-action-tile rounded-[4px] py-2.5 text-xs font-medium text-[#F3F0E8]"
-                  >
-                    设为主居所
-                  </button>
-                )}
-                {prop.renovationLevel < 5 && (
-                  <button
-                    disabled={busy}
-                    onClick={handleRenovate}
-                    className={`btn-brass rounded-[4px] py-2.5 text-xs ${
-                      prop.type !== 'residence' || prop.isMain ? 'col-span-2' : ''
-                    }`}
-                  >
-                    升级装潢 Lv.{prop.renovationLevel + 1}（{formatMoney(prop.renovateCost)}）
-                  </button>
-                )}
-              </div>
-
-              {prop.maxResidents > 0 && (
-                <div className="space-y-2.5 pt-2 border-t border-white/[0.08]">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-medium text-[#F6DDA4]">
-                      居所钥匙 ({residentObjs.length}/{prop.maxResidents})
-                    </span>
-                    <span className="text-[10.5px] text-[#8B93AD]">入住后每日增进好感</span>
                   </div>
-                  {unlockedHeroines.length > 0 ? (
-                    <div className="grid grid-cols-2 gap-2">
-                      {unlockedHeroines.map((h: any) => {
-                        const here = prop.residents?.includes(h.id);
-                        return (
-                          <button
-                            key={h.id}
-                            disabled={here}
-                            onClick={() => handleAssignHeroine(h.id)}
-                            className={`rounded-[4px] p-2.5 flex items-center gap-2 text-left border transition ${
-                              here ? 'bg-[#F0789A]/12 border-[#F0789A]/40' : 'panel-arch hover:border-[#E2BD72]/40'
-                            }`}
-                          >
-                            <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
-                            <div className="min-w-0">
-                              <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
-                              <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
-                            </div>
-                          </button>
-                        );
-                      })}
-                    </div>
-                  ) : (
-                    <div className="text-xs text-[#8B93AD]">推进主线结识联系人后即可赠予钥匙。</div>
-                  )}
+                  <button onClick={() => setHomeSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
+                    <X className="w-5 h-5" />
+                  </button>
                 </div>
-              )}
+
+                {homeSheet === 'manage' && (
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="font-editorial text-[15px] font-black text-[#FBF1D8]">{prop.displayName}</span>
+                      {prop.canRename && (
+                        <button
+                          onClick={() => {
+                            setRenameText(prop.displayName);
+                            setShowRename(!showRename);
+                          }}
+                          className="text-xs text-[#E2BD72] flex items-center gap-1 px-2 py-1 rounded bg-white/[0.04]"
+                        >
+                          <Pencil className="w-3 h-3" /> 冠名
+                        </button>
+                      )}
+                    </div>
+
+                    {showRename && (
+                      <div className="flex gap-2">
+                        <input
+                          value={renameText}
+                          onChange={(e) => setRenameText(e.target.value)}
+                          placeholder="输入大楼冠名"
+                          className="flex-1 bg-[#0D1326] border border-white/12 rounded-[4px] px-3 py-2 text-xs text-white outline-none"
+                        />
+                        <button onClick={handleRename} className="btn-brass px-3.5 rounded-[4px] text-xs">
+                          保存
+                        </button>
+                      </div>
+                    )}
+
+                    <div className="grid grid-cols-2 gap-2.5">
+                      {prop.type === 'residence' && !prop.isMain && (
+                        <button
+                          onClick={handleSetMain}
+                          className="game-action-tile rounded-[4px] py-2.5 text-xs font-medium text-[#F3F0E8]"
+                        >
+                          设为主居所
+                        </button>
+                      )}
+                      {prop.renovationLevel < 5 && (
+                        <button
+                          disabled={busy}
+                          onClick={handleRenovate}
+                          className={`${player.cash >= prop.renovateCost ? 'btn-brass' : 'btn-navy opacity-75'} rounded-[4px] py-2.5 text-xs ${
+                            prop.type !== 'residence' || prop.isMain ? 'col-span-2' : ''
+                          }`}
+                        >
+                          升级装潢 Lv.{prop.renovationLevel + 1}（{formatMoney(prop.renovateCost)}）
+                        </button>
+                      )}
+                      {prop.renovationLevel >= 5 && (
+                        <div className="col-span-2 text-center text-xs text-[#7BE0A8] py-2">已达顶级满星精装 Lv.5</div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {homeSheet === 'keys' && prop.maxResidents > 0 && (
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-medium text-[#F6DDA4]">
+                        {prop.displayName}（入住 {residentObjs.length}/{prop.maxResidents}）
+                      </span>
+                      <span className="text-[10.5px] text-[#8B93AD]">入住后每日增进好感</span>
+                    </div>
+                    {unlockedHeroines.length > 0 ? (
+                      <div className="grid grid-cols-2 gap-2">
+                        {unlockedHeroines.map((h: any) => {
+                          const here = prop.residents?.includes(h.id);
+                          return (
+                            <button
+                              key={h.id}
+                              disabled={here}
+                              onClick={() => handleAssignHeroine(h.id)}
+                              className={`rounded-[4px] p-2.5 flex items-center gap-2 text-left border transition ${
+                                here ? 'bg-[#F0789A]/12 border-[#F0789A]/40' : 'panel-arch hover:border-[#E2BD72]/40'
+                              }`}
+                            >
+                              <PortraitAvatar src={h.avatar} alt={h.name} className="w-8 h-8" rounded="sm" />
+                              <div className="min-w-0">
+                                <div className="text-xs font-semibold text-[#F3F0E8] truncate">{h.name}</div>
+                                <div className="text-[10px] text-[#E2BD72]">{here ? '已入住' : '赠予钥匙'}</div>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <div className="text-xs text-[#8B93AD]">推进主线结识联系人后即可赠予钥匙。</div>
+                    )}
+                  </div>
+                )}
+              </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -460,9 +513,11 @@ export const CityMapView: React.FC = () => {
   }
 
   // ==================== LEVEL 2: DISTRICT HUB ====================
-  if (selectedDistrictId) {
-    const d = map.districts.find((x: any) => x.id === selectedDistrictId);
-    if (!d) return null;
+  const activeDistrict = selectedDistrictId
+    ? map.districts.find((x: any) => x.id === selectedDistrictId && x.unlocked) || null
+    : null;
+  if (activeDistrict) {
+    const d = activeDistrict;
     const districtProps = properties.filter((p: any) => p.districtId === d.id);
     const streetHeroine = d.presentHeroines?.[0] || null;
     const streetHeroineFull = streetHeroine ? heroines.find((h: any) => h.id === streetHeroine.id) : null;
@@ -508,8 +563,8 @@ export const CityMapView: React.FC = () => {
           openMiniStory({
             mode: 'stroll',
             title: ev.title,
-            subtitle: d.name,
-            sceneLabel: d.name,
+            subtitle: ev.desc || '',
+            sceneLabel: `${d.name} · 偶遇`,
             bg: ev.bg || d.bg,
             nodes: [...introNodes, choiceNode],
             districtId: d.id,
@@ -702,11 +757,19 @@ export const CityMapView: React.FC = () => {
         <AnimatePresence>
           {districtSheet === 'explore' && (
             <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setDistrictSheet(null)}
+              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
+            >
+            <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[82%] flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              className="panel-elevated w-full rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 max-h-[82%] flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
                 <span className="font-editorial text-[16px] font-black gold-gradient-text">{d.name} · 赴约与闲逛</span>
@@ -837,6 +900,7 @@ export const CityMapView: React.FC = () => {
                 )}
               </div>
             </motion.div>
+            </motion.div>
           )}
         </AnimatePresence>
 
@@ -844,23 +908,36 @@ export const CityMapView: React.FC = () => {
         <AnimatePresence>
           {districtSheet === 'properties' && (
             <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setDistrictSheet(null)}
+              className="absolute inset-0 z-40 bg-black/62 backdrop-blur-[2px] flex items-end"
+            >
+            <motion.div
               initial={{ y: '100%' }}
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="panel-elevated absolute inset-x-0 bottom-0 z-40 h-[78%] border-t border-[#E2BD72]/30 p-4 flex flex-col"
+              onClick={(e) => e.stopPropagation()}
+              className="panel-elevated w-full h-[78%] rounded-t-[16px] border-t border-[#E2BD72]/50 p-4 flex flex-col"
             >
               <div className="flex items-center justify-between shrink-0 pb-3 border-b border-white/[0.08]">
                 <span className="font-editorial text-[16px] font-black gold-gradient-text">
                   {d.name} · 地产 ({districtProps.length})
                 </span>
-                <button onClick={() => setDistrictSheet(null)} className="p-1 text-[#8B93AD]">
+                <button onClick={() => setDistrictSheet(null)} aria-label="关闭" className="p-1 text-[#8B93AD] hover:text-white">
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar pt-3 divide-y divide-white/[0.08]">
-                {districtProps.map((p: any) => (
+                {districtProps.map((p: any) => {
+                  const reqTierName =
+                    (map.tiers || []).find((x: any) => x.tier === p.unlockTier)?.name || `阶层 ${p.unlockTier}`;
+                  const earnsRent = p.currentRentPerHour > 0 && !(p.isMain && p.type === 'residence');
+                  const canAffordProp = player.cash >= (p.price || 0);
+                  return (
                   <div key={p.id} className="py-3.5 first:pt-0 space-y-2.5">
                     <div className="aspect-[16/9] w-full bg-black overflow-hidden border border-white/[0.08]">
                       <img src={p.image || p.bg} alt={p.displayName} className="w-full h-full object-cover" />
@@ -870,7 +947,7 @@ export const CityMapView: React.FC = () => {
                         <div className="font-editorial text-[16px] font-black gold-gradient-text">{p.displayName}</div>
                         <div className="text-[11px] text-[#E2BD72] tabular-nums mt-0.5">
                           估值 {formatMoney(p.currentValuation)}
-                          {p.currentRentPerHour > 0 ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : ''}
+                          {earnsRent ? ` · 租金 ${formatMoney(p.currentRentPerHour)}/时` : p.isMain && p.type === 'residence' ? ' · 自住主宅' : ''}
                         </div>
                       </div>
                       {p.owned ? (
@@ -901,17 +978,19 @@ export const CityMapView: React.FC = () => {
                           <button
                             disabled={busy || player.tier.tier < p.unlockTier}
                             onClick={() => buyProperty(p.id)}
-                            className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-num disabled:opacity-40"
+                            className={`${player.tier.tier < p.unlockTier || !canAffordProp ? 'btn-navy opacity-70' : 'gold-btn-shimmer'} px-3 py-1.5 text-[12px] font-num disabled:opacity-45`}
                           >
-                            {player.tier.tier < p.unlockTier ? `阶层 Lv.${p.unlockTier}` : `全款 ${formatMoney(p.price)}`}
+                            {player.tier.tier < p.unlockTier ? `需「${reqTierName}」` : `全款 ${formatMoney(p.price)}`}
                           </button>
                         </div>
                       )}
                     </div>
                     <p className="text-xs text-[#A3AAC2] leading-snug">{p.description}</p>
                   </div>
-                ))}
+                  );
+                })}
               </div>
+            </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -1039,7 +1118,7 @@ export const CityMapView: React.FC = () => {
       {/* Quiet Whisper when no pin selected */}
       {!previewDistrict && (
         <div className="absolute bottom-4 inset-x-0 z-10 flex justify-center pointer-events-none">
-          <span className="text-[11px] text-[#C8CBD6]/80 tracking-wider text-shadow-stage">
+          <span className="px-3.5 py-1 rounded-full bg-[#070B18]/78 backdrop-blur-sm border border-[#E2BD72]/30 text-[11px] text-[#EFE7D6] tracking-wider shadow-[0_4px_14px_rgba(0,0,0,0.6)]">
             点选海城片区查看并前往
           </span>
         </div>

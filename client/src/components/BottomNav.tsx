@@ -21,13 +21,27 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
   if (!state) return null;
 
   const hasPendingIncome = (state.player?.pendingIncome || 0) >= 10000;
-  const hasNextStory = Boolean(state.stories?.nextEpisodeId);
+  const nextEpObj = (() => {
+    const nextId = state.stories?.nextEpisodeId;
+    if (!nextId) return null;
+    const vols = state.stories?.volumes || [];
+    for (const v of vols) {
+      const found = (v.episodes || []).find((ep: any) => ep.episodeId === nextId);
+      if (found) return found;
+    }
+    return null;
+  })();
+  const hasNextStory = Boolean(
+    nextEpObj && (!nextEpObj.requireNetWorth || (state.player?.netWorth || 0) >= nextEpObj.requireNetWorth),
+  );
   const hasHomeNotice = !state.player?.signedInToday;
 
   return (
     <nav
-      className={`relative shrink-0 z-30 pb-[max(0.35rem,env(safe-area-inset-bottom))] transition-all duration-400 ${
-        hidden ? 'opacity-0 translate-y-full pointer-events-none' : 'opacity-100 translate-y-0'
+      className={`relative shrink-0 z-30 transition-all duration-300 ${
+        hidden
+          ? 'max-h-0 !pb-0 opacity-0 translate-y-full overflow-hidden pointer-events-none'
+          : 'max-h-[96px] pb-[max(0.35rem,env(safe-area-inset-bottom))] opacity-100 translate-y-0'
       }`}
       style={{
         background:

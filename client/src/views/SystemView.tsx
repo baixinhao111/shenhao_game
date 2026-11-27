@@ -1,23 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import {
   ArrowLeft,
-  Briefcase,
-  CalendarCheck,
-  Check,
+  Download,
+  KeyRound,
   LogOut,
+  Music,
+  Settings,
   Shield,
-  Sparkles,
   Volume2,
   VolumeX,
-  Zap,
+  Wind,
+  X,
 } from 'lucide-react';
 import { AnimatedNumber } from '../components/AnimatedNumber';
-import { PortraitAvatar } from '../components/PortraitAvatar';
-import { GameIcon, OrnateCorners } from '../components/GameIcon';
+import { GameIcon, OrnateCorners, type GameIconName } from '../components/GameIcon';
 import { PlayerEmblem } from '../components/TopBar';
 import { apiRequest } from '../lib/api';
+import { isAmbienceEnabled, isBgmEnabled, toggleAmbience, toggleBgm } from '../lib/bgm';
 import { formatMoney } from '../lib/format';
-import { isSoundMuted, playCoinBurst, playSystemPing, playTap, toggleSoundMute } from '../lib/sound';
+import { isSoundMuted, playSystemPing, playTap, toggleSoundMute } from '../lib/sound';
 import { useGameStore, type ProfileSubTab } from '../store/useGameStore';
 
 export const SystemView: React.FC = () => {
@@ -35,6 +36,11 @@ export const SystemView: React.FC = () => {
 
   const [subTab, setSubTab] = useState<ProfileSubTab>(profileTab || 'tasks');
   const [muted, setMuted] = useState(isSoundMuted());
+  const [bgmOn, setBgmOn] = useState(isBgmEnabled());
+  const [ambOn, setAmbOn] = useState(isAmbienceEnabled());
+  const [showSettings, setShowSettings] = useState(false);
+  const [oldPwd, setOldPwd] = useState('');
+  const [newPwd, setNewPwd] = useState('');
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -43,10 +49,81 @@ export const SystemView: React.FC = () => {
 
   if (!state) return null;
   const { player, user, dailyTasks, skills, mallItems } = state;
+  const achievements: any[] = state.achievements || [];
+  const unclaimedAchCount = Number(state.unclaimedAchievementCount || 0);
+  const completedEps: string[] = state.stories?.completedEpisodes || [];
   const protagonistSrc =
-    (state.stories?.completedEpisodes?.length || 0) >= 2
+    completedEps.includes('ep_003') || completedEps.length >= 3
       ? '/assets/characters/protagonist.png'
       : '/assets/characters/protagonist_early.png';
+
+  const claimAchievement = async (achievementId: string) => {
+    setBusy(true);
+    try {
+      const res = await apiRequest('/achievements/claim', { body: { achievementId } });
+      applyServerState(res.state);
+      if (res.rewardCash > 0) flyReward(res.rewardCash);
+      else playSystemPing();
+      notifyTop('system', '成就达成', res.titleBadge ? `获得专属称号「${res.titleBadge}」` : '奖励已到账');
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const equipTitle = async (achievementId: string) => {
+    setBusy(true);
+    try {
+      const res = await apiRequest('/achievements/equip-title', { body: { achievementId } });
+      applyServerState(res.state);
+      playSystemPing();
+      notifyTop('system', '称号已更新', res.message);
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!oldPwd || !newPwd) return;
+    setBusy(true);
+    try {
+      const res = await apiRequest('/auth/change-password', { body: { oldPassword: oldPwd, newPassword: newPwd } });
+      setOldPwd('');
+      setNewPwd('');
+      playSystemPing();
+      notifyTop('system', '密码已修改', res.message || '下次登录请使用新密码');
+    } catch (err: any) {
+      showError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const handleExportSave = async () => {
+    setBusy(true);
+    try {
+      const data = await apiRequest('/account/export');
+      const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `tianshu_save_${user.username || 'player'}.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      playSystemPing();
+      notifyTop('system', '存档已导出', 'JSON 备份文件已开始下载');
+    } catch (err: any) {
+      showError(err.message);
+    } finally {
+      setBusy(false);
+    }
+  };
 
   const signIn = async () => {
     setBusy(true);
@@ -125,11 +202,23 @@ export const SystemView: React.FC = () => {
 
         <span className="font-editorial text-[17px] font-black tracking-[0.3em] gold-gradient-text">个人档案</span>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              playTap();
+              setShowSettings((v) => !v);
+            }}
+            className={`p-1.5 transition ${showSettings ? 'text-[#FFE7B0]' : 'text-[#A3AAC2] hover:text-[#F6DDA4]'}`}
+            title="视听与账号设置"
+            aria-label="视听与账号设置"
+          >
+            <Settings className="w-4 h-4" />
+          </button>
           <button
             onClick={() => setMuted(toggleSoundMute())}
             className="p-1.5 text-[#A3AAC2] hover:text-[#F6DDA4]"
             title={muted ? '开启音效' : '静音'}
+            aria-label={muted ? '开启音效' : '静音'}
           >
             {muted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#E2BD72]" />}
           </button>
@@ -141,6 +230,7 @@ export const SystemView: React.FC = () => {
               }}
               className="p-1.5 text-[#E2BD72] hover:text-[#F6DDA4]"
               title="服主控制台"
+              aria-label="服主控制台"
             >
               <Shield className="w-4 h-4" />
             </button>
@@ -149,6 +239,7 @@ export const SystemView: React.FC = () => {
             onClick={logout}
             className="p-1.5 text-[#8B93AD] hover:text-[#E88CA1]"
             title="退出账号"
+            aria-label="退出账号"
           >
             <LogOut className="w-4 h-4" />
           </button>
@@ -156,6 +247,105 @@ export const SystemView: React.FC = () => {
       </header>
 
       <div className="flex-1 overflow-y-auto no-scrollbar px-3 py-4 space-y-4 deco-texture">
+        {/* Audio & Account Security Settings Panel */}
+        {showSettings && (
+          <section className="panel-elevated rounded-[12px] p-3.5 space-y-3.5 border border-[#E2BD72]/40">
+            <div className="flex items-center justify-between border-b border-white/[0.08] pb-2">
+              <span className="font-editorial text-[15px] font-black gold-gradient-text">视听与账号设置</span>
+              <button onClick={() => setShowSettings(false)} className="text-[#8B93AD] hover:text-white">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-2">
+              <div className="text-[11px] tracking-[0.2em] text-[#8B93AD]">声音氛围</div>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  onClick={() => {
+                    playTap();
+                    setBgmOn(toggleBgm());
+                  }}
+                  className={`rounded-[8px] px-2 py-2 border text-center transition ${
+                    bgmOn
+                      ? 'bg-[#251C0C]/90 border-[#E2BD72]/60 text-[#FFE7B0]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                  }`}
+                >
+                  <Music className="w-4 h-4 mx-auto mb-1" />
+                  <div className="text-[11px] font-bold">背景音乐</div>
+                  <div className="text-[10px] opacity-80">{bgmOn ? '开启' : '关闭'}</div>
+                </button>
+                <button
+                  onClick={() => {
+                    playTap();
+                    setAmbOn(toggleAmbience());
+                  }}
+                  className={`rounded-[8px] px-2 py-2 border text-center transition ${
+                    ambOn && bgmOn
+                      ? 'bg-[#08222E]/90 border-[#63E6F2]/55 text-[#B9F6FB]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                  }`}
+                >
+                  <Wind className="w-4 h-4 mx-auto mb-1" />
+                  <div className="text-[11px] font-bold">雨声江风</div>
+                  <div className="text-[10px] opacity-80">{ambOn ? '开启' : '关闭'}</div>
+                </button>
+                <button
+                  onClick={() => setMuted(toggleSoundMute())}
+                  className={`rounded-[8px] px-2 py-2 border text-center transition ${
+                    !muted
+                      ? 'bg-[#251C0C]/90 border-[#E2BD72]/60 text-[#FFE7B0]'
+                      : 'bg-[#080D1D]/80 border-white/10 text-[#7F88A6]'
+                  }`}
+                >
+                  {muted ? <VolumeX className="w-4 h-4 mx-auto mb-1" /> : <Volume2 className="w-4 h-4 mx-auto mb-1" />}
+                  <div className="text-[11px] font-bold">交互音效</div>
+                  <div className="text-[10px] opacity-80">{muted ? '静音' : '开启'}</div>
+                </button>
+              </div>
+            </div>
+
+            <form onSubmit={handleChangePassword} className="space-y-2 pt-1 border-t border-white/[0.07]">
+              <div className="text-[11px] tracking-[0.2em] text-[#8B93AD] flex items-center gap-1">
+                <KeyRound className="w-3.5 h-3.5 text-[#E2BD72]" /> 修改登录密码
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <input
+                  type="password"
+                  value={oldPwd}
+                  onChange={(e) => setOldPwd(e.target.value)}
+                  placeholder="输入原密码"
+                  className="rounded-[6px] bg-[#070B18] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/60"
+                />
+                <input
+                  type="password"
+                  value={newPwd}
+                  onChange={(e) => setNewPwd(e.target.value)}
+                  placeholder="新密码（4位以上）"
+                  className="rounded-[6px] bg-[#070B18] border border-white/12 px-2.5 py-1.5 text-xs text-white outline-none focus:border-[#E2BD72]/60"
+                />
+              </div>
+              <div className="flex gap-2">
+                <button
+                  type="submit"
+                  disabled={busy || !oldPwd || newPwd.length < 4}
+                  className="flex-1 btn-brass py-1.5 text-xs font-editorial disabled:opacity-45"
+                >
+                  确认修改密码
+                </button>
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void handleExportSave()}
+                  className="btn-navy px-3 py-1.5 text-xs font-editorial flex items-center gap-1"
+                >
+                  <Download className="w-3.5 h-3.5 text-[#E2BD72]" /> 导出存档
+                </button>
+              </div>
+            </form>
+          </section>
+        )}
+
         {/* Dossier card */}
         <section className="relative panel-brass rounded-[12px] px-4 pt-4 pb-3.5 space-y-3.5">
           <OrnateCorners size={22} inset={-5} />
@@ -163,9 +353,24 @@ export const SystemView: React.FC = () => {
             <PlayerEmblem src={protagonistSrc} level={player.sysLevel} size={64} />
             <div className="min-w-0 flex-1">
               <h2 className="font-editorial text-[22px] font-black gold-gradient-text truncate leading-tight">{user.nickname}</h2>
-              <div className="flex items-center gap-1 mt-0.5">
-                <GameIcon name="crown" size={16} shadow={false} />
-                <span className="text-[12px] text-[#F6DDA4] font-bold tracking-wider">{player.tier.name}</span>
+              <div className="flex items-center gap-1.5 flex-wrap mt-0.5">
+                <span className="inline-flex items-center gap-1">
+                  <GameIcon name="crown" size={16} shadow={false} />
+                  <span className="text-[12px] text-[#F6DDA4] font-bold tracking-wider">{player.tier.name}</span>
+                </span>
+                {user.equippedTitle?.titleBadge && (
+                  <span
+                    className={`px-1.5 py-[1px] rounded-sm text-[10px] font-bold border ${
+                      user.equippedTitle.titleTone === 'cyan'
+                        ? 'bg-[#072330]/85 border-[#63E6F2]/55 text-[#B9F6FB]'
+                        : user.equippedTitle.titleTone === 'rose'
+                          ? 'bg-[#361124]/85 border-[#F0789A]/55 text-[#FFC4D3]'
+                          : 'bg-[#2B1F0B]/85 border-[#E2BD72]/55 text-[#FFE7B0]'
+                    }`}
+                  >
+                    {user.equippedTitle.titleBadge}
+                  </span>
+                )}
               </div>
             </div>
             <button
@@ -222,11 +427,12 @@ export const SystemView: React.FC = () => {
         </section>
 
         {/* Segmented tabs */}
-        <div className="grid grid-cols-3 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
+        <div className="grid grid-cols-4 gap-1 p-1 rounded-full bg-[#070B18]/90 border border-[#E2BD72]/25">
           {[
-            { id: 'tasks', label: '今日日程', icon: 'task' as const },
-            { id: 'skills', label: '能力进修', icon: 'skill' as const },
-            { id: 'mall', label: '积分补给', icon: 'mall' as const },
+            { id: 'tasks', label: '日程', icon: 'task' as const },
+            { id: 'achievements', label: '成就', icon: 'medal' as const },
+            { id: 'skills', label: '进修', icon: 'skill' as const },
+            { id: 'mall', label: '补给', icon: 'mall' as const },
           ].map(({ id, label, icon }) => (
             <button
               key={id}
@@ -235,13 +441,118 @@ export const SystemView: React.FC = () => {
                 playTap();
                 setSubTab(id as ProfileSubTab);
               }}
-              className="tab-chip !px-2 !py-1 flex items-center justify-center gap-1 font-editorial"
+              className="relative tab-chip !px-1.5 !py-1 flex items-center justify-center gap-1 font-editorial text-[12px]"
             >
-              <GameIcon name={icon} size={20} shadow={false} />
-              {label}
+              <GameIcon name={icon} size={18} shadow={false} />
+              <span>{label}</span>
+              {id === 'achievements' && unclaimedAchCount > 0 && <span className="red-dot top-0.5 right-1" />}
             </button>
           ))}
         </div>
+
+        {subTab === 'achievements' && (
+          <div className="space-y-2.5">
+            <div className="panel-arch rounded-[10px] px-3 py-2 flex items-center justify-between gap-2 text-xs">
+              <span className="text-[#C3C9DC]">
+                已达成 <span className="font-num text-[#FFE7B0] font-bold">{achievements.filter((a) => a.unlocked).length}</span> / {achievements.length}
+              </span>
+              {user.equippedTitle?.titleBadge ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-[#F6DDA4] text-[11px]">佩戴中：{user.equippedTitle.titleBadge}</span>
+                  <button
+                    disabled={busy}
+                    onClick={() => void equipTitle('')}
+                    className="text-[10.5px] text-[#929AB4] underline hover:text-white"
+                  >
+                    卸下
+                  </button>
+                </div>
+              ) : (
+                <span className="text-[11px] text-[#7F88A6]">领取成就后可佩戴专属称号</span>
+              )}
+            </div>
+
+            {[...achievements]
+              .sort((a, b) => {
+                const rank = (x: any) => (x.unlocked && !x.claimed ? 0 : x.claimed ? 1 : 2);
+                return rank(a) - rank(b);
+              })
+              .map((ach: any) => {
+                const ready = ach.unlocked && !ach.claimed;
+                const ratio = Math.min(100, (Number(ach.progress || 0) / Math.max(1, Number(ach.target || 1))) * 100);
+                const fmtVal = (v: number) => (ach.statKey === 'netWorth' ? formatMoney(v) : String(v));
+                const iconName = (ach.icon || 'medal') as GameIconName;
+                const badgeCls =
+                  ach.titleTone === 'cyan'
+                    ? 'bg-[#072330]/85 border-[#63E6F2]/50 text-[#B9F6FB]'
+                    : ach.titleTone === 'rose'
+                      ? 'bg-[#361124]/85 border-[#F0789A]/50 text-[#FFC4D3]'
+                      : 'bg-[#2B1F0B]/85 border-[#E2BD72]/50 text-[#FFE7B0]';
+                return (
+                  <div
+                    key={ach.id}
+                    className={`rounded-[10px] px-3 py-2.5 flex items-center gap-2.5 ${ready ? 'panel-brass' : 'panel-arch'}`}
+                  >
+                    <GameIcon name={iconName} size={38} className={!ach.unlocked ? 'grayscale opacity-65' : ''} />
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className="text-[13px] font-editorial font-black text-[#FBF1D8]">{ach.name}</span>
+                        {ach.titleBadge && (
+                          <span className={`px-1.5 py-[0.5px] rounded-sm text-[9.5px] font-bold border ${badgeCls}`}>
+                            称号 · {ach.titleBadge}
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-[#A3AAC2] leading-snug">{ach.desc}</p>
+                      <div className="flex items-center gap-2">
+                        <div className="flex-1 bar-track !h-[5px]">
+                          <div className="bar-fill" style={{ width: `${ratio}%` }} />
+                        </div>
+                        <span className="font-num text-[10.5px] text-[#C3C9DC] shrink-0">
+                          {fmtVal(ach.progress)}/{fmtVal(ach.target)}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2.5 font-num text-[11px]">
+                        {ach.rewardCash > 0 && (
+                          <span className="flex items-center gap-0.5 text-[#FFE7B0]">
+                            <GameIcon name="cash" size={14} shadow={false} />+{formatMoney(ach.rewardCash)}
+                          </span>
+                        )}
+                        {ach.rewardPoints > 0 && (
+                          <span className="flex items-center gap-0.5 text-[#B9F6FB]">
+                            <GameIcon name="syspoint" size={14} shadow={false} />+{ach.rewardPoints}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="shrink-0">
+                      {ready ? (
+                        <button
+                          disabled={busy}
+                          onClick={() => void claimAchievement(ach.id)}
+                          className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-editorial"
+                        >
+                          领取
+                        </button>
+                      ) : ach.claimed ? (
+                        <button
+                          disabled={busy}
+                          onClick={() => void equipTitle(ach.equipped ? '' : ach.id)}
+                          className={`px-2.5 py-1.5 text-[11.5px] font-editorial ${
+                            ach.equipped ? 'btn-system' : 'btn-navy'
+                          }`}
+                        >
+                          {ach.equipped ? '佩戴中' : '佩戴'}
+                        </button>
+                      ) : (
+                        <span className="text-[11px] text-[#78809B] px-2">进行中</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        )}
 
         {subTab === 'tasks' && (
           <div className="space-y-2">
@@ -352,6 +663,7 @@ export const SystemView: React.FC = () => {
             {mallItems.map((item: any) => {
               const icon =
                 item.id === 'item_energy_drink' ? 'energy' : item.id === 'item_crit_charge' ? 'skill' : 'briefcase';
+              const chargeFull = item.id === 'item_crit_charge' && (player.critCharge || 0) >= 100;
               return (
                 <div key={item.id} className="panel-arch rounded-[10px] p-3 flex flex-col items-center text-center gap-1.5">
                   <div
@@ -363,11 +675,17 @@ export const SystemView: React.FC = () => {
                   <div className="text-[13px] font-editorial font-bold text-[#FBF1D8]">{item.name}</div>
                   <div className="text-[11px] text-[#A3AAC2] leading-snug min-h-[30px]">{item.desc}</div>
                   <button
-                    disabled={busy || player.sysPoints < item.costPoints}
+                    disabled={busy || chargeFull || player.sysPoints < item.costPoints}
                     onClick={() => buyMall(item.id)}
                     className="btn-system w-full py-1.5 text-[12.5px] flex items-center justify-center gap-1 font-num disabled:opacity-40"
                   >
-                    <GameIcon name="syspoint" size={16} shadow={false} /> {item.costPoints}
+                    {chargeFull ? (
+                      '蓄能已满'
+                    ) : (
+                      <>
+                        <GameIcon name="syspoint" size={16} shadow={false} /> {item.costPoints}
+                      </>
+                    )}
                   </button>
                 </div>
               );

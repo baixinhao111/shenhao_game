@@ -131,7 +131,7 @@ export const SystemAlertPanel: React.FC<AlertProps> = ({ node, typed, isTyping, 
       exit={{ opacity: 0 }}
       transition={{ duration: 0.18 }}
       onClick={onTap}
-      className="absolute inset-0 z-[35] flex items-center justify-center px-5 cursor-pointer"
+      className="absolute inset-0 z-[35] flex items-center justify-center px-5 pt-16 pb-6 cursor-pointer"
       style={{ background: 'radial-gradient(80% 60% at 50% 48%, rgba(4,20,34,0.55), rgba(2,6,14,0.82))' }}
     >
       <DingBurst gold={gold} />
@@ -183,16 +183,17 @@ export const SystemChoicePanel: React.FC<ChoiceProps> = ({ node, disabled, isUna
     animate={{ opacity: 1 }}
     exit={{ opacity: 0 }}
     transition={{ duration: 0.18 }}
-    className="absolute inset-0 z-[35] flex items-center justify-center px-4"
+    className="absolute inset-0 z-[35] flex items-center justify-center px-4 pt-16 pb-6"
     style={{ background: 'radial-gradient(80% 60% at 50% 50%, rgba(4,20,34,0.5), rgba(2,6,14,0.84))' }}
   >
     <DingBurst />
-    <motion.div {...unfold} className="relative w-full max-w-[370px] origin-center">
-      <HoloFrame className="px-4 pt-3.5 pb-4">
+    <motion.div {...unfold} className="relative w-full max-w-[370px] max-h-full origin-center">
+      <HoloFrame className="px-4 pt-3.5 pb-4 max-h-full flex flex-col">
         <HoloHeader kicker="天枢 · 请宿主抉择" title={node.title} />
-        <div className="relative space-y-2.5">
+        <div className="relative space-y-2.5 overflow-y-auto no-scrollbar max-h-[60vh] pr-0.5">
           {(node.options || []).map((opt, idx) => {
             const poor = isUnaffordable(opt);
+            const cashCost = opt.cost?.cash ?? opt.cashCost ?? 0;
             return (
               <motion.button
                 key={opt.id}
@@ -209,7 +210,11 @@ export const SystemChoicePanel: React.FC<ChoiceProps> = ({ node, disabled, isUna
                 <span className="holo-option-key">{String.fromCharCode(65 + idx)}</span>
                 <span className="flex-1 min-w-0 pt-[1px]">
                   <span className="block text-[14px] font-editorial font-bold text-[#F4FDFF] leading-[1.6]">{opt.label}</span>
-                  {poor && <span className="block text-[10.5px] text-[#FF8FA6] mt-0.5">资金不足</span>}
+                  {poor && (
+                    <span className="block text-[10.5px] text-[#FF8FA6] mt-0.5">
+                      资金不足{cashCost > 0 ? `（需 ${formatMoney(cashCost)}，可点左上返回筹款）` : ''}
+                    </span>
+                  )}
                 </span>
               </motion.button>
             );

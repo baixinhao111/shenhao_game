@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { Suspense, lazy, useEffect, useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AuthScreen } from './components/AuthScreen';
 import { BottomNav } from './components/BottomNav';
@@ -7,13 +7,23 @@ import { RewardFlyLayer } from './components/RewardFly';
 import { MinigameHost } from './minigames/MinigameHost';
 import { TopBar } from './components/TopBar';
 import { MiniStoryOverlay } from './components/VisualNovelTheater';
+import { setBgmMood } from './lib/bgm';
 import { useGameStore } from './store/useGameStore';
-import { AssetsView } from './views/AssetsView';
-import { CityMapView } from './views/CityMapView';
-import { HeroinesView } from './views/HeroinesView';
 import { HomeView } from './views/HomeView';
-import { StoryView } from './views/StoryView';
-import { SystemView } from './views/SystemView';
+
+const AssetsView = lazy(() => import('./views/AssetsView').then((m) => ({ default: m.AssetsView })));
+const CityMapView = lazy(() => import('./views/CityMapView').then((m) => ({ default: m.CityMapView })));
+const HeroinesView = lazy(() => import('./views/HeroinesView').then((m) => ({ default: m.HeroinesView })));
+const StoryView = lazy(() => import('./views/StoryView').then((m) => ({ default: m.StoryView })));
+const SystemView = lazy(() => import('./views/SystemView').then((m) => ({ default: m.SystemView })));
+
+const ViewFallback: React.FC = () => (
+  <div className="h-full w-full bg-[#0B1122] flex items-center justify-center">
+    <div className="w-24 bar-track">
+      <div className="bar-fill w-1/3 animate-[loadSlide_1.2s_ease-in-out_infinite]" />
+    </div>
+  </div>
+);
 
 export function App() {
   const {
@@ -52,6 +62,23 @@ export function App() {
     return () => clearInterval(id);
   }, [token, refreshState]);
 
+  // Dynamic Web Audio BGM scene mood sync
+  useEffect(() => {
+    if (!token || !state) {
+      setBgmMood('lounge');
+      return;
+    }
+    if (activeMinigame) {
+      setBgmMood('arcade');
+    } else if (activeDeal || activeStoryEpisodeId) {
+      setBgmMood('tension');
+    } else if (activeMiniStory || activeChatHeroineId || activeTab === 'heroines') {
+      setBgmMood('romance');
+    } else {
+      setBgmMood('lounge');
+    }
+  }, [token, state, activeMinigame, activeDeal, activeStoryEpisodeId, activeMiniStory, activeChatHeroineId, activeTab]);
+
   const hideChrome =
     Boolean(activeStoryEpisodeId) || Boolean(activeChatHeroineId) || Boolean(activeMiniStory) || Boolean(activeMinigame) || Boolean(activeDeal);
   const isHome = activeTab === 'home';
@@ -86,11 +113,13 @@ export function App() {
                   transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute inset-0"
                 >
-                  {activeTab === 'home' && <HomeView pureArtMode={pureArtMode} onTogglePureArt={setPureArtMode} />}
-                  {activeTab === 'map' && <CityMapView />}
-                  {activeTab === 'story' && <StoryView />}
-                  {activeTab === 'assets' && <AssetsView />}
-                  {activeTab === 'heroines' && <HeroinesView />}
+                  <Suspense fallback={<ViewFallback />}>
+                    {activeTab === 'home' && <HomeView pureArtMode={pureArtMode} onTogglePureArt={setPureArtMode} />}
+                    {activeTab === 'map' && <CityMapView />}
+                    {activeTab === 'story' && <StoryView />}
+                    {activeTab === 'assets' && <AssetsView />}
+                    {activeTab === 'heroines' && <HeroinesView />}
+                  </Suspense>
                 </motion.div>
               </AnimatePresence>
 
@@ -104,7 +133,9 @@ export function App() {
                     transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
                     className="absolute inset-0 z-30 bg-[#0B1122]"
                   >
-                    <SystemView />
+                    <Suspense fallback={<ViewFallback />}>
+                      <SystemView />
+                    </Suspense>
                   </motion.div>
                 )}
               </AnimatePresence>

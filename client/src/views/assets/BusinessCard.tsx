@@ -12,8 +12,16 @@ import { playTap } from '../../lib/sound';
  *  - 升级：按钮上就写清「下一级 +¥/时」，升级成功后卡片金光一闪、等级章弹起、收益数字飘起
  */
 
+export interface BizEventOutcome {
+  resultText: string;
+  cashReward: number;
+  sysPoints: number;
+  affectionGain: number;
+}
+
 export interface BizCardProps {
   b: any;
+  cash: number;
   heroines: any[];
   tierName: (tier: number) => string;
   locked: boolean;
@@ -22,6 +30,7 @@ export interface BizCardProps {
   onBuy: () => void;
   onDeal: () => void;
   onAssign: (heroineId: string) => void;
+  onResolveEvent?: (eventId: string, choiceId: string) => Promise<BizEventOutcome | null>;
 }
 
 const VaultMeter: React.FC<{ hours: number; pending: number }> = ({ hours, pending }) => {
@@ -49,10 +58,14 @@ const VaultMeter: React.FC<{ hours: number; pending: number }> = ({ hours, pendi
   );
 };
 
-export const BusinessCard: React.FC<BizCardProps> = ({ b, heroines, tierName, locked, busy, onUpgrade, onBuy, onDeal, onAssign }) => {
+export const BusinessCard: React.FC<BizCardProps> = ({ b, cash, heroines, tierName, locked, busy, onUpgrade, onBuy, onDeal, onAssign, onResolveEvent }) => {
+  const canAffordBuy = cash >= (b.buyCost || 0);
+  const canAffordUpgrade = cash >= (b.upgradeCost || 0);
   const [pulse, setPulse] = useState(0);
   const [lastLevel, setLastLevel] = useState(b.level);
   const [sealed, setSealed] = useState(0);
+  const [eventOpen, setEventOpen] = useState(false);
+  const [eventOutcome, setEventOutcome] = useState<BizEventOutcome | null>(null);
 
   // level went up / just acquired → celebrate on the card itself
   useEffect(() => {
@@ -154,10 +167,110 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, heroines, tierName, lo
           <>
             <VaultMeter hours={b.pendingHours || 0} pending={b.pendingIncome || 0} />
 
+            {/* Business Operating Event */}
+            {b.activeEvent && onResolveEvent && (
+              <div className="rounded-[8px] border border-[#E2BD72]/45 bg-[#121933]/90 overflow-hidden">
+                <button
+                  type="button"
+                  onClick={() => {
+                    playTap();
+                    setEventOpen((v) => !v);
+                  }}
+                  className="w-full px-2.5 py-2 flex items-center justify-between gap-2 text-left"
+                >
+                  <div className="flex items-center gap-1.5 min-w-0">
+                    <span className="w-2 h-2 rounded-full bg-[#FFE7B0] animate-pulse shrink-0" />
+                    <span className="text-[11.5px] font-editorial font-black text-[#FFE7B0] truncate">
+                      突发经营事件 · {b.activeEvent.title}
+                    </span>
+                  </div>
+                  <span className="text-[10.5px] text-[#C3C9DC] shrink-0">{eventOpen ? '收起 ▴' : '决策 ▾'}</span>
+                </button>
+                <AnimatePresence>
+                  {eventOpen && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      className="overflow-hidden border-t border-white/[0.07] px-2.5 pb-2.5 pt-2 space-y-2"
+                    >
+                      <p className="text-[11.5px] text-[#C8CEE0] leading-relaxed">{b.activeEvent.desc}</p>
+                      <div className="space-y-1.5">
+                        {(b.activeEvent.choices || []).map((c: any) => {
+                          const isHeroineChoice = c.kind === 'heroine';
+                          const isTianshuChoice = c.kind === 'tianshu';
+                          const reqHeroine = c.requireHeroine
+                            ? heroines.find((h) => h.id === c.requireHeroine)
+                            : null;
+                          const heroineReady = !isHeroineChoice || b.assignedHeroineId === c.requireHeroine;
+                          const estCash = Math.round(Math.max(15000, Number(b.currentIncomePerHour || 20000)) * Number(c.incomeHoursReward || 3));
+                          return (
+                            <button
+                              key={c.id}
+                              disabled={busy || !heroineReady}
+                              onClick={async () => {
+                                playTap();
+                                const res = await onResolveEvent(b.activeEvent.id, c.id);
+                                if (res) {
+                                  setEventOpen(false);
+                                  setEventOutcome(res);
+                                  setTimeout(() => setEventOutcome(null), 6500);
+                                }
+                              }}
+                              className={`w-full rounded-[6px] px-2.5 py-2 text-left border transition active:scale-[0.98] disabled:opacity-45 ${
+                                isTianshuChoice
+                                  ? 'bg-[#07202D]/85 border-[#63E6F2]/45 hover:border-[#63E6F2]'
+                                  : isHeroineChoice
+                                    ? 'bg-[#2C1020]/85 border-[#F0789A]/45 hover:border-[#F0789A]'
+                                    : 'bg-[#0A1024]/85 border-white/12 hover:border-[#E2BD72]/50'
+                              }`}
+                            >
+                              <div className="flex items-center justify-between gap-2">
+                                <span className={`text-[12px] font-bold ${isTianshuChoice ? 'text-[#B9F6FB]' : isHeroineChoice ? 'text-[#FFC4D3]' : 'text-[#FBF1D8]'}`}>
+                                  {c.label}
+                                </span>
+                                <span className="font-num text-[11px] text-[#7BE0A8] shrink-0">+{formatMoney(estCash)}</span>
+                              </div>
+                              <div className="flex items-center justify-between gap-2 mt-1 text-[10px]">
+                                <span className="text-[#929AB4]">
+                                  {c.costEnergy > 0 ? `精力 -${c.costEnergy}` : ''}
+                                  {c.costSysPoints > 0 ? `${c.costEnergy > 0 ? ' · ' : ''}积分 -${c.costSysPoints}` : ''}
+                                  {isHeroineChoice && !heroineReady
+                                    ? ` · 需委派${reqHeroine?.name || '契合红颜'}坐镇`
+                                    : isHeroineChoice
+                                      ? ' · 红颜坐镇加成'
+                                      : ''}
+                                </span>
+                                <span className="text-[#FFE7B0]">
+                                  {c.affectionGain ? `好感 +${c.affectionGain}` : ''}
+                                  {c.sysPoints ? `${c.affectionGain ? ' · ' : ''}积分 +${c.sysPoints}` : ''}
+                                </span>
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {eventOutcome && (
+              <div className="rounded-[8px] px-2.5 py-2 bg-[#0B2219]/90 border border-[#7BE0A8]/45 text-[11.5px] space-y-1">
+                <div className="text-[#DDFCE9] leading-relaxed">{eventOutcome.resultText}</div>
+                <div className="font-num text-[11px] text-[#7BE0A8] flex items-center gap-2.5">
+                  <span>+{formatMoney(eventOutcome.cashReward)}</span>
+                  {eventOutcome.sysPoints > 0 && <span className="text-[#B9F6FB]">积分 +{eventOutcome.sysPoints}</span>}
+                  {eventOutcome.affectionGain > 0 && <span className="text-[#FFB3C6]">好感 +{eventOutcome.affectionGain}</span>}
+                </div>
+              </div>
+            )}
+
             {heroines.length > 0 && (
               <div className="flex items-center gap-2">
                 <span className="text-[10.5px] text-[#8B93AD] shrink-0">委派</span>
-                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pt-0.5 pb-2">
                   {heroines.map((h) => {
                     const on = h.id === b.assignedHeroineId;
                     const fit = b.preferredHeroine === h.id;
@@ -200,7 +313,7 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, heroines, tierName, lo
               <button
                 disabled={busy}
                 onClick={() => void onUpgrade()}
-                className="btn-brass shrink-0 px-3.5 py-2 text-[12.5px] font-num flex items-center gap-1"
+                className={`${canAffordUpgrade ? 'btn-brass' : 'btn-navy opacity-70'} shrink-0 px-3.5 py-2 text-[12.5px] font-num flex items-center gap-1`}
               >
                 <GameIcon name="cash" size={16} shadow={false} /> 升级 {formatMoney(b.upgradeCost)}
               </button>
@@ -222,7 +335,11 @@ export const BusinessCard: React.FC<BizCardProps> = ({ b, heroines, tierName, lo
                     谈判
                   </button>
                 )}
-                <button disabled={busy || locked} onClick={onBuy} className="gold-btn-shimmer px-3 py-1.5 text-[12px] font-num">
+                <button
+                  disabled={busy || locked}
+                  onClick={onBuy}
+                  className={`${locked || !canAffordBuy ? 'btn-navy opacity-70' : 'gold-btn-shimmer'} px-3 py-1.5 text-[12px] font-num disabled:opacity-45`}
+                >
                   {locked ? '未解锁' : `全款 ${formatMoney(b.buyCost)}`}
                 </button>
               </div>

@@ -48,10 +48,26 @@ export const RaceGame: React.FC = () => {
   const segStartRef = useRef(0);
   const lockedRef = useRef(false);
   const bannerRef = useRef<HTMLDivElement>(null);
+  const timersRef = useRef<Array<ReturnType<typeof setTimeout>>>([]);
+
+  const clearTimers = () => {
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+  };
+  const later = (fn: () => void, ms: number) => {
+    const id = setTimeout(() => {
+      timersRef.current = timersRef.current.filter((t) => t !== id);
+      fn();
+    }, ms);
+    timersRef.current.push(id);
+  };
+
+  useEffect(() => () => clearTimers(), []);
 
   const equipped = state?.assets?.find((a: any) => a.id === state?.player?.equippedCarId);
 
   const start = async (stake: number) => {
+    clearTimers();
     const res = await call<any>('/mg/race/start', { stake });
     if (!res) return;
     setSession(res.session);
@@ -65,7 +81,7 @@ export const RaceGame: React.FC = () => {
     lockedRef.current = true;
     setIntro(true);
     setZoneCenter(0.3 + Math.random() * 0.4);
-    setTimeout(() => {
+    later(() => {
       setIntro(false);
       lockedRef.current = false;
       segStartRef.current = performance.now();
@@ -105,11 +121,11 @@ export const RaceGame: React.FC = () => {
       playTap();
       setFlash({ text: acc > 0 ? '偏了' : '失误', tone: 'red' });
     }
-    setTimeout(() => setFlash(null), 700);
+    later(() => setFlash(null), 700);
     if (nextHits.length >= session.segments.length) {
-      setTimeout(() => void finish(nextHits), 800);
+      later(() => void finish(nextHits), 800);
     } else {
-      setTimeout(() => {
+      later(() => {
         setSeg((s) => s + 1);
         beginSegment();
       }, 800);
@@ -140,8 +156,10 @@ export const RaceGame: React.FC = () => {
         showError('比赛进行中，再按一次返回将直接判负');
         return;
       }
+      clearTimers();
       await finish([...hits, ...Array(Math.max(0, session.segments.length - hits.length)).fill(0)]);
     }
+    clearTimers();
     closeMinigame();
   };
 
@@ -161,7 +179,7 @@ export const RaceGame: React.FC = () => {
             <img
               src="/assets/characters/zhao_tianyu.png"
               alt=""
-              className="absolute right-[-8%] bottom-[-10px] h-[230px] object-contain object-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.8)]"
+              className="absolute right-[-8%] bottom-[-10px] h-[230px] object-contain object-bottom sprite-fade-bottom drop-shadow-[0_12px_20px_rgba(0,0,0,0.8)]"
             />
           </div>
           <Speech who="赵天宇" tone="rose" text="开这种车也敢来外滩？彩头你定，我奉陪。" />

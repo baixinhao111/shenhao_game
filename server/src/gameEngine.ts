@@ -1,5 +1,18 @@
 import { getContent } from './contentLoader.js';
 import { execute, getDb, getGmSetting, persistDb, queryAll, queryOne } from './db.js';
+import {
+  buildHeroineBondsSummary,
+  getActiveShuraTrigger,
+  getBondNetWorthBonus,
+  getUnlockedOutfitIds,
+  resolveHeroineActivePortrait,
+} from './bonds.js';
+import {
+  buildAchievementsView,
+  buildActiveBusinessEventsMap,
+  getEquippedTitleInfo,
+  getWeeklyCruiseTheme,
+} from './empire.js';
 
 export const DAILY_POKE_LIMIT = 3;
 
@@ -363,8 +376,9 @@ export function computePortfolioAndTier(userId: number) {
     if (def) assetValuation += def.valuation || 0;
   }
 
+  const bondNetWorthBonus = getBondNetWorthBonus(userId);
   const rawNetWorth = state.cash + propValuation + bizValuation + assetValuation + heroineAffectionSum * 5000;
-  const netWorth = Math.round(rawNetWorth * (1 + setNetWorthBonus + heroineNetWorthBonus));
+  const netWorth = Math.round(rawNetWorth * (1 + setNetWorthBonus + heroineNetWorthBonus + bondNetWorthBonus));
 
   // Determine social tier
   let tierInfo = content.map.tiers[0];
@@ -385,6 +399,7 @@ export function computePortfolioAndTier(userId: number) {
     incomePerHour: Math.round(rentPerHourTotal + bizIncomePerHourTotal),
     bizDetails,
     pendingIncome: Math.round(pendingRent + pendingBizIncome),
+    incomeMult: 1 + skills.incomePct + setIncomeBonus,
     critBonusPct: skills.critRatePct + setCritBonus + heroineCritBonus,
     critMultBonus: skills.critMultBonus,
   };
@@ -547,6 +562,16 @@ export function buildFullGameState(userId: number) {
         return false;
       }
     });
+    const activeVisual = resolveHeroineActivePortrait(userId, h);
+    const unlockedOutfits = new Set(getUnlockedOutfitIds(userId, h.id));
+    const outfits = (h.outfits || [{ id: 'default', name: '常服', portrait: h.portrait, unlockDesc: '初始常服' }]).map(
+      (o: any) => ({
+        ...o,
+        unlocked: unlockedOutfits.has(o.id),
+        equipped: activeVisual.outfitId === o.id,
+      }),
+    );
+    const bonds = buildHeroineBondsSummary(userId, h.id, Number(row.affection || 0), Boolean(row.unlocked));
     return {
       id: h.id,
       name: h.name,
@@ -554,7 +579,12 @@ export function buildFullGameState(userId: number) {
       age: h.age,
       archetype: h.archetype,
       avatar: h.avatar,
-      portrait: h.portrait,
+      portrait: activeVisual.portrait,
+      basePortrait: h.portrait,
+      equippedOutfit: activeVisual.outfitId,
+      outfits,
+      bonds,
+      hasAvailableBond: bonds.some((b: any) => b.available),
       accentColor: h.accentColor,
       unlockHint: h.unlockHint,
       synergyDesc: h.synergyDesc,
@@ -583,12 +613,13 @@ export function buildFullGameState(userId: number) {
       customName: owned?.custom_name || '',
       displayName: owned?.custom_name || p.name,
       currentValuation: Math.round(p.baseValuation * (1 + (renoLv - 1) * 0.25)),
-      currentRentPerHour: Math.round(p.rentPerHour * (1 + (renoLv - 1) * 0.25)),
+      currentRentPerHour: Math.round(p.rentPerHour * (1 + (renoLv - 1) * 0.25) * portfolio.incomeMult),
       residents,
       renovateCost: Math.round(Math.max(250000, p.price * 0.25) * renoLv * (1 - skills.upgradeDiscountPct)),
     };
   });
 
+  const activeBizEvents = buildActiveBusinessEventsMap(userId, ownedBiz);
   const businesses = content.businesses.map((b) => {
     const owned = ownedBiz.find((o) => o.business_id === b.id);
     const lv = owned?.level || 0;
@@ -610,6 +641,7 @@ export function buildFullGameState(userId: number) {
       pendingIncome: det?.pending || 0,
       pendingHours: det ? Math.round(det.hours * 10) / 10 : 0,
       upgradeCost,
+      activeEvent: owned ? activeBizEvents[b.id] || null : null,
     };
   });
 
@@ -649,6 +681,7 @@ export function buildFullGameState(userId: number) {
 
   // Active events (can be toggled by GM)
   const eventToggle = getGmSetting('event_cruise_01_active');
+  const cruiseWeeklyTheme = getWeeklyCruiseTheme();
   const events = content.events.map((ev) => {
     const active = ev.id === 'event_cruise_01' && eventToggle !== null ? eventToggle === 'true' : ev.active;
     const row = queryOne<any>('SELECT * FROM player_events WHERE user_id = ? AND event_id = ?', [userId, ev.id]);
@@ -662,8 +695,17 @@ export function buildFullGameState(userId: number) {
       tokens: row?.tokens || 0,
       playsToday: row && row.daily_date === todayKey() ? row.plays_today : 0,
       redeemed,
+      weeklyTheme: ev.id === 'event_cruise_01' ? cruiseWeeklyTheme : undefined,
     };
   });
+
+  const achievements = buildAchievementsView(userId, {
+    netWorth,
+    episodesCompleted: completedEpisodes.length,
+    ownedAssetsCount: ownedAssets.length,
+  });
+  const equippedTitle = getEquippedTitleInfo(userId);
+  const shuraEvent = getActiveShuraTrigger(userId, heroinesRows, state, ownedProps);
 
   // Next playable story episode
   const allEpisodes = content.stories.volumes.flatMap((v: any) =>
@@ -702,7 +744,7 @@ export function buildFullGameState(userId: number) {
   }
 
   return {
-    user,
+    user: { ...user, equippedTitle },
     timePeriod: period,
     timeLabel: getTimePeriodLabel(),
     homeSummary: {
@@ -739,6 +781,7 @@ export function buildFullGameState(userId: number) {
       cityName: content.map.cityName,
       subtitle: content.map.subtitle,
       mapImage: content.map.mapImage,
+      tiers: content.map.tiers,
       districts: content.map.districts.map((d: any) => ({
         ...d,
         unlocked: tierInfo.tier >= d.unlockTier,
@@ -776,6 +819,10 @@ export function buildFullGameState(userId: number) {
     })),
     mallItems: content.skillsData.mallItems,
     events,
+    achievements,
+    unclaimedAchievementCount: achievements.filter((a: any) => a.unlocked && !a.claimed).length,
+    equippedTitle,
+    shuraEvent,
     mails,
     unreadMailCount,
     deepseekConfigured: Boolean(getGmSetting('deepseek_api_key') || process.env.DEEPSEEK_API_KEY),

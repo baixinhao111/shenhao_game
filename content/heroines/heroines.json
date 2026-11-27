@@ -7,6 +7,11 @@
     "archetype": "清冷禁欲系女总裁",
     "avatar": "/assets/characters/su_qingwan.png",
     "portrait": "/assets/characters/su_qingwan.png",
+    "outfits": [
+      { "id": "default", "name": "盛世职场", "portrait": "/assets/characters/su_qingwan.png", "unlockDesc": "初始常服" },
+      { "id": "gala", "name": "夜金晚礼", "portrait": "/assets/characters/su_qingwan_gala.png", "unlockDesc": "完成好感 Lv.2 羁绊解锁" },
+      { "id": "home", "name": "象牙真丝", "portrait": "/assets/characters/su_qingwan_home.png", "unlockDesc": "完成好感 Lv.4 羁绊解锁" }
+    ],
     "accentColor": "#E6C165",
     "starterUnlocked": false,
     "unlockHint": "推进第一卷第 2 幕《暗账与归途》解锁",
@@ -62,6 +67,11 @@
     "archetype": "清纯白月光真千金",
     "avatar": "/assets/characters/lin_wanxing.png",
     "portrait": "/assets/characters/lin_wanxing.png",
+    "outfits": [
+      { "id": "default", "name": "银杏学院", "portrait": "/assets/characters/lin_wanxing.png", "unlockDesc": "初始常服" },
+      { "id": "gala", "name": "星光礼裙", "portrait": "/assets/characters/lin_wanxing_gala.png", "unlockDesc": "完成好感 Lv.2 羁绊解锁" },
+      { "id": "home", "name": "奶油针织", "portrait": "/assets/characters/lin_wanxing_home.png", "unlockDesc": "完成好感 Lv.4 羁绊解锁" }
+    ],
     "accentColor": "#34D399",
     "starterUnlocked": false,
     "unlockHint": "推进第一卷第 4 幕《银杏暮色》解锁",
@@ -117,6 +127,11 @@
     "archetype": "魅惑直球系御姐",
     "avatar": "/assets/characters/shen_liuli.png",
     "portrait": "/assets/characters/shen_liuli.png",
+    "outfits": [
+      { "id": "default", "name": "星耀舞台", "portrait": "/assets/characters/shen_liuli.png", "unlockDesc": "初始常服" },
+      { "id": "gala", "name": "绯金流光", "portrait": "/assets/characters/shen_liuli_gala.png", "unlockDesc": "完成好感 Lv.2 羁绊解锁" },
+      { "id": "home", "name": "玫瑰丝睡", "portrait": "/assets/characters/shen_liuli_home.png", "unlockDesc": "完成好感 Lv.4 羁绊解锁" }
+    ],
     "accentColor": "#F43F5E",
     "starterUnlocked": false,
     "unlockHint": "推进第二卷第 2 幕《星光之下》或在【星耀不夜城】闲逛奇遇解锁",
@@ -166,6 +181,11 @@
     "archetype": "毒舌酷飒天才少女",
     "avatar": "/assets/characters/lu_zhiwei.png",
     "portrait": "/assets/characters/lu_zhiwei.png",
+    "outfits": [
+      { "id": "default", "name": "鬼市极客", "portrait": "/assets/characters/lu_zhiwei.png", "unlockDesc": "初始常服" },
+      { "id": "gala", "name": "暗夜西裙", "portrait": "/assets/characters/lu_zhiwei_gala.png", "unlockDesc": "完成好感 Lv.2 羁绊解锁" },
+      { "id": "home", "name": "宽松卫衣", "portrait": "/assets/characters/lu_zhiwei_home.png", "unlockDesc": "完成好感 Lv.4 羁绊解锁" }
+    ],
     "accentColor": "#22D3EE",
     "starterUnlocked": false,
     "unlockHint": "推进第二卷第 4 幕《鬼市惊鸿》或在【城南旧街】赌石奇遇解锁",

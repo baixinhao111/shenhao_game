@@ -87,12 +87,40 @@ export const NegotiationScene: React.FC = () => {
   const lastLines = deal ? deal.log.slice(-4) : [];
   const allyOf = (id?: string) => deal?.cards.heroine.heroines.find((h) => h.id === id);
 
-  const CARDS: Array<{ id: string; name: string; icon: GameIconName; desc: string; disabled: boolean; cost?: string }> = deal
+  const CARDS: Array<{ id: string; name: string; icon: GameIconName; desc: string; disabled: boolean; sub: string }> = deal
     ? [
-        { id: 'funds', name: '资金实力', icon: 'income', desc: '亮出流水，逐利者最吃这套', disabled: deal.cards.funds.used || !deal.cards.funds.available },
-        { id: 'network', name: '人脉施压', icon: 'crown', desc: '缺钱者会松口，要面子的会翻脸', disabled: deal.cards.network.used || !deal.cards.network.available },
-        { id: 'intel', name: '情报揭底', icon: 'briefcase', desc: '揭开对方软肋，底价下探', disabled: deal.cards.intel.used, cost: `${deal.cards.intel.cost}积分` },
-        { id: 'heroine', name: '红颜助攻', icon: 'heart', desc: '请她出面', disabled: deal.cards.heroine.used || deal.cards.heroine.heroines.length === 0 },
+        {
+          id: 'funds',
+          name: '资金实力',
+          icon: 'income',
+          desc: '亮出流水，逐利者最吃这套',
+          disabled: deal.cards.funds.used || !deal.cards.funds.available,
+          sub: deal.cards.funds.used ? '已用' : !deal.cards.funds.available ? '现金不足' : '一次',
+        },
+        {
+          id: 'network',
+          name: '人脉施压',
+          icon: 'crown',
+          desc: '缺钱者会松口，要面子的会翻脸',
+          disabled: deal.cards.network.used || !deal.cards.network.available,
+          sub: deal.cards.network.used ? '已用' : !deal.cards.network.available ? '需2阶' : '一次',
+        },
+        {
+          id: 'intel',
+          name: '情报揭底',
+          icon: 'briefcase',
+          desc: '揭开对方软肋，底价下探',
+          disabled: deal.cards.intel.used,
+          sub: deal.cards.intel.used ? '已用' : `${deal.cards.intel.cost}积分`,
+        },
+        {
+          id: 'heroine',
+          name: '红颜助攻',
+          icon: 'heart',
+          desc: '请她出面',
+          disabled: deal.cards.heroine.used || deal.cards.heroine.heroines.length === 0,
+          sub: deal.cards.heroine.used ? '已用' : deal.cards.heroine.heroines.length === 0 ? '待结识' : '一次',
+        },
       ]
     : [];
 
@@ -114,7 +142,7 @@ export const NegotiationScene: React.FC = () => {
               alt=""
               initial={{ opacity: 0, x: 30 }}
               animate={{ opacity: 1, x: 0 }}
-              className="absolute right-[-22%] bottom-[18%] h-[78%] max-h-[380px] object-contain object-bottom pointer-events-none drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
+              className="absolute right-[-22%] bottom-[18%] h-[78%] max-h-[380px] object-contain object-bottom sprite-fade-bottom pointer-events-none drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
             />
             <div className="absolute left-4 top-2 space-y-2 max-w-[58%]">
               <div>
@@ -193,10 +221,16 @@ export const NegotiationScene: React.FC = () => {
                 )}
                 <div className="absolute top-1.5 w-0.5 h-6 bg-[#FF8FA6]" style={{ left: `${ruler.pct(deal.ask)}%` }} />
                 <div className="absolute top-1.5 w-0.5 h-6 bg-white/50" style={{ left: `${ruler.pct(deal.item.list)}%` }} />
-                <div className="absolute -top-0.5 text-[9.5px] text-[#FF8FA6] -translate-x-1/2" style={{ left: `${ruler.pct(deal.ask)}%` }}>
+                <div
+                  className="absolute -top-0.5 text-[9.5px] text-[#FF8FA6] -translate-x-1/2 whitespace-nowrap"
+                  style={{ left: `${Math.max(7, Math.min(93, ruler.pct(deal.ask)))}%` }}
+                >
                   报价
                 </div>
-                <div className="absolute top-7 text-[9.5px] text-[#A3AAC2] -translate-x-1/2" style={{ left: `${ruler.pct(deal.item.list)}%` }}>
+                <div
+                  className="absolute top-7 text-[9.5px] text-[#A3AAC2] -translate-x-1/2 whitespace-nowrap"
+                  style={{ left: `${Math.max(7, Math.min(93, ruler.pct(deal.item.list)))}%` }}
+                >
                   挂牌
                 </div>
                 <div
@@ -228,7 +262,7 @@ export const NegotiationScene: React.FC = () => {
                     >
                       <GameIcon name={c.icon} size={28} />
                       <span className="text-[11px] font-editorial font-black text-[#FBF1D8] mt-0.5">{c.name}</span>
-                      <span className="text-[9px] text-[#A3AAC2] leading-tight">{c.cost || (c.disabled && !c.cost ? '已用' : '一次')}</span>
+                      <span className="text-[9px] text-[#A3AAC2] leading-tight whitespace-nowrap">{c.sub}</span>
                     </button>
                   ))}
                 </div>

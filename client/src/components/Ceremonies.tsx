@@ -100,7 +100,9 @@ export const CritShow: React.FC<{ multiplier: number; amount: number; subtitle?:
         if (skipped.current) return;
         up(3);
         playCritExplosion();
-        setTimeout(playCoinBurst, 300);
+        ts.push(setTimeout(() => {
+          if (!skipped.current) playCoinBurst();
+        }, 300));
       }, at + 620),
     );
     return () => ts.forEach(clearTimeout);
@@ -202,15 +204,17 @@ export const TierUpShow: React.FC<{ fx: TierUpFx; onClose: () => void }> = ({ fx
   const [stage, setStage] = useState(0); // 0 光柱+旧阶层 · 1 新阶层印章 · 2 清单
 
   useEffect(() => {
+    let fanfareTimer: ReturnType<typeof setTimeout> | null = null;
     const a = setTimeout(() => {
       setStage((s) => Math.max(s, 1));
       playStamp();
-      setTimeout(playFanfare, 180);
+      fanfareTimer = setTimeout(playFanfare, 180);
     }, 900);
     const b = setTimeout(() => setStage((s) => Math.max(s, 2)), 1700);
     return () => {
       clearTimeout(a);
       clearTimeout(b);
+      if (fanfareTimer) clearTimeout(fanfareTimer);
     };
   }, []);
 

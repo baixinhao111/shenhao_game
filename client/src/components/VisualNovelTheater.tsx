@@ -31,7 +31,7 @@ import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 import { renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
 
 export interface VNSettlementData {
-  mode: 'main' | 'date' | 'home' | 'stroll';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura';
   chapterLabel?: string;
   title: string;
   subtitle?: string;
@@ -53,6 +53,7 @@ export interface VNSettlementData {
     bonusAffection?: number;
     unlockedHeroineName?: string;
     unlockedAssetName?: string;
+    unlockedOutfitName?: string;
   };
   nextEpisodeId?: string | null;
   nextEpisodeLabel?: string | null;
@@ -64,7 +65,7 @@ export interface VNSettlementData {
 
 export interface VisualNovelScript {
   id: string;
-  mode: 'main' | 'date' | 'home' | 'stroll';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura';
   chapterTitle: string;
   sceneLabel?: string;
   title: string;
@@ -114,10 +115,14 @@ interface VNBookmark {
 
 const BOOKMARK_PREFIX = 'tianshu_vn_bm_';
 
-function loadVNBookmark(scriptId: string, baseLen: number): VNBookmark | null {
+function bmKey(userId: string | number | undefined, scriptId: string): string {
+  return `${BOOKMARK_PREFIX}${userId ?? 'anon'}_${scriptId}`;
+}
+
+function loadVNBookmark(userId: string | number | undefined, scriptId: string, baseLen: number): VNBookmark | null {
   try {
-    if (typeof window === 'undefined') return null;
-    const raw = localStorage.getItem(BOOKMARK_PREFIX + scriptId);
+    if (typeof window === 'undefined' || !userId) return null;
+    const raw = localStorage.getItem(bmKey(userId, scriptId));
     if (!raw) return null;
     const parsed = JSON.parse(raw) as VNBookmark;
     if (
@@ -136,18 +141,18 @@ function loadVNBookmark(scriptId: string, baseLen: number): VNBookmark | null {
   }
 }
 
-function saveVNBookmark(bm: VNBookmark): void {
+function saveVNBookmark(userId: string | number | undefined, bm: VNBookmark): void {
   try {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(BOOKMARK_PREFIX + bm.scriptId, JSON.stringify(bm));
+    if (typeof window !== 'undefined' && userId) {
+      localStorage.setItem(bmKey(userId, bm.scriptId), JSON.stringify(bm));
     }
   } catch {}
 }
 
-function clearVNBookmark(scriptId: string): void {
+function clearVNBookmark(userId: string | number | undefined, scriptId: string): void {
   try {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(BOOKMARK_PREFIX + scriptId);
+    if (typeof window !== 'undefined' && userId) {
+      localStorage.removeItem(bmKey(userId, scriptId));
     }
   } catch {}
 }
@@ -157,7 +162,17 @@ const MODE_LABELS: Record<VisualNovelScript['mode'], string> = {
   date: '赴约',
   home: '居家',
   stroll: '偶遇',
+  bond: '羁绊',
+  shura: '修罗场',
 };
+
+const PRELOADED_VN_URLS = new Set<string>();
+function prefetchImage(url?: string) {
+  if (!url || typeof window === 'undefined' || PRELOADED_VN_URLS.has(url)) return;
+  PRELOADED_VN_URLS.add(url);
+  const img = new Image();
+  img.src = url;
+}
 
 interface StageSprites {
   dual: boolean;
@@ -264,12 +279,18 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   const lastEffectKeyRef = useRef<string>('');
   const lastBannerKeyRef = useRef<string>('');
   const skipTypewriterRef = useRef(false);
+  const onCompleteRef = useRef(onComplete);
+  const onExitRef = useRef(onExit);
+  onCompleteRef.current = onComplete;
+  onExitRef.current = onExit;
+
+  const userId = state?.user?.id;
 
   useEffect(() => {
     const baseNodes = script.nodes || [];
     const saved =
       script.mode === 'main' && !script.alreadyCompleted
-        ? loadVNBookmark(script.id, baseNodes.length)
+        ? loadVNBookmark(userId, script.id, baseNodes.length)
         : null;
 
     if (saved) {
@@ -310,13 +331,13 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
       const timer = setTimeout(() => setShowOpeningCard(false), 1250);
       return () => clearTimeout(timer);
     }
-  }, [script.id]);
+  }, [script.id, userId]);
 
   // Persist reading position for long novel-grade main chapters
   useEffect(() => {
     if (script.mode !== 'main' || script.alreadyCompleted || settlement) return;
     if (nodeIdx > 0 && nodeIdx < queue.length) {
-      saveVNBookmark({
+      saveVNBookmark(userId, {
         scriptId: script.id,
         baseLen: (script.nodes || []).length,
         nodeIdx,
@@ -326,7 +347,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         resolvedChoices,
       });
     }
-  }, [script.id, script.mode, script.alreadyCompleted, script.nodes, settlement, nodeIdx, queue, chosenIds, chosenOptions, resolvedChoices]);
+  }, [userId, script.id, script.mode, script.alreadyCompleted, script.nodes, settlement, nodeIdx, queue, chosenIds, chosenOptions, resolvedChoices]);
 
   const currentNode = queue[nodeIdx] || null;
   const fullText = useMemo(() => {
@@ -340,6 +361,23 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
 
   const activeBg = useMemo(() => resolveActiveBg(queue, nodeIdx, script.bg), [queue, nodeIdx, script.bg]);
   const stageSprites = useMemo(() => resolveStageSprites(queue, nodeIdx), [queue, nodeIdx]);
+
+  // Lookahead preload: silently cache the next 3 nodes' backgrounds & portraits so transitions never flicker
+  useEffect(() => {
+    prefetchImage(script.bg);
+    for (let i = nodeIdx; i <= Math.min(queue.length - 1, nodeIdx + 3); i += 1) {
+      const n = queue[i];
+      if (!n) continue;
+      prefetchImage(n.bg);
+      prefetchImage(n.sprite);
+      prefetchImage(n.portrait);
+      prefetchImage(n.leftSprite);
+      prefetchImage(n.rightSprite);
+      if (n.speaker && SPEAKER_FALLBACK_SPRITE[n.speaker]) {
+        prefetchImage(SPEAKER_FALLBACK_SPRITE[n.speaker]);
+      }
+    }
+  }, [queue, nodeIdx, script.bg]);
 
   const isLast = nodeIdx >= queue.length - 1;
   const isTyping = fullText.length > 0 && typedCount < fullText.length;
@@ -433,14 +471,14 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
       setFastForward(false);
       setSubmitting(true);
       try {
-        const result = await onComplete({ chosenIds: finalIds, chosenOptions: finalOpts });
-        if (script.mode === 'main') clearVNBookmark(script.id);
+        const result = await onCompleteRef.current({ chosenIds: finalIds, chosenOptions: finalOpts });
+        if (script.mode === 'main') clearVNBookmark(userId, script.id);
         if (result) {
           setShowLog(false);
           setHideUi(false);
           setSettlement(result);
         } else {
-          onExit();
+          onExitRef.current();
         }
       } catch (e: any) {
         showError(e?.message || '结算失败，请重试');
@@ -448,7 +486,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
         setSubmitting(false);
       }
     },
-    [submitting, onComplete, onExit, showError],
+    [submitting, script.mode, script.id, userId, showError],
   );
 
   const stepForward = useCallback(() => {
@@ -536,14 +574,22 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
       return;
     }
     const timer = setTimeout(() => {
-      const nextIdx = nodeIdx + 1;
+      let nextIdx = nodeIdx + 1;
+      while (nextIdx < queue.length && queue[nextIdx]?.type === 'system_choice' && resolvedChoices[nextIdx]) {
+        nextIdx += 1;
+      }
+      if (nextIdx >= queue.length) {
+        setFastForward(false);
+        return;
+      }
       if (queue[nextIdx]?.type === 'system_choice' && !resolvedChoices[nextIdx]) {
         setNodeIdx(nextIdx);
         setFastForward(false);
       } else {
-        stepForward();
+        skipTypewriterRef.current = true;
+        setNodeIdx(nextIdx);
       }
-    }, 145);
+    }, 135);
     return () => clearTimeout(timer);
   }, [
     fastForward,
@@ -558,8 +604,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     nodeIdx,
     isLast,
     queue,
-    stepForward,
   ]);
+
+  const isUnansweredChoice = currentNode?.type === 'system_choice' && !resolvedChoices[nodeIdx];
 
   // desktop / PWA keyboard: Space or Enter advances, Esc closes the 天枢 panel or the log
   useEffect(() => {
@@ -577,7 +624,36 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  });
+  }, [showStatus, showLog, isUnansweredChoice, settlement, stepForward]);
+
+  // Running available cash across multi-choice episodes (mirrors server/src/routes.ts simulation)
+  const availableCash = useMemo(() => {
+    let cash = Number(state?.player?.cash ?? 0);
+    if (script.mode !== 'main' || script.alreadyCompleted) return cash;
+    for (const opt of chosenOptions) {
+      const c = Number(opt?.cost?.cash ?? opt?.cashCost ?? 0);
+      if (c > 0) cash -= c;
+      const r = opt?.reward;
+      if (r) {
+        if (r.critMultiplier && c > 0) {
+          cash += Math.max(Math.round(c * r.critMultiplier), Number(r.cash || 0));
+        } else if (r.cash) {
+          cash += Number(r.cash);
+        }
+      }
+    }
+    return cash;
+  }, [state?.player?.cash, script.mode, script.alreadyCompleted, chosenOptions]);
+
+  const isOptionUnaffordable = useCallback(
+    (opt: VNChoiceOption) => {
+      if (script.alreadyCompleted) return false;
+      const cashCost = Number(opt.cost?.cash ?? opt.cashCost ?? 0);
+      if (cashCost <= 0) return false;
+      return (script.mode === 'stroll' || script.mode === 'main') && cashCost > availableCash;
+    },
+    [script.mode, script.alreadyCompleted, availableCash],
+  );
 
   const handleBack = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -592,10 +668,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   // ZERO mid-dialogue spoilers: choosing flows naturally into branch dialogue without flashing rewards/tags!
   const handleSelectChoice = (opt: VNChoiceOption) => {
     if (submitting) return;
-    const cashCost = opt.cost?.cash ?? opt.cashCost ?? 0;
-    const playerCash = state?.player?.cash ?? 0;
-    if (script.mode === 'stroll' && cashCost > playerCash) {
-      showError(`资金不足（需要 ${formatMoney(cashCost)}）`);
+    const cashCost = Number(opt.cost?.cash ?? opt.cashCost ?? 0);
+    if (isOptionUnaffordable(opt)) {
+      showError(`资金不足（需要 ${formatMoney(cashCost)}，当前可用 ${formatMoney(availableCash)}）`);
       return;
     }
 
@@ -636,7 +711,6 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
   };
 
   const progressPct = queue.length > 0 ? Math.min(100, ((nodeIdx + 1) / queue.length) * 100) : 100;
-  const isUnansweredChoice = currentNode?.type === 'system_choice' && !resolvedChoices[nodeIdx];
   const isSystemOverlay = !showOpeningCard && (currentNode?.type === 'system_alert' || isUnansweredChoice);
   const heroineIds = useMemo(() => new Set<string>((state?.heroines || []).map((h: any) => h.id)), [state?.heroines]);
   const speakerIsHeroine = !!currentNode?.speaker && heroineIds.has(currentNode.speaker);
@@ -879,8 +953,8 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
           )}
         </AnimatePresence>
 
-        {/* 5. Top Hairline Progress & Minimal Frameless Utility Bar */}
-        <div className="relative z-30">
+        {/* 5. Top Hairline Progress & Minimal Frameless Utility Bar (above z-[35] system panels!) */}
+        <div className="relative z-[38] pointer-events-none">
           {!hideUi && !settlement && (
             <div className="h-[2px] w-full bg-white/[0.06] overflow-hidden">
               <div
@@ -899,7 +973,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                 transition={{ duration: 0.2 }}
                 className="flex items-center justify-between gap-2 px-3.5 pt-2.5"
               >
-                <div className="flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35">
+                <div className="pointer-events-auto flex items-center gap-1 h-8 pl-1 pr-1 rounded-full bg-[#070B18]/78 backdrop-blur-md border border-[#E2BD72]/35">
                   <button
                     onClick={() => {
                       playTap();
@@ -919,7 +993,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   </button>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="pointer-events-auto flex items-center gap-2">
                 <div className="flex items-center h-8 px-1 rounded-full bg-[#070B18]/70 backdrop-blur-md border border-[#E2BD72]/35 text-[#D8DAE2] divide-x divide-white/10">
                   <button
                     onClick={() => {
@@ -1018,9 +1092,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               key={`choice-${nodeIdx}`}
               node={currentNode}
               disabled={submitting}
-              isUnaffordable={(opt) =>
-                script.mode === 'stroll' && (opt.cost?.cash ?? opt.cashCost ?? 0) > (state?.player?.cash ?? 0)
-              }
+              isUnaffordable={isOptionUnaffordable}
               onChoose={handleSelectChoice}
             />
           )}
@@ -1051,8 +1123,12 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 4 }}
                       transition={{ duration: 0.18 }}
-                      onClick={(e) => e.stopPropagation()}
-                      className="mb-4 relative pl-3.5 pr-2 py-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        playTap();
+                        setPeekOpen(false);
+                      }}
+                      className="mb-4 relative pl-3.5 pr-2 py-2 cursor-pointer"
                     >
                       <span className="absolute left-0 top-1 bottom-1 w-[2px] rounded-full bg-gradient-to-b from-[#FFB3C6] to-[#F0789A]/20" />
                       <div className="text-[10px] tracking-[0.4em] text-[#FFB3C6] font-bold mb-1">
@@ -1169,9 +1245,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.42 }}
             onClick={() => setShowOpeningCard(false)}
-            className="absolute inset-0 z-40 bg-[#0A0F1F]/94 backdrop-blur-md flex flex-col items-center justify-center px-8 text-center cursor-pointer"
+            className="absolute inset-0 z-40 bg-[#050814]/96 backdrop-blur-md flex flex-col items-center justify-center px-8 text-center cursor-pointer"
           >
-            <div className="text-[11px] tracking-[0.4em] text-[#E2BD72] font-bold">
+            <div className="text-[11px] tracking-[0.4em] text-[#E2BD72] font-bold text-stroke-dark">
               {script.sceneLabel || `${MODE_LABELS[script.mode]} · ${script.chapterTitle}`}
             </div>
             <div className="flex items-center gap-2 my-4">
@@ -1179,9 +1255,15 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
               <span className="w-2 h-2 rotate-45 bg-gradient-to-br from-[#FFE7B0] to-[#A07C3E]" />
               <span className="w-14 h-px bg-gradient-to-l from-transparent to-[#E2BD72]" />
             </div>
-            <h2 className="font-editorial text-[32px] font-black tracking-[0.2em] gold-gradient-text">{script.title}</h2>
-            {script.subtitle && (
-              <p className="text-xs text-[#A3AAC2] mt-3 leading-relaxed max-w-[270px]">{script.subtitle}</p>
+            <h2
+              className={`font-editorial font-black tracking-[0.16em] gold-gradient-text leading-snug text-balance ${
+                script.title.length >= 9 ? 'text-[25px]' : 'text-[32px]'
+              }`}
+            >
+              {script.title}
+            </h2>
+            {script.subtitle && script.subtitle !== script.sceneLabel && (
+              <p className="text-[12.5px] text-[#DCE2F0] mt-3 leading-relaxed max-w-[280px] text-stroke-dark">{script.subtitle}</p>
             )}
           </motion.div>
         )}
@@ -1208,7 +1290,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                   <button
                     onClick={() => {
                       playTap();
-                      clearVNBookmark(script.id);
+                      clearVNBookmark(userId, script.id);
                       setQueue(script.nodes || []);
                       setNodeIdx(0);
                       setChosenIds([]);
@@ -1337,7 +1419,11 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                           ? '约会结束'
                           : settlement.mode === 'home'
                             ? '居家时光'
-                            : '漫步结束'}
+                            : settlement.mode === 'bond'
+                              ? '羁绊突破'
+                              : settlement.mode === 'shura'
+                                ? '修罗场化解'
+                                : '漫步结束'}
                   </div>
                   <div className="mt-3 text-[11px] tracking-[0.3em] text-[#E2BD72] font-bold">
                     {settlement.chapterLabel || MODE_LABELS[settlement.mode]}
@@ -1358,7 +1444,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.2, duration: 0.35 }}
-                    className={`relative rounded-[10px] px-4 py-3.5 space-y-2 ${settlement.mode !== 'main' ? 'max-w-[78%]' : ''}`}
+                    className={`relative rounded-[10px] px-4 py-3.5 space-y-2 ${settlement.mode !== 'main' && settlement.heroinePortrait ? 'max-w-[78%]' : ''}`}
                     style={{
                       background: 'linear-gradient(180deg, rgba(20,28,58,0.85), rgba(8,12,26,0.9))',
                       border: '1px solid rgba(226,189,114,0.35)',
@@ -1420,6 +1506,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                     }
                     if (r.unlockedAssetName) {
                       items.push({ icon: 'key', label: '入库', value: r.unlockedAssetName, tone: 'text-[#FFE7B0]' });
+                    }
+                    if (r.unlockedOutfitName) {
+                      items.push({ icon: 'crown', label: '解锁装扮', value: r.unlockedOutfitName, tone: 'text-[#FFB3C6]' });
                     }
                     if (items.length === 0) return null;
                     return (
@@ -1504,7 +1593,7 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                       className="w-full gold-btn-shimmer py-3 px-4 text-[15px] font-editorial flex items-center justify-center gap-2"
                     >
                       <GameIcon name="nav_contact" size={24} shadow={false} />
-                      <span>发微信给{settlement.heroineName || '她'}</span>
+                      <span>发微信给{settlement.mode === 'shura' ? '她' : settlement.heroineName || '她'}</span>
                     </button>
                   )}
 
@@ -1550,9 +1639,13 @@ export const MiniStoryOverlay: React.FC = () => {
         ? '赴约'
         : activeMiniStory.mode === 'home'
           ? '居家'
-          : '偶遇';
+          : activeMiniStory.mode === 'bond'
+            ? '红颜羁绊'
+            : activeMiniStory.mode === 'shura'
+              ? '修罗场'
+              : '偶遇';
     return {
-      id: `${activeMiniStory.mode}:${activeMiniStory.interactionId || activeMiniStory.eventId || activeMiniStory.title}:${activeMiniStory.heroineId || 'any'}`,
+      id: `${activeMiniStory.mode}:${activeMiniStory.bondId || activeMiniStory.interactionId || activeMiniStory.eventId || activeMiniStory.title}:${activeMiniStory.heroineId || 'any'}`,
       mode: activeMiniStory.mode,
       chapterTitle,
       sceneLabel: activeMiniStory.sceneLabel || activeMiniStory.locationLabel || chapterTitle,
@@ -1560,6 +1653,7 @@ export const MiniStoryOverlay: React.FC = () => {
       subtitle: activeMiniStory.subtitle,
       bg: activeMiniStory.bg,
       nodes: activeMiniStory.nodes,
+      alreadyCompleted: activeMiniStory.alreadyCompleted,
     };
   }, [activeMiniStory]);
 
@@ -1574,6 +1668,67 @@ export const MiniStoryOverlay: React.FC = () => {
   }): Promise<VNSettlementData | null> => {
     const primaryChoiceId = chosenIds[0];
     const primaryOpt = chosenOptions[0];
+
+    if (activeMiniStory.mode === 'bond') {
+      const res = await apiRequest('/heroines/bond/complete', {
+        body: {
+          bondId: activeMiniStory.bondId || activeMiniStory.eventId,
+          choiceIds: chosenIds,
+        },
+      });
+      applyServerState(res.state, undefined, { silentToast: true });
+      playAffectionChime();
+      const hObj = res.state?.heroines?.find((h: any) => h.id === activeMiniStory.heroineId);
+      if (res.unlockedOutfitName) {
+        notifyTop('wechat', '解锁专属装扮', `${hObj?.name || activeMiniStory.heroineName} 已换上「${res.unlockedOutfitName}」`);
+      }
+      return {
+        mode: 'bond',
+        chapterLabel: activeMiniStory.sceneLabel || '红颜羁绊',
+        title: activeMiniStory.title,
+        reactionText: res.reactionText || primaryOpt?.resultText,
+        heroineId: activeMiniStory.heroineId,
+        heroineName: hObj?.name || activeMiniStory.heroineName,
+        heroineAvatar: hObj?.avatar || activeMiniStory.heroineAvatar,
+        heroinePortrait: hObj?.portrait || activeMiniStory.heroinePortrait,
+        alreadyCompleted: Boolean(res.alreadyCompleted),
+        rewards: res.alreadyCompleted
+          ? undefined
+          : {
+              affectionGain: res.affectionGain,
+              affectionHeroineName: hObj?.name || activeMiniStory.heroineName,
+              sysPoints: res.sysPoints,
+              unlockedOutfitName: res.unlockedOutfitName || undefined,
+            },
+      };
+    }
+
+    if (activeMiniStory.mode === 'shura') {
+      const res = await apiRequest('/heroines/shura/complete', {
+        body: {
+          eventId: activeMiniStory.eventId,
+          choiceIds: chosenIds,
+        },
+      });
+      applyServerState(res.state, undefined, { silentToast: true });
+      playAffectionChime();
+      const hObj = res.state?.heroines?.find((h: any) => h.id === activeMiniStory.heroineId);
+      return {
+        mode: 'shura',
+        chapterLabel: activeMiniStory.sceneLabel || '海城修罗场',
+        title: activeMiniStory.title,
+        reactionText: res.reactionText || primaryOpt?.resultText,
+        heroineId: activeMiniStory.heroineId,
+        heroineName: activeMiniStory.heroineName || hObj?.name,
+        heroineAvatar: activeMiniStory.heroineAvatar || hObj?.avatar,
+        heroinePortrait: hObj?.portrait,
+        rewards: {
+          affectionGain: res.affectionEach,
+          affectionHeroineName: '双方好感',
+          sysPoints: res.sysPoints,
+        },
+      };
+    }
 
     if (activeMiniStory.mode === 'date') {
       const res = await apiRequest('/map/date', {

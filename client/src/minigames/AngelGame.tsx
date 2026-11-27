@@ -88,8 +88,11 @@ export const AngelGame: React.FC = () => {
       {!session && (
         <div className="flex-1 flex flex-col justify-end px-4 pb-5 gap-3">
           <Speech who="陆知微" tone="rose" text="今天孵化器有三个团队来路演。数据我都看过了……真真假假，你自己判断。" />
-          <button disabled={busy} onClick={start} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1">
-            听路演 <GameIcon name="energy" size={16} shadow={false} />6
+          <button disabled={busy} onClick={start} className="w-full gold-btn-shimmer py-3 text-[15px] font-editorial flex items-center justify-center gap-1.5">
+            <span>听路演</span>
+            <span className="inline-flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-[#1E1506]/85 text-[#FFE7B0] font-num text-[11.5px]">
+              <GameIcon name="energy" size={14} shadow={false} />6
+            </span>
           </button>
         </div>
       )}

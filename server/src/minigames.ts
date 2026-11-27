@@ -29,6 +29,7 @@ import {
   setPlayerKv,
   todayKey,
 } from './gameEngine.js';
+import { getStoryLinkedStockExtras, getWeeklyCruiseTheme, incrementAchievementStat } from './empire.js';
 
 type AuthedRequest = Request & { userId?: number };
 type Auth = (req: AuthedRequest, res: Response, next: NextFunction) => void;
@@ -373,6 +374,8 @@ function settleJade(s: Session, mask: string, buyerId: BuyerId) {
   grant(s.userId, buyer.offer, 20);
   let unlockedHeroine: string | null = null;
   if (stone.grade === 'imperial' && n.j > 0 && unlockHeroine(s.userId, 'lu_zhiwei', 20)) unlockedHeroine = 'lu_zhiwei';
+  incrementAchievementStat(s.userId, 'jadePlays', 1);
+  if (stone.grade === 'imperial') incrementAchievementStat(s.userId, 'jadeImperials', 1);
   finishCommon(s.userId);
   return {
     buyer: { id: buyer.id, name: buyer.name },
@@ -394,7 +397,7 @@ const STOCK_TICK_MS = 750;
 const STOCK_LEVERAGE = 3;
 const STOCK_STAKES = [100000, 300000, 1000000] as const;
 
-export function getCurrentStockQuotes() {
+export function getCurrentStockQuotes(userId?: number) {
   const bucket = Math.floor(Date.now() / (10 * 60 * 1000)); // shifts every 10 minutes
   const stocks = [
     { id: 'stk_tech', name: '天枢芯科', code: '688001', base: 128 },
@@ -402,14 +405,19 @@ export function getCurrentStockQuotes() {
     { id: 'stk_media', name: '星耀娱乐控股', code: '300619', base: 66 },
     { id: 'stk_bio', name: '云顶生物医药', code: '688309', base: 94 },
   ];
-  return stocks.map((s, idx) => {
+  const baseQuotes = stocks.map((s, idx) => {
     const wave = Math.sin(bucket * 0.7 + idx * 1.9) * 0.14 + Math.cos(bucket * 0.35 + idx) * 0.08;
     const price = Number((s.base * (1 + wave)).toFixed(2));
     const changePct = Number((wave * 100).toFixed(2));
     const nextWave = Math.sin((bucket + 1) * 0.7 + idx * 1.9) * 0.14 + Math.cos((bucket + 1) * 0.35 + idx) * 0.08;
     const trend: 'up' | 'down' = nextWave >= wave ? 'up' : 'down';
-    return { ...s, price, changePct, trend };
+    return { ...s, price, changePct, trend, storyTag: '' };
   });
+  if (userId) {
+    const { extraQuotes } = getStoryLinkedStockExtras(userId);
+    return [...baseQuotes, ...extraQuotes];
+  }
+  return baseQuotes;
 }
 
 function gaussian(): number {
@@ -444,6 +452,7 @@ function settleStock(s: Session, tick: number) {
   const payout = Math.round(stockValue(d, t));
   closeSession(s);
   grant(s.userId, payout, 28);
+  if (payout > d.stake) incrementAchievementStat(s.userId, 'stockWins', 1);
   finishCommon(s.userId);
   return { tick: t, price: d.path[t], payout, profit: payout - d.stake, liquidated };
 }
@@ -478,6 +487,8 @@ function settleRace(s: Session, hits: unknown) {
   const payout = win ? Math.round(d.stake * (perfect ? 2.8 : 2.2)) : 0;
   closeSession(s);
   grant(s.userId, payout, win ? 40 : 10);
+  if (win) incrementAchievementStat(s.userId, 'raceWins', 1);
+  if (perfect) incrementAchievementStat(s.userId, 'racePerfects', 1);
   finishCommon(s.userId);
   return { win, perfect, playerScore, oppScore, accs, payout, profit: payout - d.stake };
 }
@@ -554,6 +565,7 @@ function settleLive(s: Session, rawActions: unknown, auto = false) {
   const newlyUnlocked = unlockHeroine(s.userId, 'shen_liuli', affectionGain);
   grant(s.userId, 0, win ? 45 : 10);
   if (win) {
+    incrementAchievementStat(s.userId, 'liveWins', 1);
     const user = queryOne<any>('SELECT nickname FROM users WHERE id = ?', [s.userId]);
     postMoment(
       s.userId,
@@ -742,11 +754,14 @@ function cruiseFinish(s: Session) {
 
   const payout =
     outcome === 'blackjack' ? Math.round(d.bet * 2.5) : outcome === 'win' ? d.bet * 2 : outcome === 'push' ? d.bet : 0;
-  const tokens = outcome === 'blackjack' ? 90 : outcome === 'win' ? randInt(60, 80) : outcome === 'push' ? 25 : 15;
+  const themeMult = outcome === 'blackjack' || outcome === 'win' ? getWeeklyCruiseTheme().tokenMult : 1;
+  const baseTokens = outcome === 'blackjack' ? 90 : outcome === 'win' ? randInt(60, 80) : outcome === 'push' ? 25 : 15;
+  const tokens = Math.round(baseTokens * themeMult);
   const view = cruisePublic(s, true);
   closeSession(s);
   grant(s.userId, payout, outcome === 'lose' ? 5 : 20);
   addCruiseTokens(s.userId, tokens);
+  if (outcome === 'win' || outcome === 'blackjack') incrementAchievementStat(s.userId, 'cruiseWins', 1);
   finishCommon(s.userId);
   return { ...view, result: { outcome, payout, profit: payout - d.bet, tokens } };
 }
@@ -881,6 +896,8 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       closeSession(s);
       grant(userId, 0, 60);
       const unlockedHeroine = unlockHeroine(userId, 'lu_zhiwei', 20) ? 'lu_zhiwei' : null;
+      incrementAchievementStat(userId, 'jadePlays', 1);
+      incrementAchievementStat(userId, 'jadeImperials', 1);
       finishCommon(userId);
       const asset = getContent().assetsCatalog.assets.find((a: any) => a.id === missing);
       return {
@@ -897,7 +914,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       const stake = choice(body.amount, scaled(STOCK_STAKES, stakeScaleOf(userId)), '投入金额');
       const dir = body.direction === 'short' ? -1 : body.direction === 'long' ? 1 : 0;
       if (!dir) throw new Error('请选择做多或做空');
-      const quote = getCurrentStockQuotes().find((q) => q.id === body.stockId);
+      const quote = getCurrentStockQuotes(userId).find((q) => q.id === body.stockId);
       if (!quote) throw new Error('股票不存在');
       assertEnergySufficient(userId, 6);
       assertCashSufficient(userId, stake);
@@ -1101,6 +1118,7 @@ export function registerMinigameRoutes(router: Router, auth: Auth): void {
       const payout = Math.round(amount * mult);
       closeSession(s);
       grant(userId, payout, 22);
+      if (p.type === 'gem') incrementAchievementStat(userId, 'angelGems', 1);
       finishCommon(userId);
       const news =
         p.type === 'gem'

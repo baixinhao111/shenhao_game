@@ -7,6 +7,11 @@ export interface MiniStoriesContent {
   homeInteractions: Record<string, Record<string, any>>;
 }
 
+export interface BondStoriesContent {
+  bonds: any[];
+  shuraEvents: any[];
+}
+
 export interface GameContent {
   map: any;
   districtEvents: Record<string, any[]>;
@@ -19,12 +24,28 @@ export interface GameContent {
   events: any[];
   stories: { volumes: any[] };
   miniStories: MiniStoriesContent;
+  bondStories: BondStoriesContent;
+  businessEvents: any[];
+  achievements: any[];
 }
 
 function readJson(relPath: string): any {
   const fullPath = path.join(config.contentDir, relPath);
   const raw = fs.readFileSync(fullPath, 'utf-8');
   return JSON.parse(raw);
+}
+
+function readOptionalJson<T>(relPath: string, fallback: T): T {
+  const fullPath = path.join(config.contentDir, relPath);
+  if (!fs.existsSync(fullPath)) return fallback;
+  try {
+    const raw = fs.readFileSync(fullPath, 'utf-8').trim();
+    if (!raw) return fallback;
+    return JSON.parse(raw) as T;
+  } catch (err) {
+    console.warn(`[contentLoader] Failed to parse ${relPath}, using fallback:`, (err as Error).message);
+    return fallback;
+  }
 }
 
 function readOptionalMiniStories(relPath: string): MiniStoriesContent {
@@ -62,6 +83,9 @@ export function loadContent(): GameContent {
     events: readJson('events/events.json'),
     stories: readJson('stories/stories.json'),
     miniStories: readOptionalMiniStories('stories/mini_stories.json'),
+    bondStories: readOptionalJson<BondStoriesContent>('heroines/bond_stories.json', { bonds: [], shuraEvents: [] }),
+    businessEvents: readOptionalJson<any[]>('business_events.json', []),
+    achievements: readOptionalJson<any[]>('achievements.json', []),
   };
   return cachedContent;
 }

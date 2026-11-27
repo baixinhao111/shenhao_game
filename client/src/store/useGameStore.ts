@@ -3,7 +3,8 @@ import { apiRequest, getStoredToken, setStoredToken } from '../lib/api';
 import { playCoinBurst, playCritExplosion, playSystemPing, playWeChatChime } from '../lib/sound';
 
 export type MainTab = 'home' | 'map' | 'story' | 'assets' | 'heroines' | 'system';
-export type ProfileSubTab = 'tasks' | 'skills' | 'mall';
+export type ProfileSubTab = 'tasks' | 'achievements' | 'skills' | 'mall';
+export type AssetsSubTab = 'garage' | 'biz' | 'props';
 export type MinigameKind = 'jade' | 'stock' | 'race' | 'live' | 'angel' | 'cruise';
 export interface DealTarget {
   kind: 'business' | 'property';
@@ -100,7 +101,7 @@ export interface VNNode {
 }
 
 export interface MiniStoryPayload {
-  mode: 'date' | 'home' | 'stroll';
+  mode: 'date' | 'home' | 'stroll' | 'bond' | 'shura';
   title: string;
   subtitle?: string;
   sceneLabel?: string;
@@ -109,7 +110,11 @@ export interface MiniStoryPayload {
   districtId?: string;
   propertyId?: string;
   interactionId?: string;
+  bondId?: string;
+  unlockOutfit?: string | null;
+  alreadyCompleted?: boolean;
   heroineId?: string;
+  heroineIds?: string[];
   heroineName?: string;
   heroineAvatar?: string;
   heroinePortrait?: string;
@@ -136,12 +141,14 @@ interface GameStore {
   state: any | null;
   loading: boolean;
   activeTab: MainTab;
+  assetsSubTab: AssetsSubTab;
   showProfile: boolean;
   profileTab: ProfileSubTab;
   selectedDistrictId: string | null;
   activePropertyId: string | null;
   activeChatHeroineId: string | null;
   chatLocationOverride: string | null;
+  chatReturnTab: MainTab | null;
   activeStoryEpisodeId: string | null;
   activeMiniStory: MiniStoryPayload | null;
   pinnedCompanionId: string | null;
@@ -150,6 +157,7 @@ interface GameStore {
   showAdmin: boolean;
   topToast: TopNotification | null;
   critBanner: CritBanner | null;
+  dismissCrit: () => void;
   tierUp: TierUpFx | null;
   dismissTierUp: () => void;
   barrage: BarragePayload | null;
@@ -165,6 +173,8 @@ interface GameStore {
   applyServerState: (newState: any, critResult?: any, options?: { silentToast?: boolean }) => void;
 
   setActiveTab: (tab: MainTab) => void;
+  setAssetsSubTab: (sub: AssetsSubTab) => void;
+  openAssetsTab: (sub: AssetsSubTab) => void;
   openProfile: (tab?: ProfileSubTab) => void;
   closeProfile: () => void;
   setSelectedDistrictId: (id: string | null) => void;
@@ -206,12 +216,14 @@ export const useGameStore = create<GameStore>((set, get) => ({
   state: null,
   loading: Boolean(getStoredToken()),
   activeTab: 'home',
+  assetsSubTab: 'garage',
   showProfile: false,
   profileTab: 'tasks',
   selectedDistrictId: null,
   activePropertyId: null,
   activeChatHeroineId: null,
   chatLocationOverride: null,
+  chatReturnTab: null,
   activeStoryEpisodeId: null,
   activeMiniStory: null,
   pinnedCompanionId: loadPinnedCompanion(),
@@ -220,6 +232,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   showAdmin: false,
   topToast: null,
   critBanner: null,
+  dismissCrit: () => {
+    clearTimeout(critTimer);
+    set({ critBanner: null });
+  },
   tierUp: null,
   dismissTierUp: () => set({ tierUp: null }),
   barrage: null,
@@ -252,6 +268,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
   },
 
   setAuth: (token, state) => {
+    clearTimeout(toastTimer);
+    clearTimeout(critTimer);
+    clearTimeout(errTimer);
+    clearTimeout(barrageTimer);
     setStoredToken(token);
     playSystemPing();
     const isBrandNew = state?.stories?.completedEpisodes?.length === 0;
@@ -261,25 +281,62 @@ export const useGameStore = create<GameStore>((set, get) => ({
       loading: false,
       showProfile: false,
       activeTab: isBrandNew ? 'story' : 'home',
+      assetsSubTab: 'garage',
+      selectedDistrictId: null,
+      activePropertyId: null,
+      activeChatHeroineId: null,
+      chatLocationOverride: null,
+      chatReturnTab: null,
       activeStoryEpisodeId: isBrandNew ? 'ep_001' : null,
       activeMiniStory: null,
+      showLeaderboard: false,
+      showMail: false,
+      showAdmin: false,
+      topToast: null,
+      critBanner: null,
+      tierUp: null,
+      barrage: null,
+      errorToast: null,
+      activeMinigame: null,
+      activeDeal: null,
+      rewardFx: [],
     });
   },
 
   logout: () => {
+    clearTimeout(toastTimer);
+    clearTimeout(critTimer);
+    clearTimeout(errTimer);
+    clearTimeout(barrageTimer);
     setStoredToken('');
+    try {
+      if (typeof window !== 'undefined') localStorage.removeItem(PINNED_COMPANION_KEY);
+    } catch {}
     set({
       token: '',
       state: null,
       activeTab: 'home',
+      assetsSubTab: 'garage',
       showProfile: false,
       selectedDistrictId: null,
       activePropertyId: null,
       activeChatHeroineId: null,
       chatLocationOverride: null,
+      chatReturnTab: null,
       activeStoryEpisodeId: null,
       activeMiniStory: null,
+      pinnedCompanionId: null,
+      showLeaderboard: false,
+      showMail: false,
       showAdmin: false,
+      topToast: null,
+      critBanner: null,
+      tierUp: null,
+      barrage: null,
+      errorToast: null,
+      activeMinigame: null,
+      activeDeal: null,
+      rewardFx: [],
     });
   },
 
@@ -340,6 +397,9 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ activeTab: tab, showProfile: false, activePropertyId: null });
   },
 
+  setAssetsSubTab: (sub) => set({ assetsSubTab: sub }),
+  openAssetsTab: (sub) => set({ activeTab: 'assets', assetsSubTab: sub, showProfile: false, activePropertyId: null }),
+
   openProfile: (tab = 'tasks') => set({ showProfile: true, profileTab: tab }),
   closeProfile: () => set({ showProfile: false }),
 
@@ -348,18 +408,29 @@ export const useGameStore = create<GameStore>((set, get) => ({
 
   openHeroineChat: (heroineId, locationOverride = null) => {
     playWeChatChime();
+    const currentTab = get().activeTab;
+    const prevReturn = get().chatReturnTab;
     set({
       activeTab: 'heroines',
       showProfile: false,
       activeChatHeroineId: heroineId,
       chatLocationOverride: locationOverride,
+      chatReturnTab: currentTab !== 'heroines' ? currentTab : prevReturn,
       activePropertyId: null,
       activeMiniStory: null,
       activeStoryEpisodeId: null,
     });
   },
 
-  closeHeroineChat: () => set({ activeChatHeroineId: null, chatLocationOverride: null }),
+  closeHeroineChat: () => {
+    const returnTab = get().chatReturnTab;
+    set({
+      activeChatHeroineId: null,
+      chatLocationOverride: null,
+      chatReturnTab: null,
+      ...(returnTab ? { activeTab: returnTab } : {}),
+    });
+  },
   setActiveStoryEpisodeId: (id) => set({ activeStoryEpisodeId: id, showProfile: false }),
   openMiniStory: (payload) => set({ activeMiniStory: payload, showProfile: false }),
   closeMiniStory: () => set({ activeMiniStory: null }),
@@ -403,7 +474,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     set({ critBanner: { id, multiplier, amount, subtitle } });
     critTimer = setTimeout(() => {
       if (get().critBanner?.id === id) set({ critBanner: null });
-    }, 6500);
+    }, 10500);
   },
 
   triggerBarrage: (style, lines) => {

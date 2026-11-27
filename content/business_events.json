@@ -1,0 +1,458 @@
+[
+  {
+    "id": "be_milktea_viral",
+    "businessId": "biz_milktea",
+    "title": "新品爆单 · 原料告急",
+    "tag": "爆单机遇",
+    "summary": "海大女生在校园社区刷屏打卡秋季限定「桂花酒酿冷萃」，三家门店排队排到银杏大道拐角，冷链鲜奶却被赵氏关联供应商临时卡壳断货。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "高价调拨备选冷链，保住口碑",
+        "kind": "standard",
+        "costEnergy": 4,
+        "incomeHoursReward": 3.5,
+        "sysPoints": 15,
+        "resultText": "虽然多付了一笔加急运费，但门店全程零断货，单日营业额创下开店新高！"
+      },
+      {
+        "id": "heroine",
+        "label": "请林晚星组织海大音乐社快闪联名，反向引爆全城",
+        "kind": "heroine",
+        "requireHeroine": "lin_wanxing",
+        "costEnergy": 2,
+        "incomeHoursReward": 6.5,
+        "sysPoints": 30,
+        "affectionGain": 10,
+        "resultText": "林晚星带着音乐社在店外银杏树下拉起弦乐快闪，东海生态牧场老板闻风当场主动登门直供，排队热潮席卷整个大学城！"
+      },
+      {
+        "id": "tianshu",
+        "label": "启动天枢供应链推演，跳过中间商直签东海源头牧场",
+        "kind": "tianshu",
+        "costSysPoints": 12,
+        "incomeHoursReward": 5.5,
+        "sysPoints": 0,
+        "resultText": "天枢三秒筛出东海直供冷链通道，原料成本反降 18%，单日分红直线暴涨！"
+      }
+    ]
+  },
+  {
+    "id": "be_milktea_copycat",
+    "businessId": "biz_milktea",
+    "title": "山寨截流 · 恶意低价",
+    "tag": "商战反击",
+    "summary": "步行街对门一夜之间冒出家装潢几乎照抄的「素白茶舍」，不但发一折券低价截流，还雇水军在本地生活榜狂刷素白茶集的恶意差评。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "公开原叶鲜奶溯源墙，推出老客集章回馈稳住复购",
+        "kind": "standard",
+        "costEnergy": 4,
+        "incomeHoursReward": 3.2,
+        "sysPoints": 18,
+        "resultText": "明厨亮灶的品质对比高下立判，海大老顾客纷纷自发晒单力挺，门店营收迅速回弹！"
+      },
+      {
+        "id": "heroine",
+        "label": "请林晚星在琴房窗边拍一支手冲冷萃短片，打响正版口碑",
+        "kind": "heroine",
+        "requireHeroine": "lin_wanxing",
+        "costEnergy": 2,
+        "incomeHoursReward": 6.2,
+        "sysPoints": 32,
+        "affectionGain": 12,
+        "resultText": "林晚星浅笑递茶的氛围感短片一夜刷爆海城同城榜，打卡人潮挤爆正版旗舰店，对街山寨店不到一周便挂牌转让！"
+      },
+      {
+        "id": "tianshu",
+        "label": "调用天枢舆情溯源，精准锤死对方水军账单与劣质茶粉",
+        "kind": "tianshu",
+        "costSysPoints": 14,
+        "incomeHoursReward": 5.8,
+        "sysPoints": 0,
+        "resultText": "天枢瞬间还原水军打款链路与植脂末进货单，实锤一出对方口碑彻底崩盘，素白茶集顺势收割全街客流！"
+      }
+    ]
+  },
+  {
+    "id": "be_esports_ddos",
+    "businessId": "biz_esports",
+    "title": "百人夜赛 · 断网突袭",
+    "tag": "黑客攻防",
+    "summary": "黑曜电竞会所正承办海城高校百人夜赛，打到决胜局时全场延迟突然飙红——赵天宇手下暗中雇了地下灰产，对会所专线发起恶意流量攻击。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "立刻切入备用商业专线，并加赠城南夜宵券安抚选手",
+        "kind": "standard",
+        "costEnergy": 4,
+        "incomeHoursReward": 3.5,
+        "sysPoints": 16,
+        "resultText": "备用专线三分钟内拉通，热腾腾的夜宵稳住了全场情绪，赛事顺利完赛，包厢续费率不降反升！"
+      },
+      {
+        "id": "heroine",
+        "label": "请陆知微反手溯源清洗流量，顺带把对方肉鸡反向锁死",
+        "kind": "heroine",
+        "requireHeroine": "lu_zhiwei",
+        "costEnergy": 2,
+        "incomeHoursReward": 6.8,
+        "sysPoints": 32,
+        "affectionGain": 12,
+        "resultText": "陆知微戴上耳机噼里啪啦敲出三行脚本，不仅瞬间把延迟压回 8ms，还把对方灰产服务器反手挂上了告警页，全场选手欢呼刷爆朋友圈！"
+      },
+      {
+        "id": "tianshu",
+        "label": "激活天枢网络护盾，重构加密路由并锁定幕后攻击源",
+        "kind": "tianshu",
+        "costSysPoints": 14,
+        "incomeHoursReward": 5.6,
+        "sysPoints": 0,
+        "resultText": "天枢瞬时完成流量黑洞牵引并固定取证，会所凭借“全城最稳电竞专线”名声大噪，连夜订满半个月包厢！"
+      }
+    ]
+  },
+  {
+    "id": "be_esports_pro",
+    "businessId": "biz_esports",
+    "title": "职业青训 · 包场试训",
+    "tag": "名流合作",
+    "summary": "海城顶级电竞俱乐部领队突访黑曜，看中顶层静音包厢与全套定制外设，提出包下整周黄金档做封闭青训试训，却把包场价压到腰斩。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "守住底价按阶梯时段切分，留住核心高净值夜场散客",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.6,
+        "sysPoints": 18,
+        "resultText": "双方敲定了白班青训、夜场散客的错峰方案，会所全天候满载运转，翻台收益稳步走高！"
+      },
+      {
+        "id": "heroine",
+        "label": "让陆知微亮出全套外设延迟实测报告，夺回议价主动权",
+        "kind": "heroine",
+        "requireHeroine": "lu_zhiwei",
+        "costEnergy": 2,
+        "incomeHoursReward": 6.5,
+        "sysPoints": 34,
+        "affectionGain": 11,
+        "resultText": "陆知微甩出比职业赛场还严苛的硬件调校数据，领队当场服气不再压价，还主动把俱乐部官方训练基地铜牌挂上了黑曜大门！"
+      },
+      {
+        "id": "tianshu",
+        "label": "用天枢推演俱乐部赞助预算底牌，顺势拿下联合赛事分成",
+        "kind": "tianshu",
+        "costSysPoints": 15,
+        "incomeHoursReward": 5.8,
+        "sysPoints": 0,
+        "resultText": "精准踩中对方赞助商考核节点，不仅原价签下整周包场，还额外拿到直播冠名与青训水吧分成！"
+      }
+    ]
+  },
+  {
+    "id": "be_antique_forgery",
+    "businessId": "biz_antique",
+    "title": "赝品踢馆 · 砸场风波",
+    "tag": "鉴宝交锋",
+    "summary": "几名生面孔抬着一只号称「明代宣德霁红梅瓶」的器物上门高调寄售，暗中却藏了自媒体镜头偷拍，企图坐实云起古玩轩打眼收假的丑闻。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "按行规请老掌眼细核胎釉，礼貌拒收并留存店内监控",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.4,
+        "sysPoints": 18,
+        "resultText": "云起古玩轩恪守真品底线，踢馆者无隙可乘灰溜溜退场，老街藏友对招牌更添三分信任！"
+      },
+      {
+        "id": "heroine",
+        "label": "请陆知微用便携光谱仪当场拆穿微孔做旧，反将一军",
+        "kind": "heroine",
+        "requireHeroine": "lu_zhiwei",
+        "costEnergy": 2,
+        "incomeHoursReward": 6.8,
+        "sysPoints": 35,
+        "affectionGain": 12,
+        "resultText": "陆知微三句话点破现代酸蚀做旧的配方，反手把偷拍镜头怼到对方脸上直播鉴假，视频火遍古玩圈，慕名上门委托代拍的大藏家络绎不绝！"
+      },
+      {
+        "id": "tianshu",
+        "label": "开启天枢洞察眼扫描釉下气泡，精准戳破窑口与幕后推手",
+        "kind": "tianshu",
+        "costSysPoints": 16,
+        "incomeHoursReward": 6.0,
+        "sysPoints": 0,
+        "resultText": "天枢连仿制窑口编号都算得分毫不差，来人脸色煞白仓皇抱瓶逃窜，当场围观的周老直呼后生可畏，顺手送来两笔大单！"
+      }
+    ]
+  },
+  {
+    "id": "be_antique_estate",
+    "businessId": "biz_antique",
+    "title": "老宅遗珍 · 暗拍捡漏",
+    "tag": "鬼市奇缘",
+    "summary": "城南一位归国藏家急于处理祖宅库房里十余只封蜡老木箱，只给半天时间整批打包暗标报价，周老和跨境玉商阿坤都在门外虎视眈眈。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "稳健估价只摘品相明朗的明清摆件，避开高风险盲箱",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.8,
+        "sysPoints": 20,
+        "resultText": "虽然没拿下整批库房，但挑出的几件乾隆官窑小件出手极快，净赚一笔漂亮差价！"
+      },
+      {
+        "id": "heroine",
+        "label": "带陆知微核对民国拍卖图录与族谱印记，精准锁定压箱重器",
+        "kind": "heroine",
+        "requireHeroine": "lu_zhiwei",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.0,
+        "sysPoints": 36,
+        "affectionGain": 13,
+        "resultText": "陆知微从半张泛黄封条里查出失传百年的名家旧藏，果断加价一成包圆，开箱竟现一对完好如初的翠玉如意，行内出价瞬间翻了三倍！"
+      },
+      {
+        "id": "tianshu",
+        "label": "启动天枢全谱成像穿透封蜡木箱，直指暗藏其中的高古玉璧",
+        "kind": "tianshu",
+        "costSysPoints": 18,
+        "incomeHoursReward": 6.2,
+        "sysPoints": 0,
+        "resultText": "天枢穿透厚重樟木标出最高价值箱号，你用恰到好处的底价一举夺标，开箱惊艳四座，阿坤看得眼红却毫无办法！"
+      }
+    ]
+  },
+  {
+    "id": "be_mcn_poach",
+    "businessId": "biz_mcn",
+    "title": "顶流挖角 · 合约暗战",
+    "tag": "业内风波",
+    "summary": "竞对传媒连夜抛出高额签字费，私下密约星耀两位上升期腰部主播跳槽，同时在圈内散布谣言称星耀商单枯竭、内部失和。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "亮出下季度高奢商单池与阶梯分成新约，稳住核心艺人团队",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.6,
+        "sysPoints": 20,
+        "resultText": "真金白银的资源排期摆上桌面，两位主播当场续签长约，星耀团队凝聚力反而更胜从前！"
+      },
+      {
+        "id": "heroine",
+        "label": "请沈琉璃开播连麦带飞全社新人，用泼天流量碾碎流言",
+        "kind": "heroine",
+        "requireHeroine": "shen_liuli",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.0,
+        "sysPoints": 36,
+        "affectionGain": 13,
+        "resultText": "沈琉璃在百万在线直播间大方连麦力捧同门新人，一句「星耀的人，哥哥罩着」冲上全城热搜第一，品牌方连夜排队追加投放预算！"
+      },
+      {
+        "id": "tianshu",
+        "label": "调取天枢商业背调，抖出竞对合约里的隐性对赌陷阱",
+        "kind": "tianshu",
+        "costSysPoints": 18,
+        "incomeHoursReward": 6.0,
+        "sysPoints": 0,
+        "resultText": "天枢精准扒出对方隐藏的天价违约坑与欠薪旧账，挖角戏码瞬间破产，反倒有别家头部达人主动递来加盟意向！"
+      }
+    ]
+  },
+  {
+    "id": "be_mcn_gala",
+    "businessId": "biz_mcn",
+    "title": "高奢盛典 · 压轴抢位",
+    "tag": "破圈盛宴",
+    "summary": "一线高奢珠宝与美妆联合盛典空降星耀不夜城，原定压轴带货席位临时空缺，海城三家头部娱乐机构连夜竞标，胜者可独享全晚主舞台曝光。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "提交星耀全案执行与保底转化方案，凭硬核数据竞标",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.8,
+        "sysPoints": 20,
+        "resultText": "扎实的选品策划与现场控场赢得了品牌方认可，星耀成功拿下联合主位，当晚佣金入账颇丰！"
+      },
+      {
+        "id": "heroine",
+        "label": "安排沈琉璃一袭黑金高定压轴空降，单场成交直接封神",
+        "kind": "heroine",
+        "requireHeroine": "shen_liuli",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.2,
+        "sysPoints": 38,
+        "affectionGain": 14,
+        "resultText": "沈琉璃踩着聚光灯挽着你的手臂压轴登场，气场艳压全城名媛，短短两小时带货额刷新不夜城年度纪录，佣金与品牌年度大使一并落袋！"
+      },
+      {
+        "id": "tianshu",
+        "label": "以天枢算法实时匹配高净值客群画像，精准锁定爆发转化",
+        "kind": "tianshu",
+        "costSysPoints": 20,
+        "incomeHoursReward": 6.2,
+        "sysPoints": 0,
+        "resultText": "天枢动态调优直播间推流节奏与礼盒组合，客单价飙升 40%，主办方当场拍板将下一季盛典独家交由星耀承办！"
+      }
+    ]
+  },
+  {
+    "id": "be_hotel_vip",
+    "businessId": "biz_hotel",
+    "title": "顶层峰会 · 临阵接盘",
+    "tag": "名流夜宴",
+    "summary": "一场汇聚亚太投资界大咖的私密峰会晚宴原定外滩另一家老牌酒店，却因对方供电突发故障，距开席仅剩六小时紧急致电外滩瑰丽求援。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "紧急召回星厨与白手套礼宾班底，高规格无缝承接晚宴",
+        "kind": "standard",
+        "costEnergy": 6,
+        "incomeHoursReward": 3.8,
+        "sysPoints": 22,
+        "resultText": "六小时内江景宴会厅焕然一新，晚宴秩序井然、出品挑不出丝毫瑕疵，主办方豪爽结清加急全款并额外送上小费！"
+      },
+      {
+        "id": "heroine",
+        "label": "请苏清婉亲自压阵统筹政商席次，顺势签下年度独家协议",
+        "kind": "heroine",
+        "requireHeroine": "su_qingwan",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.2,
+        "sysPoints": 38,
+        "affectionGain": 14,
+        "resultText": "苏清婉一袭月白礼服从容穿梭席间，三言两语便将几十位投资大佬的座次与合作意向妥帖盘活，峰会主席当场签下外滩瑰丽三年包场长约！"
+      },
+      {
+        "id": "tianshu",
+        "label": "启用天枢动线调度与宾客酒单推演，将细节拉到极致",
+        "kind": "tianshu",
+        "costSysPoints": 22,
+        "incomeHoursReward": 6.4,
+        "sysPoints": 0,
+        "resultText": "天枢提前备齐每位贵宾的忌口与偏爱年份红酒，宾至如归的震撼体验令外滩瑰丽一夜跻身亚太政商私宴首选！"
+      }
+    ]
+  },
+  {
+    "id": "be_hotel_review",
+    "businessId": "biz_hotel",
+    "title": "暗访评级 · 恶意设局",
+    "tag": "危机公关",
+    "summary": "国际奢华酒店协会暗访官下榻当晚，一名竞争对手买通的伪贵宾在江景套房大闹走廊、捏造服务丑闻，妄图拖垮酒店年度最高星级复评。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "值班总监立刻静默升级暗访官套房，并调取完整服务日志冷静止损",
+        "kind": "standard",
+        "costEnergy": 5,
+        "incomeHoursReward": 3.5,
+        "sysPoints": 20,
+        "resultText": "专业克制的应急处置反倒让暗访官打出了高分，年度奢华星级平稳保住，行政楼层预订量持续满房！"
+      },
+      {
+        "id": "heroine",
+        "label": "请苏清婉动用盛世资本法务与外滩人脉当场清场，反赢全场赞誉",
+        "kind": "heroine",
+        "requireHeroine": "su_qingwan",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.0,
+        "sysPoints": 36,
+        "affectionGain": 13,
+        "resultText": "苏清婉清冷一句「法务函已发至您背后雇主邮箱」瞬间镇住闹事者，暗访官赞叹酒店格调与掌控力非凡，破例授予年度白金星誉！"
+      },
+      {
+        "id": "tianshu",
+        "label": "用天枢比对入住记录与资金往来，三分钟坐实蓄意栽赃",
+        "kind": "tianshu",
+        "costSysPoints": 20,
+        "incomeHoursReward": 6.2,
+        "sysPoints": 0,
+        "resultText": "铁证摆到眼前，闹事者当场腿软道歉并赔付名誉损失，外滩瑰丽顺势收获一波全城高端客群的信任溢价！"
+      }
+    ]
+  },
+  {
+    "id": "be_quant_short",
+    "businessId": "biz_quant",
+    "title": "离岸做空 · 狙击暗流",
+    "tag": "金融博弈",
+    "summary": "午盘突发离岸空头借一份伪造研报狂砸海城新能源龙头，天枢量化多头重仓瞬时承压，几家大额 LP 客户在私享群里已开始焦躁问询赎回。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "果断触发量化风控对冲仓位，发布持仓透明度简报稳住出资人",
+        "kind": "standard",
+        "costEnergy": 6,
+        "incomeHoursReward": 4.0,
+        "sysPoints": 22,
+        "resultText": "股指期货对冲精准锁住回撤，尾盘恐慌退潮后净值迅速翻红，出资人纷纷对风控纪律竖起大拇指！"
+      },
+      {
+        "id": "heroine",
+        "label": "联手苏清婉调动盛世资本协同护盘，反手逼空收割离岸空头",
+        "kind": "heroine",
+        "requireHeroine": "su_qingwan",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.5,
+        "sysPoints": 40,
+        "affectionGain": 15,
+        "resultText": "你与苏清婉隔着陆家湾落地窗默契下达联合买单，巨量承接盘瞬间拉爆空头止损线，单日狂揽超额业绩报酬，整个金融圈为之震动！"
+      },
+      {
+        "id": "tianshu",
+        "label": "开启天枢高频盘口推演，精准卡位砸盘拐点完成绝地反杀",
+        "kind": "tianshu",
+        "costSysPoints": 25,
+        "incomeHoursReward": 6.5,
+        "sysPoints": 0,
+        "resultText": "天枢在毫秒级盘口波动中捕捉到空头弹药见底的信号，策略反手满仓低吸，收盘大涨收官，业绩分成直创新高！"
+      }
+    ]
+  },
+  {
+    "id": "be_quant_lp",
+    "businessId": "biz_quant",
+    "title": "家族基金 · 亿元尽调",
+    "tag": "资本扩容",
+    "summary": "一支京城老牌家族办公室秘密来海城考察量化私募，有意配置数亿元长线资金，但对天枢量化的极端行情抗压模型提出了极其严苛的现场路演考验。",
+    "choices": [
+      {
+        "id": "standard",
+        "label": "摊开近一年实盘净值曲线与归因详表迎考，稳妥拿下首期认购",
+        "kind": "standard",
+        "costEnergy": 6,
+        "incomeHoursReward": 3.8,
+        "sysPoints": 22,
+        "resultText": "扎实透明的实盘曲线打消了尽调团队的顾虑，首期亿元认购顺利落签，基金规模再上新台阶！"
+      },
+      {
+        "id": "heroine",
+        "label": "请苏清婉联袂坐镇陆家湾顶层路演厅，双强合璧拿下超额认购",
+        "kind": "heroine",
+        "requireHeroine": "su_qingwan",
+        "costEnergy": 3,
+        "incomeHoursReward": 7.5,
+        "sysPoints": 40,
+        "affectionGain": 14,
+        "resultText": "苏清婉以盛世资本总裁身份背书并逐条拆解风控框架，京城家族代表当场将配置额度翻倍，天枢量化一跃成为陆家湾最炙手可热的私募新贵！"
+      },
+      {
+        "id": "tianshu",
+        "label": "现场跑通天枢多因子极端压力推演，用无可挑剔的模型征服全场",
+        "kind": "tianshu",
+        "costSysPoints": 24,
+        "incomeHoursReward": 6.5,
+        "sysPoints": 0,
+        "resultText": "天枢实时回溯十年黑天鹅行情并给出完美对冲净值，家族风控官叹服不已，当场敲定长期战略出资！"
+      }
+    ]
+  }
+]
