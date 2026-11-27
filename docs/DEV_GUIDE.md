@@ -212,8 +212,10 @@ python3 scripts/assets/cut_sheet.py out.png client/public/assets/ui/icons name1,
 ```
 
 - **图标一定要整表生成**（一张图 3×3 九个），风格才统一；单个补图会风格漂移。
-- 图标风格句（固定附在 prompt 末尾）：
-  `consistent style across all icons: glossy 3D rendered game icon, champagne gold polished metal combined with deep midnight-navy enamel, subtle cyan glowing accents, soft studio rim light, crisp clean silhouette, premium luxury modern Chinese urban mobile game UI, each object fully separated with large empty spacing between them, plain pure white background, no text, no letters, no numbers, no labels, no frames, no grid lines`
+- 图标风格句 v2（2026-11 起，配合「更暗少金」；固定附在 prompt 末尾，完整模板见 `scripts/assets/icons_v2_prompts.py`）：
+  `consistent style across all nine icons: minimalist luxury emblem icons for a dark, elegant modern Chinese urban mobile game; each object rendered as a refined small sculpture of matte brushed champagne-gold metal (soft pale gold, low saturation, NOT bright yellow, NOT glossy) with smoky black obsidian glass inlays and fine engraved hairline details; restrained soft rim light, gentle shadows, quiet and premium, Art Deco geometry, clean readable silhouette, generous negative space inside each icon; only tiny accents of color where specified; no cartoon shine, no candy gloss, no bright saturated colors; nine icons arranged in a 3x3 grid, each object fully separated with large empty spacing between them, centered in its cell, same scale, plain pure white background, no text, no letters, no numbers, no labels, no frames, no grid lines, no drop shadow boxes`
+- 颜色点缀只给有语义的：红颜相关（心）用柔和玫瑰粉，天枢/积分/技能用一点冷青光，翡翠用低饱和玉绿；货币符号写明 `¥`（模型默认会画 `$`）。
+- 新增图标时把新物件加进一张 3×3 表**整表重出**，并保留其余 8 个旧物件作参照；或者至少把新表和现有图标并排肉眼比对。
 - 场景背景风格句：
   `anime background art for a Chinese urban otome mobile game, painterly cinematic lighting, high detail, vertical composition, no people, no text, no letters`（比例 2:3）
 - 角色/NPC：`Chinese urban otome mobile game anime illustration style, semi-realistic attractive character art, half-body portrait facing viewer, clean lineart, soft cel shading, plain pure white background, no text`，多个角色用 2×2 表一次出，再用 rembg 抠图。
