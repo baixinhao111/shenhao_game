@@ -2,6 +2,7 @@
 //
 //   node scripts/qa/balance_progress.mjs             # report with the gates in content/stories/stories.json
 //   node scripts/qa/balance_progress.mjs --suggest   # also print requireNetWorth values that hit TARGET_HOURS
+//   --no-biz-events                                   # ignore 产业经营事件 (content/business_events.json)
 //
 // Mirrors server/src/gameEngine.ts (keep CRIT in sync with rollCritCashback):
 //   - net worth = cash + business valuation (base × (1 + 0.45·(lv-1))) + property valuation + assets
@@ -28,6 +29,16 @@ const skillsData = J('content/skills.json');
 const episodes = J('content/stories/stories.json').volumes.flatMap((v) => v.episodes);
 const assetVal = Object.fromEntries(catalog.assets.map((a) => [a.id, a.valuation || 0]));
 const dailyCash = (skillsData.dailyTasks || []).reduce((s, t) => s + (t.rewardCash || 0), 0);
+
+// 产业经营事件 (server/src/empire.ts): one event per owned business every 90 min, paying
+// incomePerHour × incomeHoursReward. The player handles them with energy (≈4 each); energy regen is 6/h.
+const bizEventsRaw = fs.existsSync(path.join(root, 'content/business_events.json')) ? J('content/business_events.json') : [];
+const BIZ_EVENTS = Array.isArray(bizEventsRaw) ? bizEventsRaw : bizEventsRaw.events || bizEventsRaw.businessEvents || [];
+const BIZ_EVENT_HOURS = (() => {
+  const hs = BIZ_EVENTS.flatMap((e) => (e.choices || []).filter((c) => c.kind === 'standard').map((c) => Number(c.incomeHoursReward || 0)));
+  return hs.length ? hs.reduce((a, b) => a + b, 0) / hs.length : 0;
+})();
+const USE_BIZ_EVENTS = !process.argv.includes('--no-biz-events') && BIZ_EVENTS.length > 0;
 
 /** Same constants as rollCritCashback in server/src/gameEngine.ts */
 export const CRIT = { baseProb: 0.12, chargeOnCrit: 10, chargeMax: 25, chargeMin: 2, chargeScale: 400 };
@@ -146,6 +157,17 @@ function simulate({ gates, sessionsPerDay, seed = 1, days = 40, maxSessions = In
       p.cash += income() * Math.min(12, t - lastCollect);
       lastCollect = t;
       if (i === 0) p.cash += dailyCash;
+      if (USE_BIZ_EVENTS) {
+        // energy since last session (6/h, cap 100) pays ~4 per event; events need ≥ 90 min cooldown
+        const hoursSince = i === 0 ? 8 : SESSIONS[sessionsPerDay][i] - SESSIONS[sessionsPerDay][i - 1];
+        let energy = Math.min(100, hoursSince * 6);
+        for (const [id, lv] of Object.entries(p.biz)) {
+          if (energy < 4 || hoursSince < 1.5) break;
+          if (!BIZ_EVENTS.some((e) => e.businessId === id)) continue;
+          energy -= 4;
+          p.cash += bizDef(id).baseIncomePerHour * (1 + 0.45 * (lv - 1)) * BIZ_EVENT_HOURS;
+        }
+      }
       readStory(t);
       const before = netWorth();
       invest();
