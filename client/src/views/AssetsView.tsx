@@ -302,7 +302,7 @@ export const AssetsView: React.FC = () => {
             </div>
           </div>
 
-          <div className="relative mx-3 -mt-4 z-10 panel-elevated rounded-[10px] px-4 py-3.5 space-y-2.5">
+          <div className="relative mx-3 -mt-2 z-10 px-2 pt-1 pb-2 space-y-2">
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <h3 className="font-editorial text-[20px] font-black text-[#FBF1D8] truncate">{featuredAsset.name}</h3>
@@ -345,54 +345,58 @@ export const AssetsView: React.FC = () => {
 
           <div className="px-3 pt-5 space-y-2.5">
             <DecoHeading title="珍藏陈列" aside={`${assets.filter((a: any) => a.owned).length} / ${assets.length}`} />
-            <div className="grid grid-cols-3 gap-2">
-              {assets.map((a: any) => {
-                const selected = a.id === featuredAsset.id;
-                return (
-                  <button
-                    key={a.id}
-                    onClick={() => {
-                      playTap();
-                      setSelectedAssetId(a.id);
-                      // the showroom is at the top: bring it into view so the tap visibly does something
-                      scrollToContentTop(true);
-                    }}
-                    className={`relative rounded-[8px] p-1.5 pb-2 text-left transition active:scale-95 ${
-                      selected ? 'panel-brass' : 'panel-arch'
-                    }`}
-                  >
-                    <div
-                      className="h-[58px] rounded-[5px] flex items-center justify-center"
-                      style={{ background: 'radial-gradient(60% 60% at 50% 60%, rgba(120,140,220,0.22), transparent 75%)' }}
-                    >
-                      <img
-                        src={a.image}
-                        alt={a.name}
-                        className={`max-h-[52px] max-w-full object-contain drop-shadow-[0_6px_6px_rgba(0,0,0,0.7)] ${
-                          !a.owned ? 'brightness-[0.45] saturate-50' : ''
-                        }`}
-                      />
-                    </div>
-                    <div className="mt-1 px-0.5">
-                      <div className="text-[11px] font-bold text-[#F4EFE4] leading-[1.25] line-clamp-2 min-h-[27px]">{a.name}</div>
-                      <div className={`text-[10px] font-num truncate mt-0.5 ${a.owned ? 'text-[#7BE0A8]' : 'text-[#929AB4]'}`}>
-                        {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
-                      </div>
-                    </div>
-                    {!a.owned && <GameIcon name="lock" size={16} className="absolute top-1.5 right-1.5 opacity-80" />}
-                  </button>
-                );
-              })}
+            {/* display shelves: three pieces per shelf, each standing on a lit ledge, no boxes */}
+            <div className="space-y-1">
+              {Array.from({ length: Math.ceil(assets.length / 3) }, (_, row) => (
+                <div key={row} className="relative pt-2">
+                  <div className="grid grid-cols-3">
+                    {assets.slice(row * 3, row * 3 + 3).map((a: any) => {
+                      const selected = a.id === featuredAsset.id;
+                      return (
+                        <button
+                          key={a.id}
+                          onClick={() => {
+                            playTap();
+                            setSelectedAssetId(a.id);
+                            scrollToContentTop(true);
+                          }}
+                          className="relative flex flex-col items-center active:scale-95 transition"
+                        >
+                          {selected && (
+                            <span className="absolute top-0 left-1/2 -translate-x-1/2 w-[80%] h-[70px] pointer-events-none" style={{ background: 'conic-gradient(from 160deg at 50% 0%, transparent 0deg, rgba(255,240,210,0.28) 20deg, transparent 40deg)' }} />
+                          )}
+                          <span className="relative h-[62px] w-full flex items-end justify-center">
+                            <img
+                              src={a.image}
+                              alt={a.name}
+                              className={`max-h-[56px] max-w-[88%] object-contain drop-shadow-[0_8px_6px_rgba(0,0,0,0.75)] ${
+                                !a.owned ? 'brightness-[0.35] saturate-0' : ''
+                              } ${selected ? 'scale-110' : ''} transition`}
+                            />
+                            {!a.owned && <GameIcon name="lock" size={16} className="absolute top-1 right-[18%] opacity-70" />}
+                          </span>
+                          <span className={`mt-3 text-[11px] font-bold truncate max-w-[92%] ${selected ? 'text-[#FFE7B0]' : a.owned ? 'text-[#F4EFE4]' : 'text-[#8B93AD]'}`}>
+                            {a.name}
+                          </span>
+                          <span className={`text-[10px] font-num ${a.owned ? 'text-[#7BE0A8]' : 'text-[#6B7392]'}`}>
+                            {a.equipped ? '驾驶中' : a.owned ? '已入库' : a.dropOnly ? '限定' : formatMoney(a.price)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                  {/* the ledge */}
+                  <span className="absolute left-2 right-2 top-[70px] h-[6px] rounded-[50%] bg-[radial-gradient(closest-side,rgba(226,189,114,0.35),transparent)] pointer-events-none" />
+                  <span className="absolute left-4 right-4 top-[72px] h-px bg-gradient-to-r from-transparent via-[#E2BD72]/55 to-transparent pointer-events-none" />
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="px-3 pt-5 space-y-2">
             <DecoHeading title="套装羁绊" />
             {assetSets.map((s: any) => (
-              <div
-                key={s.id}
-                className={`rounded-[8px] px-3 py-2.5 flex items-center gap-3 ${s.completed ? 'panel-brass' : 'panel-arch'}`}
-              >
+              <div key={s.id} className="relative px-1 py-2.5 flex items-center gap-3 border-b border-white/[0.06] last:border-b-0">
                 <GameIcon name="crown" size={30} className={s.completed ? '' : 'grayscale opacity-60'} />
                 <div className="min-w-0 flex-1">
                   <div className="text-[13px] font-editorial font-black text-[#FBF1D8]">{s.name}</div>

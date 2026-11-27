@@ -616,3 +616,29 @@
   -webkit-mask-image: radial-gradient(circle at 50% 45%, transparent 0 32%, #000 70%);
   mask-image: radial-gradient(circle at 50% 45%, transparent 0 32%, #000 70%);
 }
+
+/* 文字页签：无底框，只有字重/颜色变化 + 金色短下划线（替代胶囊 tab-chip 的场景） */
+.route-tab {
+  position: relative;
+  padding: 10px 0 6px;
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  color: #8b93ad;
+  transition: color 160ms;
+}
+.route-tab[data-active='true'] {
+  color: #ffe7b0;
+  font-weight: 900;
+}
+.route-tab[data-active='true']::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 18px;
+  height: 2px;
+  margin-left: -9px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #b7843a, #ffe7b0, #b7843a);
+  box-shadow: 0 0 8px rgba(255, 231, 176, 0.7);
+}
