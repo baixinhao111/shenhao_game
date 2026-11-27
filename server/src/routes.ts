@@ -1748,7 +1748,8 @@ export function createApiRouter(): Router {
     const storyHot = quotes.find((q) => q.storyTag && (q.storyTag.includes('利空') || q.storyTag.includes('看空') || q.storyTag.includes('看多') || q.storyTag.includes('崩跌')));
     const tipStock = storyHot || quotes[tipIdx];
     const insiderTip = `【天枢内幕洞察（准确度 ${Math.min(98, 72 + skills.insightLevel * 5)}%）】预测【${tipStock.name}】下一波段大概率「${tipStock.trend === 'up' ? '强势拉升（宜做多）' : '高位回调（宜做空）'}」！`;
-    res.json({ quotes, insiderTip, headline });
+    // the per-stock trend is the server's secret; only the insider tip (with its accuracy) reveals one
+    res.json({ quotes: quotes.map(({ trend: _trend, ...q }) => q), insiderTip, headline });
   });
 
 
