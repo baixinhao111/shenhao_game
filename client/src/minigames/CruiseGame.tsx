@@ -34,7 +34,7 @@ const PlayingCard: React.FC<{ card: Card; index: number }> = ({ card, index }) =
       initial={{ y: -120, x: 40, rotate: -18, opacity: 0 }}
       animate={{ y: 0, x: 0, rotate: (index - 1) * 4, opacity: 1 }}
       transition={{ type: 'spring', stiffness: 260, damping: 22, delay: index * 0.06 }}
-      className="relative w-[60px] h-[86px] -ml-3 first:ml-0 rounded-[7px] shadow-[0_8px_14px_rgba(0,0,0,0.55)]"
+      className="relative w-[74px] h-[106px] -ml-4 first:ml-0 rounded-[8px] shadow-[0_10px_18px_rgba(0,0,0,0.6)] overflow-hidden"
       style={
         hidden
           ? { background: 'url(/assets/ui/deco_tile.webp) center/120px, #141C38', border: '2px solid #E2BD72' }
@@ -43,11 +43,17 @@ const PlayingCard: React.FC<{ card: Card; index: number }> = ({ card, index }) =
     >
       {!hidden && (
         <>
-          <div className={`absolute top-1 left-1.5 leading-none font-num font-semibold text-[16px] ${red ? 'text-[#C2263F]' : 'text-[#1B2340]'}`}>
+          <div className={`absolute top-1 left-1.5 leading-none font-num font-semibold text-[19px] ${red ? 'text-[#C2263F]' : 'text-[#1B2340]'}`}>
             {card.r}
-            <div className="text-[13px]">{card.s}</div>
+            <div className="text-[14px]">{card.s}</div>
           </div>
-          <div className={`absolute inset-0 flex items-center justify-center text-[30px] ${red ? 'text-[#C2263F]' : 'text-[#1B2340]'}`}>{card.s}</div>
+          <div className={`absolute bottom-1 right-1.5 leading-none font-num font-semibold text-[19px] rotate-180 ${red ? 'text-[#C2263F]' : 'text-[#1B2340]'}`}>
+            {card.r}
+            <div className="text-[14px]">{card.s}</div>
+          </div>
+          <div className={`absolute inset-0 flex items-center justify-center text-[38px] ${red ? 'text-[#C2263F]' : 'text-[#1B2340]'}`}>{card.s}</div>
+          {/* gloss */}
+          <div className="absolute inset-0 bg-[linear-gradient(125deg,rgba(255,255,255,0.55)_0%,transparent_35%,transparent_70%,rgba(0,0,0,0.06)_100%)] pointer-events-none" />
         </>
       )}
     </motion.div>
@@ -108,7 +114,7 @@ export const CruiseGame: React.FC = () => {
   const playsLeft = Math.max(0, 5 - (ev?.playsToday || 0));
 
   return (
-    <Stage bg="/assets/scene/casino.jpg" title="星耀号 · 公海局" subtitle="21 点 · 每手筹码 ¥30万" onBack={leave} dim={0.35}>
+    <Stage bg="/assets/scene/casino.jpg" title="星耀号 · 公海局" subtitle={`21 点 · 每手筹码 ${formatMoney(300000 * stakeScale)}`} onBack={leave} dim={0.35}>
       <div className="flex-1 flex flex-col min-h-0">
         <div className="px-4 pt-1 flex items-center justify-between text-stroke-dark">
           <div className="flex items-center gap-1">
@@ -128,7 +134,7 @@ export const CruiseGame: React.FC = () => {
               </div>
             </div>
             <div className="text-[11px] text-[#C3C9DC] mt-0.5 text-stroke-dark">财阀代理 · 阿坤 {hand?.dealerTotal != null ? `· ${hand.dealerTotal}点` : ''}</div>
-            <div className="flex mt-2 h-[86px]">
+            <div className="flex mt-2 h-[106px]">
               {hand?.dealer.map((c, i) => <PlayingCard key={`d${i}${c.r}${c.s}`} card={c} index={i} />)}
             </div>
           </div>
@@ -154,7 +160,7 @@ export const CruiseGame: React.FC = () => {
 
           {/* player */}
           <div className="flex flex-col items-center">
-            <div className="flex h-[86px]">{hand?.player.map((c, i) => <PlayingCard key={`p${i}${c.r}${c.s}`} card={c} index={i} />)}</div>
+            <div className="flex h-[106px]">{hand?.player.map((c, i) => <PlayingCard key={`p${i}${c.r}${c.s}`} card={c} index={i} />)}</div>
             {hand && <div className="mt-2 font-num text-[18px] text-[#FFE7B0] text-stroke-dark">{hand.playerTotal} 点</div>}
           </div>
         </div>
