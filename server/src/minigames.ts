@@ -30,6 +30,7 @@ import {
   todayKey,
 } from './gameEngine.js';
 import { getWeeklyCruiseTheme, incrementAchievementStat } from './empire.js';
+import { triggerMilestoneReactions } from './proactive.js';
 import {
   applySessionFeedbackToMarket,
   buildStockMarketSnapshot,
@@ -388,6 +389,13 @@ function settleJade(s: Session, mask: string, buyerId: BuyerId) {
   if (stone.grade === 'imperial' && n.j > 0 && unlockHeroine(s.userId, 'lu_zhiwei', 20)) unlockedHeroine = 'lu_zhiwei';
   incrementAchievementStat(s.userId, 'jadePlays', 1);
   if (stone.grade === 'imperial') incrementAchievementStat(s.userId, 'jadeImperials', 1);
+  if ((stone.grade === 'imperial' || stone.grade === 'ice') && buyer.offer > cost) {
+    triggerMilestoneReactions(s.userId, 'jade_high_grade', {
+      grade: stone.grade,
+      gradeName: GRADE_NAME[stone.grade],
+      payout: buyer.offer,
+    });
+  }
   finishCommon(s.userId);
   return {
     buyer: { id: buyer.id, name: buyer.name },
@@ -436,6 +444,14 @@ function settleStock(s: Session, tick: number) {
   closeSession(s);
   grant(s.userId, payout, 28);
   if (payout > d.stake) incrementAchievementStat(s.userId, 'stockWins', 1);
+  const stockProfit = payout - d.stake;
+  if (stockProfit >= 120000 || payout >= d.stake * 1.35) {
+    triggerMilestoneReactions(s.userId, 'stock_big_win', {
+      profit: stockProfit,
+      stockName: d.name,
+      dir: d.dir,
+    });
+  }
   finishCommon(s.userId);
   // Feed closing move back into the live market & rotate TianShu insider tip immediately for the next round!
   applySessionFeedbackToMarket(d.stockId, d.path[0], d.path[t]);
@@ -552,6 +568,7 @@ function settleLive(s: Session, rawActions: unknown, auto = false) {
   grant(s.userId, 0, win ? 45 : 10);
   if (win) {
     incrementAchievementStat(s.userId, 'liveWins', 1);
+    triggerMilestoneReactions(s.userId, 'live_pk_win', { spent });
     const user = queryOne<any>('SELECT nickname FROM users WHERE id = ?', [s.userId]);
     postMoment(
       s.userId,
@@ -634,11 +651,13 @@ const PITCH_POOL = [
     },
   },
 ];
-const FOUNDER_NAMES = ['周屿', '林可', '许知远', '唐果', '韩松', '叶澜', '顾北', '沈言', '程一'];
+const FOUNDER_NAMES = ['周屿', '林可', '许知远', '唐果', '韩松', '叶澜', '顾北', '沈言', '程一', '陆明轩', '苏禾', '姜黎', '方渡', '江晚'];
 const ANGEL_MULT: Record<PitchType, [number, number]> = { gem: [3.5, 6.5], solid: [1.5, 2.3], hype: [0.2, 0.5] };
 
 function generatePitches() {
-  const projects = [...PITCH_POOL].sort(() => Math.random() - 0.5).slice(0, 3);
+  const loaded = getContent().angelPitches;
+  const pool = Array.isArray(loaded) && loaded.length >= 3 ? loaded : PITCH_POOL;
+  const projects = [...pool].sort(() => Math.random() - 0.5).slice(0, 3);
   const names = [...FOUNDER_NAMES].sort(() => Math.random() - 0.5);
   const types: PitchType[] = [Math.random() < 0.45 ? 'gem' : 'solid', 'solid', 'hype'].sort(() => Math.random() - 0.5) as PitchType[];
   return projects.map((p, i) => ({ founder: names[i], ...p, type: types[i] }));
@@ -649,6 +668,7 @@ function publicPitch(p: any, i: number, asked: Record<number, boolean>) {
     index: i,
     founder: p.founder,
     project: p.project,
+    tag: p.tag || null,
     pitch: p.pitch,
     claims: p.claims,
     fact: asked[i] ? p.facts[p.type] : null,

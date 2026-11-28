@@ -27,6 +27,8 @@ export interface GameContent {
   bondStories: BondStoriesContent;
   businessEvents: any[];
   achievements: any[];
+  angelPitches: any[];
+  luxuryTheaters: any[];
 }
 
 function readJson(relPath: string): any {
@@ -90,6 +92,8 @@ export function loadContent(): GameContent {
     bondStories: readOptionalJson<BondStoriesContent>('heroines/bond_stories.json', { bonds: [], shuraEvents: [] }),
     businessEvents: readOptionalJson<any[]>('business_events.json', []),
     achievements: readOptionalJson<any[]>('achievements.json', []),
+    angelPitches: readOptionalJson<any[]>('angel_pitches.json', []),
+    luxuryTheaters: readOptionalJson<any[]>('luxury_theaters.json', []),
   };
   return cachedContent;
 }

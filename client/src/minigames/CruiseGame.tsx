@@ -114,7 +114,22 @@ export const CruiseGame: React.FC = () => {
   const playsLeft = Math.max(0, 5 - (ev?.playsToday || 0));
 
   return (
-    <Stage bg="/assets/scene/casino.jpg" title="星耀号 · 公海局" subtitle={`21 点 · 每手筹码 ${formatMoney(300000 * stakeScale)}`} onBack={leave} dim={0.35}>
+    <Stage
+      bg="/assets/scene/casino.jpg"
+      title="星耀号 · 公海局"
+      subtitle={`21 点 · 每手筹码 ${formatMoney(300000 * stakeScale)}`}
+      onBack={leave}
+      dim={0.35}
+      help={{
+        title: '公海星耀号 21 点指南',
+        subtitle: '靠近但不超过 21 点，赢取星耀勋章兑换绝版蓝钻',
+        tips: [
+          { label: '基础牌规', desc: 'A 可作 1 点或 11 点，J/Q/K 算 10 点。先看清庄家明牌再决定要牌、停牌或趁好牌双倍下注。' },
+          { label: '天枢透视暗牌', desc: '不确定庄家暗牌点数或下一张牌面时，消耗天枢积分即可透视决策，避免 15–16 点盲目爆牌。', tone: 'cyan' },
+          { label: '每周公海主题', desc: '每周公海夜宴轮换专属勋章倍率（最高 ×1.5），攒够勋章可直接兑换稀世藏品「海洋之心 32 克拉蓝钻」。' },
+        ],
+      }}
+    >
       <div className="flex-1 flex flex-col min-h-0">
         <div className="px-4 pt-1 flex items-center justify-between text-stroke-dark">
           <div className="flex items-center gap-1">

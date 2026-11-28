@@ -14,6 +14,8 @@ import { queryOne } from './db.js';
 import { assertCashSufficient, spendEnergyOrThrow, spendSysPointsOrThrow } from './economy.js';
 import { buildFullGameState, computePortfolioAndTier, formatMoney, getPlayerKv, setPlayerKv } from './gameEngine.js';
 import { incrementAchievementStat } from './empire.js';
+import { computeNegotiationPrestigeBuff } from './luxury.js';
+import { triggerMilestoneReactions } from './proactive.js';
 import { assertCanBuyBusiness, assertCanBuyProperty, purchaseBusiness, purchaseProperty } from './purchases.js';
 
 type AuthedRequest = Request & { userId?: number };
@@ -121,6 +123,7 @@ interface Deal {
   range: [number, number] | null;
   log: Array<{ who: 'seller' | 'me' | 'system' | 'ally'; text: string; allyId?: string }>;
   finalCall: boolean;
+  prestigeBadge: string | null;
 }
 
 const deals = new Map<string, Deal>();
@@ -175,6 +178,7 @@ function publicDeal(d: Deal, extra: Record<string, unknown> = {}) {
       mindread: { cost: MINDREAD_BASE * (d.mindreads + 1) },
     },
     reveal: { weakness: d.weakness, range: d.range, temperHint: d.mindreads > 0 ? info.hint : null },
+    prestigeBadge: d.prestigeBadge,
     log: d.log,
     ...extra,
   };
@@ -233,9 +237,19 @@ function closeWin(d: Deal, price: number) {
       ? `谈下【${d.itemName}】，比挂牌价少花了 ${pct}%。生意场上，筹码比嗓门重要。`
       : `签下【${d.itemName}】。价格不是问题，时机才是。`;
   const { critResult } =
-    d.kind === 'business' ? purchaseBusiness(d.userId, d.itemId, price) : purchaseProperty(d.userId, d.itemId, price, text);
+    d.kind === 'business'
+      ? purchaseBusiness(d.userId, d.itemId, price, { fromNegotiation: true })
+      : purchaseProperty(d.userId, d.itemId, price, text);
   sellerSay(d, LINES.accept[d.temper]);
   incrementAchievementStat(d.userId, 'dealWins', 1);
+  triggerMilestoneReactions(d.userId, 'deal_win', {
+    kind: d.kind,
+    itemId: d.itemId,
+    itemName: d.itemName,
+    sellerId: d.sellerId,
+    saved: d.list - price,
+    savedPct: pct,
+  });
   closeDeal(d);
   return publicDeal(d, { done: true, result: { success: true, price, saved: d.list - price, savedPct: pct, critResult } });
 }
@@ -271,8 +285,14 @@ export function registerNegotiationRoutes(router: Router, auth: Auth): void {
       const sellerId = SELLER_OF[itemId] || 'qian';
       const temper = SELLERS[sellerId].temper;
       const { skills } = computePortfolioAndTier(userId);
-      const bottom = list * rand(0.72, 0.9) * (1 - Math.min(0.1, (skills.upgradeDiscountPct || 0) * 0.4));
+      const prestige = computeNegotiationPrestigeBuff(userId, sellerId, temper);
+      const bottom =
+        list *
+        rand(0.72, 0.9) *
+        (1 - Math.min(0.1, (skills.upgradeDiscountPct || 0) * 0.4)) *
+        (1 - (prestige?.discountPct || 0));
       const info = TEMPER_INFO[temper];
+      const basePatience = info.patience + (prestige?.patienceBonus || 0);
       const d: Deal = {
         id: crypto.randomBytes(9).toString('hex'),
         userId,
@@ -286,8 +306,8 @@ export function registerNegotiationRoutes(router: Router, auth: Auth): void {
         temper,
         bottom,
         ask: roundPrice(list * 1.08, list),
-        patience: info.patience,
-        maxPatience: info.patience,
+        patience: basePatience,
+        maxPatience: basePatience,
         round: 0,
         used: [],
         mindreads: 0,
@@ -295,8 +315,13 @@ export function registerNegotiationRoutes(router: Router, auth: Auth): void {
         range: null,
         log: [],
         finalCall: false,
+        prestigeBadge: prestige?.badge || null,
       };
       d.log.push({ who: 'system', text: `挂牌价 ${formatMoney(list)}。对方性格：${info.label}。` });
+      if (prestige) {
+        d.log.push({ who: 'system', text: prestige.systemNote });
+        sellerSay(d, prestige.sellerLine);
+      }
       sellerSay(d, fill(LINES.open[temper], d));
       deals.set(d.id, d);
       dealByUser.set(userId, d.id);

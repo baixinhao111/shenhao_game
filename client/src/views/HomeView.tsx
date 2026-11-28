@@ -303,7 +303,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
     !player.signedInToday ||
     dailyTasks?.some((t: any) => !t.claimed && t.progress >= t.target) ||
     Number(state?.unclaimedAchievementCount || 0) > 0;
-  // 天枢指引：首页永远只给一条「下一步最值得做的事」（模拟经营的目标引导）
+  // 天枢指引：首页永远只给一条「下一步最值得做的事」（补全修罗场/未读私信/产业事件/羁绊/分红/主线/顶奢私宴/今日打卡）
   const guide: { id: string; tone?: 'rose' | 'cyan'; text: string; go: () => void } | null = (() => {
     if (state?.shuraEvent)
       return {
@@ -333,6 +333,34 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           }
         },
       };
+    const unreadHeroine = unlockedHeroines.find((h: any) => Number(h.unreadCount || 0) > 0);
+    if (unreadHeroine)
+      return {
+        id: `dm:${unreadHeroine.id}:${unreadHeroine.unreadCount}`,
+        tone: 'rose',
+        text: `${unreadHeroine.name} 发来 ${unreadHeroine.unreadCount} 条新微信`,
+        go: () => useGameStore.getState().openHeroineChat(unreadHeroine.id),
+      };
+    const bizWithEvent = (state?.businesses || []).find((b: any) => b.owned && b.activeEvent);
+    if (bizWithEvent)
+      return {
+        id: `bizev:${bizWithEvent.id}:${bizWithEvent.activeEvent.id}`,
+        tone: 'cyan',
+        text: `产业突发 · ${bizWithEvent.name}「${bizWithEvent.activeEvent.title}」`,
+        go: () => {
+          const st = useGameStore.getState();
+          st.focusBusiness(bizWithEvent.id);
+          st.openAssetsTab('biz');
+        },
+      };
+    const bondHeroine = unlockedHeroines.find((h: any) => h.hasAvailableBond);
+    if (bondHeroine)
+      return {
+        id: `bond:${bondHeroine.id}`,
+        tone: 'rose',
+        text: `${bondHeroine.name} · 专属羁绊剧情已解锁`,
+        go: () => useGameStore.getState().setActiveTab('heroines'),
+      };
     if (livePendingIncome >= 10000)
       return {
         id: 'income',
@@ -347,11 +375,50 @@ export const HomeView: React.FC<HomeViewProps> = ({ pureArtMode, onTogglePureArt
           text: `主线《${nextEpisode.title}》等待宿主推进`,
           go: () => useGameStore.getState().setActiveTab('story'),
         };
+      const newLux = (state?.luxuryTheaters || []).find((t: any) => t.unlocked && !t.completed);
+      if (newLux)
+        return {
+          id: `lux:${newLux.id}`,
+          tone: 'rose',
+          text: `顶奢排面 · 《${newLux.title}》可启程`,
+          go: () => useGameStore.getState().openAssetsTab('garage'),
+        };
+      // Check open today's hot visit spot on map before showing net-worth gate
+      for (const d of state?.map?.districts || []) {
+        if (!d.unlocked) continue;
+        const hotSpot = (d.spots || []).find((sp: any) => sp.kind === 'visit' && sp.hot && !sp.visited && sp.open);
+        if (hotSpot)
+          return {
+            id: `spot:${hotSpot.id}`,
+            tone: 'cyan',
+            text: `海城今日有事 · ${d.name}「${hotSpot.name}」`,
+            go: () => useGameStore.getState().openSpot(d.id, hotSpot.id),
+          };
+      }
       return {
         id: 'gate',
         text: `身价再涨 ${formatMoney(nextEpisode.requireNetWorth - player.netWorth)} 解锁下一幕`,
         go: () => useGameStore.getState().openAssetsTab('biz'),
       };
+    }
+    const newLux = (state?.luxuryTheaters || []).find((t: any) => t.unlocked && !t.completed);
+    if (newLux)
+      return {
+        id: `lux:${newLux.id}`,
+        tone: 'rose',
+        text: `顶奢排面 · 《${newLux.title}》可启程`,
+        go: () => useGameStore.getState().openAssetsTab('garage'),
+      };
+    for (const d of state?.map?.districts || []) {
+      if (!d.unlocked) continue;
+      const hotSpot = (d.spots || []).find((sp: any) => sp.kind === 'visit' && sp.hot && !sp.visited && sp.open);
+      if (hotSpot)
+        return {
+          id: `spot:${hotSpot.id}`,
+          tone: 'cyan',
+          text: `海城今日有事 · ${d.name}「${hotSpot.name}」`,
+          go: () => useGameStore.getState().openSpot(d.id, hotSpot.id),
+        };
     }
     if (Number(state?.unclaimedAchievementCount || 0) > 0)
       return {

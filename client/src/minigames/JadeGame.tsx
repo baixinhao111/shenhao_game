@@ -446,13 +446,29 @@ export const JadeGame: React.FC = () => {
   const line = (LINES[revealed === 0 ? 'start' : verdict.tone] || LINES.neutral)[lineIdx % 2] || LINES.start[0];
 
   return (
-    <Stage bg="/assets/scene/jade_stall.jpg" title="古玩赌石" subtitle="擦开石皮，看准时机出手" onBack={() => {
+    <Stage
+      bg="/assets/scene/jade_stall.jpg"
+      title="古玩赌石"
+      subtitle="擦开石皮，看准时机出手"
+      onBack={() => {
         if (phase === 'scratch') {
           showError('石头还没出手，先卖给一位买家再走');
           return;
         }
         closeMinigame();
-      }} dim={0.35}>
+      }}
+      dim={0.35}
+      help={{
+        title: '城南赌石行规',
+        subtitle: '开窗见绿见好就收，切忌贪刀擦垮身价',
+        tips: [
+          { label: '擦窗看表现', desc: '在原石上滑动擦开石皮。真正值钱的玉肉通透带光；浅层「色皮」往往只浮在表面，擦深反而会暴露白岩或裂纹。' },
+          { label: '三位买家的脾气', desc: '阿坤胆大但爱押注未开全的毛料；钱总看重显眼绿面；周老眼毒，见了真高冰/帝王绿才肯给出天价。' },
+          { label: '天枢透视热区', desc: '消耗天枢积分可扫描石内玉脉热区，沿冰蓝高亮位置开窗能大幅避开裂纹与废岩。', tone: 'cyan' },
+          { label: '帝王绿私藏', desc: '若切出玻璃种帝王绿且露面过半，可直接选择「收入藏品」入库陈列，还能触发陆知微关注。', tone: 'rose' },
+        ],
+      }}
+    >
       {phase === 'pick' && (
         <div className="flex-1 flex flex-col justify-end">
           <img

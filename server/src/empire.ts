@@ -329,8 +329,13 @@ function buildBusinessEventScript(userId: number, businessId: string) {
   const options = (ev.choices || []).map((c: any) => {
     const costEnergy = Number(c.costEnergy || 0);
     const costSysPoints = Number(c.costSysPoints || 0);
-    const estCash = Math.round(hr * Number(c.incomeHoursReward || 3));
     const reqH = c.requireHeroine ? content.heroines.find((h: any) => h.id === c.requireHeroine) : null;
+    const secH = c.secondaryHeroine ? content.heroines.find((h: any) => h.id === c.secondaryHeroine) : null;
+    const secRow = secH
+      ? queryOne<any>('SELECT unlocked FROM player_heroines WHERE user_id = ? AND heroine_id = ?', [userId, secH.id])
+      : null;
+    const duoReady = Boolean(c.kind === 'heroine' && secH && secRow?.unlocked);
+    const estCash = Math.round(hr * Number(c.incomeHoursReward || 3) * (duoReady ? 1.2 : 1));
     const heroineReady = c.kind !== 'heroine' || (c.requireHeroine && owned.assigned_heroine_id === c.requireHeroine);
 
     let disabledReason: string | undefined;
@@ -373,6 +378,7 @@ function buildBusinessEventScript(userId: number, businessId: string) {
         },
       );
     } else if (c.kind === 'heroine') {
+      const secVisual = secH ? resolveHeroineActivePortrait(userId, secH) : null;
       branchNodes.push(
         {
           type: 'dialogue',
@@ -382,8 +388,25 @@ function buildBusinessEventScript(userId: number, businessId: string) {
           leftSprite: protagonistSprite,
           rightSprite: reporter.portrait,
           activeSide: 'left',
-          text: `好，这件事交给你来收口，需要什么资源我这边全权兜底。`,
+          text: duoReady && secH
+            ? `好，这件事交给你来主控，我同步让${secH.name}那边配合你双线合围！`
+            : `好，这件事交给你来收口，需要什么资源我这边全权兜底。`,
         },
+        ...(duoReady && secH
+          ? [
+              {
+                type: 'dialogue',
+                speaker: secH.id,
+                name: secH.name,
+                role: `双线支援 · ${secH.title}`,
+                leftSprite: secVisual?.portrait || secH.portrait,
+                rightSprite: reporter.portrait,
+                activeSide: 'left',
+                effect: 'flash',
+                text: `这边已经同步切入完毕，${reporter.name}，正面交给你收网——我们联手，海城没人接得住这一波。`,
+              },
+            ]
+          : []),
         {
           type: 'narration',
           effect: 'flash',
@@ -443,6 +466,7 @@ function buildBusinessEventScript(userId: number, businessId: string) {
     return {
       id: c.id,
       label: c.label,
+      tag: duoReady && secH ? `双美联手 · ${reqH?.name}×${secH.name} (+20% 收益)` : undefined,
       kind: c.kind,
       costEnergy,
       costSysPoints,
@@ -554,7 +578,15 @@ export function registerEmpireRoutes(router: Router, auth: Auth): void {
 
       const bizDetail = portfolio.bizDetails[businessId];
       const hr = Math.max(15000, Number(bizDetail?.incomePerHour || 20000));
-      const cashReward = Math.round(hr * Number(choice.incomeHoursReward || 3));
+      let duoActive = false;
+      if (choice.kind === 'heroine' && choice.secondaryHeroine) {
+        const secRow = queryOne<any>(
+          'SELECT unlocked FROM player_heroines WHERE user_id = ? AND heroine_id = ?',
+          [userId, choice.secondaryHeroine],
+        );
+        if (secRow?.unlocked) duoActive = true;
+      }
+      const cashReward = Math.round(hr * Number(choice.incomeHoursReward || 3) * (duoActive ? 1.2 : 1));
       const sysPointsReward = Number(choice.sysPoints || 0);
       grant(userId, cashReward, sysPointsReward);
 
@@ -564,6 +596,12 @@ export function registerEmpireRoutes(router: Router, auth: Auth): void {
         execute(
           'UPDATE player_heroines SET affection = affection + ?, last_interaction_at = ? WHERE user_id = ? AND heroine_id = ? AND unlocked = 1',
           [affectionGain, Date.now(), userId, choice.requireHeroine],
+        );
+      }
+      if (duoActive && choice.secondaryHeroine) {
+        execute(
+          'UPDATE player_heroines SET affection = affection + 6, last_interaction_at = ? WHERE user_id = ? AND heroine_id = ? AND unlocked = 1',
+          [Date.now(), userId, choice.secondaryHeroine],
         );
       }
 

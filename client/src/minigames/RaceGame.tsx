@@ -169,7 +169,21 @@ export const RaceGame: React.FC = () => {
   const oppPos = session ? session.oppSeg.slice(0, hits.length).reduce((a, b) => a + 0.55 + b * 0.45, 0) / total : 0;
 
   return (
-    <Stage bg="/assets/scene/race.jpg" title="江畔竞速" subtitle="看准时机操作，马力越高判定越宽" onBack={leave} dim={0.3}>
+    <Stage
+      bg="/assets/scene/race.jpg"
+      title="江畔竞速"
+      subtitle="看准时机操作，马力越高判定越宽"
+      onBack={leave}
+      dim={0.3}
+      help={{
+        title: '外滩午夜竞速指南',
+        subtitle: '四段黄金换挡 + 顶奢座驾马力双重压制',
+        tips: [
+          { label: '四段黄金换挡', desc: '指针滑入金色甜区时点击屏幕，越靠近中心评分越高；四段全部达到「完美」时奖金倍率跃升至 2.8×！' },
+          { label: '顶级座驾优势', desc: '座驾马力不仅直接计入 25% 冲线总分，还会拓宽完美判定区——换上 911 / SF90 / 布加迪 Chiron 能轻松碾压赵天宇。' },
+        ],
+      }}
+    >
       {!session && (
         <div className="flex-1 flex flex-col justify-end px-4 pb-5 gap-3">
           <div className="relative h-[170px]">

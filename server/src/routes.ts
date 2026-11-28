@@ -12,6 +12,8 @@ import { assertInteractionOpen, assetPriceNow, registerMapSpotRoutes } from './m
 import { registerNegotiationRoutes } from './negotiation.js';
 import { registerBondRoutes, resolveHeroineActivePortrait } from './bonds.js';
 import { getEquippedTitleInfo, getStoryLinkedStockExtras, registerEmpireRoutes } from './empire.js';
+import { computeDatePrestigeBonus, registerLuxuryRoutes } from './luxury.js';
+import { markHeroineChatRead, triggerMilestoneReactions } from './proactive.js';
 import { getBusinessDef, getPropertyDef, purchaseBusiness, purchaseProperty } from './purchases.js';
 import {
   buildFullGameState,
@@ -327,17 +329,28 @@ function resolveDateMiniStoryScript(userId: number, district: any, inter: any, h
 
   const nodes = Array.isArray(raw.nodes) ? raw.nodes.map((n: any) => interpolateNode(n, vars)) : [];
   const bg = interpolateText(raw.bg || '', vars) || inter.image || district.bg;
+  const completedRows = queryAll<{ episode_id: string }>('SELECT episode_id FROM player_progress WHERE user_id = ?', [userId]);
+  const completedSet = new Set(completedRows.map((r) => r.episode_id));
+  const protagonistSprite =
+    completedSet.has('ep_003') || completedSet.size >= 3
+      ? '/assets/characters/protagonist.png'
+      : '/assets/characters/protagonist_early.png';
+  const prestige = computeDatePrestigeBonus(userId, hDef, protagonistSprite, vars.heroineSprite || hDef.portrait);
+  if (prestige.openingNode && nodes.length > 0) {
+    nodes.splice(1, 0, prestige.openingNode);
+  }
   return {
     title: interpolateText(raw.title || `${inter.name} · ${hDef.name}`, vars),
     subtitle: interpolateText(raw.subtitle || `${district.name} · 浪漫约会`, vars),
     bg,
     heroineId: hDef.id,
     heroineName: hDef.name,
-    heroinePortrait: hDef.portrait,
+    heroinePortrait: vars.heroineSprite || hDef.portrait,
     districtId: district.id,
     interactionId: inter.id,
     costEnergy: inter.energy || 6,
     costCash: inter.cashCost || 0,
+    prestigeBadge: prestige.badge,
     nodes,
   };
 }
@@ -1016,6 +1029,9 @@ export function createApiRouter(): Router {
         );
       }
 
+      // Trigger proactive heroine WeChat on canon milestone episodes
+      triggerMilestoneReactions(userId, 'story_milestone', { episodeId });
+
       res.json({
         success: true,
         critResult,
@@ -1221,13 +1237,15 @@ export function createApiRouter(): Router {
         (interactionId === 'vinyl_lounge' && heroineId === 'shen_liuli')
           ? 6
           : 0;
-      const totalAff = Math.round((baseAff + favSpotBonus) * (1 + skills.charmPct)) + bonusAffection;
+      const prestige = computeDatePrestigeBonus(userId, hDef, '/assets/characters/protagonist.png', hDef.portrait);
+      const totalAff = Math.round((baseAff + favSpotBonus) * (1 + skills.charmPct)) + bonusAffection + prestige.bonusAffection;
+      const totalDateSysPts = 25 + prestige.bonusPoints;
 
       execute(
         'UPDATE player_heroines SET affection = affection + ?, last_interaction_at = ? WHERE user_id = ? AND heroine_id = ?',
         [totalAff, Date.now(), userId, heroineId],
       );
-      execute('UPDATE player_state SET sys_points = sys_points + 25 WHERE user_id = ?', [userId]);
+      execute('UPDATE player_state SET sys_points = sys_points + ? WHERE user_id = ?', [totalDateSysPts, userId]);
       incrementDailyTask(userId, 'task_minigame', 1);
 
       if (bonusAffection >= 4 && Math.random() < 0.45) {
@@ -1237,9 +1255,11 @@ export function createApiRouter(): Router {
 
       res.json({
         success: true,
-        message: `和${hDef.name}去了${district.name}${inter.name}，好感 +${totalAff}。`,
+        message: `和${hDef.name}去了${district.name}${inter.name}，好感 +${totalAff}${prestige.badge ? `（${prestige.badge}）` : ''}。`,
         affectionGain: totalAff,
-        bonusAffection,
+        bonusAffection: bonusAffection + prestige.bonusAffection,
+        sysPoints: totalDateSysPts,
+        prestigeBadge: prestige.badge,
         reactionText,
         critResult,
         state: buildFullGameState(userId),
@@ -1620,6 +1640,7 @@ export function createApiRouter(): Router {
           execute('UPDATE player_state SET equipped_car_id = ? WHERE user_id = ?', [assetId, userId]);
         }
       }
+      triggerMilestoneReactions(userId, 'luxury_asset_bought', { assetId, name: asset.name, price });
       res.json({ success: true, critResult, state: buildFullGameState(userId) });
     } catch (err: any) {
       res.status(400).json({ error: err.message });
@@ -1643,6 +1664,7 @@ export function createApiRouter(): Router {
   router.get('/heroines/:id/chat', authMiddleware, (req: AuthedRequest, res) => {
     const userId = req.userId!;
     const heroineId = String(req.params.id);
+    markHeroineChatRead(userId, heroineId);
     const messages = queryAll<any>(
       'SELECT * FROM npc_chat_messages WHERE user_id = ? AND heroine_id = ? ORDER BY id ASC LIMIT 60',
       [userId, heroineId],
@@ -1651,13 +1673,14 @@ export function createApiRouter(): Router {
       'SELECT * FROM npc_memories WHERE user_id = ? AND heroine_id = ? ORDER BY id DESC LIMIT 10',
       [userId, heroineId],
     );
-    res.json({ messages, memories });
+    res.json({ messages, memories, state: buildFullGameState(userId) });
   });
 
   router.post('/heroines/:id/chat', authMiddleware, async (req: AuthedRequest, res) => {
     try {
       const userId = req.userId!;
       const heroineId = String(req.params.id);
+      markHeroineChatRead(userId, heroineId);
       const message = String(req.body?.message || '').trim();
       const overrideLocation = req.body?.overrideLocation ? String(req.body.overrideLocation) : undefined;
       if (!message) throw new Error('请输入想说的话');
@@ -2019,6 +2042,7 @@ export function createApiRouter(): Router {
   registerBondRoutes(router, authMiddleware);
   registerEmpireRoutes(router, authMiddleware);
   registerMapSpotRoutes(router, authMiddleware);
+  registerLuxuryRoutes(router, authMiddleware);
 
   return router;
 }

@@ -108,7 +108,7 @@ export interface VNNode {
 }
 
 export interface MiniStoryPayload {
-  mode: 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
+  mode: 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event' | 'luxury';
   title: string;
   subtitle?: string;
   sceneLabel?: string;
@@ -117,6 +117,9 @@ export interface MiniStoryPayload {
   districtId?: string;
   propertyId?: string;
   businessId?: string;
+  theaterId?: string;
+  assetId?: string;
+  assetName?: string;
   interactionId?: string;
   bondId?: string;
   unlockOutfit?: string | null;

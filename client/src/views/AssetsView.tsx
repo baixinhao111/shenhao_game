@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Check } from 'lucide-react';
 import { DecoHeading, GameIcon } from '../components/GameIcon';
+import { PortraitAvatar } from '../components/PortraitAvatar';
 import { BizSkyline } from './assets/BizSkyline';
 import { AnimatePresence, motion } from 'framer-motion';
 import { AnimatedNumber } from '../components/AnimatedNumber';
@@ -35,6 +36,7 @@ export const AssetsView: React.FC = () => {
   const setSubTab = setAssetsSubTab;
   const [selectedAssetId, setSelectedAssetId] = useState<string>('');
   const [selectedBizId, setSelectedBizId] = useState<string>('');
+  const [luxuryGuestId, setLuxuryGuestId] = useState<string>('');
   const [busy, setBusy] = useState(false);
   const [dir, setDir] = useState(1);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -156,6 +158,37 @@ export const AssetsView: React.FC = () => {
     }
   };
 
+  const openLuxuryTheater = async (theaterId: string, heroineId?: string) => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const res = await apiRequest('/luxury-theater/start', {
+        body: { theaterId, heroineId: heroineId || undefined },
+      });
+      const sc = res.script;
+      openMiniStory({
+        mode: 'luxury',
+        theaterId: sc.theaterId || theaterId,
+        assetId: sc.assetId,
+        assetName: sc.assetName,
+        title: sc.title,
+        subtitle: sc.subtitle,
+        sceneLabel: sc.sceneLabel,
+        bg: sc.bg,
+        nodes: sc.nodes || [],
+        heroineId: sc.heroineId,
+        heroineName: sc.heroineName,
+        heroineAvatar: sc.heroineAvatar,
+        heroinePortrait: sc.heroinePortrait,
+        locationLabel: sc.locationLabel || sc.assetName,
+      });
+    } catch (e: any) {
+      showError(e.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
   const equipCar = async (assetId: string) => {
     try {
       const res = await apiRequest('/asset/equip-car', { body: { assetId } });
@@ -203,6 +236,14 @@ export const AssetsView: React.FC = () => {
   const featuredAsset =
     assets.find((a: any) => a.id === selectedAssetId) || assets.find((a: any) => a.id === player.equippedCarId) || assets[0];
   const featuredShop = featuredAsset ? spotOf((sp) => sp.kind === 'showroom' && (sp.stock || []).includes(featuredAsset.id)) : null;
+  const luxuryTheaters: any[] = state.luxuryTheaters || [];
+  const featuredTheater = featuredAsset
+    ? luxuryTheaters.find((t: any) => Array.isArray(t.assetIds) && t.assetIds.includes(featuredAsset.id)) || null
+    : null;
+  const effectiveGuestId =
+    luxuryGuestId && unlockedHeroines.some((h: any) => h.id === luxuryGuestId)
+      ? luxuryGuestId
+      : unlockedHeroines[0]?.id || '';
 
   const GROUPS = [
     { id: 'car', title: '座驾', en: 'GARAGE', match: (a: any) => a.type === 'car' },
@@ -568,6 +609,70 @@ export const AssetsView: React.FC = () => {
                     在 {featuredShop.d.name} · {featuredShop.sp.name} 有售 <span className="font-num text-[var(--champagne)]">{formatMoney(featuredAsset.price)}</span>
                     {state.map?.weeklyDeal?.assetId === featuredAsset.id && <span className="ml-2 text-[var(--champagne)]">本周特惠 9 折</span>}
                   </p>
+                )}
+
+                {featuredTheater && (
+                  <div className="pt-2.5 mt-1 border-t border-white/[0.08] space-y-2">
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[10px] tracking-[0.22em] text-[#E2BD72] font-bold">
+                            ◆ {featuredTheater.badge || '顶奢排面'}
+                          </span>
+                          {featuredAsset.owned && !featuredTheater.playedToday && (
+                            <span className="text-[10px] text-[#9BF5FF] font-num">
+                              +{featuredTheater.rewardPoints} 积分{unlockedHeroines.length > 0 ? ` · +${featuredTheater.rewardAffection} 好感` : ''}
+                            </span>
+                          )}
+                        </div>
+                        <div className="font-editorial text-[14.5px] font-black text-[#ECE6DA] truncate mt-0.5">
+                          {featuredTheater.title}
+                        </div>
+                      </div>
+                      {featuredAsset.owned ? (
+                        <button
+                          disabled={busy}
+                          onClick={() => void openLuxuryTheater(featuredTheater.id, effectiveGuestId || undefined)}
+                          className="gold-btn-shimmer shrink-0 px-3.5 py-1.5 text-[12px] font-editorial tracking-[0.12em]"
+                        >
+                          {featuredTheater.playedToday ? '重温私宴' : `启程 · ${featuredTheater.costEnergy}⚡`}
+                        </button>
+                      ) : (
+                        <span className="text-[10.5px] text-[#8A8EA0] shrink-0">购入后解锁</span>
+                      )}
+                    </div>
+                    {featuredAsset.owned && unlockedHeroines.length > 0 ? (
+                      <div className="flex items-center gap-2">
+                        <span className="text-[11px] text-[#8C90A0] shrink-0">邀约同行：</span>
+                        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                          {unlockedHeroines.map((h: any) => {
+                            const active = effectiveGuestId === h.id;
+                            return (
+                              <button
+                                key={h.id}
+                                onClick={() => {
+                                  playTap();
+                                  setLuxuryGuestId(h.id);
+                                }}
+                                className={`shrink-0 flex items-center gap-1 pl-0.5 pr-2 py-0.5 rounded-full border text-[11px] transition ${
+                                  active
+                                    ? 'bg-[#36162A]/90 border-[#F0789A] text-[#FFD3DF]'
+                                    : 'bg-white/[0.04] border-white/10 text-[#9FA5B8]'
+                                }`}
+                              >
+                                <PortraitAvatar src={h.avatar} alt={h.name} className="w-5 h-5 !border-0" rounded="full" />
+                                <span>{h.name}</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    ) : !featuredAsset.owned ? (
+                      <p className="text-[11px] text-[#9EA4B5]">
+                        拥有后可邀红颜共赴专属剧场，并在约会与商战谈判中触发「排面威压」加成。
+                      </p>
+                    ) : null}
+                  </div>
                 )}
               </div>
 

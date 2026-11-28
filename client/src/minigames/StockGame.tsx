@@ -307,6 +307,16 @@ export const StockGame: React.FC = () => {
         closeMinigame();
       }}
       dim={0.58}
+      help={{
+        title: '海城实时股市指南',
+        subtitle: '先定方向与倍数，再选本金开仓，盘中随时平仓落袋',
+        tips: [
+          { label: '做多 vs 做空', desc: '「做多」押股价上涨（越涨越赚）；「做空」押股价下跌（越跌越赚）。选好方向再点下方本金档位即可开仓。' },
+          { label: '杠杆倍数（2× / 3× / 5×）', desc: '盈亏按倍数放大：2× 稳健抗震，3× 均衡，5× 高回报但更易触及强平红线（剩余净值跌破 20% 会触发强制平仓）。' },
+          { label: '天枢动态内参与定向研判', desc: '每 45 秒或每局收官后天枢内参会自动轮换。也可消耗积分点击「研判该股」定向探测所选标的走势。', tone: 'cyan' },
+          { label: '盘中 ⚡ 异动预警', desc: '开仓后若尚未出现突发消息，可用天枢积分提前标出盘中利好/利空跳变时间点，精准踩点止盈或反手避险。', tone: 'cyan' },
+        ],
+      }}
     >
       {!session && (
         <div className="flex-1 flex flex-col justify-between px-3.5 pb-3.5 pt-0.5 gap-2 min-h-0">

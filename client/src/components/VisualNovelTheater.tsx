@@ -32,7 +32,7 @@ import { GameIcon, OrnateCorners, type GameIconName } from './GameIcon';
 import { NarrativeChoicePanel, renderSysText, SystemAlertPanel, SystemChoicePanel, TianshuStatusPanel, TianshuSummonButton } from './vn/SystemPanels';
 
 export interface VNSettlementData {
-  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event' | 'luxury';
   chapterLabel?: string;
   title: string;
   subtitle?: string;
@@ -66,7 +66,7 @@ export interface VNSettlementData {
 
 export interface VisualNovelScript {
   id: string;
-  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event';
+  mode: 'main' | 'date' | 'home' | 'stroll' | 'bond' | 'shura' | 'biz_event' | 'luxury';
   chapterTitle: string;
   sceneLabel?: string;
   title: string;
@@ -166,6 +166,7 @@ const MODE_LABELS: Record<VisualNovelScript['mode'], string> = {
   bond: '羁绊',
   shura: '修罗场',
   biz_event: '经营',
+  luxury: '私宴',
 };
 
 const PRELOADED_VN_URLS = new Set<string>();
@@ -1428,7 +1429,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                         ? 'SHURA · SETTLED'
                         : settlement.mode === 'biz_event'
                           ? 'BIZ · RESOLVED'
-                          : 'STROLL · END';
+                          : settlement.mode === 'luxury'
+                            ? 'LUXURY · NIGHT'
+                            : 'STROLL · END';
           const modeZh =
             settlement.alreadyCompleted
               ? '回顾结束'
@@ -1444,7 +1447,9 @@ export const VisualNovelTheater: React.FC<VisualNovelTheaterProps> = ({
                         ? '修罗场化解'
                         : settlement.mode === 'biz_event'
                           ? '危机化解'
-                          : '漫步结束';
+                          : settlement.mode === 'luxury'
+                            ? '顶奢私宴'
+                            : '漫步结束';
           const items: { icon: GameIconName; label: string; value: string; tone: string; ribbon?: string; num?: number }[] = [];
           if (r && !settlement.alreadyCompleted) {
             if (r.critCashback && r.critCashback > 0) {
@@ -1649,9 +1654,11 @@ export const MiniStoryOverlay: React.FC = () => {
               ? '修罗场'
               : activeMiniStory.mode === 'biz_event'
                 ? '经营事件'
-                : '偶遇';
+                : activeMiniStory.mode === 'luxury'
+                  ? '顶奢私宴'
+                  : '偶遇';
     return {
-      id: `${activeMiniStory.mode}:${activeMiniStory.bondId || activeMiniStory.interactionId || activeMiniStory.eventId || activeMiniStory.title}:${activeMiniStory.heroineId || 'any'}`,
+      id: `${activeMiniStory.mode}:${activeMiniStory.theaterId || activeMiniStory.bondId || activeMiniStory.interactionId || activeMiniStory.eventId || activeMiniStory.title}:${activeMiniStory.heroineId || 'any'}`,
       mode: activeMiniStory.mode,
       chapterTitle,
       sceneLabel: activeMiniStory.sceneLabel || activeMiniStory.locationLabel || chapterTitle,
@@ -1705,6 +1712,40 @@ export const MiniStoryOverlay: React.FC = () => {
           affectionGain: Number(res.affectionGain || 0) > 0 ? Number(res.affectionGain) : undefined,
           affectionHeroineName: hObj?.name || activeMiniStory.heroineName,
         },
+      };
+    }
+
+    if (activeMiniStory.mode === 'luxury') {
+      const res = await apiRequest('/luxury-theater/complete', {
+        body: {
+          theaterId: activeMiniStory.theaterId || activeMiniStory.eventId,
+          heroineId: activeMiniStory.heroineId || undefined,
+          choiceId: primaryChoiceId,
+        },
+      });
+      applyServerState(res.state, undefined, { silentToast: true });
+      playAffectionChime();
+      const hObj = activeMiniStory.heroineId
+        ? (res.state?.heroines || state?.heroines || []).find((h: any) => h.id === activeMiniStory.heroineId)
+        : null;
+      return {
+        mode: 'luxury',
+        chapterLabel: activeMiniStory.sceneLabel || '顶奢私宴',
+        title: activeMiniStory.title,
+        reactionText: res.reactionText || primaryOpt?.resultText,
+        heroineId: hObj?.unlocked ? hObj.id : undefined,
+        heroineName: hObj?.name || activeMiniStory.heroineName,
+        heroineAvatar: hObj?.avatar || activeMiniStory.heroineAvatar,
+        heroinePortrait: hObj?.portrait || activeMiniStory.heroinePortrait,
+        locationLabel: activeMiniStory.locationLabel || activeMiniStory.assetName,
+        alreadyCompleted: Boolean(res.playedToday),
+        rewards: res.playedToday
+          ? undefined
+          : {
+              affectionGain: Number(res.affectionGain || 0) > 0 ? Number(res.affectionGain) : undefined,
+              affectionHeroineName: hObj?.name || activeMiniStory.heroineName,
+              sysPoints: Number(res.sysPoints || 0) > 0 ? Number(res.sysPoints) : undefined,
+            },
       };
     }
 
@@ -1794,7 +1835,7 @@ export const MiniStoryOverlay: React.FC = () => {
         rewards: {
           affectionGain: res.affectionGain,
           bonusAffection: res.bonusAffection,
-          sysPoints: 25,
+          sysPoints: Number(res.sysPoints || 25),
           critCashback: res.critResult?.triggered ? res.critResult.cashback : undefined,
           critMultiplier: res.critResult?.triggered ? res.critResult.multiplier : undefined,
         },

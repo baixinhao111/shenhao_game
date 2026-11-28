@@ -14,6 +14,8 @@ import {
   getEquippedTitleInfo,
   getWeeklyCruiseTheme,
 } from './empire.js';
+import { buildLuxuryTheatersView } from './luxury.js';
+import { getUnreadChatMap } from './proactive.js';
 
 export const DAILY_POKE_LIMIT = 3;
 
@@ -551,6 +553,7 @@ export function buildFullGameState(userId: number, opts: { withStory?: boolean }
   const completedEpisodes = progressRows.map((r) => r.episode_id);
 
   const heroineLocs = resolveHeroineLocations(userId);
+  const unreadChatMap = getUnreadChatMap(userId);
 
   const heroines = content.heroines.map((h) => {
     const row = heroinesRows.find((r) => r.heroine_id === h.id) || {
@@ -600,6 +603,7 @@ export function buildFullGameState(userId: number, opts: { withStory?: boolean }
       stage,
       location: heroineLocs[h.id],
       homePropertyId: assignedProp?.property_id || null,
+      unreadCount: Number(unreadChatMap[h.id] || 0),
     };
   });
 
@@ -843,6 +847,8 @@ export function buildFullGameState(userId: number, opts: { withStory?: boolean }
     shuraEvent,
     mails,
     unreadMailCount,
+    unreadChatTotal: Object.values(unreadChatMap).reduce((s, n) => s + Number(n || 0), 0),
+    luxuryTheaters: buildLuxuryTheatersView(userId),
     deepseekConfigured: Boolean(getGmSetting('deepseek_api_key') || process.env.DEEPSEEK_API_KEY),
   };
 }

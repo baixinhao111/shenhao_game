@@ -27,6 +27,7 @@ interface Deal {
     mindread: { cost: number };
   };
   reveal: { weakness: string | null; range: [number, number] | null; temperHint: string | null };
+  prestigeBadge?: string | null;
   log: Array<{ who: 'seller' | 'me' | 'system' | 'ally'; text: string; allyId?: string }>;
   done?: boolean;
   result?: { success: boolean; price?: number; saved?: number; savedPct?: number };
@@ -131,6 +132,15 @@ export const NegotiationScene: React.FC = () => {
       subtitle={deal ? `${deal.item.name} · 挂牌 ${formatMoney(deal.item.list)}` : '茶已经泡好了'}
       onBack={leave}
       dim={0.35}
+      help={{
+        title: '海城商战谈判指南',
+        subtitle: '摸清卖家性格 + 善用底牌，最高可砍下 20%+ 收购价',
+        tips: [
+          { label: '三大卖家性格与禁忌', desc: '「逐利」(钱总/阿坤) 最吃资金实力全款亮牌；「要面子」(周老/赵天宇) 切忌砍太狠或用人脉/舆论硬压，容易掉耐心；「缺钱」(林姐/王强) 吃人脉施压与情报揭底。' },
+          { label: '天枢读心 & 红颜助攻', desc: '先用「天枢读心」摸出底价区间再出价最稳。苏清婉压价、陆知微锁区间、林晚星回耐心、沈琉璃造势（避开要面子卖家）。', tone: 'cyan' },
+          { label: '顶奢资产「排面威压」', desc: '名下拥有顶奢超跑、游艇、公务机、私人海岛、传世孤品或佩戴成就称号时，进门即自动触发开场威压（底价天然松动 + 额外耐心）。', tone: 'rose' },
+        ],
+      }}
     >
       {deal && ruler && (
         <div className="flex-1 flex flex-col min-h-0">
@@ -147,7 +157,13 @@ export const NegotiationScene: React.FC = () => {
                 className="max-h-full max-w-full w-auto h-auto object-contain object-bottom sprite-fade-bottom drop-shadow-[0_14px_24px_rgba(0,0,0,0.75)]"
               />
             </div>
-            <div className="absolute left-4 top-2 z-10 space-y-2 max-w-[50%]">
+            <div className="absolute left-4 top-2 z-10 space-y-2 max-w-[54%]">
+              {deal.prestigeBadge && (
+                <div className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-[#241B0D]/88 border border-[#E2BD72]/55 text-[10.5px] font-bold text-[#F6DDA4] shadow-[0_0_12px_rgba(226,189,114,0.22)]">
+                  <span>◆</span>
+                  <span className="truncate">{deal.prestigeBadge}</span>
+                </div>
+              )}
               <div>
                 <div className="font-editorial text-[20px] font-black gold-gradient-text leading-tight drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{deal.seller.name}</div>
                 <div className="text-[11px] text-[#B3B6C2] text-stroke-dark">

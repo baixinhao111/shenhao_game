@@ -10,6 +10,7 @@ interface Pitch {
   index: number;
   founder: string;
   project: string;
+  tag?: string | null;
   pitch: string;
   claims: string[];
   fact: string | null;
@@ -84,7 +85,22 @@ export const AngelGame: React.FC = () => {
   const typeOf = (i: number) => result?.all?.[i]?.type as string | undefined;
 
   return (
-    <Stage bg="/assets/scene/pitch.jpg" title="天使投资" subtitle="读路演、追问细节，看穿谁在吹牛" onBack={closeMinigame} dim={0.45}>
+    <Stage
+      bg="/assets/scene/pitch.jpg"
+      title="天使投资"
+      subtitle="读路演、追问细节，看穿谁在吹牛"
+      onBack={closeMinigame}
+      dim={0.45}
+      help={{
+        title: '海大天使路演指南',
+        subtitle: '20 项海城创业项目随机登台，三选一投出独角兽',
+        tips: [
+          { label: '三类底牌与回报', desc: '每场三位创始人中藏着「潜力股 (3.5–6.5×)」「稳健项目 (1.5–2.3×)」与「注水项目 (0.2–0.5×)」，仅凭表面 BP 难以分辨。' },
+          { label: '免费追问 2 次', desc: '左右滑动翻阅三份计划书，对最可疑或最心动的两家免费追问，揭开真实的留存、订单或刷量实情。' },
+          { label: '天枢尽调穿透', desc: '若还拿不准最后一家，可消耗积分调用天枢直接排除注水项或锁定真潜力股。', tone: 'cyan' },
+        ],
+      }}
+    >
       {!session && (
         <div className="flex-1 flex flex-col justify-end px-4 pb-5 gap-3">
           <Speech who="陆知微" tone="rose" text="今天孵化器有三个团队来路演。数据我都看过了……真真假假，你自己判断。" />
@@ -128,7 +144,14 @@ export const AngelGame: React.FC = () => {
                         'linear-gradient(180deg, rgba(255,255,255,0.5), rgba(255,255,255,0) 30%), repeating-linear-gradient(0deg, rgba(120,100,60,0.05) 0 1px, transparent 1px 26px), #F3EBDA',
                     }}
                   >
-                    <div className="text-[10.5px] tracking-[0.3em] text-[#8A7A5A]">商业计划书 · BP</div>
+                    <div className="flex items-center justify-between gap-2">
+                      <div className="text-[10.5px] tracking-[0.3em] text-[#8A7A5A]">商业计划书 · BP</div>
+                      {p.tag && (
+                        <span className="px-1.5 py-0.5 rounded-sm bg-[#C9A45C]/20 border border-[#C9A45C]/45 text-[10px] font-bold text-[#6E5629]">
+                          {p.tag}
+                        </span>
+                      )}
+                    </div>
                     <div className="font-editorial text-[21px] font-black mt-1 leading-tight">{p.project}</div>
                     <div className="text-[12px] text-[#5C5240] mt-0.5">创始人 {p.founder}</div>
                     <p className="font-editorial text-[14px] mt-3 leading-relaxed border-l-2 border-[#C9A45C] pl-2.5">「{p.pitch}」</p>

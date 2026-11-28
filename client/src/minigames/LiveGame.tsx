@@ -156,7 +156,23 @@ export const LiveGame: React.FC = () => {
   const showOpp = lastOpp && now - lastOpp.t < 0.9;
 
   return (
-    <Stage bg="/assets/scene/live.jpg" title="星耀打榜" subtitle="30 秒 PK · 预算用不完会退回" onBack={leave} dim={0.3}>
+    <Stage
+      bg="/assets/scene/live.jpg"
+      title="星耀打榜"
+      subtitle="30 秒 PK · 预算用不完会退回"
+      onBack={leave}
+      dim={0.3}
+      help={{
+        title: '星耀直播 PK 指南',
+        subtitle: '用最少预算赢下 30 秒拔河，多余预算自动全额退还',
+        tips: [
+          { label: '三档礼物节奏', desc: '小心心无压力补分控线；嘉年华火力强但有冷却；星耀绝杀每局仅限一次，请留作胜负手。' },
+          { label: '「双倍时刻」爆分窗', desc: '屏幕亮起双倍提示时砸出嘉年华，威力直接 ×2，是拉开差距最划算的窗口。' },
+          { label: '最后 5 秒「反偷塔」', desc: '对手榜一大哥常在尾声突然空降偷塔！看到预警闪烁时顺势按下绝杀，可触发 1.6× 反杀倍率直接锁胜。', tone: 'cyan' },
+          { label: '消费暴击与好感', desc: '实际刷出的金额均可正常触发天枢暴击返现，胜出还能大幅提升沈琉璃好感与微信互动。', tone: 'rose' },
+        ],
+      }}
+    >
       {!session && (
         <div className="flex-1 flex flex-col justify-end px-4 pb-5 gap-3">
           <img

@@ -67,10 +67,11 @@ export const HeroinesView: React.FC = () => {
         .then((r) => {
           setMessages(r.messages || []);
           setMemories(r.memories || []);
+          if (r.state) applyServerState(r.state, undefined, { silentToast: true });
         })
         .catch(() => {});
     }
-  }, [activeChatHeroineId]);
+  }, [activeChatHeroineId, applyServerState]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -535,7 +536,13 @@ export const HeroinesView: React.FC = () => {
                   rounded="full"
                 />
                 {!h.unlocked && <GameIcon name="lock" size={18} className="absolute -bottom-1 -right-1" />}
-                {h.unlocked && h.hasAvailableBond && <span className="red-dot -top-0.5 -right-0.5" />}
+                {h.unlocked && Number(h.unreadCount || 0) > 0 ? (
+                  <span className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-[#F04E7A] text-white font-num text-[10px] font-bold flex items-center justify-center border border-[#05070D] shadow-[0_0_8px_rgba(240,78,122,0.7)]">
+                    {h.unreadCount}
+                  </span>
+                ) : (
+                  h.unlocked && h.hasAvailableBond && <span className="red-dot -top-0.5 -right-0.5" />
+                )}
               </button>
             );
           })}
@@ -674,9 +681,14 @@ export const HeroinesView: React.FC = () => {
           <div className="grid grid-cols-[1.15fr_0.95fr_0.9fr] gap-2 pt-0.5">
             <button
               onClick={() => openHeroineChat(current.id)}
-              className="gold-btn-shimmer py-2 text-[13.5px] font-editorial flex items-center justify-center gap-1"
+              className="relative gold-btn-shimmer py-2 text-[13.5px] font-editorial flex items-center justify-center gap-1"
             >
               <GameIcon name="nav_contact" size={24} shadow={false} /> 发微信
+              {Number(current.unreadCount || 0) > 0 && (
+                <span className="absolute -top-1.5 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-[#F04E7A] text-white font-num text-[10px] font-bold flex items-center justify-center border border-[#05070D] shadow-[0_0_8px_rgba(240,78,122,0.75)]">
+                  {current.unreadCount}
+                </span>
+              )}
             </button>
             <button
               onClick={() => {

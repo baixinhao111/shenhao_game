@@ -2,6 +2,7 @@ import { getContent } from './contentLoader.js';
 import { execute, queryOne } from './db.js';
 import { spendCashOrThrow } from './economy.js';
 import { computePortfolioAndTier, postMoment, rollCritCashback } from './gameEngine.js';
+import { triggerMilestoneReactions } from './proactive.js';
 
 /** Shared purchase logic for direct buys and negotiated deals. */
 
@@ -35,7 +36,12 @@ export function assertCanBuyProperty(userId: number, propertyId: string) {
   return prop;
 }
 
-export function purchaseBusiness(userId: number, businessId: string, price: number) {
+export function purchaseBusiness(
+  userId: number,
+  businessId: string,
+  price: number,
+  opts?: { fromNegotiation?: boolean },
+) {
   const biz = assertCanBuyBusiness(userId, businessId);
   spendCashOrThrow(userId, price);
   const critResult = rollCritCashback(userId, price);
@@ -43,6 +49,9 @@ export function purchaseBusiness(userId: number, businessId: string, price: numb
     'INSERT INTO player_businesses (user_id, business_id, level, assigned_heroine_id, last_collected_at) VALUES (?, ?, 1, ?, ?)',
     [userId, businessId, '', Date.now()],
   );
+  if (!opts?.fromNegotiation) {
+    triggerMilestoneReactions(userId, 'business_bought', { businessId, name: biz.name });
+  }
   return { critResult, name: biz.name };
 }
 

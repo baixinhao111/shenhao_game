@@ -21,6 +21,11 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
   if (!state) return null;
 
   const hasPendingIncome = (state.player?.pendingIncome || 0) >= 10000;
+  const hasBizEvent = (state.businesses || []).some((b: any) => b.owned && b.activeEvent);
+  const hasHeroineNotice =
+    Number(state.unreadChatTotal || 0) > 0 ||
+    (state.heroines || []).some((h: any) => h.unlocked && h.hasAvailableBond) ||
+    Boolean(state.shuraEvent);
   const nextEpObj = (() => {
     const nextId = state.stories?.nextEpisodeId;
     if (!nextId) return null;
@@ -60,7 +65,8 @@ export const BottomNav: React.FC<BottomNavProps> = ({ hidden = false }) => {
           const showDot =
             (id === 'home' && !active && hasHomeNotice) ||
             (id === 'story' && !active && hasNextStory) ||
-            (id === 'assets' && !active && hasPendingIncome);
+            (id === 'assets' && !active && (hasPendingIncome || hasBizEvent)) ||
+            (id === 'heroines' && !active && hasHeroineNotice);
 
           return (
             <button

@@ -1,0 +1,1437 @@
+[
+  {
+    "id": "lux_yacht_poseidon",
+    "assetIds": [
+      "yacht_poseidon"
+    ],
+    "title": "海神号 · 公海星夜私宴",
+    "subtitle": "88 尺三层甲板 · 私人泊位启航",
+    "sceneLabel": "东海公海 · 海神号顶层甲板 · 21:30",
+    "bg": "/assets/bg/bg_peak_coast.jpg",
+    "badge": "游艇私宴",
+    "costEnergy": 4,
+    "rewardPoints": 45,
+    "rewardAffection": 18,
+    "momentTemplate": "今晚乘【{{assetName}}】与{{heroineName}}共赴{{title}}，公海星潮无边，外滩灯火尽在身后。",
+    "heroineOpeners": {
+      "su_qingwan": {
+        "openLine": "从黄金海岸一路驶进公海，站在{{assetName}}顶层回看外滩，那些缠人的会议倒真显得微不足道了。",
+        "openThought": "海风一吹，连我失眠了半个月的太阳穴都松开了，原来跟他出海这么安心。",
+        "closeLine": "陆沉，盛世的财报我向来算得滴水不漏，唯独今晚这笔人情账，我大概一时半会儿还不清了。",
+        "closeThought": "其实根本不想急着还清，要是游艇能一直停在公海不靠岸就好了。",
+        "momentComment": "今晚海风正好，公海无信号，董事局的邮件总算追不上来了。"
+      },
+      "lin_wanxing": {
+        "openLine": "哇……{{assetName}}劈开海浪的声音像大提琴低音部一样，在甲板上看星空感觉离云好近呀！",
+        "openThought": "以前只能在乐谱里想象的海上星夜，他居然真的带我亲眼看到了。",
+        "closeLine": "陆沉哥，今晚听到的海浪和风声我都记在脑子里啦，回去我要写一首只弹给你听的小夜曲。",
+        "closeThought": "他看海的样子好温柔，心跳快得连甲板上的爵士乐都要盖不住啦。",
+        "momentComment": "海上星空比琴房窗外的银杏还耀眼，谢谢你带我听见这首夜曲～"
+      },
+      "shen_liuli": {
+        "openLine": "老板这手笔可真够犯规的，把{{assetName}}开到公海避开狗仔，是打算今晚只让我陪你喝酒？",
+        "openThought": "圈里吹嘘游艇派对的土豪见多了，可只有他真把清净和偏爱留给我。",
+        "closeLine": "行啊哥哥，今晚这片公海算你赢麻了——回去谁敢再拿排场跟我炫耀，我就拿海神号糊他脸上。",
+        "closeThought": "嘴上说着玩笑话，可真被他护在这艘船上，居然一点都不想演戏了。",
+        "momentComment": "公海星夜加顶层甲板，老板这波排面，热搜买三天都比不上～"
+      },
+      "lu_zhiwei": {
+        "openLine": "啧，{{assetName}}连卫星加密中继都配齐了，大老板这是出海度假还是把移动指挥室搬来了？",
+        "openThought": "顺手扫了眼船载雷达没发现跟踪信号，难得可以放空脑子吹吹海风。",
+        "closeLine": "喂，算你今晚没白烧这趟油钱……海面上的星空刷新率确实比我三块显示器加起来顺眼多了。",
+        "closeThought": "完蛋，海风吹得我心跳频率都失真了，今晚的日志必须本地加密。",
+        "momentComment": "实测公海零延迟吹风，某人除了爱烧钱，挑风景的眼光倒还在线。"
+      },
+      "solo": {
+        "openLine": "少爷，{{assetName}}已驶入公海静水区，主甲板冰桶与夜宵都按老规矩备妥，今夜无人打扰。",
+        "openThought": "十年前老爷也曾想在东海置一艘远洋游艇，如今少爷亲手做到了。",
+        "closeLine": "少爷如今立于公海之上气度自成，船长与护航快艇全员待命，何时返航尽凭您一句话。",
+        "closeThought": "看着少爷眉宇间的从容，这十年守夜的苦，今夜总算都值回来了。",
+        "momentComment": "公海航线与夜间安防已全程护航，愿少爷今夜星夜尽兴。"
+      }
+    },
+    "sceneNodes": [
+      {
+        "type": "narration",
+        "bg": "/assets/bg/bg_peak_coast.jpg",
+        "sceneBanner": "东海公海 · 海神号顶层甲板 · 21:30",
+        "text": "晚九点半，{{assetName}}稳稳驶离黄金海岸私人泊位。三层流线型船身切开墨蓝色东海深水，船尾拖出一道碎银般的白浪，将海城外滩的摩天楼群缓缓甩成天际线尽头一抹浮金。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "effect": "flash",
+        "text": "水下琉璃航行灯在船腹四周亮起，把方圆数十米海面映得澄澈如翡翠。主甲板香槟吧飘来低缓的黑胶萨克斯，海风带着微凉盐息掠过柚木护栏，{{heroineName}}凭栏而立，眸中落满细碎星光。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "heroine",
+        "name": "{{heroineName}}",
+        "role": "{{heroineRole}}",
+        "sprite": "{{heroineSprite}}",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "right",
+        "text": "{{openLine}}",
+        "innerThought": "{{openThought}}"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "在海城岸上，每一通电话、每一张请柬背后都缠着资本博弈与筹码计算。可一旦把{{assetName}}开过公海线，世界便彻底安静下来，只剩下海浪、星穹与眼前人的呼吸。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "protagonist",
+        "name": "陆沉",
+        "role": "你",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "岸上的喧嚣都留在码头的防波堤里了。今晚整艘船只为你我出海，不用看时间，也不用应付任何人。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "text": "侍酒师轻启挂满冰霜的年份香槟，金黄酒液在细长水晶笛杯里激起一串绵密星泡，松露鹅肝与里海鱼子酱在银盘中散发微暖香气。船身随深海涌浪轻缓起伏，仿佛整片星空都在随波摇曳。"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "海天交界处云隙散开，银河正从甲板正上方倾泻而下。这样难得的公海星夜，该用怎样的方式定格才算不负此行？"
+      }
+    ],
+    "choice": {
+      "type": "system_choice",
+      "id": "ch_lux_yacht_poseidon",
+      "title": "公海星夜渐浓，你决定如何点亮海神号之夜",
+      "sprite": "{{heroineSprite}}",
+      "leftSprite": "/assets/characters/protagonist.png",
+      "rightSprite": "{{heroineSprite}}",
+      "options": [
+        {
+          "id": "opt_a",
+          "label": "关掉主甲板喧闹射灯，只留水下琉璃航灯与两杯年份香槟，在船头并肩听浪。",
+          "tag": "私享偏爱",
+          "affectionBonus": 6,
+          "sysPointsBonus": 5,
+          "resultText": "繁华灯光尽数隐去后，{{heroineName}}在静谧星浪间彻底卸下心防，与你靠得更近。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "把顶层强光都关了，船员退回下舱吧。今晚海神号只需要星光和海浪。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "甲板顶灯逐一熄灭的瞬间，整片苍穹仿佛骤然压低。水下翡翠光晕在船舷外轻轻荡漾，两只水晶杯轻碰出一声清越回响，连海风都变得缠绵温柔。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}顺手接过你递来的羊绒披毯，侧过半身倚在船头柚木栏杆边，目光在深邃海面与你的轮廓之间停留了许久。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "{{assetName}}在无垠星海里缓缓漂泊，远方海城灯火细若游丝，而此刻甲板之上的静谧默契，早已胜过岸上万千喧嚣。"
+            }
+          ]
+        },
+        {
+          "id": "opt_b",
+          "label": "让船长调转船首正对银河，打开黑胶唱片机，递上天文望远镜共赏海上星座。",
+          "tag": "星夜雅兴",
+          "affectionBonus": 5,
+          "sysPointsBonus": 10,
+          "resultText": "黑胶爵士伴着银河星轨旋转，{{heroineName}}被你从容又浪漫的格调深深打动。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "往正东偏十五度调转船首，别开航行探照灯。今晚海面无云，正好借{{assetName}}当一回海上观星台。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "低沉的推进器轻鸣半拍，88 尺船身优雅转向正东。唱针落上黑胶沟槽，慵懒的蓝调乐声流淌开来，目镜里的星团清晰得仿佛伸手便可摘落。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "你微调焦距将黄铜望远镜递到{{heroineName}}手中，指尖交错的一瞬，空气里浮起一抹难以言喻的微暖默契。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "爵士乐尾音散入东海晚风，{{assetName}}的甲板上星河倒映酒杯，这一夜的风雅与从容被海潮稳稳珍藏。"
+            }
+          ]
+        },
+        {
+          "id": "opt_c",
+          "label": "接通游艇全舱灯阵与定制冷焰火信号，让百米公海在夜色里绽开金色星雨。",
+          "tag": "公海排场",
+          "affectionBonus": 3,
+          "sysPointsBonus": 15,
+          "resultText": "漫天冷焰火映亮整艘{{assetName}}，{{heroineName}}在惊叹声里记住了你挥手定乾坤的夜晚。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "既然到了公海，何必藏着锋芒。通知护航艇，把备好的鎏金冷焰火全部升空，今晚让整片东海记住这一刻。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "数道流光自海平面腾空破夜，在漆黑天幕骤然炸开漫天瀑布般的暖金星雨。{{assetName}}三层灯阵同步亮彻，海面瞬间化作一片流光溢彩的碎金琉璃。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "漫天金辉倒映在{{heroineName}}瞳孔深处，那份毫无保留的极致排面与笃定气场，瞬间将所有夜色寒意一扫而空。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "余烬化作点点金砂坠入深海，香槟杯底仍有气泡升腾。今夜乘{{assetName}}破浪而行的气魄，已悄然烙进海城最顶层的传奇夜色。"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "lux_private_island",
+    "assetIds": [
+      "island_private"
+    ],
+    "title": "东海私屿 · 悬崖潮汐之约",
+    "subtitle": "无边泳池与私人停机坪 · 仅此二人",
+    "sceneLabel": "东海星穹私属海岛 · 悬崖露台 · 17:45",
+    "bg": "/assets/bg/bg_peak_coast.jpg",
+    "badge": "私屿行宫",
+    "costEnergy": 5,
+    "rewardPoints": 65,
+    "rewardAffection": 24,
+    "momentTemplate": "落日沉海，在【{{assetName}}】与{{heroineName}}共度{{title}}，悬崖无边泳池外只有浪声与晚霞。",
+    "heroineOpeners": {
+      "su_qingwan": {
+        "openLine": "买下整座{{assetName}}却不急着开发度假村，全海城大概只有你肯为一场日落留这么大的白。",
+        "openThought": "站在悬崖泳池边看着落日沉海，心里那块压了十年的旧石头轻了好多。",
+        "closeLine": "陆沉，海城名利场人人都盯着下一季度的回报，只有你会陪我浪费一整个没有尽头的黄昏。",
+        "closeThought": "要是往后每个落日都能这样并肩看，盛世的担子似乎也没那么沉了。",
+        "momentComment": "悬崖无边泳池与东海落日同色，今晚暂时不做苏总，只看潮汐。"
+      },
+      "lin_wanxing": {
+        "openLine": "站在{{assetName}}的悬崖露台上，晚霞把无边泳池染成金色，感觉整片东海都在帮我们伴奏呢！",
+        "openThought": "海风带着淡淡的玉兰花香，好希望时间能在落日沉下去前慢一点。",
+        "closeLine": "陆沉哥，如果以后海城的风浪太大，我们还可以悄悄飞回这座小岛，躲在潮声里喘口气对吗？",
+        "closeThought": "他递过来的温度比夕阳还暖，我好像真的把心彻底落在他身上了。",
+        "momentComment": "把夕阳和海浪一起装进记忆里，这座私属小岛像梦一样温柔呀～"
+      },
+      "shen_liuli": {
+        "openLine": "连私属停机坪带悬崖泳池，哥哥把{{assetName}}藏得这么严实，是怕外头狗仔拍到你金屋藏娇？",
+        "openThought": "整座海岛没有镜头也没有剧本，我居然第一次觉得呼吸这么自由。",
+        "closeLine": "别拿这种眼神看我呀老板，再这么宠下去，我可真要把行李搬上岛赖着不回海城营业了。",
+        "closeThought": "说的是撒娇话，可要是他真开口留我，我恐怕连一秒都不会犹豫。",
+        "momentComment": "停机坪降落直接看落日，姐姐宣布今晚整座东海的浪漫归我们包圆～"
+      },
+      "lu_zhiwei": {
+        "openLine": "整座{{assetName}}独立供电加海底光缆专线，大老板你这哪是私人海岛，分明是终极避世堡垒！",
+        "openThought": "不得不说这悬崖视角绝了，连空气里都没有城市基站的杂波味。",
+        "closeLine": "行吧我承认，站在这儿看潮水涨落比熬夜追资金链痛快多了——下次上岛，副驾位必须留给我。",
+        "closeThought": "哼，刚才居然被他一眼看得耳根发烫，一定是夕阳反光太刺眼了。",
+        "momentComment": "私屿独享千兆海缆加悬崖晚霞，这波硬件配置我给老板打满分。"
+      },
+      "solo": {
+        "openLine": "少爷，{{assetName}}的悬崖泳池恒温系统与深水码头皆已调试完毕，全岛今夜只为您敞开。",
+        "openThought": "海城顶级财阀梦寐以求的私屿图腾，如今已稳稳刻上陆氏徽记。",
+        "closeLine": "暮色将至，岛上私厨已备好东海鲜捞与陈年红酒，少爷只管安心听潮，余事皆由我打理。",
+        "closeThought": "潮起潮落十载春秋，能亲眼见证少爷站在此处，陈默此生无憾。",
+        "momentComment": "私屿停机坪与深水码头均已就绪，潮汐正好，静候少爷闲赏。"
+      }
+    },
+    "sceneNodes": [
+      {
+        "type": "narration",
+        "bg": "/assets/bg/bg_peak_coast.jpg",
+        "sceneBanner": "东海星穹私属海岛 · 悬崖露台 · 17:45",
+        "text": "直升机旋翼的余风缓缓散去，{{assetName}}的白色悬崖行宫迎着暮色展开全貌。三十米宽的无边泳池悬挑在礁岩之上，池面水光与远方东海海平面无缝相融，仿若一块被晚霞熔化的巨大琥珀。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "effect": "flash",
+        "text": "夕阳正沿着水天交界缓缓下沉，将整片悬崖礁石镀上一层炽烈熔金。温热的海风卷着白玉兰暗香拂过露台，{{heroineName}}立在泳池边沿远眺潮线，背影与漫天火烧云构成一幅近乎失真的画卷。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "heroine",
+        "name": "{{heroineName}}",
+        "role": "{{heroineRole}}",
+        "sprite": "{{heroineSprite}}",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "right",
+        "text": "{{openLine}}",
+        "innerThought": "{{openThought}}"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "从城南十八平潮湿隔断间一路走到今天，买下{{assetName}}并非为了向海城炫耀什么头衔，而是为了在所有惊涛骇浪之外，亲手圈出一座没人能闯进来的避风港。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "protagonist",
+        "name": "陆沉",
+        "role": "你",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "商业版图可以画在地图上，但这座岛只用来盛放落日与清净。在这儿，潮水替我们关掉了全世界的杂音。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "text": "礁岩下的晚潮一阵阵轻拍悬崖石壁，深水码头与停机坪边缘的暗金色引航地灯渐次亮起。落日余晖正褪成深邃紫蓝，露台长桌上冰镇白葡萄酒微微起雾，海风恰好带着微甜的暖意。"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "天际最后一抹霞光即将没入海面，整座私屿即将沉入星夜。趁着这片独属于二人的潮汐余温，该送出今夜最难忘的仪式。"
+      }
+    ],
+    "choice": {
+      "type": "system_choice",
+      "id": "ch_lux_private_island",
+      "title": "熔金晚霞沉入东海，你决定如何封存私屿之约",
+      "sprite": "{{heroineSprite}}",
+      "leftSprite": "/assets/characters/protagonist.png",
+      "rightSprite": "{{heroineSprite}}",
+      "options": [
+        {
+          "id": "opt_a",
+          "label": "撤走所有随行侍者，在无边泳池边的暖石长榻并肩静看最后一缕落日沉海。",
+          "tag": "落日留白",
+          "affectionBonus": 6,
+          "sysPointsBonus": 5,
+          "resultText": "整座私屿彻底归于二人静谧，{{heroineName}}在落日与潮声里卸下了所有防备。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "今晚不必备繁琐晚宴了，让岛上工作人员退回后山吧。留一壶温茶和这片落日就够。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "露台四周渐次归于绝对宁静。最后一轮赤金太阳缓缓没入海平线，无边泳池的水波将暮紫与星辉揉成一片流动的绸缎。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}在暖石长榻旁缓缓坐下，指尖轻划过微温的池水边缘，望向你时眼底所有紧绷都化成了柔软波光。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "晚风掠过{{assetName}}的悬崖玉兰，整片东海只剩潮汐轻呼吸。有些片刻无需言语，便足以抵过尘世十年纷扰。"
+            }
+          ]
+        },
+        {
+          "id": "opt_b",
+          "label": "取出刻有星穹徽记的私屿永久通行密钥，正式交到{{heroineName}}掌心。",
+          "tag": "私屿授匙",
+          "affectionBonus": 5,
+          "sysPointsBonus": 10,
+          "resultText": "一枚沉甸甸的黑金岛钥落入掌心，{{heroineName}}感受到了这份无可替代的托付。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "这座岛的停机坪与深水泊位平时绝不对外开放，但这枚黑金密钥录了你的最高权限——以后随时想来躲风，直升机二十五分钟即达。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "暗金钛合金密钥在暮色里折射出一道冷冽微光，上面蚀刻的星穹纹路触手温润，沉静却带着不容置疑的分量。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}微怔半拍，缓缓收拢手指将密钥握进掌心，再抬眼望向你时，眼底漾开一抹难以掩饰的动容。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "海天暮色彻底合拢，{{assetName}}的礁岸灯火悄然点亮，从此东海之上便多了一座随时为你我亮灯的秘境行宫。"
+            }
+          ]
+        },
+        {
+          "id": "opt_c",
+          "label": "一键点亮悬崖步道、泳池星阵与停机坪全岛暗金灯带，让整座私屿如浮海王冠苏醒。",
+          "tag": "星穹点灯",
+          "affectionBonus": 3,
+          "sysPointsBonus": 15,
+          "resultText": "全岛暗金灯海随你指尖次第苏醒，{{heroineName}}为{{assetName}}的绝世气魄屏住呼吸。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "日落结束了，接下来该看岛上的夜色了。总控室，启动星穹夜幕模式。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "话音刚落，数千盏嵌入式暗金地灯顺着悬崖曲线逐级亮起，无边泳池池底绽出微缩北斗星图，整座{{assetName}}如一顶镶满碎钻的海上王冠在东海深蓝里巍然苏醒。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "满岛流光将露台映照得恍若仙境，{{heroineName}}望着这番足以令全海城屏息的奇景，唇角扬起一抹既惊艳又笃定的浅笑。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "星穹灯海映亮整片悬崖夜潮，海风卷起杯中红酒的沉香。在这座只听命于你的东海私屿，黑夜才刚刚拉起最华丽的序幕。"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "lux_private_jet",
+    "assetIds": [
+      "jet_g700"
+    ],
+    "title": "万米云端 · 湾流私人航线",
+    "subtitle": "随时起飞 · 俯瞰东海万家灯火",
+    "sceneLabel": "一万两千米平流层 · G700 贵宾舱 · 22:10",
+    "bg": "/assets/bg/bg_airport.jpg",
+    "badge": "云端私享",
+    "costEnergy": 4,
+    "rewardPoints": 55,
+    "rewardAffection": 20,
+    "momentTemplate": "一万两千米高空，乘【{{assetName}}】与{{heroineName}}共赴{{title}}，东海万家灯火铺成脚下星河。",
+    "heroineOpeners": {
+      "su_qingwan": {
+        "openLine": "平时赶跨国并购坐红眼航班最煎熬，可坐在{{assetName}}贵宾舱里看云海，反倒觉得时间太快。",
+        "openThought": "舷窗外是万米星河，身旁是他清冽的轮廓，连疲惫都被云层隔在了下面。",
+        "closeLine": "陆沉，一万两千米高空没有早盘也没有对手，等落地海城前，让我多靠这一会儿总不过分吧？",
+        "closeThought": "一向克制的我居然主动开口讨要片刻依赖，他到底给我下了什么蛊。",
+        "momentComment": "万米平流层俯瞰东海灯火，这一趟没有议程表，只有星光与红酒。"
+      },
+      "lin_wanxing": {
+        "openLine": "从{{assetName}}的大舷窗往下看，整座海城像一块发光的音乐盒一样，原来云层上面这么安静呀！",
+        "openThought": "以前连去外地演出都要抢凌晨硬座，现在却和他一起在星空下飞行。",
+        "closeLine": "陆沉哥，如果有一天我要去维也纳开巡演，你会不会也像今晚这样，坐着它来后台接我呀？",
+        "closeThought": "问出口才觉得有点贪心，可看他的眼神，我莫名笃定他一定会答应。",
+        "momentComment": "原来一万两千米的高空离星星真的这么近，今晚的云海像奶油一样软～"
+      },
+      "shen_liuli": {
+        "openLine": "说飞就飞的{{assetName}}啊……哥哥，你这云端贵宾舱可比外滩任何顶层卡座都让人心颤呢。",
+        "openThought": "把全海城的喧嚣和恶意踩在云层底下，这种被他托举的感觉太致命了。",
+        "closeLine": "这趟航线我给满分哦老板，不过机票钱我可不打算用钱还——落地以后，欠你的我慢慢补。",
+        "closeThought": "天哪，连我自己都被这句真情实感吓到了，这男人真是越看越勾人。",
+        "momentComment": "万米云端微醺巡航，底下那些流量榜单突然就显得好遥远呀～"
+      },
+      "lu_zhiwei": {
+        "openLine": "{{assetName}}的客舱气压和降噪曲线调得真变态，离地一万两千米连键盘敲击声都听得一清二楚。",
+        "openThought": "顺手看了一眼机载星链信号，带宽稳得离谱，跟他出行确实省心。",
+        "closeLine": "行了别得意了陆沉，这趟云端夜航确实把我的阈值拉高了——下次飞港岛或者京城，别忘了叫我。",
+        "closeThought": "其实去哪儿都不重要，重点是舷窗边坐着的人刚好是他而已。",
+        "momentComment": "平流层机载星链满格实测，顺便看了一眼绝版东海夜景，还行吧。"
+      },
+      "solo": {
+        "openLine": "少爷，{{assetName}}已进入平流层巡航，机长报告东海航路晴朗无颠簸，空乘随时待命。",
+        "openThought": "随时起飞直抵全球金融中心，天枢的羽翼今夜已真正舒展。",
+        "closeLine": "云层之上尽是坦途，无论少爷下一站指向京华还是港岛，这架座驾随时为您待命起航。",
+        "closeThought": "俯瞰万里灯火仍不骄不躁，少爷的格局早已超越海城一隅。",
+        "momentComment": "平流层巡航平稳，云端私宴与地面礼宾车队已同步衔接完毕。"
+      }
+    },
+    "sceneNodes": [
+      {
+        "type": "narration",
+        "bg": "/assets/bg/bg_airport.jpg",
+        "sceneBanner": "一万两千米平流层 · G700 贵宾舱 · 22:10",
+        "text": "无需候机与排队，{{assetName}}在海城公务机航站楼划出一道优雅昂扬的爬升轨迹。不过十余分钟，双发引擎轻快冲破厚重云层，直抵一万两千米的静谧平流层。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "effect": "flash",
+        "text": "二十扇标志性超大椭圆舷窗外，厚云铺展成无边银海，极目之下东海海岸的万家灯火缩作一盘璀璨流金。暖金壁灯映过小牛皮宽体航空座椅，{{heroineName}}靠在舷窗旁微凝目光，侧影被高空星辉勾得格外动人。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "heroine",
+        "name": "{{heroineName}}",
+        "role": "{{heroineRole}}",
+        "sprite": "{{heroineSprite}}",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "right",
+        "text": "{{openLine}}",
+        "innerThought": "{{openThought}}"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "从前困在城南旧街时，仰头看着夜航客机的尾灯总觉得那是另一个次元。如今坐在自己的{{assetName}}舱内俯瞰千里江海，才真正明白——所谓自由，就是能随时替重要的人把世界按暂停键。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "protagonist",
+        "name": "陆沉",
+        "role": "你",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "地面上再大的局，升到一万两千米也就剩几道细微灯线。今晚没有目的地，想看哪一片云海，我们便往哪儿飞。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "text": "恒温酒柜中取出早已醒好的右岸年份红酒，空乘轻步送上温热鹅肝塔与手冲蓝山咖啡后便识趣拉上隔舱移门。机舱寂静得只剩近乎无声的气流微鸣，仿佛世界只剩这座悬浮在星海里的暖金行宫。"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "机舱灯光柔和得恰到好处，舷窗外的猎户座亮如碎钻。在这趟只为今夜申请的私人航线上，该如何将此刻的云端体验推向巅峰？"
+      }
+    ],
+    "choice": {
+      "type": "system_choice",
+      "id": "ch_lux_private_jet",
+      "title": "平流层星光近在咫尺，你决定如何度过这段云端航程",
+      "sprite": "{{heroineSprite}}",
+      "leftSprite": "/assets/characters/protagonist.png",
+      "rightSprite": "{{heroineSprite}}",
+      "options": [
+        {
+          "id": "opt_a",
+          "label": "调暗客舱顶灯只留暖金舷窗光带，斟两杯年份红酒并肩俯瞰脚下东海灯河。",
+          "tag": "云端静谧",
+          "affectionBonus": 6,
+          "sysPointsBonus": 5,
+          "resultText": "星光与红酒在万米高空交汇，{{heroineName}}在独属云端的静谧里向你敞开心扉。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "把客舱灯光调到星夜模式吧。这一杯敬脚下的海城，也敬陪我飞上平流层的你。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "客舱顶灯柔和暗下，二十扇大舷窗瞬间化作一整面环绕银河巨幕。红酒杯壁晃动着暗红光泽，高空静谧把两人的距离悄悄拉近。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}端起酒杯轻抿一口，转头迎上你在舷窗星光下格外专注的眼神，眉梢微不可察地柔和了下去。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "{{assetName}}在无声星河中平稳巡航，云层之下万家灯火渐行渐远，而云端此刻的温度已足够铭记许久。"
+            }
+          ]
+        },
+        {
+          "id": "opt_b",
+          "label": "接通驾驶舱内话让机长绕东海群岛多盘旋二十分钟，把这段午夜云海再拉长一程。",
+          "tag": "随心改航",
+          "affectionBonus": 5,
+          "sysPointsBonus": 10,
+          "resultText": "机翼轻轻压坡转向星海深处，{{heroineName}}沉醉于这份挥手更改航线的浪漫从容。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "机长，今晚返航不急。向塔台报备延长二十分钟，绕东海星穹列岛上空画一道满月航线再降落。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "机身以几乎难以察觉的优雅倾角微微侧滑，窗外星河与东海银色海岸线随之缓慢旋转，宛如整座宇宙都在为这架{{assetName}}让道。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}看着窗外缓缓倾泻的月色云涛，回眸看你时眼底闪过一丝既意外又藏不住的笑意。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "多出来的二十分钟平流层夜航，像从繁忙时间里偷来的一段黄金夹页，将{{heroineName}}与今夜云海稳稳封存。"
+            }
+          ]
+        },
+        {
+          "id": "opt_c",
+          "label": "展开客舱全息航图轻点京华、港岛与苏黎世，淡笑言这架飞机的航线以后由我们来写。",
+          "tag": "全球格局",
+          "affectionBonus": 3,
+          "sysPointsBonus": 15,
+          "resultText": "横跨欧亚的金色航线在屏幕亮起，{{heroineName}}被你剑指寰宇的野心与笃定彻底折服。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "看看航程半径——从海城出发，京华、港岛、伦敦、苏黎世都能一站直抵。海城只是起点，以后世界版图上的航线，我们一条条亲手画。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "客舱高清航图骤然点亮，数道金色弧线自东海跃起横跨大洲大洋。{{assetName}}犹如蓄势待发的云端银隼，将全球金融版图尽数收进掌心。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "航图微光映亮{{heroineName}}的眉眼，那种无需呐喊却足以掀翻旧秩序的绝对自信，让人不由自主生出并肩远航的冲动。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "机翼划过万米暗夜晴空，脚下灯火如棋盘铺陈。今晚与{{heroineName}}在{{assetName}}许下的远方，已在云端悄然启程。"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "lux_hypercar_night",
+    "assetIds": [
+      "car_bugatti_chiron",
+      "car_rolls_spectre",
+      "car_ferrari_sf90"
+    ],
+    "title": "外滩午夜引擎 · 顶奢兜风",
+    "subtitle": "千匹轰鸣划破江岸霓虹 · 满城注目",
+    "sceneLabel": "外滩滨江大道 · 深夜极速巡航 · 23:20",
+    "bg": "/assets/bg/bg_bund_penthouse.jpg",
+    "badge": "顶奢巡航",
+    "costEnergy": 3,
+    "rewardPoints": 35,
+    "rewardAffection": 14,
+    "momentTemplate": "深夜驾【{{assetName}}】携{{heroineName}}共赴{{title}}，外滩江风掠过车身，整条滨江大道皆是注脚。",
+    "heroineOpeners": {
+      "su_qingwan": {
+        "openLine": "坐进{{assetName}}的副驾看着外滩百年老建筑掠过车窗，突然觉得偶尔不计后果兜一圈风真痛快。",
+        "openThought": "平时习惯自己握着方向盘掌控一切，可坐他副驾时居然一点都不紧张。",
+        "closeLine": "陆沉，江风把我白天的理智都吹散了半分……不过放心，只有今晚允许你带我这么违规。",
+        "closeThought": "他单手打方向盘的样子太从容了，刚才那两秒我竟然看得忘了眨眼。",
+        "momentComment": "午夜的外滩少见这么畅通，江风配顶级座驾，比任何安神茶都管用。"
+      },
+      "lin_wanxing": {
+        "openLine": "坐着{{assetName}}滑过滨江大道时，整条外滩的霓虹像流淌的金色音符一样在车窗上跳动呢！",
+        "openThought": "路过的人全在回头看这台车，可我偷偷看了一路的其实只有他的侧脸。",
+        "closeLine": "陆沉哥，江岸风吹进来的时候我突然一点也不怕未来了，好像只要坐在你旁边就会一直很稳。",
+        "closeThought": "刚才加速时他下意识护了一下扶手，这种小细节真的好让人心动呀。",
+        "momentComment": "外滩深夜的霓虹和江风都好温柔，今天也是被稳稳护着的一晚呀～"
+      },
+      "shen_liuli": {
+        "openLine": "开着{{assetName}}在外滩巡航，刚才路口那群网红的手机差点没拿稳，哥哥你可太会制造头条了。",
+        "openThought": "全外滩最招摇的车里坐着全海城最稳的男人，今晚我可真是赚翻了。",
+        "closeLine": "这副驾座我可先盖章预订了哦老板，以后外滩夜风再好，这位置除了我谁坐我可都要吃醋的。",
+        "closeThought": "明目张胆宣示主权的感觉真爽，他嘴角那一点笑意明显也是纵着我的。",
+        "momentComment": "深夜外滩高调炸街，副驾视野绝佳，明早娱乐版头条先预定一半～"
+      },
+      "lu_zhiwei": {
+        "openLine": "{{assetName}}这底盘调校和动力响应绝了，不过你大半夜开它逛外滩，是生怕交警监控识别不出你？",
+        "openThought": "推背感刚上来那一下心跳直接飙过一百二，嘴上吐槽但真的好爽啊！",
+        "closeLine": "咳……刚才弯道那一下操控确实有点东西，看在你没开飘的份上，今晚这趟兜风算你高分过关。",
+        "closeThought": "刚才差点脱口而出说再绕两圈，幸好我刹住了，才不让他得意呢。",
+        "momentComment": "外滩深夜极限巡航打卡，这车推背感比我写代码超频还带劲。"
+      },
+      "solo": {
+        "openLine": "少爷，{{assetName}}已提前完成胎压与底盘自检，外滩夜间路段车流稀疏，正宜您亲自试驾。",
+        "openThought": "从旧电瓶车到今日外滩巅峰座驾，少爷这一步步走得比谁都扎实。",
+        "closeLine": "少爷今夜御风外滩，沿途注目者众而您心境如水，半山车库恒温位已亮灯恭候归程。",
+        "closeThought": "海城江岸灯火易变，唯独少爷这份沉静锋芒，足以镇住满城风云。",
+        "momentComment": "座驾状态满分，外滩深夜江风微凉，已备好热茶候于半山宅邸。"
+      }
+    },
+    "sceneNodes": [
+      {
+        "type": "narration",
+        "bg": "/assets/bg/bg_bund_penthouse.jpg",
+        "sceneBanner": "外滩滨江大道 · 深夜极速巡航 · 23:20",
+        "text": "深夜十一点二十分，外滩滨江大道的车流终于褪成稀疏光点。{{assetName}}低伏如夜色里的钢铁猛兽，手工漆面流淌着对岸陆家湾的霓虹碎金，每一寸线条都在路灯下透着不容忽视的顶级威压。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "effect": "flash",
+        "text": "沿街顶奢会所门口的泊车生与晚归行人纷纷停步回望，快门声与低声惊叹被隔绝在双层静音玻璃之外。座舱内暖色氛围灯流过手工真皮与碳纤维饰板，{{heroineName}}坐在副驾，眼底映着一路向后飞驰的百年花岗岩洋楼。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "heroine",
+        "name": "{{heroineName}}",
+        "role": "{{heroineRole}}",
+        "sprite": "{{heroineSprite}}",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "right",
+        "text": "{{openLine}}",
+        "innerThought": "{{openThought}}"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "曾经骑着旧电瓶车在高架桥下躲暴雨时，外滩这排灯火高不可攀。如今握着{{assetName}}的方向盘驰过江岸，听见身旁人放松下来的呼吸，才觉得所有锋芒都有了落脚处。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "protagonist",
+        "name": "陆沉",
+        "role": "你",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "海城白天的路太挤，只有这个点，整条外滩滨江线才真正像为我们清了场。系好安全带，今晚的速度随你挑。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "text": "黄浦江上最后一班游轮亮起橘红航灯缓缓驶过，江面碎影与路面反光连成一片流动银河。前方是足足三公里视野开阔的滨江长直道，紧挨着灯火辉煌的外滩万国建筑群与静谧江湾。"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "绿灯恰好亮起，仪表盘冷光在指尖前跃动。这趟午夜顶奢巡航，该用哪种节奏把外滩夜色收进眼底？"
+      }
+    ],
+    "choice": {
+      "type": "system_choice",
+      "id": "ch_lux_hypercar_night",
+      "title": "前方外滩江岸霓虹洞开，你决定如何驾驭今夜巡航",
+      "sprite": "{{heroineSprite}}",
+      "leftSprite": "/assets/characters/protagonist.png",
+      "rightSprite": "{{heroineSprite}}",
+      "options": [
+        {
+          "id": "opt_a",
+          "label": "将车稳稳滑停在无人的滨江观景湾，降下车窗让江风与灯火涌进手工真皮座舱。",
+          "tag": "江畔停驻",
+          "affectionBonus": 6,
+          "sysPointsBonus": 5,
+          "resultText": "喧嚣远去、江风入怀，{{heroineName}}在静谧座舱里享受到最难得的放松时刻。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "赶了一整天行程，不差这几分钟冲刺。靠边停在观景湾，顺便听两首歌吹吹江风。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "{{assetName}}在江岸弯道划出一道利落弧线稳稳刹停。车窗缓缓降下，清冽湿润的黄浦江风裹着对岸摩天楼群的金色倒影涌进车厢，顶级音响流淌出低沉温柔的深夜钢琴曲。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}斜倚在柔软靠背上，任晚风轻拂额角，目光越过中控台暖光静静落回你脸上。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "江波轻拍堤岸，{{assetName}}静静停泊在海城最繁华的心脏边缘，车外是百万灯火，车内却只剩两人安稳的呼吸。"
+            }
+          ]
+        },
+        {
+          "id": "opt_b",
+          "label": "切入运动模式轻点踏板，在空旷滨江直道拉出一记酣畅又绝对稳健的极速推背。",
+          "tag": "极致推背",
+          "affectionBonus": 5,
+          "sysPointsBonus": 10,
+          "resultText": "澎湃动力瞬间撕开午夜沉闷，{{heroineName}}眼底燃起肾上腺素飙升后的明媚光彩。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "前路两公里完全畅通，坐稳了——带你听听{{assetName}}在午夜外滩真正醒过来的声音。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "你指尖拨动模式旋钮，右脚沉稳压下。浑厚澎湃的扭矩瞬间爆发，两旁百年石柱与陆家湾灯海拉成一片绚烂流金光束，底盘却紧贴路面稳如磐石。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "强劲推背感将白日所有烦忧一扫而空，待车速在弯前丝滑回落，{{heroineName}}眉眼间仍泛着畅快微光，望向你的神色多了几分炙热信赖。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "{{assetName}}化作一道流金暗影划破外滩深夜，速度与掌控感恰如其分，将整座海城霓虹甩作最华丽的尾灯背景。"
+            }
+          ]
+        },
+        {
+          "id": "opt_c",
+          "label": "放缓车速从外滩顶奢俱乐部灯火前从容滑过，在满城注目中只偏头望向身旁人。",
+          "tag": "外滩焦点",
+          "affectionBonus": 3,
+          "sysPointsBonus": 15,
+          "resultText": "整条外滩名利场目光尽数汇聚于{{assetName}}，而你的偏爱却只留给了{{heroineName}}。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "好车开得太快别人反倒看不清。慢慢滑过去就行，让外滩看看今晚谁才是主角。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "{{assetName}}以最优雅的节奏滑过外滩十八号与顶级会所灯廊，路边豪车车主与名流纷纷侧目，无数手机屏幕齐刷刷追着车身流金光影移动。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "面对满街炽热视线，你却连眼角都没分给车外，只趁红灯停驻时从容侧首，替{{heroineName}}将微凉的空调风口轻轻调偏半寸。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "满城瞩目化作车窗外流动的浮光掠影，真正被稳稳护在{{assetName}}光环中央的，始终只有此刻身畔的{{heroineName}}。"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "id": "lux_collection_salon",
+    "assetIds": [
+      "art_ink_scroll",
+      "watch_tourbillon",
+      "col_ocean_diamond",
+      "col_jade_emperor"
+    ],
+    "title": "云顶藏宝室 · 传世孤品私赏",
+    "subtitle": "恒温展柜与威士忌 · 只给最亲近的人看",
+    "sceneLabel": "半山私宅 · 地下恒温藏宝室 · 21:00",
+    "bg": "/assets/bg/bg_bund_penthouse.jpg",
+    "badge": "孤品私赏",
+    "costEnergy": 3,
+    "rewardPoints": 40,
+    "rewardAffection": 15,
+    "momentTemplate": "半山私宅灯火深处，邀{{heroineName}}于{{title}}共赏【{{assetName}}】，孤品传世，知音难得。",
+    "heroineOpeners": {
+      "su_qingwan": {
+        "openLine": "连拍卖行都只闻其名的{{assetName}}竟静静摆在你私宅灯下，陆沉，你肯让我进这扇门分量可太重了。",
+        "openThought": "半山藏宝室的虹膜权限连盛世元老都无缘一见，他却毫不设防地领我进来。",
+        "closeLine": "传世孤品我见过不少，但比起展柜里连城之价，我更在意的是——你是第一个愿意带我私赏的人。",
+        "closeThought": "威士忌还没沾唇，心口就已经被他这份毫无保留的信任烫热了。",
+        "momentComment": "恒温展柜里藏着半部海城风华，杯中冰球微融，此夜弥足珍贵。"
+      },
+      "lin_wanxing": {
+        "openLine": "近距离看{{assetName}}在聚光灯下的光泽，感觉时间一下子慢了下来，像走进只属于两个人的博物馆呀！",
+        "openThought": "他把这么贵重的宝贝毫无保留地拿给我看，是对我完完全全的信任呢。",
+        "closeLine": "陆沉哥，世上最珍贵的藏品固然耀眼，可我总觉得比起它们，站在灯光旁认真讲给我听的你更难得。",
+        "closeThought": "他递白手套过来时指尖轻轻碰了我一下，我紧张得差点屏住呼吸啦。",
+        "momentComment": "在半山私宅的微距灯光里看见了时间的奇迹，谢谢你分享最珍贵的秘密～"
+      },
+      "shen_liuli": {
+        "openLine": "乖乖，把{{assetName}}锁在半山恒温密室里只给我一个人鉴赏，哥哥你这是在考验我的定力吗？",
+        "openThought": "珠宝名画再贵也只是死物，可他带我踏进私人腹地，这份偏爱比什么都值钱。",
+        "closeLine": "行了老板，你的藏宝室我看完啦——不过比起展柜里这些无价孤品，我可是冲着这间屋子的主人来的。",
+        "closeThought": "连这么直白的话都说出口了，他要是敢装糊涂我今晚就不走了。",
+        "momentComment": "顶级私藏配年份单麦，半山藏宝室的门槛这么高，幸好我有vip通道～"
+      },
+      "lu_zhiwei": {
+        "openLine": "好家伙，{{assetName}}这保存品相和微距打光水准直逼顶级馆藏，你这地下金库连湿度都锁死在四十五？",
+        "openThought": "老实说刚才进门看那件孤品时手都在痒，这家伙挑藏品的眼光真毒。",
+        "closeLine": "行吧陆沉，你这藏宝室确实配得上我免费帮你做一次安防压力测试——前提是以后新收的尖货我都得第一个看！",
+        "closeThought": "嘴上说着看藏品，其实偷偷记下他站在展台前的样子，比孤品还让人移不开眼。",
+        "momentComment": "替大老板验过半山私库了，品相顶级、温湿稳健，连我都挑不出毛病。"
+      },
+      "solo": {
+        "openLine": "少爷，地下藏宝室恒温十八度运转正常，{{assetName}}已切换博物馆级低热射灯，请您近前细赏。",
+        "openThought": "陆氏一脉重器归位，这间半山私库终究等到了真正配得上它的主人。",
+        "closeLine": "名物择主，传世孤品唯有藏于心怀丘壑者手中方不负光华，威士忌已醒好，少爷请慢用。",
+        "closeThought": "每一件孤品背后都是少爷运筹帷幄的见证，陈默必誓死守好这扇门。",
+        "momentComment": "半山私库恒温恒湿运行正常，孤品光华如初，恭候少爷闲暇品鉴。"
+      }
+    },
+    "sceneNodes": [
+      {
+        "type": "narration",
+        "bg": "/assets/bg/bg_bund_penthouse.jpg",
+        "sceneBanner": "半山私宅 · 地下恒温藏宝室 · 21:00",
+        "text": "穿过半山私宅沉静的胡桃木长廊，虹膜与指静脉双锁验证通过的一瞬，半米厚的暗黑钛金防爆门无声滑开。十八摄氏度、百分之四十五湿度的博物馆级新风迎面而来，带着一丝雪松与旧木的冷香。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "effect": "flash",
+        "text": "低色温防反射微距射灯逐束点亮，聚焦在藏宝室正中央的墨玉底座上。{{assetName}}在无影光束下流转出令人屏息的传世光华，映得站在展台前的{{heroineName}}眉眼间满是惊艳。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "heroine",
+        "name": "{{heroineName}}",
+        "role": "{{heroineRole}}",
+        "sprite": "{{heroineSprite}}",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "right",
+        "text": "{{openLine}}",
+        "innerThought": "{{openThought}}"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "世人只看得到传世孤品的拍卖估价，却未必懂它们为何会留在我的半山私库。钱买来的是所有权，而肯把这扇门向谁敞开，才决定了一个人心里真正的分量。"
+      },
+      {
+        "type": "dialogue",
+        "speaker": "protagonist",
+        "name": "陆沉",
+        "role": "你",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "孤品锁在保险库里只是冷冰冰的数字，遇见懂欣赏的人，它才算真正活过来。今晚这间藏宝室，只为你亮灯。"
+      },
+      {
+        "type": "narration",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "both",
+        "text": "侧边酒柜上，手切冰球落进厚底水晶杯发出清脆一声轻响。三十年份单一麦芽威士忌散出泥煤、黑巧与雪莉桶的醇厚尾韵，将整座地下藏宝室酿出近乎微醺的私密气场。"
+      },
+      {
+        "type": "thought",
+        "leftSprite": "/assets/characters/protagonist.png",
+        "rightSprite": "{{heroineSprite}}",
+        "activeSide": "left",
+        "text": "灯光寂静，孤品生辉，身畔之人的注意力全落在这方寸之间。今晚的私赏沙龙，该用怎样一记点睛之笔落下款识？"
+      }
+    ],
+    "choice": {
+      "type": "system_choice",
+      "id": "ch_lux_collection_salon",
+      "title": "微距灯光锁定传世孤品，你决定如何展开今晚私赏",
+      "sprite": "{{heroineSprite}}",
+      "leftSprite": "/assets/characters/protagonist.png",
+      "rightSprite": "{{heroineSprite}}",
+      "options": [
+        {
+          "id": "opt_a",
+          "label": "解除中央展柜感应护罩并递上白丝绒手套，让{{heroineName}}零距离细赏{{assetName}}。",
+          "tag": "近距私享",
+          "affectionBonus": 6,
+          "sysPointsBonus": 5,
+          "resultText": "毫无设防的零距离鉴赏让{{heroineName}}深切感受到你独一无二的信赖与偏爱。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "隔着防弹玻璃看总少三分神韵。戴上这副真丝手套，我把护罩降下来，你可以凑近慢慢看。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "随着指纹解锁的轻音，超白防弹玻璃罩缓缓沉入墨玉基座。无任何阻隔的微光里，{{assetName}}每一处精工细节与莹润光泽骤然纤毫毕现，令人移不开眼。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}放轻呼吸俯身近赏，余光瞥见你站在半步之外安静相陪的模样，心头悄然漫开一股滚烫暖意。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "防弹护罩缓缓重新升起，将{{assetName}}封回恒温微光之中，而那份卸下一切防线的默契，早已越过玻璃留在彼此心底。"
+            }
+          ]
+        },
+        {
+          "id": "opt_b",
+          "label": "亲手斟上三十年份单一麦芽威士忌，在柔光下娓娓道来{{assetName}}背后的传奇旧事。",
+          "tag": "琥珀微醺",
+          "affectionBonus": 5,
+          "sysPointsBonus": 10,
+          "resultText": "琥珀酒香交织传世轶事，{{heroineName}}在你从容笃定的声线里彻底沉醉。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "尝一口这支雪莉桶单麦。外界只知道{{assetName}}价值连城，却很少有人知道它当年几度易主、最后怎么落进海城。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "琥珀色酒液绕着晶莹冰球缓缓打转，微距射灯将展台与酒杯映出一层柔润金边。你不急不缓道出那些江湖掌故与博弈细节，藏宝室仿佛成了一座微缩的百年风云剧场。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}托着水晶杯静静倾听，杯中冰球轻撞出细微脆响，视线却不知不觉从孤品移回到了你沉稳从容的眉目之间。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "杯底琥珀渐浅，半山夜色已深。孤品自有百年脉络，而今晚在{{assetName}}灯下举杯对谈的片段，也成了它最新的一段风雅注脚。"
+            }
+          ]
+        },
+        {
+          "id": "opt_c",
+          "label": "翻开烫金私库藏品志，亲笔签下今晚日期与{{heroineName}}之名，落印定下此夜孤本款识。",
+          "tag": "私库落款",
+          "affectionBonus": 3,
+          "sysPointsBonus": 15,
+          "resultText": "一纸私库藏品志落款生辉，{{heroineName}}的名字与{{assetName}}的传奇自此并列成章。",
+          "branchNodes": [
+            {
+              "type": "dialogue",
+              "speaker": "protagonist",
+              "name": "陆沉",
+              "role": "你",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "left",
+              "text": "按照顶级藏家规矩，凡入库私赏者皆须留款。今晚{{assetName}}的鉴赏志第一页，我把你的名字和今夜月色一起写上去。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "effect": "flash",
+              "text": "钢笔尖在厚重棉纸上流畅游走，黑金墨迹锋芒内敛，随后一枚沉甸甸的星轨私人印鉴稳稳盖落朱红泥印，仪式感沉静却摄人心魄。"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "text": "{{heroineName}}垂眸看着纸页上并肩而立的墨迹与朱印，唇边浮现出一抹既克制又掩不住动容的轻笑。"
+            },
+            {
+              "type": "dialogue",
+              "speaker": "heroine",
+              "name": "{{heroineName}}",
+              "role": "{{heroineRole}}",
+              "sprite": "{{heroineSprite}}",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "right",
+              "effect": "heartbeat",
+              "text": "{{closeLine}}",
+              "innerThought": "{{closeThought}}"
+            },
+            {
+              "type": "narration",
+              "leftSprite": "/assets/characters/protagonist.png",
+              "rightSprite": "{{heroineSprite}}",
+              "activeSide": "both",
+              "text": "烫金藏品志缓缓合拢，朱印微香与威士忌余韵萦绕不散。半山藏宝室的传世孤品历尽沧桑，今夜终究记下了最难得的一笔同赏之名。"
+            }
+          ]
+        }
+      ]
+    }
+  }
+]
